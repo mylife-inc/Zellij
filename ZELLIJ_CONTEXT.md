@@ -3,6 +3,29 @@
 Last refreshed: **2026-11-19**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-19: local documentation review before production deployment**
+
+The user wants to inspect the local documentation before updating
+`zellij.shebka.net`. The current docs wrapper is built and previewed at
+`http://localhost:4320`; deployment remains pending that review. Do not treat
+starting this local preview as authorization to publish the reviewed site yet.
+The source is `examples/zellij-docs/content`; restart a built preview with
+`npm run start -w @shebka/zellij-docs -- --hostname 127.0.0.1`.
+
+The homepage now reports the actual 25 section types, 15 themes and nine
+templates instead of stale counts and an unsupported blanket Lighthouse score.
+Its FAQ describes the CLI/template/import workflow. The build reference includes
+the forthcoming `file` target in its option table, corrects the theme count and
+clarifies opt-in Mermaid mindmaps. Released rc.11 and post-rc.11 features remain
+explicitly distinguished. Strict/deep validation passes for 59 content routes
+and 33 examples; the production build and crawl of 61 URLs/112 anchor links pass.
+Chrome/WebKit checks pass for six independent review routes, search and normal
+client navigation. Initial scripted probes exposed a search-readiness race and
+WebKit prefetch cancellation diagnostics during successive forced navigations;
+the final probes wait for search readiness and isolate full-page visits. No
+engine change was made for those test diagnostics.
+This preview does not imply a complete publication audit or a new CLI release.
+
 **2026-11-19: AI authoring guide for the private handoff**
 
 The user requested a root `zellij-context.md` so a client's AI editor can

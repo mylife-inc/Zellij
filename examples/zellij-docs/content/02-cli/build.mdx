@@ -66,7 +66,7 @@ docs/                         published-docs/
 The generated folder can be moved, copied to another computer, opened directly,
 or served by an ordinary HTTP file server. Keep the complete folder together.
 Navigation, breadcrumbs, previous/next links, heading anchors, offline search,
-local images, bundled fonts, syntax highlighting, and all 14 Zellij themes work
+local images, bundled fonts, syntax highlighting, and all 15 Zellij themes work
 without an HTTP server. Content and ordinary navigation remain available with
 JavaScript disabled; search and theme controls need JavaScript.
 
@@ -223,7 +223,7 @@ after an edit. Only pages with mindmaps load their small stylesheet, and it is
 removed from the export when the last mindmap is removed.
 
 This is Zellij's YAML `mindmap` syntax. Mermaid's `mindmap` grammar belongs inside
-a `mermaid` fence, which remains source code in the portable target.
+a `mermaid` fence; enable Mermaid as described below to render it.
 
 ### Mermaid diagrams
 
@@ -329,7 +329,8 @@ it supports both portable and hosted sites. See [image commands](/cli/image).
 
 ## Output ownership
 
-Both file targets require output outside the content source (`content/` for a configured site). It must be new, empty,
+Folder outputs (`portable`, `static`, and the forthcoming `file` target) require
+output outside the content source (`content/` for a configured site). It must be new, empty,
 or a previous Zellij export containing its `.zellij-output` ownership marker.
 Keep authored files outside generated output: rebuilding replaces the export
 as a whole and removes obsolete generated pages.
@@ -343,8 +344,8 @@ output directory; do not add the marker by hand.
 | Option | Meaning | Default |
 | --- | --- | --- |
 | `[dir]` | Configured site or explicit legacy input | `./zel.yaml`, then `./docs/zellij/zel.yaml` |
-| `--target <portable\|static\|image>` | Explicit output target | Configured renderer; legacy inference otherwise |
-| `--out <path>` | Output folder for `portable` or `static` | Configured `build.out` or `site/`; legacy portable: sibling `<input-name>-site`; legacy static: `./dist` |
+| `--target <portable\|static\|file\|image>` | Explicit output target; `file` needs the next update after rc.11 | Configured renderer; legacy inference otherwise |
+| `--out <path>` | Output folder for `portable`, `static`, or the forthcoming `file` target | Configured `build.out` or `site/`; legacy portable: sibling `<input-name>-site`; legacy hosted: `./dist` |
 | `--name <text>` | Portable site's header name | `zel.yaml` name, otherwise input folder name |
 | `--theme <name>` | Portable theme; see `zel list themes` | `zel.yaml` theme, otherwise `cupertino` |
 | `--tag <name:version>` | Image tag, image target only | Existing image naming policy |

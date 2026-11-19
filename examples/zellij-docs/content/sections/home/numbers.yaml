@@ -2,7 +2,7 @@ type: stats-band
 id: numbers
 heading: Built in
 stats:
-  - { value: 18, label: Section types }
-  - { value: 14, label: Built-in themes }
-  - { value: 100, label: Lighthouse, suffix: "/100" }
-  - { value: 0, label: Runtime dependencies to configure }
+  - { value: 25, label: Section types }
+  - { value: 15, label: Built-in themes }
+  - { value: 9, label: Website and book templates }
+  - { value: 2, label: Colour modes }
