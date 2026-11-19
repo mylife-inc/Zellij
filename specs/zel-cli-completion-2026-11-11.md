@@ -8,8 +8,11 @@ and 527 engine tests; full and production dependency audits report zero findings
 All 37 jobs in release run `44423006473` pass, including all 12 checks of the
 final public downloads and images. Both repositories have 27 byte-identical
 assets. All 224 public website captures and 46 PDFs/420 page captures match the
-reviewed source content and pixels. Managed upgrades, guide/consumer migration
-and scoped rc.10 retirement follow; see [the release evidence](evidence/zellij-rc11-release-2026-11-18.json).
+reviewed source content and pixels. Together, the managed channels pass eight
+public lifecycle cases and eight actual rc.10-to-rc.11 upgrades; the standalone upgrade
+also matches the verified archive bytes. Documentation PR #208 passes all 32
+source CI jobs and six build-only consumers on `d1daba6`. Merge, replacement
+acceptance images and scoped rc.10 retirement follow; see [the release evidence](evidence/zellij-rc11-release-2026-11-18.json).
 
 The composer now includes responsive nested layouts, direct/provider video,
 caption/transcript links, layered backdrops, semantic content, selectors,

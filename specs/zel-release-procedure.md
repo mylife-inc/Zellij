@@ -4,8 +4,10 @@
 `1f8232b` passes all 37 jobs in `44423006473`, including 12 final-public-artifact
 checks. Both repositories have 27 byte-identical assets and retain all nine
 current template archive hashes. All 224 website captures and 46 PDFs/420 page
-captures match reviewed source content and pixels. Managed upgrades and active
-guide/consumer migration are in progress; rc.10 retirement awaits their gates.
+captures match reviewed source content and pixels. All managed lifecycle and
+actual upgrade cases, the standalone upgrade, all 32 documentation CI jobs and
+six build-only consumers pass. PR #208 is ready to merge; replacement acceptance
+images and scoped rc.10 retirement follow.
 See [the evidence](evidence/zellij-rc11-release-2026-11-18.json).
 
 **2026-11-18: rc.11 preparation.** The source implementation is verified at

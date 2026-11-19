@@ -1,7 +1,7 @@
 {
   "date": "2026-11-18",
   "version": "v0.2.0-rc.11",
-  "status": "Published and verified from final public artifacts. Managed upgrades, documentation/consumer migration and scoped retirement are in progress; production hosting and live providers stay deferred.",
+  "status": "Published and publicly verified; managed channels, standalone upgrade and documentation/consumer checks passed. Documentation merge, replacement image publication and scoped rc.10 retirement are pending. Production hosting/live providers remain deferred.",
   "source": {
     "tag": "v0.2.0-rc.11",
     "commit": "1f8232bcc1f029ec2aac7769c3ec2d0beb527c99",
@@ -5970,9 +5970,9 @@
     "checks": "The installed full schema/hash and each preset match tagged source on native targets; each published image exports the exact tagged schema and preset data offline."
   },
   "pending": [
-    "Managed-channel lifecycle and actual rc.10-to-rc.11 upgrades",
-    "Documentation CI, six consumer builds and merge",
-    "Replacement acceptance images, reviewed retirement and post-cleanup verification"
+    "Merge verified documentation PR #208",
+    "Publish and verify replacement static/Next acceptance images",
+    "Review and execute exact rc.10 retirement and post-cleanup verification"
   ],
   "deferred": [
     "Production-domain migration",
@@ -5999,7 +5999,65 @@
       "previous_commit": "aa82b4e9d15debdb1de6ff2f952fc23841ccad7d",
       "recipe": "Exact published zel.rb; generated from verified checksums",
       "lifecycle_run": 44426470234,
-      "status": "Public lifecycle and subsequent actual upgrade checks in progress"
+      "status": "All four public lifecycle cases and four actual rc.10-to-rc.11 upgrades passed.",
+      "lifecycle": {
+        "id": 44426470234,
+        "head": "2973058fa8c54ca4ef89b241121dd3a6ea420ef2",
+        "attempt": 1,
+        "url": "https://github.com/mylife-inc/homebrew-tap/actions/runs/44426470234",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "id": 135232493473,
+            "name": "Install, upgrade and uninstall (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "id": 135232493766,
+            "name": "Install, upgrade and uninstall (ubuntu-24.04-arm)",
+            "conclusion": "success"
+          },
+          {
+            "id": 135232493848,
+            "name": "Install, upgrade and uninstall (macos-15)",
+            "conclusion": "success"
+          },
+          {
+            "id": 135232493920,
+            "name": "Install, upgrade and uninstall (macos-15-intel)",
+            "conclusion": "success"
+          }
+        ]
+      },
+      "upgrade": {
+        "id": 44426755437,
+        "head": "2973058fa8c54ca4ef89b241121dd3a6ea420ef2",
+        "attempt": 1,
+        "url": "https://github.com/mylife-inc/homebrew-tap/actions/runs/44426755437",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "id": 135233486939,
+            "name": "Install, upgrade and uninstall (macos-15-intel)",
+            "conclusion": "success"
+          },
+          {
+            "id": 135233487233,
+            "name": "Install, upgrade and uninstall (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "id": 135233487412,
+            "name": "Install, upgrade and uninstall (macos-15)",
+            "conclusion": "success"
+          },
+          {
+            "id": 135233487443,
+            "name": "Install, upgrade and uninstall (ubuntu-24.04-arm)",
+            "conclusion": "success"
+          }
+        ]
+      }
     },
     "scoop": {
       "repository": "mylife-inc/scoop-bucket",
@@ -6007,7 +6065,65 @@
       "previous_commit": "992b4e13232f41f3ddfa9dee6e7c4dcdbd3ace7c",
       "recipe": "Exact published zel.json; tooling pinned to the immutable source tag commit",
       "lifecycle_run": 44426479590,
-      "status": "Public lifecycle and subsequent actual upgrade checks in progress"
+      "status": "All four public lifecycle cases and four actual rc.10-to-rc.11 upgrades passed.",
+      "lifecycle": {
+        "id": 44426479590,
+        "head": "2d103294cb8e55348059a2a19aca08a44d0425b6",
+        "attempt": 1,
+        "url": "https://github.com/mylife-inc/scoop-bucket/actions/runs/44426479590",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "id": 135232525031,
+            "name": "Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+            "conclusion": "success"
+          },
+          {
+            "id": 135232525325,
+            "name": "Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+            "conclusion": "success"
+          },
+          {
+            "id": 135232525476,
+            "name": "Scoop (x86_64-pc-windows-msvc, pwsh)",
+            "conclusion": "success"
+          },
+          {
+            "id": 135232525530,
+            "name": "Scoop (aarch64-pc-windows-msvc, pwsh)",
+            "conclusion": "success"
+          }
+        ]
+      },
+      "upgrade": {
+        "id": 44427411622,
+        "head": "2d103294cb8e55348059a2a19aca08a44d0425b6",
+        "attempt": 1,
+        "url": "https://github.com/mylife-inc/scoop-bucket/actions/runs/44427411622",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "id": 135235724954,
+            "name": "Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+            "conclusion": "success"
+          },
+          {
+            "id": 135235725296,
+            "name": "Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+            "conclusion": "success"
+          },
+          {
+            "id": 135235725497,
+            "name": "Scoop (x86_64-pc-windows-msvc, pwsh)",
+            "conclusion": "success"
+          },
+          {
+            "id": 135235725586,
+            "name": "Scoop (aarch64-pc-windows-msvc, pwsh)",
+            "conclusion": "success"
+          }
+        ]
+      }
     },
     "shared_guide": {
       "repository": "mylife-inc/releases",
@@ -6026,6 +6142,325 @@
       "count": 6,
       "result": "match actual CLI generator; PR builds only; publication remains manual on main"
     },
-    "status": "Prepared; full CI and consumer verification pending"
+    "status": "All 32 source CI jobs and all six build-only consumers pass on d1daba6. PR #208 final follow-up adds records only; merge and scoped retirement follow.",
+    "ci": {
+      "id": 44426799314,
+      "head": "d1daba6b0327a17b8fc0674769739c26eebb5325",
+      "attempt": 2,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44426799314",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 135246720241,
+          "name": "Showcase end to end",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246722154,
+          "name": "Website and book templates",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246723101,
+          "name": "websites / Websites (ubuntu-24.04-arm)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246723580,
+          "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246723769,
+          "name": "native-packages / Package and install (aarch64-apple-darwin)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246723838,
+          "name": "homebrew / Homebrew (macos-15)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246724374,
+          "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246724534,
+          "name": "homebrew / Homebrew (macos-15-intel)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246724929,
+          "name": "homebrew / Homebrew (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246725115,
+          "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246725155,
+          "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246725643,
+          "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246764288,
+          "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246764479,
+          "name": "Portable docs (macos-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246767372,
+          "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246770141,
+          "name": "Portable docs (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246771263,
+          "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246773189,
+          "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246775110,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246776075,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246776095,
+          "name": "Embedded schema is current",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246776544,
+          "name": "Native images (amd64)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246777685,
+          "name": "native-packages / Package and install (x86_64-apple-darwin)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246778325,
+          "name": "websites / Websites (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246779444,
+          "name": "Engine",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246779845,
+          "name": "CLI",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246781693,
+          "name": "next-pdf / Next PDF (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246785968,
+          "name": "Combined image manifests",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246786402,
+          "name": "Portable docs (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246793728,
+          "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246796383,
+          "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135246798541,
+          "name": "Native images (arm64)",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "consumers": [
+      {
+        "id": 44426799413,
+        "head": "d1daba6b0327a17b8fc0674769739c26eebb5325",
+        "attempt": 1,
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44426799413",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "id": 135233627517,
+            "name": "verify",
+            "conclusion": "success"
+          },
+          {
+            "id": 135233629756,
+            "name": "publish",
+            "conclusion": "skipped"
+          }
+        ]
+      },
+      {
+        "id": 44426799150,
+        "head": "d1daba6b0327a17b8fc0674769739c26eebb5325",
+        "attempt": 1,
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44426799150",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "id": 135233626631,
+            "name": "verify",
+            "conclusion": "success"
+          },
+          {
+            "id": 135233629322,
+            "name": "publish",
+            "conclusion": "skipped"
+          }
+        ]
+      },
+      {
+        "id": 44426799196,
+        "head": "d1daba6b0327a17b8fc0674769739c26eebb5325",
+        "attempt": 1,
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44426799196",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "id": 135233627393,
+            "name": "verify",
+            "conclusion": "success"
+          },
+          {
+            "id": 135233630272,
+            "name": "publish",
+            "conclusion": "skipped"
+          }
+        ]
+      },
+      {
+        "id": 44426799145,
+        "head": "d1daba6b0327a17b8fc0674769739c26eebb5325",
+        "attempt": 1,
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44426799145",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "id": 135233627047,
+            "name": "verify",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "id": 44426799222,
+        "head": "d1daba6b0327a17b8fc0674769739c26eebb5325",
+        "attempt": 1,
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44426799222",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "id": 135233627540,
+            "name": "verify",
+            "conclusion": "success"
+          },
+          {
+            "id": 135233629865,
+            "name": "publish",
+            "conclusion": "skipped"
+          }
+        ]
+      },
+      {
+        "id": 44426799223,
+        "head": "d1daba6b0327a17b8fc0674769739c26eebb5325",
+        "attempt": 1,
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44426799223",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "id": 135233627603,
+            "name": "verify",
+            "conclusion": "success"
+          }
+        ]
+      }
+    ],
+    "infrastructure_retry": {
+      "run": 44426799314,
+      "job": 135233628577,
+      "head": "d1daba6b0327a17b8fc0674769739c26eebb5325",
+      "started": "2026-11-19T00:13:15Z",
+      "completed": "2026-11-19T00:33:32Z",
+      "conclusion": "cancelled",
+      "annotations": [
+        {
+          "title": "",
+          "message": "The job has exceeded the maximum execution time of 20m0s"
+        },
+        {
+          "title": "",
+          "message": "The operation was canceled."
+        }
+      ],
+      "cause": "The 20-minute job deadline was reached while apt was downloading 140 MB of Playwright system dependencies. The app build and browser tests had not started. The earlier successful preparation used the same Ubuntu 26.04 family and the same 140 MB dependency set.",
+      "retry": "Only the cancelled Showcase job rerun on unchanged d1daba6 after all other 31 jobs passed."
+    },
+    "showcase": {
+      "run": 44426799314,
+      "job": 135246720241,
+      "head": "d1daba6b0327a17b8fc0674769739c26eebb5325",
+      "attempt": 2,
+      "conclusion": "success",
+      "passed": 526,
+      "conditional_skips": 140,
+      "test_retries": 0,
+      "preview_checks": "Chromium and WebKit production prefix/theme/analytics/links and development reload/invalid-edit recovery pass.",
+      "rerun_reason": "Attempt 1 exceeded the job limit while downloading Ubuntu browser dependencies, before application build and tests. Only that job was retried; the other 31 successful results were retained."
+    },
+    "preservation": {
+      "job": 135233627842,
+      "original_routes": 46,
+      "added_routes": 13,
+      "heading_ids": 282,
+      "compatibility_mappings": 82,
+      "byte_identical_images": 29,
+      "captured_browser_errors": 0,
+      "probes_passed": 6
+    },
+    "collector_correction": "The local collector initially required a skipped publish job for every workflow. The portable and hosted build-only workflows intentionally have no publish job; YAML inspection corrected the collector. All hosted runs passed on their original attempt; none was rerun for this local interpretation error.",
+    "final_record_update": "After d1daba6, only current context, dated completion/release records and the PR description change. Runtime, dependencies, active guides, workflows and acceptance inputs remain identical to the fully tested source."
   }
 }
