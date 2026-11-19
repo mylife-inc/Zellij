@@ -2,7 +2,7 @@
 
 Date: 2026-11-11. This records the user's explicit follow-up to the
 [product expansion design](zellij-product-expansion-2026-11-11.md).
-Refreshed 2026-11-17 with verified rc.10 replacement and scoped rc.9 retirement.
+Refreshed 2026-11-18 with verified rc.11 replacement and scoped rc.10 retirement.
 Earlier records and failed attempts remain historical.
 
 ## User decision
@@ -26,7 +26,26 @@ dated release records remain valid historical evidence; add retirement records
 rather than silently rewrite them. The user has authorized this cleanup policy;
 do not repeatedly request approval for a reviewed cleanup within its scope.
 
-## Current rc.10 execution status — 2026-11-17
+## Current rc.11 execution status — 2026-11-18
+
+The rc.11 candidate, Homebrew,
+Scoop and verified guides are published. Documentation PR #208 merges as
+`79de857`. All source/release/public-artifact, managed lifecycle/upgrade and
+consumer checks pass. PR #209 completes reviewed rc.10 retirement: two releases,
+54 assets, two tags and 26 image versions removed; all 39 current manifests,
+3,771 excluded build-history versions and both CodeSeal releases retained.
+Independent inventory `44433078378`, fresh-pull HTTP `44433082092` and fresh anonymous
+public downloads pass. See [retirement evidence](evidence/zellij-rc11-image-retirement-2026-11-18.json).
+Production hosting and live providers remain deferred; additional installation
+channels remain separate work. No stable 1.0 or zero-bug claim.
+
+The plans were committed at `d77a2cf` before execution. All 17 replacement
+gates were checked again before deletion. The 13 image safeguards pass locally
+and in both hosted inventories; seven native guard cases and the live read-only
+preflight pass. No failed or partial deletion occurred. Do not reuse completed
+plans after tags or branch state change. Final follow-up changes records only.
+
+## Previous rc.10 execution status — 2026-11-17
 
 Documentation PR #200 merges as `d5ed0bf`, matching reviewed `8ecdf57` and the
 runtime/acceptance inputs tested at `6c9fde4`. All 37 release jobs, 12 expanded

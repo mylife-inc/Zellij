@@ -17,10 +17,10 @@ function fixture() {
       const v = { id: id++, digest: digest(id), tags }; graph[v.digest] = { children }; return v;
     };
     const shared = add([]), oldChild = add([]), unknownChild = add([]), orphan = add([]);
-    const currentTags = name === 'zellij-base' ? ['', '-maths', '-diagrams', '-all'].flatMap(s => ['0.2.0-rc.10' + s, 'main' + s]) : ['0.2.0-rc.10'];
+    const currentTags = name === 'zellij-base' ? ['', '-maths', '-diagrams', '-all'].flatMap(s => ['0.2.0-rc.11' + s, 'main' + s]) : ['0.2.0-rc.11'];
     const current = add(currentTags, [shared.digest]);
     const old = add(['0.2.0-rc.2'], [oldChild.digest, shared.digest]);
-    const unknown = add(['user-retained'], [unknownChild.digest]);
+    const unknown = add(['user-retained', '0.2.0-rc.12', '0.2.0-rc.100'], [unknownChild.digest]);
     return { name, versions: [shared, oldChild, unknownChild, orphan, current, old, unknown] };
   }) };
   return { inventory, graphs };
@@ -51,7 +51,7 @@ test('rejects incomplete, unexpected or ambiguous inventory', () => {
     f => f.inventory.errors.push('incomplete'),
     f => f.inventory.packages.push({ name: 'another-product', versions: [] }),
     f => f.inventory.packages[0].versions.push(clone(f.inventory.packages[0].versions[0])),
-    f => f.inventory.packages[0].versions[0].tags.push('0.2.0-rc.10'),
+    f => f.inventory.packages[0].versions[0].tags.push('0.2.0-rc.11'),
     f => { f.inventory.packages[0].versions[0].digest = 'invalid'; },
   ]) { const f = fixture(); mutate(f); assert.throws(() => buildPlan(f.inventory, f.graphs)); }
 });
@@ -99,16 +99,18 @@ test('graph traversal handles shared nodes and cycles; missing retired leaf may 
   assert.throws(() => closure(graph, [digest(1)], false), /Missing graph entry/);
 });
 
-test('retires rc.1 through rc.9 while retaining rc.10 and every development variant', () => {
-  for (const version of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
+test('retires rc.1 through rc.10 while retaining rc.11 and every development variant', () => {
+  for (const version of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
     const f = fixture();
     for (const p of f.inventory.packages) p.versions[5].tags = [`0.2.0-rc.${version}`];
     const plan = buildPlan(f.inventory, f.graphs);
-    assert.equal(plan.keepVersion, '0.2.0-rc.10');
+    assert.equal(plan.keepVersion, '0.2.0-rc.11');
     validateLive(plan, f.inventory);
     for (const p of plan.packages) {
       assert.deepEqual(p.retiredTags, [`0.2.0-rc.${version}`]);
-      assert(p.keepTags.includes('0.2.0-rc.10'));
+      assert(p.keepTags.includes('0.2.0-rc.11'));
+      assert(p.keepTags.includes('0.2.0-rc.12'));
+      assert(p.keepTags.includes('0.2.0-rc.100'));
       assert(p.targets.some(t => t.tags.includes(`0.2.0-rc.${version}`)));
     }
   }

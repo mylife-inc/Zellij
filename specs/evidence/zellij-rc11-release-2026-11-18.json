@@ -1,7 +1,7 @@
 {
   "date": "2026-11-18",
   "version": "v0.2.0-rc.11",
-  "status": "Published and publicly verified; managed channels, standalone upgrade and documentation/consumer checks passed. Documentation merge, replacement image publication and scoped rc.10 retirement are pending. Production hosting/live providers remain deferred.",
+  "status": "Complete: rc.11 is published and verified in both release repositories, managed channels and guides are updated, and reviewed rc.10 retirement plus independent post-cleanup checks pass.",
   "source": {
     "tag": "v0.2.0-rc.11",
     "commit": "1f8232bcc1f029ec2aac7769c3ec2d0beb527c99",
@@ -5969,11 +5969,7 @@
     "editable_presets": 9,
     "checks": "The installed full schema/hash and each preset match tagged source on native targets; each published image exports the exact tagged schema and preset data offline."
   },
-  "pending": [
-    "Merge verified documentation PR #208",
-    "Publish and verify replacement static/Next acceptance images",
-    "Review and execute exact rc.10 retirement and post-cleanup verification"
-  ],
+  "pending": [],
   "deferred": [
     "Production-domain migration",
     "Live provider and external CI-runner verification",
@@ -6142,7 +6138,7 @@
       "count": 6,
       "result": "match actual CLI generator; PR builds only; publication remains manual on main"
     },
-    "status": "All 32 source CI jobs and all six build-only consumers pass on d1daba6. PR #208 final follow-up adds records only; merge and scoped retirement follow.",
+    "status": "PR #208 merged as 79de857b2f5f0d19cfec189907b6f2db02ff25e6 with the exact reviewed tree; active inputs match fully tested d1daba6. Release guide pins select merged ancestor 904b132.",
     "ci": {
       "id": 44426799314,
       "head": "d1daba6b0327a17b8fc0674769739c26eebb5325",
@@ -6461,6 +6457,41 @@
       "probes_passed": 6
     },
     "collector_correction": "The local collector initially required a skipped publish job for every workflow. The portable and hosted build-only workflows intentionally have no publish job; YAML inspection corrected the collector. All hosted runs passed on their original attempt; none was rerun for this local interpretation error.",
-    "final_record_update": "After d1daba6, only current context, dated completion/release records and the PR description change. Runtime, dependencies, active guides, workflows and acceptance inputs remain identical to the fully tested source."
+    "final_record_update": "After d1daba6, only current context, dated completion/release records and the PR description change. Runtime, dependencies, active guides, workflows and acceptance inputs remain identical to the fully tested source.",
+    "merge": "79de857b2f5f0d19cfec189907b6f2db02ff25e6",
+    "release_guides": {
+      "documentation_merge": "79de857b2f5f0d19cfec189907b6f2db02ff25e6",
+      "releases": [
+        {
+          "repository": "mylife-inc/Zellij",
+          "release_id": 450706000,
+          "tag": "v0.2.0-rc.11",
+          "guide_commit": "904b132d2aa3e98d82fe6ef7a2585519f1757c2a",
+          "all_assets_and_tag_unchanged": true,
+          "preserved_generated_installation_instructions": true
+        },
+        {
+          "repository": "mylife-inc/releases",
+          "release_id": 450706078,
+          "tag": "zellij-v0.2.0-rc.11",
+          "guide_commit": "904b132d2aa3e98d82fe6ef7a2585519f1757c2a",
+          "all_assets_and_tag_unchanged": true,
+          "preserved_generated_installation_instructions": true
+        }
+      ]
+    }
+  },
+  "retirement": {
+    "pull_request": 209,
+    "evidence": "zellij-rc11-image-retirement-2026-11-18.json",
+    "removed_native_releases": 2,
+    "removed_native_assets": 54,
+    "removed_tags": 2,
+    "removed_image_versions": 26,
+    "protected_manifests": 39,
+    "excluded_build_history_versions": 3771,
+    "post_cleanup_inventory": 44433078378,
+    "post_cleanup_http": 44433082092,
+    "fresh_public_download_bytes_match": true
   }
 }
