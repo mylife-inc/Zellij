@@ -43,6 +43,12 @@ blocks `zel upgrade --force` and custom release URLs. Candidate rc.14 prints
 the exact Scoop command. Use the package manager for both checking and
 installing updates.
 
+The next candidate (source rc.15, unreleased) also protects WinGet portable
+installations, including custom folders. A managed copy directs updates to
+`winget upgrade --id Shebka.Zel --exact`; `ZELLIJ_HOME` continues to hold only
+resources. Microsoft catalog publication is pending. Use the current standalone
+installer or Scoop until WinGet availability is announced.
+
 `--check` reports the selected version without downloading an archive or changing
 files. With an explicit version argument it only compares versions; it does not
 verify that the requested release or its platform assets exist. An already

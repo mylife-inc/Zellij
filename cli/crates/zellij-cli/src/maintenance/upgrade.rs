@@ -21,6 +21,8 @@ use zellij_core::{Error, Result};
 mod archive;
 #[cfg(test)]
 mod tests;
+#[cfg(any(windows, test))]
+mod winget;
 
 const RELEASES: &str = "https://api.github.com/repos/mylife-inc/releases/releases";
 const DOWNLOADS: &str = "https://github.com/mylife-inc/releases/releases/download";
@@ -388,6 +390,16 @@ fn retry_file_change<T>(
 }
 
 fn check_package_manager(executable: &Path) -> Result<()> {
+    #[cfg(windows)]
+    if winget::owns(executable).map_err(|error| {
+        failed(format!(
+            "could not inspect WinGet installation ownership: {error}"
+        ))
+    })? {
+        return Err(failed(
+            "WinGet manages this installation; use `winget upgrade --id Shebka.Zel --exact`.",
+        ));
+    }
     let Some(bin) = executable
         .parent()
         .filter(|p| p.file_name().is_some_and(|n| n == "bin"))

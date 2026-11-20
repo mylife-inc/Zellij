@@ -1,0 +1,124 @@
+{
+  "date": "2026-11-20",
+  "status": "Native WinGet lifecycle passed; final source CI and release pending",
+  "candidate": "v0.2.0-rc.15",
+  "publicCandidate": "v0.2.0-rc.14",
+  "publicCatalogSubmitted": false,
+  "binarySource": "6b0d6e49e733c8f37f28b618912f51a2b6c1d9e4",
+  "cliTree": "8ed3a498812e8eb63b8e1177ce0fd9313def64d2",
+  "binaryRun": 44713052307,
+  "lifecycleRun": 44715233447,
+  "harnessSource": "2758907644306e4167496b129b602069acd01883",
+  "local": {
+    "rustPassed": 828,
+    "rustIgnored": 5,
+    "clippy": "passed",
+    "format": "passed",
+    "distributionTestsPassed": 49,
+    "strictDeepDocumentationRoutes": 59
+  },
+  "nativeUpgradeRegressions": {
+    "x64": 12,
+    "arm64": 12
+  },
+  "artifacts": [
+    {
+      "name": "zel-v0.2.0-rc.15-aarch64-pc-windows-msvc.zip",
+      "size": 10345489,
+      "sha256": "30e7895bbe52f34c91fdd65fb1edca9b69a94df1773c48a073d8223e505faaba"
+    },
+    {
+      "name": "zel-v0.2.0-rc.15-x86_64-pc-windows-msvc.zip",
+      "size": 10518170,
+      "sha256": "d085fa7f9d5ec38181e98c27c001775fa693f7a1cdb89a46b0d9ac4a67d0a77e"
+    }
+  ],
+  "receipts": [
+    {
+      "version": "0.2.0-rc.15",
+      "previous": "v0.2.0-rc.14",
+      "target": "x86_64-pc-windows-msvc",
+      "harnessCommit": "2758907644306e4167496b129b602069acd01883",
+      "binaryRun": "44713052307",
+      "winGet": "1.29.380",
+      "manifestValidated": true,
+      "realUpgrade": true,
+      "customLocation": true,
+      "defaultLocation": true,
+      "machineScope": true,
+      "launcherVerified": true,
+      "checksumFailurePreserved": true,
+      "selfUpgradeBlocked": true,
+      "standaloneUnaffected": true,
+      "portableBuildWithoutTools": true,
+      "cacheRetained": true,
+      "uninstall": true,
+      "publicCatalogSubmitted": false
+    },
+    {
+      "version": "0.2.0-rc.15",
+      "previous": "v0.2.0-rc.14",
+      "target": "aarch64-pc-windows-msvc",
+      "harnessCommit": "2758907644306e4167496b129b602069acd01883",
+      "binaryRun": "44713052307",
+      "winGet": "1.29.380",
+      "manifestValidated": true,
+      "realUpgrade": true,
+      "customLocation": true,
+      "defaultLocation": true,
+      "machineScope": true,
+      "launcherVerified": true,
+      "checksumFailurePreserved": true,
+      "selfUpgradeBlocked": true,
+      "standaloneUnaffected": true,
+      "portableBuildWithoutTools": true,
+      "cacheRetained": true,
+      "uninstall": true,
+      "publicCatalogSubmitted": false
+    }
+  ],
+  "history": [
+    {
+      "run": 44710734699,
+      "source": "19d5775",
+      "result": "Both binaries passed; both manifests produced validation warnings (portable Scope and missing schema header). Cancellation requested for superseded run; validation failures still completed."
+    },
+    {
+      "run": 44711498242,
+      "source": "b1ab8f4",
+      "result": "Both 12-test ownership suites passed. Superseded lifecycle jobs cancelled, including force cancellation because always() kept them alive."
+    },
+    {
+      "run": 44711923286,
+      "source": "3df914c",
+      "result": "Source CI caught stale rc.14 Docker recipe pin, fixed in 2343b35; superseded run cancelled."
+    },
+    {
+      "run": 44712312389,
+      "source": "2343b35",
+      "result": "Superseded source CI cancelled after manifest corrections."
+    },
+    {
+      "run": 44712491356,
+      "source": "2343b35",
+      "result": "Superseded manual run force-cancelled; not a lifecycle pass."
+    },
+    {
+      "run": 44713052307,
+      "source": "6b0d6e4",
+      "result": "Both native suites passed; manifests validated without warnings and checksum rejection passed. Harness expected a custom upgrade location that WinGet moved; local --id uninstall lookup also failed. Diagnostic upload crossed runner volumes. Corrected harness in 1846711/2758907."
+    },
+    {
+      "run": 44714763568,
+      "source": "1846711",
+      "result": "Diagnostic retention worked; WinGet rejected --location with --manifest upgrade. Tightened the checksum assertion after command help text matched its earlier broad regex. Corrected by testing real default-location upgrade and separate custom-location install, and using WinGet-recorded local product code for uninstall."
+    }
+  ],
+  "boundaries": [
+    "Final integrated CI pending; earlier CI 44712966353 still running with obsolete harness failures.",
+    "Community catalog and ordinary public-catalog install are not yet verified.",
+    "Preserve rc.14 archives for actual upgrade fixture and rc.13 renderer for private rollback.",
+    "Private client documents and installed rc.14 handoff unchanged.",
+    "Live deployment provider verification remains deferred."
+  ]
+}

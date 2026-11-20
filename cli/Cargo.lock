@@ -2304,7 +2304,7 @@ dependencies = [
 
 [[package]]
 name = "zellij-cli"
-version = "0.2.0-rc.14"
+version = "0.2.0-rc.15"
 dependencies = [
  "base64 0.22.1",
  "blake3",
@@ -2321,6 +2321,7 @@ dependencies = [
  "reqwest",
  "rowan",
  "roxmltree",
+ "same-file",
  "semver",
  "serde",
  "serde_json",
@@ -2330,6 +2331,7 @@ dependencies = [
  "tar",
  "tempfile",
  "walkdir",
+ "windows-sys 0.61.2",
  "yaml_parser",
  "zellij-convert",
  "zellij-core",
@@ -2341,7 +2343,7 @@ dependencies = [
 
 [[package]]
 name = "zellij-convert"
-version = "0.2.0-rc.14"
+version = "0.2.0-rc.15"
 dependencies = [
  "camino",
  "chrono",
@@ -2363,7 +2365,7 @@ dependencies = [
 
 [[package]]
 name = "zellij-core"
-version = "0.2.0-rc.14"
+version = "0.2.0-rc.15"
 dependencies = [
  "anstream",
  "camino",
@@ -2377,7 +2379,7 @@ dependencies = [
 
 [[package]]
 name = "zellij-docs"
-version = "0.2.0-rc.14"
+version = "0.2.0-rc.15"
 dependencies = [
  "camino",
  "futures-util",
@@ -2402,7 +2404,7 @@ dependencies = [
 
 [[package]]
 name = "zellij-engine"
-version = "0.2.0-rc.14"
+version = "0.2.0-rc.15"
 dependencies = [
  "camino",
  "serde",
@@ -2414,7 +2416,7 @@ dependencies = [
 
 [[package]]
 name = "zellij-scaffold"
-version = "0.2.0-rc.14"
+version = "0.2.0-rc.15"
 dependencies = [
  "camino",
  "regex",

@@ -1,5 +1,12 @@
 # Native package and installer contract
 
+**Current checkpoint (2026-11-20):** Public rc.14, Homebrew and Scoop are verified;
+see the [release evidence](evidence/zellij-rc14-release-2026-11-19.json).
+Source rc.15 is preparing WinGet ownership protection and manifest packaging;
+[native acceptance](zel-winget-distribution-2026-11-20.md) is in progress, with
+no Microsoft catalog submission or availability claimed. The dated rc.12/rc.1
+release paragraphs below remain historical evidence.
+
 **rc.12 published and verified (2026-11-19):** Both public release repositories
 contain the same 39 asset digests. Release run `44637677186` passes all 38 jobs,
 including six native installations and rich builds with no external build tools.
@@ -80,16 +87,21 @@ The owned Homebrew tap and [Scoop bucket](https://github.com/mylife-inc/scoop-bu
 install verified native archives with an ownership marker. Use the package
 manager to update them; `zel upgrade` refuses even with `--force`. Scoop uses
 `bin/zel.exe` behind its shim and writes `share/zel/installation-manager` before
-publishing that shim. Published rc.6 already honors the marker with generic
-guidance; the next candidate adds the exact `scoop update zel` message.
+publishing that shim. Current rc.14 prints the exact `scoop update zel` message.
+Source rc.15 adds WinGet registry/file ownership detection, including custom
+installation locations, before self-upgrade. WinGet manifests and native
+lifecycle acceptance are in progress; catalog publication remains separate.
 See [Scoop acceptance and platform boundaries](zel-scoop-distribution-2026-11-13.md).
 
 ## Installers
 
 `install.sh` handles GNU/Linux and macOS; `install.ps1` handles native Windows
 from Windows PowerShell 5.1 or PowerShell 7. Windows selects the machine's
-architecture even when the shell runs through emulation. Unix defaults to
-`~/.local/bin`; Windows defaults to `%LOCALAPPDATA%\Programs\Zellij\bin`.
+architecture even when the shell runs through emulation. Standalone installers
+use `$ZELLIJ_HOME/bin`, defaulting to `~/Dev/config/zellij/bin` on Unix and
+`$HOME\Dev\config\zellij\bin` on Windows. Explicit `ZEL_INSTALL_DIR` or the
+Windows `-InstallDir` option takes precedence. Homebrew and Scoop retain their
+own executable locations; `ZELLIJ_HOME` controls downloaded resources.
 Neither installer edits PATH, profiles, or persistent environment settings.
 
 Both accept `ZEL_VERSION`, `ZEL_INSTALL_DIR`, and a pinned-version

@@ -65,7 +65,7 @@ jobs:
           node scripts/package-native.mjs "$VERSION" --check-version
           node scripts/release-policy.mjs outputs "$VERSION" >> "$GITHUB_OUTPUT"
       - run: npm ci
-      - run: node --test scripts/homebrew-formula.test.mjs scripts/scoop-manifest.test.mjs scripts/release-policy.test.mjs scripts/download-release.test.mjs
+      - run: node --test scripts/homebrew-formula.test.mjs scripts/scoop-manifest.test.mjs scripts/winget-manifest.test.mjs scripts/release-policy.test.mjs scripts/download-release.test.mjs
       - run: npm run typecheck
       - run: npm test
       - run: npm run build --workspace @shebka/zellij
@@ -245,6 +245,13 @@ jobs:
     permissions:
       contents: read
 
+  winget:
+    needs: binaries
+    uses: ./.github/workflows/winget.yml
+    permissions:
+      contents: read
+      actions: read
+
   # --------------------------------------------------------------------- docs
   docs:
     name: Documentation site
@@ -273,7 +280,7 @@ jobs:
   # ------------------------------------------------------------------ publish
   publish:
     name: Publish the release
-    needs: [verify, manifests, binaries, docs, scoop]
+    needs: [verify, manifests, binaries, docs, scoop, winget]
     outputs:
       shared: ${{ steps.destinations.outputs.shared }}
 
@@ -287,11 +294,11 @@ jobs:
     # `raw.githubusercontent.com/…/install.sh` returning 404.
     #
     # `always()` keeps the ordering and drops the image gate. Verification,
-    # binaries, documentation and Scoop lifecycle checks must all succeed.
-    # Failed, cancelled or skipped Scoop checks prevent publication. A broken image
+    # binaries, documentation, Scoop and WinGet lifecycle checks must all succeed.
+    # Failed, cancelled or skipped manager checks prevent publication. A broken image
     # variant is visible on its own job and does not deserve to withhold the
     # thing people actually run.
-    if: ${{ always() && needs.verify.result == 'success' && needs.binaries.result == 'success' && needs.docs.result == 'success' && needs.scoop.result == 'success' }}
+    if: ${{ always() && needs.verify.result == 'success' && needs.binaries.result == 'success' && needs.docs.result == 'success' && needs.scoop.result == 'success' && needs.winget.result == 'success' }}
 
     runs-on: ubuntu-latest
 
@@ -359,6 +366,9 @@ jobs:
         run: |
           node scripts/homebrew-formula.mjs "$VERSION" artifacts/SHA256SUMS > artifacts/zel.rb
           node scripts/scoop-manifest.mjs "$VERSION" artifacts/SHA256SUMS > artifacts/zel.json
+          node scripts/winget-manifest.mjs "$VERSION" artifacts/SHA256SUMS "$RUNNER_TEMP/winget-manifests"
+          (cd "$RUNNER_TEMP/winget-manifests" && zip -X "$GITHUB_WORKSPACE/artifacts/zel-winget-${VERSION}.zip" ./*.yaml)
+          scripts/publish.sh checksums artifacts
           node scripts/release-policy.mjs notes "$VERSION" "$GITHUB_REPOSITORY" '' "$REGISTRY/$IMAGE" > "$RUNNER_TEMP/release-notes.md"
           node scripts/release-policy.mjs notes "$VERSION" "$RELEASES_REPO" zellij "$REGISTRY/$IMAGE" > "$RUNNER_TEMP/shared-release-notes.md"
 
