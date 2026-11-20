@@ -3,6 +3,22 @@
 Last refreshed: **2026-11-19**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-19: Zellij home policy and HP migration — in progress**
+
+The user authorized the HP handoff migration and first requested a common
+resource directory: `ZELLIJ_HOME`, defaulting to `~/Dev/config/zellij`.
+Standalone installers will use its `bin/`; renderer and remote-template caches
+use `cache/engines/` and `cache/templates/`. Homebrew and Scoop retain executable
+ownership in their native locations while using this resource root at runtime.
+Narrow explicit install/cache overrides remain supported. Branch
+`codex/zellij-home` prepares rc.13; it is not yet a public release. See
+[the directory policy](specs/zellij-home-2026-11-19.md).
+
+The private HP package currently has a portable `zel.yaml`, a Python adapter and
+a pinned container archive. Migrate it to direct rich content and `zel build`,
+with preservation checks before replacing the handoff. Do not assume updating
+the global CLI alone removes that package's old generation dependencies.
+
 **2026-11-19: standalone rich build — released and installed**
 
 PR #211 merged as `73979dede7c5029b014c72405b5ef71c9ed3e705`, with the same

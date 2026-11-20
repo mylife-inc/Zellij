@@ -70,8 +70,8 @@ async function run(command, args, env = process.env, succeeds = true, cwd) {
     return state;
   } finally { clearTimeout(timeout); }
 }
-async function install(scenario, shell, succeeds = true, dir = installation, requested = version, mirror = `${origin}/${scenario}`) {
-  const env = { ...process.env, GITHUB_TOKEN: 'fixture-not-a-credential', GH_TOKEN: 'fixture-not-a-credential', ZEL_VERSION: requested, ZEL_INSTALL_DIR: dir, ZEL_RELEASE_BASE_URL: mirror };
+async function install(scenario, shell, succeeds = true, dir = installation, requested = version, mirror = `${origin}/${scenario}`, overrides = {}) {
+  const env = { ...process.env, GITHUB_TOKEN: 'fixture-not-a-credential', GH_TOKEN: 'fixture-not-a-credential', ZEL_VERSION: requested, ZEL_INSTALL_DIR: dir, ZEL_RELEASE_BASE_URL: mirror, ...overrides };
   delete env.ZEL_INSECURE_SKIP_CHECKSUM;
   return run(shell, windows ? ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(installers, 'install.ps1')] : [path.join(installers, 'install.sh')], env, succeeds);
 }
@@ -98,6 +98,16 @@ try {
   await mkdir(installation);
   await writeFile(path.join(installation, 'zel.new'), 'authored file');
   for (const shell of shells) {
+    const resources = path.join(temp, `Resources café 日本 ${shell}`);
+    await install('combined', shell, true, undefined, version, `${origin}/combined`, { ZELLIJ_HOME: resources, ZEL_INSTALL_DIR: undefined });
+    const homed = path.join(resources, 'bin', path.basename(executable));
+    assert.equal((await run(homed, ['--version'])).stdout.trim(), `zel ${version.slice(1)}`);
+    const beforeBadHome = requests.length;
+    const badHome = await install('combined', shell, false, undefined, version, `${origin}/combined`, { ZELLIJ_HOME: 'relative-home', ZEL_INSTALL_DIR: undefined });
+    assert.match(badHome.stderr, /ZELLIJ_HOME must be an absolute path/);
+    assert.equal(requests.length, beforeBadHome, 'Invalid home must fail before archive download');
+    // Explicit installation targets remain independent of per-user resources.
+    await install('combined', shell, true, installation, version, `${origin}/combined`, { ZELLIJ_HOME: 'unused-relative-home' });
     await install('combined', shell);
     const installed = await readFile(executable);
     // Verify the archive's actual CPU architecture, including native ARM64 Windows.

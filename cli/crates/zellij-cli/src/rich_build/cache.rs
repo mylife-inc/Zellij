@@ -31,24 +31,10 @@ pub(super) fn platform() -> Result<String> {
     Ok(format!("{os}-{arch}"))
 }
 fn root() -> Result<PathBuf> {
-    if let Some(value) = std::env::var_os("ZEL_ENGINE_CACHE") {
+    if let Some(value) = std::env::var_os("ZEL_ENGINE_CACHE").filter(|value| !value.is_empty()) {
         return Ok(PathBuf::from(value));
     }
-    let root = if cfg!(windows) {
-        std::env::var_os("LOCALAPPDATA").map(PathBuf::from)
-    } else if let Some(value) = std::env::var_os("XDG_CACHE_HOME") {
-        Some(PathBuf::from(value))
-    } else {
-        std::env::var_os("HOME").map(|home| {
-            PathBuf::from(home).join(if cfg!(target_os = "macos") {
-                "Library/Caches"
-            } else {
-                ".cache"
-            })
-        })
-    };
-    root.map(|p| p.join("zellij/engines"))
-        .ok_or_else(|| fail("cannot locate the cache directory; set ZEL_ENGINE_CACHE"))
+    Ok(crate::user_home::root()?.join("cache").join("engines"))
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]

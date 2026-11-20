@@ -40,6 +40,7 @@ mod rich_build;
 mod s3;
 mod site_authoring;
 mod templates;
+mod user_home;
 mod validation;
 mod vercel;
 mod watch;
