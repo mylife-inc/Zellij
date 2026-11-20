@@ -86,7 +86,9 @@ try {
   await copyFile('scripts/fixtures/handoff/generate.ps1', script);
   execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/preview-console.rs', '-o', consoleRunner]);
   await mkdir(path.join(content, 'guide'), { recursive: true });
-  await writeFile(path.join(root, 'zellij/zel.yaml'), 'version: 1\nrenderer: hosted\nbuild: {out: ../site}\n');
+  const configFile = path.join(root, 'zellij/zel.yaml');
+  const config = 'version: 1\nrenderer: hosted\nbuild: {out: ../site}\n';
+  await writeFile(configFile, config);
   await writeFile(path.join(content, 'site.yaml'), siteConfig);
   await writeFile(path.join(content, 'guide/_sidebar.yaml'), 'nav: [index, next]\n');
   await writeFile(source, original);
@@ -108,8 +110,11 @@ try {
   checked = await run(['check', '--strict', '--offline', '--json'], 3);
   assert(JSON.parse(checked.out).diagnostics.some(d => d.severity === 'warning'));
   await writeFile(path.join(content, 'site.yaml'), siteConfig);
-  await writeFile(source, '---\ntitle: [\n---\n# Broken\n');
+  await writeFile(configFile, 'version: [');
   checked = await run(['check', '--offline', '--json'], 2); assert.equal(JSON.parse(checked.out).ok, false);
+  await writeFile(configFile, config);
+  await writeFile(source, '---\ntitle: [\n---\n# Broken\n');
+  checked = await run(['check', '--offline', '--json'], 3); assert.equal(JSON.parse(checked.out).ok, false);
   const failed = start(['build', '--offline']); await until(() => failed.exit, 'failed build'); await failed.closed; active.delete(failed);
   assert.notEqual(failed.exit.code, 0); assert.doesNotMatch(failed.out, /Ready:/); assert.deepEqual(await snapshot(), before);
   const watch = start(['watch', '--offline'], true);
