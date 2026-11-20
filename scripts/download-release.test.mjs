@@ -6,7 +6,7 @@ import { mkdtemp, mkdir, readFile, writeFile, rm, access } from 'node:fs/promise
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { nativeTargets } from './release-policy.mjs';
-import { downloadRelease, releaseAssets } from './download-release.mjs';
+import { downloadRelease, downloadTaggedInstallers, releaseAssets } from './download-release.mjs';
 
 const version = 'v0.2.0-rc.1';
 const installers = { 'install.sh': Buffer.from('unix installer\n'), 'install.ps1': Buffer.from('windows installer\n') };
@@ -45,6 +45,35 @@ test('shared release scope selects scoped asset URLs', async t => {
   const result = await downloadRelease({ ...f.options, repository: 'mylife-inc/releases', scope: 'zellij' });
   assert.equal(result.base, `https://github.com/mylife-inc/releases/releases/download/zellij-${version}`);
   assert.ok(f.calls.every(call => call.url.startsWith(`${result.base}/`)));
+});
+
+test('a previous release verifies against its own tagged installers when current installers changed', async t => {
+  const f = await fixture(t);
+  const sourceCalls = [];
+  const tagged = await downloadTaggedInstallers({ version, repository: 'example/Zellij', fetchImpl: async (url, init) => {
+    sourceCalls.push({ url, init });
+    return new Response(installers[new URL(url).pathname.split('/').at(-1)]);
+  } });
+  assert.deepEqual(sourceCalls.map(call => call.url), ['install.sh', 'install.ps1'].map(name =>
+    `https://raw.githubusercontent.com/example/Zellij/${version}/scripts/${name}`));
+  assert(sourceCalls.every(call => call.init.signal && !call.init.headers));
+  const changedCurrent = { 'install.sh': Buffer.from('new Unix home policy'), 'install.ps1': Buffer.from('new Windows home policy') };
+  await assert.rejects(downloadRelease({ ...f.options, installers: changedCurrent }), /differs from the tagged source/);
+  await assert.rejects(access(f.options.destination));
+  const result = await downloadRelease({ ...f.options, installers: tagged });
+  assert.deepEqual(result.contents['install.sh'], installers['install.sh']);
+  assert.deepEqual(result.contents['install.ps1'], installers['install.ps1']);
+});
+
+test('tagged installer source refuses invalid references, missing and oversized files', async () => {
+  let calls = 0;
+  const options = { version, repository: 'example/Zellij', fetchImpl: async () => { calls++; return new Response('missing', { status: 404 }); } };
+  await assert.rejects(downloadTaggedInstallers({ ...options, version: '../main' }));
+  await assert.rejects(downloadTaggedInstallers({ ...options, repository: 'example/Zellij\n' }));
+  assert.equal(calls, 0);
+  await assert.rejects(downloadTaggedInstallers(options), /Download failed \(404\)/);
+  assert.equal(calls, 1);
+  await assert.rejects(downloadTaggedInstallers({ ...options, fetchImpl: async () => new Response(Buffer.alloc(1024 * 1024 + 1)) }), /size limit/);
 });
 
 test('recovers a reset connection and a partial body without mixing archive bytes', async t => {

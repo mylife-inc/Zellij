@@ -47,6 +47,19 @@ export function releaseAssets(version, target) {
   return [archive, `${archive}.sha256`, 'SHA256SUMS', 'install.sh', 'install.ps1'];
 }
 
+// A previous release's installers can legitimately differ from this checkout.
+// Keep the source comparison, but obtain its expectations from that release tag.
+export async function downloadTaggedInstallers({ version, repository, fetchImpl = fetch }) {
+  releasePolicy(version);
+  if (/\s/.test(repository) || !/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository)) throw new Error('Invalid source repository');
+  const installers = {};
+  for (const name of ['install.sh', 'install.ps1']) {
+    const url = `https://raw.githubusercontent.com/${repository}/${version}/scripts/${name}`;
+    installers[name] = await downloadAsset(url, name, repository, 1024 * 1024, fetchImpl);
+  }
+  return installers;
+}
+
 export async function downloadRelease({ version, target, repository, scope = '', destination, installers, fetchImpl = fetch }) {
   const names = releaseAssets(version, target);
   if (/\s/.test(repository + scope) || !/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository) ||

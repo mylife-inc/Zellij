@@ -8,7 +8,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { scoopManifest } from './scoop-manifest.mjs';
-import { downloadRelease } from './download-release.mjs';
+import { downloadRelease, downloadTaggedInstallers } from './download-release.mjs';
 import { releasePolicy } from './release-policy.mjs';
 
 assert.equal(process.env.GITHUB_ACTIONS, 'true', 'Scoop acceptance requires a disposable hosted runner');
@@ -159,8 +159,7 @@ try {
   if (previousTag) {
     // Opt-in while both releases remain public. Use real HTTPS archives and
     // an isolated Git bucket to exercise the package manager's actual update.
-    const installers = Object.fromEntries(await Promise.all(['install.sh', 'install.ps1'].map(async name =>
-      [name, await readFile(path.join('scripts', name))])));
+    const installers = await downloadTaggedInstallers({ version: previousTag, repository: 'mylife-inc/Zellij' });
     const previous = await downloadRelease({ version: previousTag, target,
       repository: 'mylife-inc/releases', scope: 'zellij',
       destination: path.join(temp, 'previous-release'), installers });
