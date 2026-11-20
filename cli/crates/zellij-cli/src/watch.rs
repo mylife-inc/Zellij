@@ -19,7 +19,8 @@ pub fn run(
     options: CheckOptions,
     offline: bool,
 ) -> Result<()> {
-    let site = Site::load(crate::select_site(dir)?)?;
+    let selected = crate::select_site(dir)?;
+    let mut site = Site::load(&selected)?;
     let target = target.unwrap_or(if site.renderer == Renderer::Hosted {
         "file"
     } else {
@@ -35,6 +36,9 @@ pub fn run(
             "--offline applies to standalone rich validation".into(),
         ));
     }
+    if target != "portable" && !site.configured {
+        site.input = crate::resolve_content(&selected)?.into();
+    }
     // Missing prerequisites fail once at startup; bad content remains watched.
     let engine = (target == "static")
         .then(|| ContainerEngine::detect(None))
@@ -47,7 +51,7 @@ pub fn run(
         Snapshot::site_for(&site.input, site.configured, site.renderer).map_err(|e| e.to_string())
     };
     let validate = || {
-        zellij_core::statusln!("Checking {}", site.root);
+        zellij_core::statusln!("Checking {}", site.input.root());
         let result = if let Some(engine) = &engine {
             crate::resolve_content(&site.input).and_then(|content| {
                 let report = engine.check(&content, options)?;
@@ -90,7 +94,7 @@ pub fn run(
     }
     zellij_core::statusln!(
         "Watching {} for validation. Press Ctrl-C to stop.",
-        site.root
+        site.input.root()
     );
     io::stdout().flush()?;
     let mut observed = attempted.clone();

@@ -40,6 +40,9 @@ is also rejected for that session. Restore the configuration to recover, or
 stop and restart to intentionally select another layout or renderer. Replaced
 symlinks/junctions are rejected rather than followed.
 
+Legacy `.` discovery pins the resolved content folder for the session. Sibling
+output and unrelated repository files do not trigger validation or rebuilding.
+
 ## Options and shutdown
 
 | Option | Meaning | Default |

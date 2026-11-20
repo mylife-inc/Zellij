@@ -1,7 +1,7 @@
 /** Exercise the real cached renderer, validation loop and rich preview on each OS. */
 import assert from 'node:assert/strict';
 import { spawn, execFileSync } from 'node:child_process';
-import { mkdir, readFile, writeFile, readdir } from 'node:fs/promises';
+import { mkdir, readFile, writeFile, readdir, rm } from 'node:fs/promises';
 import path from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 
@@ -147,7 +147,22 @@ export async function checkStandaloneAuthoring(binary, environment, parent) {
     await stop(cancelled);
     assert((await readFile(generated)).equals(beforeCancel));
     assert(!(await readdir(root)).some(name => name.startsWith('.zel-build-')));
-    console.log(JSON.stringify({ standaloneAuthoring: true, check: true, watch: true, view: true, recovery: true, cancellation: true, prefixPinned: true, browserEngines: browsers.length, systemTools: false }));
+    // Legacy `.` discovers content/ once; output and repository files are not inputs.
+    await rm(path.join(root, 'zel.yaml'));
+    const legacyWatch = start(['watch', '.', '--offline', '--deep', '--strict'], { persistent: true });
+    await until(() => legacyWatch.output.includes('Validation passed.'), 'legacy validation discovery', legacyWatch);
+    await put('unrelated.md', '# Repository file\n');
+    await delay(1400);
+    assert.equal(legacyWatch.output.split('Checking ').length - 1, 1);
+    await stop(legacyWatch);
+    const legacyPreview = start(['view', '.', '--offline', '--watch', '--no-open', '--port', '0'], { persistent: true });
+    await until(() => legacyPreview.output.includes('Serving at '), 'legacy preview discovery', legacyPreview);
+    await put('unrelated.md', '# Unrelated change\n');
+    await delay(1400);
+    assert.equal(legacyPreview.output.split('cached rich renderer').length - 1, 1, 'Publishing output must not trigger another build');
+    assert.match(await readFile(path.join(root, 'dist/guide/index.html'), 'utf8'), /Recovered/);
+    await stop(legacyPreview);
+    console.log(JSON.stringify({ standaloneAuthoring: true, check: true, watch: true, view: true, recovery: true, cancellation: true, prefixPinned: true, legacyDiscovery: true, browserEngines: browsers.length, systemTools: false }));
   } finally {
     for (const { session } of browsers) await session.close();
     for (const state of active) {

@@ -48,7 +48,7 @@ pub fn serve(dir: Option<&SiteInput>, port: Option<u16>, base_path: &str) -> Res
 
 pub fn view(dir: Option<&SiteInput>, options: ViewOptions<'_>) -> Result<()> {
     let selected = crate::select_site(dir)?;
-    let site = zellij_core::site::Site::load(&selected)?;
+    let mut site = zellij_core::site::Site::load(&selected)?;
     let target =
         options
             .target
@@ -67,10 +67,16 @@ pub fn view(dir: Option<&SiteInput>, options: ViewOptions<'_>) -> Result<()> {
             "--offline applies to standalone rich preview (--target file)".into(),
         ));
     }
+    if target != "portable" && !site.configured {
+        // Resolve legacy `.` before Site's canonical input loses that spelling.
+        // Pin the discovered content directory, excluding sibling output and
+        // unrelated repository files from snapshots and future discovery.
+        site.input = crate::resolve_content(&selected)?.into();
+    }
     if target == "file" {
         return rich::view(site, options);
     }
-    if site.renderer != zellij_core::site::Renderer::Portable {
+    if target == "static" {
         return hosted::view(site, options);
     }
     // Reserve before writing output, so a bind failure cannot replace a site.

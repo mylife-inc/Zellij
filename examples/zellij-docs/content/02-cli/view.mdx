@@ -63,6 +63,9 @@ The selected loopback port is reserved before building. If it is occupied,
 `view` fails before changing the output. Use `--port 0` for an automatically
 chosen free port; the printed URL and browser launch use that actual port.
 
+Legacy `.` discovery pins the resolved content folder for the session. Sibling
+output and unrelated repository files do not trigger validation or rebuilding.
+
 ## Temporary feature selection
 
 `--features maths|diagrams|maths,diagrams|all|none` applies the same complete
