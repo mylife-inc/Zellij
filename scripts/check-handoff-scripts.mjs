@@ -29,8 +29,9 @@ const source = path.join(content, 'guide/index.mdx');
 const original = '# Original\n\n[Next](/guide/next)\n\n```mermaid\ngraph LR\n A --> B\n```\n';
 const siteConfig = 'name: Handoff fixture\nhome: guide\n';
 function start(args, persistent = false) {
+  console.log(`Checking ${shellName}: ${args.join(' ') || '(default build)'}`);
   const argv = ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', script, ...args];
-  const state = { out: '', err: '', exit: null };
+  const state = { out: '', err: '', exit: null, persistent };
   state.child = spawn(persistent ? consoleRunner : shell, persistent ? [shell, ...argv] : argv,
     { env, cwd: tmpdir(), stdio: ['pipe', 'pipe', 'pipe'] });
   state.child.stdout.on('data', d => { state.out += d; });
@@ -52,7 +53,7 @@ async function until(fn, label, state, timeout = 120000) {
 }
 async function run(args, expected = 0) {
   const state = start(args);
-  await until(() => state.exit, 'command completion');
+  await until(() => state.exit, 'command completion', state);
   await state.closed; active.delete(state);
   assert.equal(state.exit.code, expected, `${args.join(' ')}\n${state.out}\n${state.err}`);
   return state;
@@ -115,7 +116,7 @@ try {
   await writeFile(configFile, config);
   await writeFile(source, '---\ntitle: [\n---\n# Broken\n');
   checked = await run(['check', '--offline', '--json'], 3); assert.equal(JSON.parse(checked.out).ok, false);
-  const failed = start(['build', '--offline']); await until(() => failed.exit, 'failed build'); await failed.closed; active.delete(failed);
+  const failed = start(['build', '--offline']); await until(() => failed.exit, 'failed build', failed); await failed.closed; active.delete(failed);
   assert.notEqual(failed.exit.code, 0); assert.doesNotMatch(failed.out, /Ready:/); assert.deepEqual(await snapshot(), before);
   const watch = start(['watch', '--offline'], true);
   await until(() => watch.out.includes('Validation failed;'), 'invalid edit watched', watch);
@@ -136,6 +137,18 @@ try {
   const served = serve.out.match(/Serving at (http:\/\/\S+)/)[1]; assert.equal((await fetch(served)).status, 200); await stop(serve);
   console.log(JSON.stringify({ version, target, shell: shellName, publicFixtureOnly: true, emptyPath: true, coldBuild: true, offlineIdentical: true, json: true, preservedExitCodes: [2, 3], failedBuildPreservesSite: true, watchRecovery: true, livePreview: true, ctrlC: true, serve: true }));
 } finally {
-  for (const state of active) { if (!state.exit) state.child.stdin.end('stop\n'); await state.closed; }
+  for (const state of active) {
+    if (!state.exit && state.persistent) {
+      state.child.stdin.end('stop\n');
+      await Promise.race([state.closed, delay(10000)]);
+    }
+    if (!state.exit) {
+      // Bound failed-test cleanup to this owned process tree. A stuck child
+      // must not hide the original timeout until the whole CI job expires.
+      try { execFileSync('taskkill.exe', ['/PID', String(state.child.pid), '/T', '/F'], { stdio: 'ignore' }); }
+      catch { /* A process may exit between the check and taskkill. */ }
+    }
+    await state.closed;
+  }
   await rm(root, { recursive: true, force: true });
 }
