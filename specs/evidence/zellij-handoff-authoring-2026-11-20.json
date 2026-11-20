@@ -1,0 +1,757 @@
+{
+  "date": "2026-11-20",
+  "version": "v0.2.0-rc.14",
+  "status": "Private handoff migrated; generic Windows wrappers verified; readiness records refreshed.",
+  "privateContentPublished": false,
+  "runtimeSourceChanged": false,
+  "scripts": {
+    "generate.sh": "78ba347b529e52daf71646cc5fd2622c04cf3b99abf58934b8cb36b3af306758",
+    "generate.ps1": "f4e68b7bae968394ca6dc666f1f309768c6aa7581e48d788076fdcb8b64d9d87"
+  },
+  "macAcceptance": {
+    "cli": "0.2.0-rc.14",
+    "platform": "darwin-x64",
+    "osTools": [
+      "sh",
+      "uname",
+      "dirname",
+      "chmod",
+      "cat"
+    ],
+    "externalBuildTools": false,
+    "strictPages": 200,
+    "build": true,
+    "help": true,
+    "unknownOperationExit": 2,
+    "jsonFailureExit": 2,
+    "watchRecovery": true,
+    "viewLiveReload": true,
+    "failedEditPreservesSite": true,
+    "sourceRestored": true,
+    "ctrlC": true,
+    "serve": true,
+    "browsers": [
+      "Chromium",
+      "WebKit"
+    ],
+    "browserErrors": []
+  },
+  "browserCrawl": [
+    {
+      "browser": "Chromium",
+      "pages": 200,
+      "errors": [],
+      "network": []
+    },
+    {
+      "browser": "WebKit",
+      "pages": 200,
+      "errors": [],
+      "network": []
+    }
+  ],
+  "interactions": [
+    {
+      "browser": "Chromium",
+      "fullWidthDrawer": true,
+      "menuIcons": true,
+      "distinctThemeChips": true,
+      "themeResponsiveButtons": true,
+      "mobileDrillDown": true,
+      "errors": [],
+      "network": []
+    },
+    {
+      "browser": "WebKit",
+      "fullWidthDrawer": true,
+      "menuIcons": true,
+      "distinctThemeChips": true,
+      "themeResponsiveButtons": true,
+      "mobileDrillDown": true,
+      "errors": [],
+      "network": []
+    }
+  ],
+  "preservation": {
+    "sourceFilesByteIdentical": 468,
+    "siteFilesByteIdentical": 535,
+    "routes": 200,
+    "priorPreservationEvidenceUnchanged": true,
+    "all244ReferencedResourcesPreserved": true,
+    "noPrivateFilesUploaded": true
+  },
+  "publicFixtureWindowsAcceptance": {
+    "conclusion": "success",
+    "databaseId": 44699816473,
+    "headSha": "84aa32d0cfb91ed94cbc8bf684b3911008223f58",
+    "jobs": [
+      {
+        "completedAt": "2026-11-20T08:07:18Z",
+        "conclusion": "success",
+        "databaseId": 136165171639,
+        "name": "Handoff (aarch64-pc-windows-msvc, pwsh)",
+        "startedAt": "2026-11-20T08:05:43Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-20T08:05:45Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-20T08:05:43Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:06:00Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7",
+            "number": 2,
+            "startedAt": "2026-11-20T08:05:45Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:06:05Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v7",
+            "number": 3,
+            "startedAt": "2026-11-20T08:06:00Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:06:14Z",
+            "conclusion": "success",
+            "name": "Run dtolnay/rust-toolchain@stable",
+            "number": 4,
+            "startedAt": "2026-11-20T08:06:05Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:07:12Z",
+            "conclusion": "success",
+            "name": "Exercise bundled scripts with a public fixture",
+            "number": 5,
+            "startedAt": "2026-11-20T08:06:14Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:07:13Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v7",
+            "number": 9,
+            "startedAt": "2026-11-20T08:07:12Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:07:17Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7",
+            "number": 10,
+            "startedAt": "2026-11-20T08:07:13Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:07:17Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-11-20T08:07:17Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44699816473/job/136165171639"
+      },
+      {
+        "completedAt": "2026-11-20T08:07:02Z",
+        "conclusion": "success",
+        "databaseId": 136165171897,
+        "name": "Handoff (x86_64-pc-windows-msvc, powershell.exe)",
+        "startedAt": "2026-11-20T08:05:43Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-20T08:05:45Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-20T08:05:44Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:05:54Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7",
+            "number": 2,
+            "startedAt": "2026-11-20T08:05:45Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:06:00Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v7",
+            "number": 3,
+            "startedAt": "2026-11-20T08:05:54Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:06:20Z",
+            "conclusion": "success",
+            "name": "Run dtolnay/rust-toolchain@stable",
+            "number": 4,
+            "startedAt": "2026-11-20T08:06:00Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:06:58Z",
+            "conclusion": "success",
+            "name": "Exercise bundled scripts with a public fixture",
+            "number": 5,
+            "startedAt": "2026-11-20T08:06:20Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:06:58Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v7",
+            "number": 9,
+            "startedAt": "2026-11-20T08:06:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:07:00Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7",
+            "number": 10,
+            "startedAt": "2026-11-20T08:06:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:07:00Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-11-20T08:07:00Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44699816473/job/136165171897"
+      },
+      {
+        "completedAt": "2026-11-20T08:06:47Z",
+        "conclusion": "success",
+        "databaseId": 136165172050,
+        "name": "Handoff (x86_64-pc-windows-msvc, pwsh)",
+        "startedAt": "2026-11-20T08:05:43Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-20T08:05:45Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-20T08:05:44Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:05:53Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7",
+            "number": 2,
+            "startedAt": "2026-11-20T08:05:45Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:05:57Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v7",
+            "number": 3,
+            "startedAt": "2026-11-20T08:05:53Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:06:02Z",
+            "conclusion": "success",
+            "name": "Run dtolnay/rust-toolchain@stable",
+            "number": 4,
+            "startedAt": "2026-11-20T08:05:57Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:06:43Z",
+            "conclusion": "success",
+            "name": "Exercise bundled scripts with a public fixture",
+            "number": 5,
+            "startedAt": "2026-11-20T08:06:02Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:06:44Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v7",
+            "number": 9,
+            "startedAt": "2026-11-20T08:06:43Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:06:45Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7",
+            "number": 10,
+            "startedAt": "2026-11-20T08:06:44Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:06:45Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-11-20T08:06:45Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44699816473/job/136165172050"
+      },
+      {
+        "completedAt": "2026-11-20T08:12:04Z",
+        "conclusion": "success",
+        "databaseId": 136165172054,
+        "name": "Handoff (aarch64-pc-windows-msvc, powershell.exe)",
+        "startedAt": "2026-11-20T08:05:44Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-20T08:05:46Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-20T08:05:45Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:06:06Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7",
+            "number": 2,
+            "startedAt": "2026-11-20T08:05:46Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:06:11Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v7",
+            "number": 3,
+            "startedAt": "2026-11-20T08:06:06Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:06:21Z",
+            "conclusion": "success",
+            "name": "Run dtolnay/rust-toolchain@stable",
+            "number": 4,
+            "startedAt": "2026-11-20T08:06:11Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:11:58Z",
+            "conclusion": "success",
+            "name": "Exercise bundled scripts with a public fixture",
+            "number": 5,
+            "startedAt": "2026-11-20T08:06:21Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:11:58Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v7",
+            "number": 9,
+            "startedAt": "2026-11-20T08:11:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:12:03Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7",
+            "number": 10,
+            "startedAt": "2026-11-20T08:11:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:12:03Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-11-20T08:12:03Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44699816473/job/136165172054"
+      }
+    ],
+    "status": "completed",
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/44699816473"
+  },
+  "zip": {
+    "files": 1111,
+    "bytes": 193364965,
+    "sha256": "cbedc9bc82b88b2b36d063d1908190a1fa34851a7e34e9fc41e02d8892e2c4d6",
+    "allMemberHashesVerified": true,
+    "macExecuteBitsPreserved": true
+  },
+  "installation": {
+    "verified": true,
+    "files": 1111,
+    "durableBackupCreated": true,
+    "installedAt": "2026-11-20T08:14:09.936163+00:00",
+    "installedScriptVerified": {
+      "cli": "0.2.0-rc.14",
+      "osToolsOnly": true,
+      "offline": true,
+      "strictPages": 200,
+      "allPackageFilesUnchanged": true,
+      "files": 1111
+    }
+  },
+  "limitations": [
+    "Actual private collection on Windows/Apple Silicon remains unverified",
+    "Physical iPhone acceptance remains separate",
+    "Optional Next wrapper unchanged; its earlier production-build evidence is historical"
+  ],
+  "priorAttempts": [
+    {
+      "run": 44698974082,
+      "status": "failure",
+      "cause": "Test setup: Windows tar ANSI argv corrupted the Unicode archive path. Fixed with relative extraction arguments in fec2f51."
+    },
+    {
+      "run": 44699122358,
+      "status": "cancelled after failed cases",
+      "cause": "Test expected two routes but the fixture has a third root-home alias; corrected in 52452f8."
+    },
+    {
+      "run": 44699526020,
+      "status": "cancelled after failed cases",
+      "cause": "Test expected configuration-error status 2 for a content error; documented content status 3 is correct. Both distinct outcomes tested in 84aa32d."
+    }
+  ],
+  "rollbackVerification": {
+    "backupFilesVerified": 1101,
+    "priorZipVerified": true,
+    "newZipVerified": true
+  },
+  "finalHarnessAcceptance": {
+    "attempt": 2,
+    "conclusion": "success",
+    "databaseId": 44700110119,
+    "headSha": "2ecf4b7bf1eeb2188facc6e76df8852609f0c1eb",
+    "jobs": [
+      {
+        "completedAt": "2026-11-20T08:19:57Z",
+        "conclusion": "success",
+        "databaseId": 136168567721,
+        "name": "Handoff (aarch64-pc-windows-msvc, powershell.exe)",
+        "startedAt": "2026-11-20T08:13:39Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-20T08:13:41Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-20T08:13:39Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:13:58Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7",
+            "number": 2,
+            "startedAt": "2026-11-20T08:13:41Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:14:03Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v7",
+            "number": 3,
+            "startedAt": "2026-11-20T08:13:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:14:11Z",
+            "conclusion": "success",
+            "name": "Run dtolnay/rust-toolchain@stable",
+            "number": 4,
+            "startedAt": "2026-11-20T08:14:03Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:19:50Z",
+            "conclusion": "success",
+            "name": "Exercise bundled scripts with a public fixture",
+            "number": 5,
+            "startedAt": "2026-11-20T08:14:11Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:19:51Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v7",
+            "number": 9,
+            "startedAt": "2026-11-20T08:19:50Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:19:55Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7",
+            "number": 10,
+            "startedAt": "2026-11-20T08:19:51Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:19:55Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-11-20T08:19:55Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44700110119/job/136168567721"
+      },
+      {
+        "completedAt": "2026-11-20T08:09:24Z",
+        "conclusion": "success",
+        "databaseId": 136168568891,
+        "name": "Handoff (x86_64-pc-windows-msvc, powershell.exe)",
+        "startedAt": "2026-11-20T08:07:58Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-20T08:08:00Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-20T08:07:59Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:08:08Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7",
+            "number": 2,
+            "startedAt": "2026-11-20T08:08:00Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:08:12Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v7",
+            "number": 3,
+            "startedAt": "2026-11-20T08:08:08Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:08:34Z",
+            "conclusion": "success",
+            "name": "Run dtolnay/rust-toolchain@stable",
+            "number": 4,
+            "startedAt": "2026-11-20T08:08:12Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:09:20Z",
+            "conclusion": "success",
+            "name": "Exercise bundled scripts with a public fixture",
+            "number": 5,
+            "startedAt": "2026-11-20T08:08:34Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:09:20Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v7",
+            "number": 9,
+            "startedAt": "2026-11-20T08:09:20Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:09:22Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7",
+            "number": 10,
+            "startedAt": "2026-11-20T08:09:20Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:09:22Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-11-20T08:09:22Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44700110119/job/136168568891"
+      },
+      {
+        "completedAt": "2026-11-20T08:09:37Z",
+        "conclusion": "success",
+        "databaseId": 136168570461,
+        "name": "Handoff (aarch64-pc-windows-msvc, pwsh)",
+        "startedAt": "2026-11-20T08:07:58Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-20T08:08:00Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-20T08:07:59Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:08:17Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7",
+            "number": 2,
+            "startedAt": "2026-11-20T08:08:00Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:08:22Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v7",
+            "number": 3,
+            "startedAt": "2026-11-20T08:08:17Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:08:30Z",
+            "conclusion": "success",
+            "name": "Run dtolnay/rust-toolchain@stable",
+            "number": 4,
+            "startedAt": "2026-11-20T08:08:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:09:31Z",
+            "conclusion": "success",
+            "name": "Exercise bundled scripts with a public fixture",
+            "number": 5,
+            "startedAt": "2026-11-20T08:08:30Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:09:31Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v7",
+            "number": 9,
+            "startedAt": "2026-11-20T08:09:31Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:09:36Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7",
+            "number": 10,
+            "startedAt": "2026-11-20T08:09:31Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:09:36Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-11-20T08:09:36Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44700110119/job/136168570461"
+      },
+      {
+        "completedAt": "2026-11-20T08:09:21Z",
+        "conclusion": "success",
+        "databaseId": 136168618745,
+        "name": "Handoff (x86_64-pc-windows-msvc, pwsh)",
+        "startedAt": "2026-11-20T08:07:58Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-20T08:08:00Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-20T08:07:59Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:08:14Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7",
+            "number": 2,
+            "startedAt": "2026-11-20T08:08:00Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:08:22Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v7",
+            "number": 3,
+            "startedAt": "2026-11-20T08:08:14Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:08:29Z",
+            "conclusion": "success",
+            "name": "Run dtolnay/rust-toolchain@stable",
+            "number": 4,
+            "startedAt": "2026-11-20T08:08:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:09:17Z",
+            "conclusion": "success",
+            "name": "Exercise bundled scripts with a public fixture",
+            "number": 5,
+            "startedAt": "2026-11-20T08:08:29Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:09:17Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v7",
+            "number": 9,
+            "startedAt": "2026-11-20T08:09:17Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:09:19Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7",
+            "number": 10,
+            "startedAt": "2026-11-20T08:09:17Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-20T08:09:19Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-11-20T08:09:19Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44700110119/job/136168618745"
+      }
+    ],
+    "status": "completed",
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/44700110119"
+  },
+  "finalHarnessAcceptanceNote": "Attempt 1 had three passes; the slow ARM64 PowerShell 5.1 case was cancelled by the agent during diagnosis. Only that case was rerun on unchanged source and passed in attempt 2. Earlier run 44699816473 independently passed all four wrapper combinations.",
+  "repositoryChange": {
+    "pr": 218,
+    "testedImplementation": "2ecf4b7bf1eeb2188facc6e76df8852609f0c1eb",
+    "runtimeInputsUnchangedFrom": "0cced2b801ca83e7393f1d3f2cfd3cc9599c0774",
+    "generalRuntimeCiIntentionallyNotRepeated": true
+  }
+}

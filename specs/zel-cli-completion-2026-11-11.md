@@ -1,6 +1,13 @@
 # CLI completion gates — 2026-11-11
 
-**Current rc.11 distribution status — 2026-11-18.** The candidate, Homebrew,
+**Current checkpoint — 2026-11-20:** rc.14 and production documentation are
+published. Rich file build/check/watch/view require only the CLI and its cached
+renderer. Later composer, print and template milestones supersede older open
+items below. See the [current readiness table](zellij-readiness-2026-11-20.md)
+for the remaining distribution, acceptance and investigation tasks. The
+following checkpoints and the older surface table are retained as history.
+
+**Historical rc.11 distribution status — 2026-11-18.** The candidate, Homebrew,
 Scoop and verified guides are published. Documentation PR #208 merges as
 `79de857`. All source/release/public-artifact, managed lifecycle/upgrade and
 consumer checks pass. PR #209 completes reviewed rc.10 retirement: two releases,
@@ -555,5 +562,9 @@ needed for the current release. See [the external runbook](zel-external-acceptan
   [hydration report](zellij-netlify-hydration-2026-11-02.md). The fix shipped in rc.4 and remains included in rc.5. Live verification
   still blocks production migration. Small CLI deployment-fixture success does
   not close it. Preserve the old production site and domain.
+  **Resolved by the later production rollout:** PR #217 (`508c849`) and
+  deployment run `44689951271` publish and verify the rc.14 guides on the
+  production domain. The paragraph above records the earlier gate, not a
+  current blocker; see the [release evidence](evidence/zellij-rc14-release-2026-11-19.json).
 - **Zero bugs:** passing regression and acceptance gates is evidence of tested
   behavior, not proof that no undiscovered defect exists.
