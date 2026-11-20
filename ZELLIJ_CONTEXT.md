@@ -22,6 +22,9 @@ Mac package passes empty-PATH builds and authoring, plus Chromium/WebKit reload
 and recovery. Five rich-template README updates use new 0.1.2 identities with
 minimum CLI rc.14; website content/artwork is unchanged. Full hosted CI and
 publication remain pending.
+Review fix `e33c0f670e64fcb8ec11af1355cb39ca427b4059` corrects lost legacy-dot content
+discovery in rich preview/watch and honors explicit static preview dispatch.
+Native regressions pass; the expanded real-package legacy checks are pending.
 
 **2026-11-19: common resource home and client migration — completed**
 

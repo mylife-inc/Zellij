@@ -85,3 +85,12 @@ The five rich starters receive 0.1.2 identities/minimum CLI rc.14 because their
 README guidance changes. Their authored website content/artwork is unchanged;
 existing published 0.1.1 archives are not rewritten. Native packaging and full
 hosted CI remain required before merging/releasing.
+
+Review reproduced a legacy preview defect: `zel view .` lost the literal-dot
+discovery rule when Site normalized its input, treating the repository root as
+content and rejecting its sibling output as overlap. Fix `e33c0f670e64fcb8ec11af1355cb39ca427b4059`
+pins the actually discovered content folder for preview and validation watch.
+It also honors explicit static preview dispatch for unconfigured inputs. Native
+regressions pass; the real authoring driver now additionally checks legacy-dot
+preview/watch and ignores sibling output/unrelated repository edits. Final
+expanded package acceptance is in progress.
