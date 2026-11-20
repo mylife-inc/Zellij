@@ -3,8 +3,8 @@ title: zel templates and create
 description: Choose a versioned starter and create an editable documentation or book site.
 ---
 
-<Callout type="info" title="Nine starters in candidate 0.2.0-rc.12">
-Candidate rc.12 includes `book-classic@0.2.0`, with a shared book manifest and
+<Callout type="info" title="Nine starters in candidate 0.2.0-rc.13">
+Candidate rc.13 includes `book-classic@0.2.0`, with a shared book manifest and
 optional LuaLaTeX PDF, plus `book-technical@0.1.0` and `book-study@0.1.0`.
 The five rich website starters use version 0.1.1, with instructions for the
 standalone builder; `product-docs` remains at 0.1.0. Templates are bundled
@@ -37,7 +37,7 @@ drives reading order, metadata and both web and print. PDF is disabled by defaul
 normal creation, checks and web builds need no container runtime. Enable PDF
 with `zel build my-book --pdf` or `pdf.enabled: true`; `zel pdf my-book --check`
 checks print compatibility natively. Actual typesetting requires the optional
-LuaLaTeX Linux container runtime. Candidate rc.12 supports English/LTR print,
+LuaLaTeX Linux container runtime. Candidate rc.13 supports English/LTR print,
 numeric citations, glossary and subject index, plus
 French, German, Spanish and Arabic RTL with pinned print fonts; see
 [book language and PDF configuration](/cli/books). Technical/study editions are
@@ -72,7 +72,7 @@ explains the scope. The original three template archives remain unchanged.
 
 ## Website collection
 
-<Callout type="info" title="Included in published candidate 0.2.0-rc.12">
+<Callout type="info" title="Included in published candidate 0.2.0-rc.13">
 The current 0.1.1 website starters require CLI rc.12. They retain inverted bento
 headings, Porcelain contrast, centered navigation and mobile section views.
 The catalog contains nine starters, including the API platform below. New
@@ -86,7 +86,7 @@ rewritten with different bytes.
 | `software-platform` | Dark software interface, clear product story and connected workflow | Product, Workflow, customization guide |
 | `creative-studio` | Expressive serif typography, original identity studies and editorial spacing | Studio, Selected work, customization guide |
 
-With the published rc.12 CLI:
+With the published rc.13 CLI:
 
 ```sh
 zel create my-product -t product-launch --name "My product"
@@ -191,7 +191,9 @@ zel create another-copy -t product-docs --catalog <same-catalog-URL> --offline
 
 The second command reuses verified cached files with no network access. Both the
 catalog and selected archive must have been cached first. `--cache-dir <folder>`
-overrides the normal OS cache directory. `id@version` pins exactly; an unpinned ID
+overrides `$ZELLIJ_HOME/cache/templates`; the default resource root is
+`~/Dev/config/zellij` (under the Windows user profile on Windows). See
+[resource directories](/cli/config#zellij-home). `id@version` pins exactly; an unpinned ID
 selects the highest version in the chosen catalog. Unsupported versions fail
 without creating a site. Old release URLs can disappear under pre-1.0 retention;
 bundled, local and already cached copies continue to work.

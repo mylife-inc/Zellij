@@ -9,7 +9,7 @@ zel upgrade                     # install latest stable if newer
 zel upgrade --preview --check   # include previews; change no files (rc.4+)
 zel upgrade --preview           # install newest stable or preview (rc.4+)
 zel upgrade 0.2.0                # select an exact published release
-zel upgrade v0.2.0-rc.12          # explicitly select a prerelease
+zel upgrade v0.2.0-rc.13          # explicitly select a prerelease
 zel upgrade 0.2.0 --force        # reinstall the same version
 ```
 
@@ -39,7 +39,7 @@ detect the ownership marker before network access and direct you to
 `brew upgrade mylife-inc/tap/zel`; they do not replace a binary in its Cellar.
 
 Scoop-managed installations use `scoop update zel`. The ownership marker also
-blocks `zel upgrade --force` and custom release URLs. Candidate rc.12 prints
+blocks `zel upgrade --force` and custom release URLs. Candidate rc.13 prints
 the exact Scoop command. Use the package manager for both checking and
 installing updates.
 
@@ -52,6 +52,14 @@ executable being run, resolving a launcher symlink to its actual executable;
 it does not update another `zel` elsewhere on PATH, an engine image, site
 configuration or authored content. No Docker, Node, shell installer or browser
 is needed.
+
+Candidate rc.13 changes the standalone installer's default directory to
+`$ZELLIJ_HOME/bin` (default `~/Dev/config/zellij/bin`). An upgrade still replaces
+the executable in its existing location; setting `ZELLIJ_HOME` does not move it.
+Use the pinned installer when intentionally relocating a standalone installation,
+then update PATH and remove or replace the obsolete standalone launcher after
+checking the new one. Do not move a Homebrew or Scoop executable by hand.
+See [cache migration and directory precedence](/cli/config#zellij-home).
 
 ## Verification and replacement
 
@@ -87,7 +95,7 @@ for up to five seconds per permission, staged-archive removal or rename operatio
 Other errors fail immediately, and messages identify the failed operation.
 Cancellation remains available before replacement starts; commit and restoration
 finish without cancellation after the old executable has moved. These changes
-are included in candidate `0.2.0-rc.12`. Abrupt machine/storage failure during replacement is
+are included in candidate `0.2.0-rc.13`. Abrupt machine/storage failure during replacement is
 not a recoverable transaction guarantee.
 
 ## Asset mirrors

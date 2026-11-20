@@ -3,10 +3,68 @@ title: Configuration
 description: Configure site discovery, portable Markdown, hosted settings and shared CLI defaults with zel.yaml.
 ---
 
-<Callout type="tip" title="Available in source">
+<Callout type="tip" title="Site configuration">
 Versioned `zel.yaml` selects a portable or hosted site with separate `content/`
-and `site/` folders. Native release packages may lag this source version.
+and `site/` folders. User-level download directories are configured separately
+through `ZELLIJ_HOME`.
 </Callout>
+
+## Zellij home
+
+`ZELLIJ_HOME` is the common directory for Zellij-managed downloads. An unset or
+empty variable defaults to **`~/Dev/config/zellij`**, including
+`%USERPROFILE%\Dev\config\zellij` on Windows. A configured value must be an
+absolute path. Let your shell expand `~`; the CLI does not interpret a literal
+tilde or a relative path as a resource home.
+
+```text
+ZELLIJ_HOME/
+  bin/                  # Standalone installer only
+  cache/
+    engines/            # Version/platform rich renderer packages
+    templates/          # Downloaded catalogs and template archives
+```
+
+```bash
+export ZELLIJ_HOME="$HOME/Dev/config/zellij"
+export PATH="$ZELLIJ_HOME/bin:$PATH"
+```
+
+```powershell
+$env:ZELLIJ_HOME = Join-Path $env:USERPROFILE 'Dev\config\zellij'
+$env:PATH = (Join-Path $env:ZELLIJ_HOME 'bin') + ';' + $env:PATH
+```
+
+These commands affect the current shell. Set the resource variable and PATH in
+your shell profile or Windows user environment settings to persist them. The
+installers print guidance and do not edit those settings.
+
+Homebrew owns its Cellar/prefix executable; Scoop owns its package and command
+shim. Keep those locations managed by their package manager. Their `zel` uses
+the same resource home at runtime. Build output remains in the chosen project;
+temporary staging is cleaned up. Docker, Homebrew and Scoop retain their own
+image/package stores.
+
+Specific overrides take precedence:
+
+| Override | Controls |
+| --- | --- |
+| `ZEL_INSTALL_DIR` / PowerShell `-InstallDir` | Standalone executable destination |
+| `ZEL_ENGINE_CACHE` | Rich-renderer cache only |
+| Template `--cache-dir` | Remote-template cache only |
+
+The new default does not silently move or delete existing binaries or caches.
+An existing standalone `zel upgrade` updates its executable in place. To move
+it, install to the desired directory, verify `zel --version` and `command -v zel`
+(Windows: `Get-Command zel`), then update PATH and retire the old standalone
+copy. Use the package manager for a managed installation.
+
+For caches, either let the first build/template download populate the new home,
+or copy a compatible cache into the corresponding directory. Renderer files
+must match the CLI version and platform; integrity checks still run before
+execution. Old renderer directories remain intact. `ZEL_ENGINE_CACHE` can keep
+using an existing location explicitly. `zel doctor` reports the resolved rich
+cache path without downloading or creating it.
 
 <div id="what-it-is-really-for" className="zellij-legacy-anchor" />
 <div id="where-it-is-found" className="zellij-legacy-anchor" />
@@ -63,7 +121,7 @@ legacy roots, explicit `.` retains the old content-discovery order.
 
 ## Book manuscripts
 
-Candidate rc.12 accepts an optional [versioned book manifest](/cli/books)
+Candidate rc.13 accepts an optional [versioned book manifest](/cli/books)
 in portable `zel.yaml`. It owns the reading order instead of `nav` and supplies
 title, authors, language, cover, parts and chapters. Existing documentation
 without `book` keeps its navigation behavior.
@@ -264,7 +322,7 @@ The logo appears at the left of the sticky header. Its optional `href` opens the
 company's absolute HTTP(S) website; without it, the logo links to the docs home.
 
 To show both an owner icon and a product icon, add `brand.company` (introduced in
-`v0.2.0-rc.12`):
+`v0.2.0-rc.4`):
 
 ```yaml title="zel.yaml"
 brand:
