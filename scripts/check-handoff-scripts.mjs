@@ -77,7 +77,9 @@ try {
   const installers = await downloadTaggedInstallers({ version, repository: 'mylife-inc/Zellij' });
   const downloaded = await downloadRelease({ version, target, repository: 'mylife-inc/Zellij', destination: path.join(root, 'download'), installers });
   const unpacked = path.join(root, 'unpacked'); await mkdir(unpacked);
-  execFileSync('tar.exe', ['-xf', path.join(root, 'download', downloaded.archive), '-C', unpacked]);
+  // Windows' system tar uses an ANSI argv parser. Relative ASCII arguments
+  // avoid corrupting our Unicode test directory before zel is exercised.
+  execFileSync('tar.exe', ['-xf', downloaded.archive, '-C', '../unpacked'], { cwd: path.join(root, 'download') });
   const binaryName = target.startsWith('aarch64') ? 'zel-windows-arm64.exe' : 'zel-windows-x64.exe';
   await copyFile(path.join(unpacked, 'zel.exe'), path.join(root, binaryName));
   assert.equal(execFileSync(path.join(root, binaryName), ['--version'], { env, encoding: 'utf8' }).trim(), `zel ${version.slice(1)}`);
