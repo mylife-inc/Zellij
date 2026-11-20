@@ -1,0 +1,49 @@
+name: Handoff script acceptance
+on:
+  push:
+    branches: ['codex/handoff-*']
+    paths:
+      - '.github/workflows/handoff-scripts.yml'
+      - 'scripts/check-handoff-scripts.mjs'
+      - 'scripts/fixtures/handoff/**'
+  pull_request:
+    paths:
+      - '.github/workflows/handoff-scripts.yml'
+      - 'scripts/check-handoff-scripts.mjs'
+      - 'scripts/fixtures/handoff/**'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Published CLI version to test
+        type: string
+        default: v0.2.0-rc.14
+        required: true
+permissions:
+  contents: read
+jobs:
+  windows:
+    name: Handoff (${{ matrix.target }}, ${{ matrix.shell }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: windows-2022, target: x86_64-pc-windows-msvc, shell: powershell.exe}
+          - {os: windows-2022, target: x86_64-pc-windows-msvc, shell: pwsh}
+          - {os: windows-11-arm, target: aarch64-pc-windows-msvc, shell: powershell.exe}
+          - {os: windows-11-arm, target: aarch64-pc-windows-msvc, shell: pwsh}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Exercise bundled scripts with a public fixture
+        env:
+          VERSION: ${{ inputs.version || 'v0.2.0-rc.14' }}
+          TARGET: ${{ matrix.target }}
+          ZEL_HANDOFF_SHELL: ${{ matrix.shell }}
+        run: node scripts/check-handoff-scripts.mjs
