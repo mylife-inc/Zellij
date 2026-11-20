@@ -125,3 +125,7 @@ The source/public receipts remain distinct from catalog-ID installation.
 assets, jobs, local upgrade, managed channels and catalog PR. Microsoft's CLA
 bot requires the account owner's personal acceptance; the agent has not signed
 it. Retain the submitted rc.15 archive URLs while the catalog references them.
+
+The owned Homebrew/Scoop channels also pass all eight public upgrade cases for
+rc.15. Updated public guides are deployed by `44730090071`, while clearly
+marking catalog-ID installation as unavailable pending Microsoft's process.

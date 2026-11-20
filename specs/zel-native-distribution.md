@@ -2,8 +2,8 @@
 
 **Current checkpoint (2026-11-20):** rc.15 is published after all 40 release jobs
 passed; both repositories contain identical sets of 40 assets. The Mac standalone
-upgrade and public Windows WinGet manifests are verified. Homebrew/Scoop channel
-and documentation receipts are tracked in the
+upgrade and public Windows WinGet manifests are verified. All eight public
+Homebrew/Scoop upgrade cases pass; rc.15 documentation is deployed. Receipts are in the
 [release evidence](evidence/zellij-rc15-release-2026-11-20.json).
 [WinGet catalog submission](https://github.com/microsoft/winget-pkgs/pull/484934)
 is pending; manifest publication is distinct from catalog availability. The dated
