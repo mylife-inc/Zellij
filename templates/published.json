@@ -15,6 +15,11 @@
     {"id":"product-launch","version":"0.1.1","sha256":"2beb0aff4b006b5d30796088a4b82f949a4909c8ab0c485a78285cf164a89a3d"},
     {"id":"software-platform","version":"0.1.1","sha256":"c997dd28bd0bc166ece3e5aa0d352e52ef51386d473083cbbdc822a99c81890d"},
     {"id":"creative-studio","version":"0.1.1","sha256":"cd466b6f20de000855be26cb48bdd8b646436af2156d9b6a5618bd8fea2df070"},
-    {"id":"api-platform","version":"0.1.1","sha256":"8b5956182065f75d3a40f645e232e007aaeb48e72f216a1d66d5273c3ad81618"}
+    {"id":"api-platform","version":"0.1.1","sha256":"8b5956182065f75d3a40f645e232e007aaeb48e72f216a1d66d5273c3ad81618"},
+    {"id":"product-studio","version":"0.1.2","sha256":"bad023420061d2f3bc051dcfc732d6aec3120af297544cb58d82631ab12393a1"},
+    {"id":"product-launch","version":"0.1.2","sha256":"052bea8261920fbe7f3b24f01fc860bc43af75ea8f0cbec5cd878a16dabc0eec"},
+    {"id":"software-platform","version":"0.1.2","sha256":"2e9f91623ddd788051283834e666a0510f093c11759e5014effc9a7e23ed6de4"},
+    {"id":"creative-studio","version":"0.1.2","sha256":"896fc38fedd4888c5b67e47bb78352188e52c9b3cf22d17723f61476d6191ee5"},
+    {"id":"api-platform","version":"0.1.2","sha256":"15121abc9fe6f4c11230d17b9d02bc7f4250b31d1692e975da19b140664c0504"}
   ]
 }
