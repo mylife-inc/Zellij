@@ -74,4 +74,16 @@ jobs:
         shell: powershell
         run: .\scripts\prepare-winget.ps1
       - name: Validate manifests and test managed lifecycle
+        env:
+          ZEL_WINGET_RECEIPT: ${{ runner.temp }}/winget-receipt.json
         run: node scripts/check-winget.mjs dist
+      - name: Retain lifecycle receipt and WinGet diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: winget-evidence-${{ matrix.target }}
+          path: |
+            ${{ runner.temp }}/winget-receipt.json
+            ~/AppData/Local/Packages/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe/LocalState/DiagOutputDir/*.log
+          if-no-files-found: warn
+          retention-days: 14

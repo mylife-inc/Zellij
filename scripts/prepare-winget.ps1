@@ -1,5 +1,6 @@
 # Test-runner provisioning only. End users do not run this script.
 $ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'
 if ($env:GITHUB_ACTIONS -ne 'true') { throw 'Use a disposable GitHub Actions runner.' }
 $version = 'v1.29.380'
 $root = Join-Path $env:RUNNER_TEMP ('zel-winget-runtime-' + [guid]::NewGuid())
@@ -10,7 +11,8 @@ $assets = @{
 }
 foreach ($name in $assets.Keys) {
     $file = Join-Path $root $name
-    Invoke-WebRequest -UseBasicParsing "https://github.com/microsoft/winget-cli/releases/download/$version/$name" -OutFile $file
+    Write-Host "Downloading $name"
+    Invoke-WebRequest -UseBasicParsing -TimeoutSec 180 "https://github.com/microsoft/winget-cli/releases/download/$version/$name" -OutFile $file
     if ((Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash -ne $assets[$name]) { throw "WinGet checksum mismatch: $name" }
 }
 $deps = Join-Path $root 'dependencies'
@@ -25,7 +27,7 @@ foreach ($package in $packages) {
         $reader = New-Object IO.StreamReader($archive.GetEntry('AppxManifest.xml').Open())
         try { [xml]$manifest = $reader.ReadToEnd() } finally { $reader.Dispose() }
         $identity = $manifest.Package.Identity
-        $installed = Get-AppxPackage -Name $identity.Name | Where-Object { [version]$_.Version -ge [version]$identity.Version }
+        $installed = Get-AppxPackage -Name $identity.Name | Where-Object { [version]$_.Version -ge [version]$identity.Version -and ($_.Architecture.ToString() -ieq $arch -or $_.Architecture.ToString() -eq 'Neutral') }
         if (-not $installed) { Add-AppxPackage -Path $package.FullName }
     } finally { $archive.Dispose() }
 }

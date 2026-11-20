@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
 import { createHash } from 'node:crypto';
-import { mkdir, mkdtemp, readFile, readdir, writeFile, rm, copyFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, writeFile, rm, copyFile, realpath } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { wingetManifests, manifestYaml, wingetId } from './winget-manifest.mjs';
@@ -108,7 +108,18 @@ try {
   await assert.rejects(readFile(executable), { code: 'ENOENT' });
   await assert.rejects(readFile(alias), { code: 'ENOENT' });
   assert.equal(await readFile(sentinel, 'utf8'), 'retain cache');
-  console.log(JSON.stringify({ version, previous, target, winGet: '1.29.380', manifestValidated: true, realUpgrade: true, customLocation: true, launcherVerified: true, checksumFailurePreserved: true, selfUpgradeBlocked: true, standaloneUnaffected: true, portableBuildWithoutTools: true, cacheRetained: true, uninstall: true, publicCatalogSubmitted: false }));
+  // Also exercise WinGet's ordinary default location with the same archive.
+  await run(manager, ['install', '--manifest', current, '--architecture', arch, '--accept-package-agreements', ...flags]); installed = true;
+  assert.notEqual((await realpath(alias)).toLowerCase(), executable.toLowerCase());
+  assert.equal((await run(alias, ['--version'])).out.trim(), `zel ${version}`);
+  const defaultGuard = await run(alias, ['upgrade', '--check'], { expected: 1 });
+  assert.match(defaultGuard.out + defaultGuard.err, /WinGet manages this installation/);
+  await run(manager, ['uninstall', '--id', wingetId, '--exact', ...flags]); installed = false;
+  await assert.rejects(readFile(alias), { code: 'ENOENT' });
+  assert.equal(await readFile(sentinel, 'utf8'), 'retain cache');
+  const receipt = { version, previous, target, commit: process.env.GITHUB_SHA, winGet: '1.29.380', manifestValidated: true, realUpgrade: true, customLocation: true, defaultLocation: true, launcherVerified: true, checksumFailurePreserved: true, selfUpgradeBlocked: true, standaloneUnaffected: true, portableBuildWithoutTools: true, cacheRetained: true, uninstall: true, publicCatalogSubmitted: false };
+  if (process.env.ZEL_WINGET_RECEIPT) await writeFile(process.env.ZEL_WINGET_RECEIPT, JSON.stringify(receipt, null, 2) + '\n');
+  console.log(JSON.stringify(receipt));
 } finally {
   if (installed) await run(manager, ['uninstall', '--id', wingetId, '--exact', ...flags]).catch(e => { console.error(`Cleanup failed: ${e.message}`); process.exitCode = 1; });
   await new Promise(resolve => server.close(resolve));
