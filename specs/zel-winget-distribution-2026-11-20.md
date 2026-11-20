@@ -1,7 +1,10 @@
 # WinGet distribution — 20 November 2026
 
-Status: source rc.15 native WinGet acceptance passed; final source CI/release pending. Public rc.14 and the private client handoff
-remain unchanged. No Microsoft community catalog submission or acceptance.
+Status: rc.15 is released after 37 source CI and 40 release jobs passed.
+Public x64/ARM64 WinGet acceptance passes with the actual published HTTPS URLs.
+[Microsoft catalog PR #484934](https://github.com/microsoft/winget-pkgs/pull/484934)
+is submitted; the CLA and catalog checks remain separate requirements. No
+ordinary catalog install is advertised yet. The private client handoff remains rc.14.
 
 ## Package contract
 
@@ -63,9 +66,8 @@ pass. Run `44711498242` passes both native
 ownership suites, including real isolated registry fixtures, before its
 superseded lifecycle jobs were cancelled. Full CI `44711923286` caught an rc.14
 image-recipe pin after the rc.15 source bump, fixed in `2343b35`; that run was
-superseded. Final lifecycle and full CI evidence are pending. Local workspace
-Rust tests, Clippy and the manifest tests pass; final source/Windows evidence
-must be recorded before merging or releasing. CI and releases call the same
+superseded. At that earlier checkpoint, final lifecycle and full CI evidence were pending.
+The later passing source and release runs are recorded below. CI and releases call the same
 lifecycle workflow, and release publication requires it to pass.
 
 Microsoft's [manifest guidance](https://learn.microsoft.com/en-us/windows/package-manager/package/manifest)
@@ -108,4 +110,18 @@ Manual harness-only reruns may use `binary_run` to reuse previously verified
 artifacts; receipts identify both source run and harness commit. Ordinary CI
 and tagged releases always use their own native artifacts. Diagnostics are
 copied into one runner-temporary directory before upload to avoid cross-volume
-artifact roots. Final integrated source CI and publication remain pending.
+artifact roots.
+
+## Published artifact checkpoint
+
+Source CI `44716061788` passes all 37 jobs and release `44724715433` passes
+all 40 required jobs on merged source `e1f6ff3`. Public WinGet run `44727865933`
+passes both architectures using the checksum-verified published ZIPs and exact
+published YAML, including automatic native architecture selection. The manual
+`public_version` workflow input repeats these checks without rebuilding binaries.
+The source/public receipts remain distinct from catalog-ID installation.
+
+[Release evidence](evidence/zellij-rc15-release-2026-11-20.json) records the exact
+assets, jobs, local upgrade, managed channels and catalog PR. Microsoft's CLA
+bot requires the account owner's personal acceptance; the agent has not signed
+it. Retain the submitted rc.15 archive URLs while the catalog references them.

@@ -9,7 +9,7 @@ zel upgrade                     # install latest stable if newer
 zel upgrade --preview --check   # include previews; change no files (rc.4+)
 zel upgrade --preview           # install newest stable or preview (rc.4+)
 zel upgrade 0.2.0                # select an exact published release
-zel upgrade v0.2.0-rc.14          # explicitly select a prerelease
+zel upgrade v0.2.0-rc.15          # explicitly select a prerelease
 zel upgrade 0.2.0 --force        # reinstall the same version
 ```
 
@@ -39,14 +39,14 @@ detect the ownership marker before network access and direct you to
 `brew upgrade mylife-inc/tap/zel`; they do not replace a binary in its Cellar.
 
 Scoop-managed installations use `scoop update zel`. The ownership marker also
-blocks `zel upgrade --force` and custom release URLs. Candidate rc.14 prints
+blocks `zel upgrade --force` and custom release URLs. Candidate rc.15 prints
 the exact Scoop command. Use the package manager for both checking and
 installing updates.
 
-The next candidate (source rc.15, unreleased) also protects WinGet portable
+Candidate rc.15 also protects WinGet portable
 installations, including custom folders. A managed copy directs updates to
-`winget upgrade --id Shebka.Zel --exact`; `ZELLIJ_HOME` continues to hold only
-resources. Microsoft catalog publication is pending. Use the current standalone
+`winget upgrade --id Shebka.Zel --exact`. WinGet retains the executable;
+`ZELLIJ_HOME` controls its downloaded resources and caches. Microsoft catalog publication is pending. Use the current standalone
 installer or Scoop until WinGet availability is announced.
 
 `--check` reports the selected version without downloading an archive or changing
@@ -59,12 +59,12 @@ it does not update another `zel` elsewhere on PATH, an engine image, site
 configuration or authored content. No Docker, Node, shell installer or browser
 is needed.
 
-Candidate rc.14 changes the standalone installer's default directory to
+The standalone installer uses
 `$ZELLIJ_HOME/bin` (default `~/Dev/config/zellij/bin`). An upgrade still replaces
 the executable in its existing location; setting `ZELLIJ_HOME` does not move it.
 Use the pinned installer when intentionally relocating a standalone installation,
 then update PATH and remove or replace the obsolete standalone launcher after
-checking the new one. Do not move a Homebrew or Scoop executable by hand.
+checking the new one. Do not move a Homebrew, Scoop or WinGet executable by hand.
 See [cache migration and directory precedence](/cli/config#zellij-home).
 
 ## Verification and replacement
@@ -101,7 +101,7 @@ for up to five seconds per permission, staged-archive removal or rename operatio
 Other errors fail immediately, and messages identify the failed operation.
 Cancellation remains available before replacement starts; commit and restoration
 finish without cancellation after the old executable has moved. These changes
-are included in candidate `0.2.0-rc.14`. Abrupt machine/storage failure during replacement is
+are included in candidate `0.2.0-rc.15`. Abrupt machine/storage failure during replacement is
 not a recoverable transaction guarantee.
 
 ## Asset mirrors

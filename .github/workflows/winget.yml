@@ -11,12 +11,16 @@ on:
         description: Optional prior WinGet run with verified native artifacts (harness-only retesting)
         type: string
         default: ''
+      public_version:
+        description: Optional published candidate matching this source (verify manifests and install from public URLs)
+        type: string
+        default: ''
 permissions:
   contents: read
   actions: read
 jobs:
   build:
-    if: ${{ !inputs.from_artifacts && !inputs.binary_run }}
+    if: ${{ !inputs.from_artifacts && !inputs.binary_run && !inputs.public_version }}
     name: WinGet binary (${{ matrix.target }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
@@ -52,7 +56,7 @@ jobs:
           retention-days: 7
   install:
     needs: build
-    if: ${{ always() && (needs.build.result == 'success' || ((inputs.from_artifacts || inputs.binary_run) && needs.build.result == 'skipped')) }}
+    if: ${{ always() && (needs.build.result == 'success' || ((inputs.from_artifacts || inputs.binary_run || inputs.public_version) && needs.build.result == 'skipped')) }}
     name: WinGet lifecycle (${{ matrix.target }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
@@ -72,18 +76,25 @@ jobs:
         with:
           node-version: 24
       - uses: actions/download-artifact@v8
+        if: inputs.public_version == ''
         with:
           pattern: ${{ inputs.from_artifacts && 'binary-*-pc-windows-msvc' || 'winget-native-*' }}
           run-id: ${{ inputs.binary_run || '' }}
           github-token: ${{ inputs.binary_run && github.token || '' }}
           merge-multiple: true
           path: dist
+      - name: Verify public archives and the exact published manifest bundle
+        if: inputs.public_version != ''
+        env:
+          VERSION: ${{ inputs.public_version }}
+        run: node scripts/fetch-winget-release.mjs "$env:VERSION" dist
       - name: Provision checksum-pinned Microsoft WinGet
         shell: powershell
         run: .\scripts\prepare-winget.ps1
       - name: Validate manifests and test managed lifecycle
         env:
-          ZEL_WINGET_BINARY_RUN: ${{ inputs.binary_run || github.run_id }}
+          ZEL_WINGET_PUBLIC: ${{ inputs.public_version != '' && 'true' || 'false' }}
+          ZEL_WINGET_BINARY_RUN: ${{ inputs.public_version && 'public-release' || inputs.binary_run || github.run_id }}
           ZEL_WINGET_RECEIPT: ${{ runner.temp }}/winget-evidence/receipt.json
         run: node scripts/check-winget.mjs dist
       - name: Retain lifecycle receipt and WinGet diagnostics

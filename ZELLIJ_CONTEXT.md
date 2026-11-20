@@ -3,7 +3,41 @@
 Last refreshed: **2026-11-20**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-20: WinGet distribution — native acceptance passed, unreleased**
+**2026-11-20: rc.15 released; public WinGet acceptance and catalog submission**
+
+PR #219 merged as `e1f6ff3c51a1d53ab11320dff0ce50e107f486d1`, with an
+identical tree to the reviewed source and tested merge snapshot. Source CI
+`44716061788` passes all 37 jobs; the sole retry was an npm publication/CDN
+race, preserved in the evidence. Normal release preflight passed 828 Rust tests
+(5 existing hosted-only ignores), 540 engine tests, format, Clippy and clean
+repository/fresh-wrapper audits. Immutable `v0.2.0-rc.15` release
+`44724715433` passes all 40 required jobs. Both public repositories contain the
+same 40 asset names, sizes and SHA-256 digests.
+
+Public WinGet run `44727865933` passes x64 and ARM64 actual HTTPS installs,
+automatic native selection and full upgrade/uninstall/ownership acceptance.
+The manifest set is submitted as
+[Microsoft PR #484934](https://github.com/microsoft/winget-pkgs/pull/484934).
+Microsoft's CLA bot asks the user to accept personally; no agreement was signed
+by the agent. Catalog acceptance and normal public-ID install remain pending.
+The public-manifest harness verifies archive checksums and the exact generated
+YAML, and safely reads archive members without extracting paths.
+
+The user's physical Mac CLI is upgraded from rc.14 to verified public rc.15 in
+`~/Dev/config/zellij/bin`; the old compatibility symlink remains. Empty-PATH
+rich builds populate the default resource home and rebuild offline, covering
+28 routes. Isolated public acceptance also passes Chrome/WebKit, validation,
+watch, preview, recovery, cancellation and cache-integrity cases. Homebrew and
+Scoop now publish rc.15; their actual rc.14 upgrade receipts and the documentation
+publication are tracked in the [release evidence](specs/evidence/zellij-rc15-release-2026-11-20.json).
+
+The private HP handoff remains unchanged at rc.14; retain that renderer and the
+rc.13 private rollback renderer. Inventory `44719616497` is read-only and shows
+old acceptance images that need replacement before a fresh retirement plan.
+No old release/image deletion has occurred in this milestone. Deferred live
+providers and the two unresolved browser timing findings remain separate.
+
+**Earlier 2026-11-20 checkpoint: WinGet native acceptance, before release**
 
 Branch `codex/winget-distribution` prepares source rc.15; public CLI/docs and the
 private handoff remain rc.14. The Windows self-upgrade guard now checks WinGet
