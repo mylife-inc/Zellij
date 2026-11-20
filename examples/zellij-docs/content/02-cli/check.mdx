@@ -5,7 +5,7 @@ description: Check portable Markdown without writing files, or validate hosted c
 
 <Callout type="tip" title="Available">
 Portable Markdown checks run natively without Node, Docker, or network access.
-Candidate `0.2.0-rc.14` rich YAML/MDX checks use the
+Candidate `0.2.0-rc.15` rich YAML/MDX checks use the
 cached renderer by default. Only `zel` must be installed. The first check can
 download that renderer; `--offline` requires an existing verified cache.
 </Callout>
@@ -47,7 +47,7 @@ It checks image/download paths, heading and footnote fragments, and portable
 output filename collisions. Hidden paths and `node_modules` cannot supply
 published assets. Configured branding and navigation use the same checks as build.
 
-Candidate rc.14 also validates [book manifests](/cli/books), including
+Candidate rc.15 also validates [book manifests](/cli/books), including
 complete chapter coverage, unique IDs/sources and cover assets. Successful
 compilation adds an optional `book` object to JSON reports.
 

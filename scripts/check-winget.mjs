@@ -68,7 +68,7 @@ let installed = false, completed = false;
 try {
   const publicManifest = await manifests('public-manifest', docs, false);
   await run(manager, ['validate', '--manifest', publicManifest]);
-  const current = await manifests('current', docs);
+  const current = process.env.ZEL_WINGET_PUBLIC === 'true' ? publicManifest : await manifests('current', docs);
   // The old release is real and checked, not a relabelled current executable.
   const installers = await downloadTaggedInstallers({ version: previous, repository: 'mylife-inc/Zellij' });
   const old = await downloadRelease({ version: previous, target, repository: 'mylife-inc/Zellij', destination: path.join(root, 'previous'), installers });
@@ -135,7 +135,7 @@ try {
   await run(manager, ['uninstall', '--product-code', productCode, '--exact', '--scope', 'machine', ...flags]); installed = false;
   await assert.rejects(readFile(machineExe), { code: 'ENOENT' });
   assert.equal(await readFile(sentinel, 'utf8'), 'retain cache');
-  const receipt = { version, previous, target, harnessCommit: process.env.GITHUB_SHA, binaryRun: process.env.ZEL_WINGET_BINARY_RUN, winGet: '1.29.380', manifestValidated: true, realUpgrade: true, customLocation: true, defaultLocation: true, machineScope: true, launcherVerified: true, checksumFailurePreserved: true, selfUpgradeBlocked: true, standaloneUnaffected: true, portableBuildWithoutTools: true, cacheRetained: true, uninstall: true, publicCatalogSubmitted: false };
+  const receipt = { version, previous, target, harnessCommit: process.env.GITHUB_SHA, binaryRun: process.env.ZEL_WINGET_BINARY_RUN, winGet: '1.29.380', manifestValidated: true, realUpgrade: true, customLocation: true, defaultLocation: true, machineScope: true, launcherVerified: true, checksumFailurePreserved: true, selfUpgradeBlocked: true, standaloneUnaffected: true, portableBuildWithoutTools: true, cacheRetained: true, uninstall: true, publicUrlInstalls: process.env.ZEL_WINGET_PUBLIC === 'true', publicCatalogSubmitted: false };
   if (process.env.ZEL_WINGET_RECEIPT) await writeFile(process.env.ZEL_WINGET_RECEIPT, JSON.stringify(receipt, null, 2) + '\n');
   console.log(JSON.stringify(receipt)); completed = true;
 } finally {

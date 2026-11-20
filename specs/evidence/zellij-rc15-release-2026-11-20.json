@@ -1,0 +1,132 @@
+{
+  "date": "2026-11-20",
+  "version": "v0.2.0-rc.15",
+  "status": "Source verification in progress; release not yet tagged or published",
+  "source": {
+    "pr": 219,
+    "head": "7bacba01ef1638a21b5a5d10da5c9ee6e81be176",
+    "testedMergeSnapshot": "45885daaa7415b751dc6cad87727f8aaedfae690",
+    "tree": "4e09609f6e7647acfb81121cb934186d5735f757",
+    "mergeSnapshotTreeMatchesHead": true
+  },
+  "local": {
+    "rustPassed": 828,
+    "rustIgnored": 5,
+    "clippy": "passed",
+    "format": "passed",
+    "distributionTestsPassed": 49,
+    "normalPreflight": "passed",
+    "dependencyAudit": {
+      "repositoryProduction": 0,
+      "repositoryFull": 0,
+      "freshAllFeaturesWrapperProduction": 0,
+      "freshAllFeaturesWrapperFull": 0
+    }
+  },
+  "sourceCI": {
+    "run": 44716061788,
+    "attempt1": {
+      "passed": 36,
+      "failedJob": 136219793504,
+      "cause": "Fresh ejected-wrapper npm install selected mdast-util-gfm-autolink-literal 2.1.1, published seconds earlier. Metadata was available while its archive returned cached HTTP 404.",
+      "verifiedRecovery": "At 2026-11-20T10:26:10Z the original archive URL returned HTTP 200 and matched the published SHA-512 integrity. No source change or checksum bypass.",
+      "retry": "Only failed CLI job retried, job 136230473402; all other successes retained."
+    },
+    "status": "Retry in progress"
+  },
+  "integratedWinGetReceipts": [
+    {
+      "version": "0.2.0-rc.15",
+      "previous": "v0.2.0-rc.14",
+      "target": "x86_64-pc-windows-msvc",
+      "harnessCommit": "45885daaa7415b751dc6cad87727f8aaedfae690",
+      "binaryRun": "44716061788",
+      "winGet": "1.29.380",
+      "manifestValidated": true,
+      "realUpgrade": true,
+      "customLocation": true,
+      "defaultLocation": true,
+      "machineScope": true,
+      "launcherVerified": true,
+      "checksumFailurePreserved": true,
+      "selfUpgradeBlocked": true,
+      "standaloneUnaffected": true,
+      "portableBuildWithoutTools": true,
+      "cacheRetained": true,
+      "uninstall": true,
+      "publicCatalogSubmitted": false
+    },
+    {
+      "version": "0.2.0-rc.15",
+      "previous": "v0.2.0-rc.14",
+      "target": "aarch64-pc-windows-msvc",
+      "harnessCommit": "45885daaa7415b751dc6cad87727f8aaedfae690",
+      "binaryRun": "44716061788",
+      "winGet": "1.29.380",
+      "manifestValidated": true,
+      "realUpgrade": true,
+      "customLocation": true,
+      "defaultLocation": true,
+      "machineScope": true,
+      "launcherVerified": true,
+      "checksumFailurePreserved": true,
+      "selfUpgradeBlocked": true,
+      "standaloneUnaffected": true,
+      "portableBuildWithoutTools": true,
+      "cacheRetained": true,
+      "uninstall": true,
+      "publicCatalogSubmitted": false
+    }
+  ],
+  "guides": {
+    "status": "Prepared locally; not published",
+    "strictDeepRoutes": 59,
+    "staticBuild": "passed",
+    "browser": "installed Chrome on Intel macOS",
+    "preservation": {
+      "originalRoutes": 46,
+      "addedRoutes": 13,
+      "originalHeadingIds": 282,
+      "compatibilityMappings": 82,
+      "byteIdenticalImages": 29,
+      "capturedBrowserErrors": 0
+    }
+  },
+  "retention": {
+    "date": "2026-11-20",
+    "inventoryRun": 44719616497,
+    "readOnly": true,
+    "observedAt": "2026-11-20T10:29:14.347Z",
+    "releaseCandidates": [
+      "v0.2.0-rc.14",
+      "v0.2.0-rc.13",
+      "v0.2.0-rc.12",
+      "v0.2.0-rc.11"
+    ],
+    "privateHandoffRequires": "v0.2.0-rc.14 renderer and bundled binaries",
+    "privateRollbackRequires": "v0.2.0-rc.13 renderer",
+    "wingetActualUpgradeFixtureRequires": "v0.2.0-rc.14 Windows archives",
+    "acceptanceImagesRequireReplacement": [
+      "zellij/acceptance-static",
+      "zellij/acceptance-next"
+    ],
+    "activeOlderReferences": [
+      ".github/workflows/scoop.yml:19:        default: v0.2.0-rc.13",
+      ".github/workflows/acceptance-s3.yml:53:          docker pull ghcr.io/mylife-inc/zellij-base:0.2.0-rc.13",
+      ".github/workflows/acceptance-s3.yml:69:          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.13",
+      ".github/workflows/acceptance-fly.yml:56:          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.13",
+      ".github/workflows/acceptance-fly.yml:86:          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.13",
+      ".github/workflows/acceptance-inspect-images.yml:96:          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.13",
+      ".github/workflows/acceptance-vercel.yml:54:          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.13"
+    ],
+    "localPackageRead": "403 missing read:packages; hosted read-only inventory succeeded",
+    "deletions": 0,
+    "next": "After rc.15 release/channel/consumer verification, generate a fresh scoped plan preserving rc.13/rc.14 dependencies. Do not reuse the old rc.11 retirement policy/plan."
+  },
+  "limitations": [
+    "No Microsoft community catalog submission or ordinary catalog install yet.",
+    "Private HP handoff remains rc.14 and rollback requires rc.13; preserve their renderer downloads.",
+    "Live provider verification remains deferred.",
+    "Pre-1.0 candidate, no zero-bug claim."
+  ]
+}
