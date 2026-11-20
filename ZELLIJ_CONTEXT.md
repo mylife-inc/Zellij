@@ -3,6 +3,68 @@
 Last refreshed: **2026-11-19**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-19: common resource home and client migration — completed**
+
+The user-selected directory policy is now released as `v0.2.0-rc.13`.
+`ZELLIJ_HOME` defaults to `~/Dev/config/zellij` (under the Windows user
+profile on Windows). Standalone installers use its `bin/`; downloaded rich
+renderers and remote templates use `cache/engines/` and `cache/templates/`.
+Homebrew/Scoop retain their managed binaries and use this resource home at
+runtime. Explicit install/cache overrides retain precedence. General installers
+do not silently move existing installations or caches, or edit profiles.
+
+Source PR #213 merged as `9206950a35bf845dc3d639baac740f8073ddd7ee` after
+all 35 source CI jobs passed on `39503d7`. That fixing commit corrects the
+initial Windows path-joining failure. Normal release preflight passes 823 Rust
+tests (five existing hosted-only ignores), 540 engine tests, typecheck, schema
+drift, Clippy/format and full/production npm audits. All 38 release jobs pass;
+both public repositories contain the same 39 asset digests. All nine template
+archives remain byte-identical to rc.12. Four Homebrew and four Scoop public
+lifecycle/actual rc.12-to-rc.13 upgrade jobs pass.
+
+Scoop upgrade acceptance initially compared rc.12 installers with the changed
+rc.13 source. Test-only PR #215 (fix `c1c7daa`, merge
+`1c5b0aef5b7b2590d76e43b6fa90d45f668cd055`) now verifies previous
+installers against their own tagged source. All 21 local regression tests and
+the corrected four-case Windows run pass. Published CLI artifacts are unchanged.
+
+The user's standalone CLI is installed at `~/Dev/config/zellij/bin/zel`;
+a new shell resolves that path. Its prior standalone path is a compatibility
+symlink. The old executable/profile are backed up and the rc.12 renderer cache
+was moved intact under the new home. rc.13 downloaded its own verified renderer.
+This intentional local migration does not change package-manager ownership.
+
+The private client handoff has been migrated to one directly editable rich
+content tree and bundled public Mac/Windows x64/ARM64 binaries. Its 199 chapters,
+200 routes, titles, text, recorded anchors and 244 resources are preserved.
+Chromium/WebKit each pass all 200 file:// routes and focused menu/theme/mobile
+checks without captured page errors or HTTP requests. The public CLI builds
+with an empty PATH; the offline rebuild is byte-identical across 535 generated
+files. The installed generate script also passes offline with only basic OS
+commands, leaving all 1,100 manifest-listed files unchanged. The optional Next
+wrapper passes its production build. The verified ZIP is 193,317,027 bytes;
+the prior folder and ZIP are retained in a durable private rollback directory.
+Private content and assets were not published. Complete client-specific checks
+ran on Intel macOS; native release coverage is separate from client execution
+on Windows/Apple Silicon and physical-iPhone testing.
+
+Guide PR #214 merged as `05a062dac93f12ea39555160caec7a01c08032e1` with an
+identical tested tree. Documentation validation and all six released-artifact
+consumer workflows pass, plus a local 59-route Chromium/WebKit file crawl.
+Automatic docs run `44670647146` verifies production deploy
+`6affc4c6de4fdf5feecb44d7` at `2026-11-20T03:56:02.149Z`.
+Live config/build/quick-start pages are checked. All 13 main-image jobs pass.
+Redundant unchanged-code CI runs were deliberately cancelled, not counted as
+passes. An earlier source-merge Netlify draft upload failed; its failed-job
+retry succeeded before this final guide deployment. See the
+[release evidence](specs/evidence/zellij-rc13-release-2026-11-19.json),
+[directory policy](specs/zellij-home-2026-11-19.md) and
+[live configuration guide](https://zellij.shebka.net/cli/config#zellij-home).
+
+This supersedes the pending entries below, retained as dated history. Live
+provider verification and prior-candidate retirement remain separate work.
+Do not claim zero bugs or universal rendering of arbitrary application code.
+
 **2026-11-19: Zellij home policy and HP migration — in progress**
 
 The user authorized the HP handoff migration and first requested a common

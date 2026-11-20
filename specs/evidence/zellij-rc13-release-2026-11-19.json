@@ -1,0 +1,1370 @@
+{
+  "date": "2026-11-19",
+  "version": "v0.2.0-rc.13",
+  "recordedAt": "2026-11-20T04:09:43.476Z",
+  "status": "ZELLIJ_HOME released, managed channels accepted, local standalone install/cache migrated, private client handoff migrated, public guides deployed. Live provider checks and reviewed prior-candidate retirement remain separate work.",
+  "source": {
+    "pr": 213,
+    "head": "39503d76afda5f144648b8f65ea5da9ac5a545c1",
+    "merge": "9206950a35bf845dc3d639baac740f8073ddd7ee",
+    "mergeTreeMatchesHead": true,
+    "ci": {
+      "id": 44662762033,
+      "name": "CI",
+      "head": "39503d76afda5f144648b8f65ea5da9ac5a545c1",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44662762033",
+      "jobs": [
+        {
+          "id": 136044814891,
+          "name": "Native images (arm64)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136044814976,
+          "name": "CLI",
+          "conclusion": "success"
+        },
+        {
+          "id": 136044814982,
+          "name": "Portable docs (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136044815001,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136044815026,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136044815056,
+          "name": "Native images (amd64)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136044815092,
+          "name": "Engine",
+          "conclusion": "success"
+        },
+        {
+          "id": 136044815093,
+          "name": "Portable docs (macos-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136044815106,
+          "name": "Embedded schema is current",
+          "conclusion": "success"
+        },
+        {
+          "id": 136044815111,
+          "name": "Showcase end to end",
+          "conclusion": "success"
+        },
+        {
+          "id": 136044815165,
+          "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136044815179,
+          "name": "Rich website without HTTP",
+          "conclusion": "success"
+        },
+        {
+          "id": 136044815193,
+          "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136044815204,
+          "name": "websites / Websites (ubuntu-24.04-arm)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136044815222,
+          "name": "next-pdf / Next PDF (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136044815261,
+          "name": "native-packages / Compile shared rich renderer",
+          "conclusion": "success"
+        },
+        {
+          "id": 136044815264,
+          "name": "Website and book templates",
+          "conclusion": "success"
+        },
+        {
+          "id": 136044815271,
+          "name": "Portable docs (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136044815279,
+          "name": "websites / Websites (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136045196433,
+          "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136045196454,
+          "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136045196473,
+          "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136045196475,
+          "name": "native-packages / Package and install (aarch64-apple-darwin)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136045196486,
+          "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136045196578,
+          "name": "native-packages / Package and install (x86_64-apple-darwin)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136045988225,
+          "name": "Combined image manifests",
+          "conclusion": "success"
+        },
+        {
+          "id": 136048502987,
+          "name": "Rich standalone file website",
+          "conclusion": "success"
+        },
+        {
+          "id": 136048503118,
+          "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136048503147,
+          "name": "homebrew / Homebrew (macos-15-intel)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136048503149,
+          "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136048503156,
+          "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136048503193,
+          "name": "homebrew / Homebrew (macos-15)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136048503207,
+          "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136048503247,
+          "name": "homebrew / Homebrew (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 136048503253,
+          "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "initialWindowsPathFailure": {
+      "run": 44661261159,
+      "fixingCommit": "39503d76afda5f144648b8f65ea5da9ac5a545c1",
+      "cause": "Joining a multi-segment string produced mixed Windows separators; join each path component separately.",
+      "verifiedBy": 44662762033
+    }
+  },
+  "preflight": {
+    "rust": {
+      "passed": 823,
+      "failed": 0,
+      "ignored": 5
+    },
+    "engineTests": 540,
+    "typecheck": true,
+    "schemaDrift": true,
+    "clippy": true,
+    "format": true,
+    "strictNpmAudit": {
+      "full": "clean",
+      "production": "clean"
+    },
+    "cargoAudit": "Not run: cargo-audit is not installed."
+  },
+  "release": {
+    "id": 44667507062,
+    "name": "Release",
+    "head": "9206950a35bf845dc3d639baac740f8073ddd7ee",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/44667507062",
+    "jobs": [
+      {
+        "id": 136060297435,
+        "name": "Verify",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061696859,
+        "name": "Documentation site",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061696998,
+        "name": "Image maths \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061697042,
+        "name": "Image diagrams \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061697053,
+        "name": "Image all \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061697075,
+        "name": "Image none \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061697092,
+        "name": "Image all \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061697106,
+        "name": "Image maths \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061697115,
+        "name": "Image diagrams \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061697132,
+        "name": "Image none \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061697438,
+        "name": "binaries / Compile shared rich renderer",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061875033,
+        "name": "Publish image all",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061875056,
+        "name": "Publish image diagrams",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061875077,
+        "name": "Publish image none",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061875106,
+        "name": "Publish image maths",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061986998,
+        "name": "binaries / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061987039,
+        "name": "binaries / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061987041,
+        "name": "binaries / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061987057,
+        "name": "binaries / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061987119,
+        "name": "binaries / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136061987214,
+        "name": "binaries / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136066040285,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136066040328,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136066040367,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136066040547,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136067774553,
+        "name": "Publish the release",
+        "conclusion": "success"
+      },
+      {
+        "id": 136067936137,
+        "name": "Verify published artifacts / Published images (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136067936172,
+        "name": "Verify published artifacts / Published images (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136067936242,
+        "name": "Verify published artifacts / Published install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136067936245,
+        "name": "Verify published artifacts / Published install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136067936252,
+        "name": "Verify published artifacts / Published install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136067936268,
+        "name": "Verify published artifacts / Published Next PDF / Next PDF (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136067936300,
+        "name": "Verify published artifacts / Published install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136067936308,
+        "name": "Verify published artifacts / Published websites / Websites (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136067936345,
+        "name": "Verify published artifacts / Published install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136067936355,
+        "name": "Verify published artifacts / Published Next PDF / Next PDF (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136067936370,
+        "name": "Verify published artifacts / Published websites / Websites (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 136067936404,
+        "name": "Verify published artifacts / Published install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "publicAssets": {
+    "observedAt": "2026-11-20T03:46:27.147Z",
+    "version": "v0.2.0-rc.13",
+    "releases": [
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.13",
+        "id": 452241712,
+        "assets": [
+          {
+            "name": "install.ps1",
+            "size": 7573,
+            "digest": "sha256:f652f0ac06bf1794be6f48c32a22e8d0a78fece873f6b1d53102ed16069a07a1"
+          },
+          {
+            "name": "install.sh",
+            "size": 13685,
+            "digest": "sha256:fdaea859ada3b454522a2413dc5d7e59908cf6d506e24457e93cd8925a3297a0"
+          },
+          {
+            "name": "SHA256SUMS",
+            "size": 1355,
+            "digest": "sha256:88d56daa745397aec8187e4608b8fab5b53002a399ae8398ab495877d44303b8"
+          },
+          {
+            "name": "template-api-platform-0.1.1.tar.gz",
+            "size": 6078,
+            "digest": "sha256:8b5956182065f75d3a40f645e232e007aaeb48e72f216a1d66d5273c3ad81618"
+          },
+          {
+            "name": "template-book-classic-0.2.0.tar.gz",
+            "size": 4394,
+            "digest": "sha256:70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+          },
+          {
+            "name": "template-book-study-0.1.0.tar.gz",
+            "size": 3845,
+            "digest": "sha256:0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"
+          },
+          {
+            "name": "template-book-technical-0.1.0.tar.gz",
+            "size": 3959,
+            "digest": "sha256:8d350a0072bfb36f44edfb3f10f5961f3edf7d715eeb3641a2bc2bb1e4fbcf26"
+          },
+          {
+            "name": "template-creative-studio-0.1.1.tar.gz",
+            "size": 6006,
+            "digest": "sha256:cd466b6f20de000855be26cb48bdd8b646436af2156d9b6a5618bd8fea2df070"
+          },
+          {
+            "name": "template-product-docs-0.1.0.tar.gz",
+            "size": 1297,
+            "digest": "sha256:f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+          },
+          {
+            "name": "template-product-launch-0.1.1.tar.gz",
+            "size": 6220,
+            "digest": "sha256:2beb0aff4b006b5d30796088a4b82f949a4909c8ab0c485a78285cf164a89a3d"
+          },
+          {
+            "name": "template-product-studio-0.1.1.tar.gz",
+            "size": 2715,
+            "digest": "sha256:d7334e7826526b9e9b6eed4a534d8dfb219f45e98480362d6ada3dfa7064063f"
+          },
+          {
+            "name": "template-software-platform-0.1.1.tar.gz",
+            "size": 6101,
+            "digest": "sha256:c997dd28bd0bc166ece3e5aa0d352e52ef51386d473083cbbdc822a99c81890d"
+          },
+          {
+            "name": "templates-catalog.json",
+            "size": 9537,
+            "digest": "sha256:ee931f191bf1fbce7abc11e0e2b0d2d343e8575dae62db7b199fc217e1583736"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-darwin-arm64.tar.gz",
+            "size": 46744100,
+            "digest": "sha256:095a08840d1299daf23d15ce99f2fd25007cee63954b183e6e6b3598151fe8cc"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-darwin-arm64.tar.gz.sha256",
+            "size": 112,
+            "digest": "sha256:e95191688edf84122a7aa9719df8b046b7abe7b5f260db13c055d663178513ab"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-darwin-x64.tar.gz",
+            "size": 48098587,
+            "digest": "sha256:49a12f68e8ecd0fdc7486d2479d16d8179012bde0d46601b8eff4d2d4517ab4b"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-darwin-x64.tar.gz.sha256",
+            "size": 110,
+            "digest": "sha256:5152c4356f5b20212fd388b343691861b7c1f0ed5bc78d2ad3d591cbc894926c"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-linux-arm64.tar.gz",
+            "size": 51811313,
+            "digest": "sha256:d7d67de1497f8d90b7db28e2d16efae29ff45d93ecb11ec7e8681e73ac8de415"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-linux-arm64.tar.gz.sha256",
+            "size": 111,
+            "digest": "sha256:439ac94dee92dff04c7723ea4fac2a1b4e8cdc03dd0390852e1155caae8d1839"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-linux-x64.tar.gz",
+            "size": 52129421,
+            "digest": "sha256:2cc1d9b638cbf0d15bf597a3a43fdeb7ed5075e66187f668a3289ed7d2f7ccce"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-linux-x64.tar.gz.sha256",
+            "size": 109,
+            "digest": "sha256:5b6afa39b9883cd92535abe4bf5f4d6113a80d5d7cc231083f8904edad0eb758"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-win-arm64.tar.gz",
+            "size": 38271114,
+            "digest": "sha256:fb09e3ee641f5951139613400ebb17fc2579acb4521379ea43afd007df4dc38c"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-win-arm64.tar.gz.sha256",
+            "size": 109,
+            "digest": "sha256:04b1516eb65c6956fe6176e149854c281c8e56816e57b950caace074b389d9c8"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-win-x64.tar.gz",
+            "size": 42324797,
+            "digest": "sha256:40e4f968e1f1f4762c26fe5d98ce3cf0605a80d5ae29085cb4d2c47786466c06"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-win-x64.tar.gz.sha256",
+            "size": 107,
+            "digest": "sha256:03d6f6312151e9729f48d523ed1387866b27d7ddb905c224c5164895d7ce7c7a"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-aarch64-apple-darwin.tar.gz",
+            "size": 9933612,
+            "digest": "sha256:e393bb381875f214e339f44c5a7e5806dca47e959dbc9f79957974ee06e9f97d"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-aarch64-apple-darwin.tar.gz.sha256",
+            "size": 111,
+            "digest": "sha256:5afc1b2c073b80b3575fb54c81000f293ed9fc6117f71f7ed8c2ccc130ee59f3"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-aarch64-pc-windows-msvc.zip",
+            "size": 10330265,
+            "digest": "sha256:b3c92f9de0a29adde4456d5c99afaaf3dbee34da36cc31f1649d9c6e7d432cc1"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-aarch64-pc-windows-msvc.zip.sha256",
+            "size": 111,
+            "digest": "sha256:247b38d10fab90a777307638fed2684de77d0eedb15684d28e52d9183644cbad"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-aarch64-unknown-linux-gnu.tar.gz",
+            "size": 10176828,
+            "digest": "sha256:0983aa4e4c5d483fe3ced358c72a13edae5a8a4ef12f645a5f1743205077ae74"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-aarch64-unknown-linux-gnu.tar.gz.sha256",
+            "size": 116,
+            "digest": "sha256:9991ecb47b685e1cc9e95fe77eca41cf40d653ff3d5e9c141718540fb5f8755e"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-x86_64-apple-darwin.tar.gz",
+            "size": 10026912,
+            "digest": "sha256:48e5ba0e8d91ef8e7d8f8a469ce60371cf39a01ebba7721148a898e8cc14a577"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-x86_64-apple-darwin.tar.gz.sha256",
+            "size": 110,
+            "digest": "sha256:bd4caf6a52094e0f356079d13b3e66ddc62580a50e473d2de5471dbefed402e4"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-x86_64-pc-windows-msvc.zip",
+            "size": 10504169,
+            "digest": "sha256:467060813d29be7e83ecae2f63a82e44dbf102c1027a2f3f84caae89a668758f"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-x86_64-pc-windows-msvc.zip.sha256",
+            "size": 110,
+            "digest": "sha256:9a38b951b56a896641bc5838504ef76db82b74b41b1a4513384e3812ba40e249"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-x86_64-unknown-linux-gnu.tar.gz",
+            "size": 10315571,
+            "digest": "sha256:a16107a738d4eab9355aa100197c24c4974cbebdab905f952502e8d603b38b2e"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-x86_64-unknown-linux-gnu.tar.gz.sha256",
+            "size": 115,
+            "digest": "sha256:311619c93e67230f236fe8af426a715ce324ba4dd2ed23da0c07f3e07f4806e2"
+          },
+          {
+            "name": "zel.json",
+            "size": 1534,
+            "digest": "sha256:5043f9175a973aab3257e9f6968289112277400e0cd0460ace46b2574753f41b"
+          },
+          {
+            "name": "zel.rb",
+            "size": 2410,
+            "digest": "sha256:63f5c6585ea4d242c76ddc5ba35ec026f806951d5a268bf77191ff5e0b8b76e6"
+          }
+        ]
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.13",
+        "id": 452241760,
+        "assets": [
+          {
+            "name": "install.ps1",
+            "size": 7573,
+            "digest": "sha256:f652f0ac06bf1794be6f48c32a22e8d0a78fece873f6b1d53102ed16069a07a1"
+          },
+          {
+            "name": "install.sh",
+            "size": 13685,
+            "digest": "sha256:fdaea859ada3b454522a2413dc5d7e59908cf6d506e24457e93cd8925a3297a0"
+          },
+          {
+            "name": "SHA256SUMS",
+            "size": 1355,
+            "digest": "sha256:88d56daa745397aec8187e4608b8fab5b53002a399ae8398ab495877d44303b8"
+          },
+          {
+            "name": "template-api-platform-0.1.1.tar.gz",
+            "size": 6078,
+            "digest": "sha256:8b5956182065f75d3a40f645e232e007aaeb48e72f216a1d66d5273c3ad81618"
+          },
+          {
+            "name": "template-book-classic-0.2.0.tar.gz",
+            "size": 4394,
+            "digest": "sha256:70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+          },
+          {
+            "name": "template-book-study-0.1.0.tar.gz",
+            "size": 3845,
+            "digest": "sha256:0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"
+          },
+          {
+            "name": "template-book-technical-0.1.0.tar.gz",
+            "size": 3959,
+            "digest": "sha256:8d350a0072bfb36f44edfb3f10f5961f3edf7d715eeb3641a2bc2bb1e4fbcf26"
+          },
+          {
+            "name": "template-creative-studio-0.1.1.tar.gz",
+            "size": 6006,
+            "digest": "sha256:cd466b6f20de000855be26cb48bdd8b646436af2156d9b6a5618bd8fea2df070"
+          },
+          {
+            "name": "template-product-docs-0.1.0.tar.gz",
+            "size": 1297,
+            "digest": "sha256:f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+          },
+          {
+            "name": "template-product-launch-0.1.1.tar.gz",
+            "size": 6220,
+            "digest": "sha256:2beb0aff4b006b5d30796088a4b82f949a4909c8ab0c485a78285cf164a89a3d"
+          },
+          {
+            "name": "template-product-studio-0.1.1.tar.gz",
+            "size": 2715,
+            "digest": "sha256:d7334e7826526b9e9b6eed4a534d8dfb219f45e98480362d6ada3dfa7064063f"
+          },
+          {
+            "name": "template-software-platform-0.1.1.tar.gz",
+            "size": 6101,
+            "digest": "sha256:c997dd28bd0bc166ece3e5aa0d352e52ef51386d473083cbbdc822a99c81890d"
+          },
+          {
+            "name": "templates-catalog.json",
+            "size": 9537,
+            "digest": "sha256:ee931f191bf1fbce7abc11e0e2b0d2d343e8575dae62db7b199fc217e1583736"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-darwin-arm64.tar.gz",
+            "size": 46744100,
+            "digest": "sha256:095a08840d1299daf23d15ce99f2fd25007cee63954b183e6e6b3598151fe8cc"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-darwin-arm64.tar.gz.sha256",
+            "size": 112,
+            "digest": "sha256:e95191688edf84122a7aa9719df8b046b7abe7b5f260db13c055d663178513ab"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-darwin-x64.tar.gz",
+            "size": 48098587,
+            "digest": "sha256:49a12f68e8ecd0fdc7486d2479d16d8179012bde0d46601b8eff4d2d4517ab4b"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-darwin-x64.tar.gz.sha256",
+            "size": 110,
+            "digest": "sha256:5152c4356f5b20212fd388b343691861b7c1f0ed5bc78d2ad3d591cbc894926c"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-linux-arm64.tar.gz",
+            "size": 51811313,
+            "digest": "sha256:d7d67de1497f8d90b7db28e2d16efae29ff45d93ecb11ec7e8681e73ac8de415"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-linux-arm64.tar.gz.sha256",
+            "size": 111,
+            "digest": "sha256:439ac94dee92dff04c7723ea4fac2a1b4e8cdc03dd0390852e1155caae8d1839"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-linux-x64.tar.gz",
+            "size": 52129421,
+            "digest": "sha256:2cc1d9b638cbf0d15bf597a3a43fdeb7ed5075e66187f668a3289ed7d2f7ccce"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-linux-x64.tar.gz.sha256",
+            "size": 109,
+            "digest": "sha256:5b6afa39b9883cd92535abe4bf5f4d6113a80d5d7cc231083f8904edad0eb758"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-win-arm64.tar.gz",
+            "size": 38271114,
+            "digest": "sha256:fb09e3ee641f5951139613400ebb17fc2579acb4521379ea43afd007df4dc38c"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-win-arm64.tar.gz.sha256",
+            "size": 109,
+            "digest": "sha256:04b1516eb65c6956fe6176e149854c281c8e56816e57b950caace074b389d9c8"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-win-x64.tar.gz",
+            "size": 42324797,
+            "digest": "sha256:40e4f968e1f1f4762c26fe5d98ce3cf0605a80d5ae29085cb4d2c47786466c06"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.13-win-x64.tar.gz.sha256",
+            "size": 107,
+            "digest": "sha256:03d6f6312151e9729f48d523ed1387866b27d7ddb905c224c5164895d7ce7c7a"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-aarch64-apple-darwin.tar.gz",
+            "size": 9933612,
+            "digest": "sha256:e393bb381875f214e339f44c5a7e5806dca47e959dbc9f79957974ee06e9f97d"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-aarch64-apple-darwin.tar.gz.sha256",
+            "size": 111,
+            "digest": "sha256:5afc1b2c073b80b3575fb54c81000f293ed9fc6117f71f7ed8c2ccc130ee59f3"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-aarch64-pc-windows-msvc.zip",
+            "size": 10330265,
+            "digest": "sha256:b3c92f9de0a29adde4456d5c99afaaf3dbee34da36cc31f1649d9c6e7d432cc1"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-aarch64-pc-windows-msvc.zip.sha256",
+            "size": 111,
+            "digest": "sha256:247b38d10fab90a777307638fed2684de77d0eedb15684d28e52d9183644cbad"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-aarch64-unknown-linux-gnu.tar.gz",
+            "size": 10176828,
+            "digest": "sha256:0983aa4e4c5d483fe3ced358c72a13edae5a8a4ef12f645a5f1743205077ae74"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-aarch64-unknown-linux-gnu.tar.gz.sha256",
+            "size": 116,
+            "digest": "sha256:9991ecb47b685e1cc9e95fe77eca41cf40d653ff3d5e9c141718540fb5f8755e"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-x86_64-apple-darwin.tar.gz",
+            "size": 10026912,
+            "digest": "sha256:48e5ba0e8d91ef8e7d8f8a469ce60371cf39a01ebba7721148a898e8cc14a577"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-x86_64-apple-darwin.tar.gz.sha256",
+            "size": 110,
+            "digest": "sha256:bd4caf6a52094e0f356079d13b3e66ddc62580a50e473d2de5471dbefed402e4"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-x86_64-pc-windows-msvc.zip",
+            "size": 10504169,
+            "digest": "sha256:467060813d29be7e83ecae2f63a82e44dbf102c1027a2f3f84caae89a668758f"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-x86_64-pc-windows-msvc.zip.sha256",
+            "size": 110,
+            "digest": "sha256:9a38b951b56a896641bc5838504ef76db82b74b41b1a4513384e3812ba40e249"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-x86_64-unknown-linux-gnu.tar.gz",
+            "size": 10315571,
+            "digest": "sha256:a16107a738d4eab9355aa100197c24c4974cbebdab905f952502e8d603b38b2e"
+          },
+          {
+            "name": "zel-v0.2.0-rc.13-x86_64-unknown-linux-gnu.tar.gz.sha256",
+            "size": 115,
+            "digest": "sha256:311619c93e67230f236fe8af426a715ce324ba4dd2ed23da0c07f3e07f4806e2"
+          },
+          {
+            "name": "zel.json",
+            "size": 1534,
+            "digest": "sha256:5043f9175a973aab3257e9f6968289112277400e0cd0460ace46b2574753f41b"
+          },
+          {
+            "name": "zel.rb",
+            "size": 2410,
+            "digest": "sha256:63f5c6585ea4d242c76ddc5ba35ec026f806951d5a268bf77191ff5e0b8b76e6"
+          }
+        ]
+      }
+    ],
+    "downloaded": [
+      "SHA256SUMS",
+      "install.ps1",
+      "install.sh",
+      "templates-catalog.json",
+      "zel-v0.2.0-rc.13-aarch64-apple-darwin.tar.gz",
+      "zel-v0.2.0-rc.13-aarch64-apple-darwin.tar.gz.sha256",
+      "zel-v0.2.0-rc.13-aarch64-pc-windows-msvc.zip",
+      "zel-v0.2.0-rc.13-aarch64-pc-windows-msvc.zip.sha256",
+      "zel-v0.2.0-rc.13-x86_64-apple-darwin.tar.gz",
+      "zel-v0.2.0-rc.13-x86_64-apple-darwin.tar.gz.sha256",
+      "zel-v0.2.0-rc.13-x86_64-pc-windows-msvc.zip",
+      "zel-v0.2.0-rc.13-x86_64-pc-windows-msvc.zip.sha256",
+      "zel.json",
+      "zel.rb"
+    ],
+    "catalogVerified": true,
+    "templateArchiveDigestsUnchangedFrom": "v0.2.0-rc.12"
+  },
+  "actualManagedUpgradeLogEvidence": [
+    {
+      "repository": "mylife-inc/homebrew-tap",
+      "run": 44670720377,
+      "job": 136070762379,
+      "name": "Install, upgrade and uninstall (macos-15)",
+      "proof": "Verified actual CLI upgrade: 0.2.0-rc.12 to 0.2.0-rc.13"
+    },
+    {
+      "repository": "mylife-inc/homebrew-tap",
+      "run": 44670720377,
+      "job": 136070762593,
+      "name": "Install, upgrade and uninstall (ubuntu-latest)",
+      "proof": "Verified actual CLI upgrade: 0.2.0-rc.12 to 0.2.0-rc.13"
+    },
+    {
+      "repository": "mylife-inc/homebrew-tap",
+      "run": 44670720377,
+      "job": 136070762637,
+      "name": "Install, upgrade and uninstall (ubuntu-24.04-arm)",
+      "proof": "Verified actual CLI upgrade: 0.2.0-rc.12 to 0.2.0-rc.13"
+    },
+    {
+      "repository": "mylife-inc/homebrew-tap",
+      "run": 44670720377,
+      "job": 136070762647,
+      "name": "Install, upgrade and uninstall (macos-15-intel)",
+      "proof": "Verified actual CLI upgrade: 0.2.0-rc.12 to 0.2.0-rc.13"
+    },
+    {
+      "repository": "mylife-inc/scoop-bucket",
+      "run": 44671312203,
+      "job": 136072723494,
+      "name": "Scoop (aarch64-pc-windows-msvc, pwsh)",
+      "proof": "Verified actual CLI upgrade: 0.2.0-rc.12 to 0.2.0-rc.13"
+    },
+    {
+      "repository": "mylife-inc/scoop-bucket",
+      "run": 44671312203,
+      "job": 136072723699,
+      "name": "Scoop (x86_64-pc-windows-msvc, pwsh)",
+      "proof": "Verified actual CLI upgrade: 0.2.0-rc.12 to 0.2.0-rc.13"
+    },
+    {
+      "repository": "mylife-inc/scoop-bucket",
+      "run": 44671312203,
+      "job": 136072723730,
+      "name": "Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+      "proof": "Verified actual CLI upgrade: 0.2.0-rc.12 to 0.2.0-rc.13"
+    },
+    {
+      "repository": "mylife-inc/scoop-bucket",
+      "run": 44671312203,
+      "job": 136072724338,
+      "name": "Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+      "proof": "Verified actual CLI upgrade: 0.2.0-rc.12 to 0.2.0-rc.13"
+    }
+  ],
+  "managedChannels": {
+    "homebrew": {
+      "commit": "57ef469a7288f9501a4dcf6ad19cbe9b8b430229",
+      "upgradeFromCommit": "01b0293a0f2a3eb4ad648f9911031a7b4c0776ed",
+      "run": {
+        "id": 44670720377,
+        "name": "Public Homebrew acceptance",
+        "head": "57ef469a7288f9501a4dcf6ad19cbe9b8b430229",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/homebrew-tap/actions/runs/44670720377",
+        "jobs": [
+          {
+            "id": 136070762379,
+            "name": "Install, upgrade and uninstall (macos-15)",
+            "conclusion": "success"
+          },
+          {
+            "id": 136070762593,
+            "name": "Install, upgrade and uninstall (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "id": 136070762637,
+            "name": "Install, upgrade and uninstall (ubuntu-24.04-arm)",
+            "conclusion": "success"
+          },
+          {
+            "id": 136070762647,
+            "name": "Install, upgrade and uninstall (macos-15-intel)",
+            "conclusion": "success"
+          }
+        ]
+      }
+    },
+    "scoop": {
+      "commit": "7bbac3cac96871f6987db6a526490b9c3a1cdeea",
+      "upgradeFrom": "v0.2.0-rc.12",
+      "run": {
+        "id": 44671312203,
+        "name": "Public Scoop acceptance",
+        "head": "7bbac3cac96871f6987db6a526490b9c3a1cdeea",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/scoop-bucket/actions/runs/44671312203",
+        "jobs": [
+          {
+            "id": 136072723494,
+            "name": "Scoop (aarch64-pc-windows-msvc, pwsh)",
+            "conclusion": "success"
+          },
+          {
+            "id": 136072723699,
+            "name": "Scoop (x86_64-pc-windows-msvc, pwsh)",
+            "conclusion": "success"
+          },
+          {
+            "id": 136072723730,
+            "name": "Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+            "conclusion": "success"
+          },
+          {
+            "id": 136072724338,
+            "name": "Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+            "conclusion": "success"
+          }
+        ]
+      },
+      "testCorrection": {
+        "pr": 215,
+        "head": "c1c7daaf302d239ad203a20c089d0cbf869e7471",
+        "merge": "1c5b0aef5b7b2590d76e43b6fa90d45f668cd055",
+        "localRegressionTests": 21,
+        "initialRun": 44670723691,
+        "cause": "The old release installers were compared to the current source. Fetch previous expected installers from their own validated source tag, retaining integrity verification. Published product artifacts are unchanged.",
+        "initialRunOutcome": {
+          "conclusion": "cancelled",
+          "failedJobs": 3,
+          "cancelledJobs": 1,
+          "reason": "Superseded by the corrected workflow after the diagnosed previous-installer comparison failure."
+        },
+        "mergeTreeMatchesHead": true
+      }
+    },
+    "mirror": {
+      "commit": "49ff9ef284b8074c11aa0ca404824049dfa941c9",
+      "scope": [
+        "zellij/README.md",
+        "zellij/install.sh",
+        "zellij/install.ps1"
+      ]
+    }
+  },
+  "guides": {
+    "pr": 214,
+    "head": "d7f748c2923f6d6c9adcbf13d9e412d339f3bd8f",
+    "merge": "05a062dac93f12ea39555160caec7a01c08032e1",
+    "mergeTreeMatchesHead": true,
+    "executableSourceUnchangedFromRelease": true,
+    "workflows": [
+      {
+        "id": 44669980020,
+        "name": "Deploy documentation",
+        "head": "d7f748c2923f6d6c9adcbf13d9e412d339f3bd8f",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44669980020",
+        "jobs": [
+          {
+            "name": "Validate and build documentation",
+            "conclusion": "success"
+          },
+          {
+            "name": "Publish production documentation",
+            "conclusion": "skipped"
+          }
+        ]
+      },
+      {
+        "id": 44669980071,
+        "name": "Documentation (acceptance-portable.yml)",
+        "head": "d7f748c2923f6d6c9adcbf13d9e412d339f3bd8f",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44669980071",
+        "jobs": [
+          {
+            "name": "verify",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "id": 44669979788,
+        "name": "Documentation (acceptance-hosted.yml)",
+        "head": "d7f748c2923f6d6c9adcbf13d9e412d339f3bd8f",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44669979788",
+        "jobs": [
+          {
+            "name": "verify",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "id": 44669979748,
+        "name": "Documentation (acceptance-netlify-hosted.yml)",
+        "head": "d7f748c2923f6d6c9adcbf13d9e412d339f3bd8f",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44669979748",
+        "jobs": [
+          {
+            "name": "verify",
+            "conclusion": "success"
+          },
+          {
+            "name": "publish",
+            "conclusion": "skipped"
+          }
+        ]
+      },
+      {
+        "id": 44669979817,
+        "name": "Documentation (acceptance-next.yml)",
+        "head": "d7f748c2923f6d6c9adcbf13d9e412d339f3bd8f",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44669979817",
+        "jobs": [
+          {
+            "name": "verify",
+            "conclusion": "success"
+          },
+          {
+            "name": "publish",
+            "conclusion": "skipped"
+          }
+        ]
+      },
+      {
+        "id": 44669979800,
+        "name": "Documentation (acceptance-netlify-portable.yml)",
+        "head": "d7f748c2923f6d6c9adcbf13d9e412d339f3bd8f",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44669979800",
+        "jobs": [
+          {
+            "name": "verify",
+            "conclusion": "success"
+          },
+          {
+            "name": "publish",
+            "conclusion": "skipped"
+          }
+        ]
+      },
+      {
+        "id": 44669979780,
+        "name": "Documentation (acceptance-static.yml)",
+        "head": "d7f748c2923f6d6c9adcbf13d9e412d339f3bd8f",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44669979780",
+        "jobs": [
+          {
+            "name": "verify",
+            "conclusion": "success"
+          },
+          {
+            "name": "publish",
+            "conclusion": "skipped"
+          }
+        ]
+      }
+    ],
+    "localFileBrowser": {
+      "routes": 59,
+      "browsers": [
+        "Chromium",
+        "WebKit"
+      ],
+      "pageErrors": 0,
+      "httpRequests": 0,
+      "headingCheck": "Compares client heading count with SSR; existing section demos intentionally render multiple H1 examples."
+    },
+    "production": {
+      "id": 44670647146,
+      "name": "Deploy documentation",
+      "head": "05a062dac93f12ea39555160caec7a01c08032e1",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44670647146",
+      "jobs": [
+        {
+          "id": 136070507243,
+          "name": "Validate and build documentation",
+          "conclusion": "success"
+        },
+        {
+          "id": 136071361645,
+          "name": "Publish production documentation",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "receipt": {
+      "source": "05a062dac93f12ea39555160caec7a01c08032e1",
+      "site_id": "91774174-d4c2-41b5-aa4b-ac61eeadbf51",
+      "domain": "zellij.shebka.net",
+      "deploy_id": "6affc4c6de4fdf5feecb44d7",
+      "previous_deploy_id": "6affbf0fae460df35b591894",
+      "preview": "https://6affc4c6de4fdf5feecb44d7--zellij-docs.netlify.app",
+      "state": "verified",
+      "published_at": "2026-11-20T03:56:02.149Z"
+    },
+    "liveVerification": {
+      "verifiedAt": "2026-11-20T03:59:29.952Z",
+      "browser": "Chrome",
+      "pages": [
+        {
+          "route": "/cli/config",
+          "status": 200,
+          "expectedText": [
+            "Zellij home",
+            "ZELLIJ_HOME",
+            "~/Dev/config/zellij",
+            "Homebrew"
+          ]
+        },
+        {
+          "route": "/cli/build",
+          "status": 200,
+          "expectedText": [
+            "--offline",
+            "0.2.0-rc.13",
+            "ZELLIJ_HOME"
+          ]
+        },
+        {
+          "route": "/guide/quickstart",
+          "status": 200,
+          "expectedText": [
+            "zel",
+            "Docker"
+          ]
+        }
+      ],
+      "pageErrors": []
+    },
+    "mainImage": {
+      "id": 44670647166,
+      "name": "Base image",
+      "head": "05a062dac93f12ea39555160caec7a01c08032e1",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44670647166",
+      "jobs": [
+        {
+          "id": 136070507273,
+          "name": "maths \u00b7 arm64",
+          "conclusion": "success"
+        },
+        {
+          "id": 136070507505,
+          "name": "all \u00b7 amd64",
+          "conclusion": "success"
+        },
+        {
+          "id": 136070507646,
+          "name": "all \u00b7 arm64",
+          "conclusion": "success"
+        },
+        {
+          "id": 136070507832,
+          "name": "none \u00b7 amd64",
+          "conclusion": "success"
+        },
+        {
+          "id": 136070507921,
+          "name": "diagrams \u00b7 arm64",
+          "conclusion": "success"
+        },
+        {
+          "id": 136070508236,
+          "name": "diagrams \u00b7 amd64",
+          "conclusion": "success"
+        },
+        {
+          "id": 136070508338,
+          "name": "maths \u00b7 amd64",
+          "conclusion": "success"
+        },
+        {
+          "id": 136070508371,
+          "name": "none \u00b7 arm64",
+          "conclusion": "success"
+        },
+        {
+          "id": 136071306898,
+          "name": "Publish maths",
+          "conclusion": "success"
+        },
+        {
+          "id": 136071306947,
+          "name": "Publish all",
+          "conclusion": "success"
+        },
+        {
+          "id": 136071306962,
+          "name": "Publish none",
+          "conclusion": "success"
+        },
+        {
+          "id": 136071306976,
+          "name": "Publish diagrams",
+          "conclusion": "success"
+        },
+        {
+          "id": 136071462158,
+          "name": "The image can build a site",
+          "conclusion": "success"
+        }
+      ]
+    }
+  },
+  "localInstallation": {
+    "version": "0.2.0-rc.13",
+    "defaultResourceHome": "~/Dev/config/zellij",
+    "standaloneBinary": "~/Dev/config/zellij/bin/zel",
+    "binarySha256": "7a0a4caf03e24238c7fbfcd18b9ea642017c7690c74fc523a2f09c35e8cf4b1e",
+    "shellPathVerified": true,
+    "oldStandalonePath": "Compatibility symlink to the new executable",
+    "priorBinaryAndProfile": "Preserved in a dated private backup",
+    "priorRenderer": "Moved intact beneath the new resource home; rc.13 renderer downloaded separately",
+    "homebrewOrScoopRelocated": false
+  },
+  "privateHandoff": {
+    "clientContentPublished": false,
+    "editableSourceTrees": 1,
+    "sourceChapters": 199,
+    "siteRoutes": 200,
+    "referencedResources": 244,
+    "chapterTextTitlesAndRecordedAnchorsPreserved": true,
+    "resourceBytesPreserved": true,
+    "publicBinaries": [
+      "macOS x64",
+      "macOS ARM64",
+      "Windows x64",
+      "Windows ARM64"
+    ],
+    "publicBuild": {
+      "version": "0.2.0-rc.13",
+      "systemPathEmpty": true,
+      "defaultResourceHome": true,
+      "initialCacheMissing": true,
+      "offlineRebuildIdentical": true,
+      "files": 535,
+      "matchesBrowserTestedSite": true
+    },
+    "browser": {
+      "browsers": [
+        "Chromium",
+        "WebKit"
+      ],
+      "routesPerBrowser": 200,
+      "pageErrors": 0,
+      "httpRequests": 0,
+      "menuThemesAndMobile": true
+    },
+    "optionalNextWrapper": {
+      "productionBuildPassed": true,
+      "contentRoutes": 200,
+      "platform": "Intel macOS"
+    },
+    "finalGenerateScript": {
+      "offline": true,
+      "systemToolsOnly": [
+        "uname",
+        "dirname",
+        "chmod"
+      ],
+      "manifestFilesUnchanged": 1100
+    },
+    "package": {
+      "files": 1101,
+      "bytes": 193317027,
+      "allMemberHashesVerified": true,
+      "macExecuteBitsPreserved": true,
+      "durablePriorFolderAndZipBackup": true
+    },
+    "limits": "Complete client-specific generation/browser testing on Intel macOS; release-native platform coverage does not assert complete client execution on Windows/Apple Silicon. Browser mobile emulation is not a physical iPhone test."
+  },
+  "nonPasses": {
+    "cancelledDuplicateCodeRuns": [
+      44667179745,
+      44669979868,
+      44670647240,
+      44671310313,
+      44672479401
+    ],
+    "explanation": "Source code passed its full 35-job suite. Guide changes contain content and release pins only; targeted docs and six consumer workflows passed. The later test-only correction passed 21 local regression tests and its four native Scoop upgrade jobs. These deliberate cancellations are not counted as passes.",
+    "initialDocsPublication": {
+      "run": 44667179804,
+      "firstAttempt": "Draft upload failed before production promotion; no secret/account change.",
+      "secondAttempt": "Failed jobs rerun succeeded and verified production.",
+      "receipt": {
+        "source": "9206950a35bf845dc3d639baac740f8073ddd7ee",
+        "site_id": "91774174-d4c2-41b5-aa4b-ac61eeadbf51",
+        "domain": "zellij.shebka.net",
+        "deploy_id": "6affbf0fae460df35b591894",
+        "previous_deploy_id": "6aff93c9718dfd08ed1c874c",
+        "preview": "https://6affbf0fae460df35b591894--zellij-docs.netlify.app",
+        "state": "verified",
+        "published_at": "2026-11-20T03:31:31.342Z"
+      }
+    },
+    "cancelledDuplicateMainImageRuns": [
+      44672479259
+    ]
+  },
+  "limitations": [
+    "Pre-1.0 candidate; no zero-bug assertion.",
+    "First rich build requires the matching renderer download; cached builds support --offline.",
+    "Containers/development/PDF commands retain their documented prerequisites.",
+    "Managed package binaries remain owned by Homebrew/Scoop.",
+    "Unrelated live provider checks and old-candidate retirement are deferred."
+  ]
+}
