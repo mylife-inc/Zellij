@@ -16,8 +16,9 @@ execFileSync(process.execPath, ['scripts/fetch-scoop-release.mjs', version, dest
 const sums = await readFile(path.join(destination, 'x86_64-pc-windows-msvc/SHA256SUMS'), 'utf8');
 const documents = wingetManifests(version, sums);
 const name = `zel-winget-${version}.zip`;
-const checksums = sums.trim().split(/\r?\n/).map(line => line.trim().split(/\s+/));
-const entries = checksums.filter(([, file]) => file === name);
+const checksums = sums.trim().split(/\r?\n/).map(line => /^([a-fA-F0-9]{64})\s+\*?(?:\.\/)?([^\s]+)$/.exec(line));
+assert(checksums.every(Boolean), 'Malformed combined checksum manifest');
+const entries = checksums.filter(([, , file]) => file === name);
 assert.equal(entries.length, 1, 'Expected exactly one manifest-bundle checksum');
 const url = `https://github.com/mylife-inc/releases/releases/download/zellij-${version}/${name}`;
 const response = await fetch(url, { signal: AbortSignal.timeout(60000) });
@@ -27,7 +28,7 @@ for await (const chunk of response.body) {
   size += chunk.length; assert(size <= 1024 * 1024, 'Manifest bundle exceeds size limit'); chunks.push(chunk);
 }
 const bytes = Buffer.concat(chunks);
-assert.equal(createHash('sha256').update(bytes).digest('hex'), entries[0][0].toLowerCase());
+assert.equal(createHash('sha256').update(bytes).digest('hex'), entries[0][1].toLowerCase());
 const archive = path.resolve(destination, name); await writeFile(archive, bytes, { flag: 'wx' });
 const members = execFileSync('tar', ['-tf', archive], { encoding: 'utf8', timeout: 10000 }).trim().split(/\r?\n/);
 assert.deepEqual([...members].sort(), Object.keys(documents).sort(), 'Unexpected manifest bundle members');
