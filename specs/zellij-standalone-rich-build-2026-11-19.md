@@ -1,5 +1,33 @@
 # Standalone rich website builds
 
+**Released 2026-11-19:** PR #211 merged as `73979de`, exactly matching the
+35-job passing source tree at `5a03e13`. Immutable `v0.2.0-rc.12` is published
+in both repositories. All 38 release jobs pass, including the six native
+standalone builds and final public-artifact acceptance. Homebrew and Scoop
+have each passed four public lifecycle/actual rc.11-to-rc.12 upgrade jobs.
+The installed Mac CLI also passes first-download and byte-identical offline
+builds with an empty PATH, followed by a clean Chromium/WebKit file crawl.
+The final published Mac Intel archives are 10,026,371 bytes (CLI) and
+48,098,596 bytes (separately cached renderer).
+
+Updated public guides in PR #212 pass strict/deep validation, a 59-route
+Chromium/WebKit file crawl, all 35 general CI jobs and six build-only consumers.
+They merge as `de409a6` with an identical tested tree. Automatic production run
+`44645212486` passes both jobs and verifies deploy `6aff93c9718dfd08ed1c874c`.
+The public build guide independently matches the checked artifact. See
+[release evidence](evidence/zellij-rc12-release-2026-11-19.json).
+
+All 224 website and 420 PDF-page captures match source verification. Six of 56
+additional book-browser captures differ in theme-icon shading or PDF-link focus
+outlines; their precise cause remains unresolved. They are recorded separately,
+not silently counted as pixel matches. Live-provider checks, reviewed old-candidate
+retirement and migration of the private HP handoff scripts remain separate tasks.
+
+The older checkpoints below are retained as history and no longer describe
+whether the CLI, renderer and updated public guides are available.
+
+## Earlier implementation checkpoints
+
 Status: rc.12 implementation in progress, based on main `fbcb558`. No public
 renderer assets have been published. rc.11 is unchanged.
 

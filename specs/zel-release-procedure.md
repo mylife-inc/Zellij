@@ -1,5 +1,18 @@
 # Zellij release channels and candidate procedure
 
+**Current rc.12 distribution status — 2026-11-19.** Immutable `v0.2.0-rc.12` at `73979de`
+passes all 38 release jobs in `44637677186`, including final public-artifact
+checks. Both repositories have 39 matching asset digests. Homebrew and Scoop
+public lifecycle and actual rc.11-to-rc.12 upgrades pass on all eight managed
+cases. The standalone local Mac installation is updated and verified with an
+empty PATH, first renderer download and byte-identical offline rebuild.
+Public-guide PR #212 merges as `de409a6` after all 35 general CI jobs and six
+build-only consumers pass. Automatic production docs run `44645212486` verifies
+the promoted artifact; an independent live build-guide check matches it. See
+[rc.12 evidence](evidence/zellij-rc12-release-2026-11-19.json).
+Prior-candidate retirement remains pending; do not delete rc.11 or its images
+without the replacement-image gates and a reviewed scoped plan.
+
 **Documentation publication — 2026-11-19:** Production documentation now has its
 own `docs.yml` workflow, independent of release tags. See the
 [documentation publishing guide](zellij-docs-deployment.md). Earlier dated

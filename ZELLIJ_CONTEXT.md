@@ -3,6 +3,50 @@
 Last refreshed: **2026-11-19**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-19: standalone rich build — released and installed**
+
+PR #211 merged as `73979dede7c5029b014c72405b5ef71c9ed3e705`, with the same
+source tree as verified head `5a03e13`. All 35 source CI jobs pass. Immutable
+candidate `v0.2.0-rc.12` passes all 38 release jobs, including installed public
+artifacts from both repositories on all six native platforms. Both channels
+have the same 39 asset SHA-256 digests. All four Homebrew and all four Scoop
+public lifecycle/actual rc.11-to-rc.12 upgrade jobs pass. Normal preflight passes
+821 Rust tests (five existing hosted-only ignores), 540 engine tests and fresh
+dependency audits. This supersedes the pending implementation entries below.
+
+Rich `zel build` now defaults to `file`: it downloads a matching renderer once,
+then runs from a verified private cache, including `--offline`. Users install
+only `zel`; no external Docker, Node.js, npm, Python or Next compilation is
+needed for this operation. The package contains its own Node 24 runtime and
+precompiled shared engine/styles/fonts/browser runtime. The published Mac Intel
+CLI archive is 10,026,371 bytes; its separate renderer is 48,098,596 bytes.
+Explicit `--target static`, hosted development/check, images and PDF typesetting
+retain their documented prerequisites. Standard sections are precompiled;
+arbitrary application code or additional Tailwind compilation requires a wrapper.
+
+The user's standalone Mac installation is rc.12. A public product-launch starter
+built with an empty system PATH, downloaded its renderer into the default cache,
+and rebuilt byte-identically with `--offline`. Chromium and WebKit pass all
+four file:// routes with zero captured errors or HTTP requests. Private client
+documentation and its custom generation scripts were not modified in this task.
+
+The 59-route updated guide also passes a local Chromium/WebKit file crawl.
+Public-guide PR #212 passes all 35 CI jobs and six build-only consumer workflows,
+then merges as `de409a637461645f4bb478bfa4f6bf00d8a83349`, with an identical tested
+tree. Automatic docs run `44645212486` passes validation and publication.
+Production deploy `6aff93c9718dfd08ed1c874c` is verified at
+`2026-11-20T00:26:59.307Z`; the public build guide matches the checked artifact.
+Main image run `44645212454` passes all 13 jobs. The redundant main CI run is
+cancelled after tree equality, not reported as a test pass. See
+[the completed release evidence](specs/evidence/zellij-rc12-release-2026-11-19.json)
+and [the live build guide](https://zellij.shebka.net/cli/build).
+
+All 224 website captures and 420 PDF-page captures match the source verification.
+Six of 56 additional book-browser captures differ only in theme-icon shading or
+PDF-link focus outlines; their cause remains unconfirmed. Do not claim all 700
+captures match or that the product has zero bugs. Live-provider checks and
+reviewed prior-candidate retirement remain separate work.
+
 **2026-11-19: standalone rich build — implementation under verification**
 
 The user approved rich double-click generation without separately installed

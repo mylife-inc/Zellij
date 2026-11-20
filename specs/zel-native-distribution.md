@@ -1,5 +1,18 @@
 # Native package and installer contract
 
+**rc.12 published and verified (2026-11-19):** Both public release repositories
+contain the same 39 asset digests. Release run `44637677186` passes all 38 jobs,
+including six native installations and rich builds with no external build tools.
+Homebrew `44641069868` and Scoop `44641077969` each pass four public lifecycle
+and actual rc.11-to-rc.12 upgrade cases. The user's standalone Mac CLI is updated
+and verified. The CLI remains separate from the version/platform renderer;
+first use downloads that package, and verified cached builds work offline.
+Updated guides are live through automatic publication run `44645212486`; see
+[the complete release evidence](evidence/zellij-rc12-release-2026-11-19.json).
+
+The following preparation paragraph is historical; publication and hosted
+verification have now completed.
+
 **rc.12 preparation (2026-11-19):** The proposed rich `file` builder uses separate
 versioned renderer packages. First use downloads a SHA-256-checked archive from
 `mylife-inc/releases` at `zellij-v<CLI version>`; later builds reuse a validated
