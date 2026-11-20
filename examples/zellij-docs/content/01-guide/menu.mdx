@@ -51,7 +51,7 @@ Broken menu references (1):
 
 ## Drawers and panels
 
-In the next engine update after rc.11, every desktop drawer opens as a
+In rc.12, every desktop drawer opens as a
 viewport-wide band directly below the top bar. Plain leaf items form a responsive
 grid. A child with its own `items` creates a headed column, as in the `Resources`
 example above. Existing `menu.yaml` files need no migration. Long panels scroll
@@ -59,8 +59,7 @@ within the available viewport height, including when an announcement wraps.
 
 Panels slide down on hover or activation, with keyboard entry via ArrowDown,
 Escape dismissal and reduced-motion support. Mobile keeps the section drawer
-and Back navigation described below. Released rc.11 still uses compact panels
-for plain leaf lists; grouped menus are already full width in that release.
+and Back navigation described below.
 
 Optional per item: `description` and `icon` (a [lucide](https://lucide.dev)
 name, kebab-case; an unknown one fails the build), and `wide: true` to force
