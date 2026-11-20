@@ -31,6 +31,17 @@ runs alone does not establish a root cause or resolve them. See the
 new recurrences using retained evidence rather than silently erasing these
 findings or repeatedly running unrelated suites.
 
+WinGet work includes an implementation prerequisite, not just a manifest:
+[`zel upgrade` ownership detection](../cli/crates/zellij-cli/src/maintenance/upgrade.rs)
+currently reads the Homebrew/Scoop marker under a `bin/` parent layout. Add and
+test ownership handling for the actual WinGet installation layout before
+publishing that channel, so self-upgrade cannot bypass its package manager.
+The planned package uses the verified Windows x64/ARM64 binaries; validate
+installation, upgrade and uninstall on both architectures. Microsoft's
+[manifest guidance](https://learn.microsoft.com/en-us/windows/package-manager/package/manifest)
+and [submission process](https://learn.microsoft.com/en-us/windows/package-manager/package/repository)
+remain the external acceptance reference. No manifest has been submitted.
+
 Next order: complete private Windows acceptance when a machine is available,
 prepare and verify WinGet distribution, perform the scoped older-candidate
 retention audit, then return to deferred external acceptance. A supported
