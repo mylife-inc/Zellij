@@ -3,20 +3,25 @@ title: Containers
 description: How a site gets built without Node on your machine, and what the base image is.
 ---
 
-Zellij's hosted engine is a Next.js application, and building a hosted site means running it.
-Rather than require Node, a matching version and a lockfile on every machine
-that writes documentation, `zel` runs the engine in a container.
+Zellij uses a container for Next.js development, explicit Next static exports,
+image packaging and image-backed deployment. The container carries the engine
+and its build environment, so those operations do not require a separate Node
+installation on the user’s machine.
+
+Rich double-click websites use a downloaded, cached renderer instead:
+`zel build` needs only `zel`. Source rc.14 extends that workflow to rich `check`,
+`watch` and `view --watch`; rc.13 still needs a container for those commands.
 
 ```bash title="terminal"
 zel dev            # the engine, serving your folder
-zel build          # the engine, producing a site
+zel build --target static  # the Next engine, producing an HTTP-served site
 ```
 
 That is the whole of what most people need to know. You do not write a
 Dockerfile, and there is not one in your repository.
 
 Portable Markdown sites build and preview natively, without a container. These
-container instructions apply to hosted sites and image packaging.
+instructions apply to the explicit container operations above.
 
 ## The base image
 

@@ -41,7 +41,7 @@ try {
   }
   const env = hosted ? process.env : { ...process.env, PATH: path.join(root, 'no-tools'), DOCKER_HOST: 'fixture-invalid' };
   if (explicitConfig) await put('docs/zellij/zel.yaml', 'invalid default: [');
-  const args = ['watch', '--deep', '--strict', ...(explicitConfig ? ['--config', configRelative] : [])];
+  const args = ['watch', '--deep', '--strict', ...(hosted ? ['--target', 'static'] : []), ...(explicitConfig ? ['--config', configRelative] : [])];
   child = spawn(windows ? consoleRunner : zel, windows ? [zel, ...args] : args, { cwd: root, env, stdio: ['pipe', 'pipe', 'pipe'] });
   child.stdout.on('data', data => stdout += data);
   child.stderr.on('data', data => stderr += data);

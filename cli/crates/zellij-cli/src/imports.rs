@@ -187,8 +187,13 @@ pub(crate) fn convert(options: &ImportArgs, validate: bool) -> Result<()> {
     } else if validate || options.validate {
         crate::validation::check(
             Some(&zellij_core::site::SiteInput::from(options.out.as_str())),
-            None,
+            // Conversion's optional legacy container validation stays explicit;
+            // standalone authoring commands select the cached file renderer.
+            (crate::default_target(&zellij_core::site::SiteInput::from(options.out.as_str()))?
+                == "file")
+                .then_some("static"),
             Default::default(),
+            false,
             false,
         )
         .inspect_err(|_| retained(&options.out))?;

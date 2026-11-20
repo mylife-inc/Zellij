@@ -10,6 +10,14 @@ Status: **original design draft**. Consult [the project context](../ZELLIJ_CONTE
 for current implementation status; this command inventory is not proof that a
 command is implemented.
 
+**2026-11-19 implementation update:** the
+[standalone rich build contract](zellij-standalone-rich-build-2026-11-19.md)
+supersedes this draft's container requirement for rich file builds. The
+[standalone authoring contract](zellij-standalone-authoring-2026-11-19.md)
+prepares rc.14 validation and live preview with the same cached renderer.
+It defines `--target file`, `--offline` and the retained explicit container
+paths. The dated draft and earlier implementation notes below are history.
+
 The [2026-10-18 full CLI contract](zel-cli-contract-2026-10-18.md) is the current
 command-and-alias proposal following the user's layout decisions and the
 [published/local inventory](zel-cli-inventory-2026-10-17.md). It covers the full

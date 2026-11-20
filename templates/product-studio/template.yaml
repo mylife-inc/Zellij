@@ -1,9 +1,9 @@
 schema: 1
 id: product-studio
-version: 0.1.1
+version: 0.1.2
 title: Product studio
 description: An editorial product landing page and guide using existing Cupertino sections.
-minimum-cli: 0.2.0-rc.12
+minimum-cli: 0.2.0-rc.14
 minimum-engine: 0.2.0-rc.5
 renderer: hosted
 kind: site

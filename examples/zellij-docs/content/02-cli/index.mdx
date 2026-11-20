@@ -291,10 +291,14 @@ keep their distinct meanings; they are not interchangeable site selectors.
 Commands that only read the content model — `explain`, `list`, `context`,
 `detect`, `convert`, `new`, `fmt` — are pure Rust and need nothing installed.
 
-Hosted `check`, `watch`, `dev`, `view`, and explicit `build --target static` or
-`build --target image` commands run the Next.js engine in a container from a
-public image. Rich `build` defaults to the downloaded `file` renderer and needs
-no container.
+Hosted `dev` and explicit `build --target static` or `build --target image`
+commands run the Next.js engine in a container from a public image. Rich `build`
+defaults to the downloaded `file` renderer and needs no container.
+
+Source update for rc.14: rich `check`, `watch`, `view` and `view --watch` also
+default to that cached renderer. `--offline` requires an existing cache.
+Use `--target static` to select their container paths explicitly. In the
+currently published rc.13, rich checks and previews still require a container.
 Portable `build`, `check`, `watch`, `dev` and `view` run
 natively and need no external tools. `serve` and `view` use a native local
 HTTP server; `view` can invoke the system browser launcher. Configured image

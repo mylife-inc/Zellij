@@ -3,20 +3,23 @@ title: zel watch
 description: Validate a site initially and after edits without building or serving it.
 ---
 
-<Callout type="tip" title="Available in candidate 0.2.0-rc.13">
-Portable validation runs natively with no external tools. Hosted validation uses
-the engine in a container. The public `zellij-v0.1.3` binary predates this command.
+<Callout type="tip" title="Source update for 0.2.0-rc.14">
+Portable validation runs natively. Rich validation now uses the cached renderer
+with no separately installed tools. Candidate rc.13 still uses a container for
+rich validation.
 </Callout>
 
 ```bash title="terminal"
 zel watch
 zel watch --deep --strict
 zel watch docs/manual --strict
+zel watch --offline --deep
+zel watch --target static --deep  # explicitly use the container engine
 ```
 
 `watch` runs the same validation as [`zel check`](/cli/check), then repeats it
 after edits settle. It does not write an export, start an HTTP server, launch a
-browser or publish anything. For a portable preview that rebuilds and reloads
+browser or publish anything. For a portable or rich preview that rebuilds and reloads
 the browser, use [`zel view --watch`](/cli/view).
 
 ## Site selection and changes
@@ -42,20 +45,27 @@ symlinks/junctions are rejected rather than followed.
 | Option | Meaning | Default |
 | --- | --- | --- |
 | `[dir]` | Site root or explicit legacy content folder | Configured-site discovery |
+| `--target` | `portable`, standalone rich `file`, or container `static` | Configured renderer; rich defaults to `file` |
+| `--offline` | Require an already cached renderer; `file` only | Downloads a matching renderer if absent |
 | `--deep` | Hosted MDX and local-reference checks; portable checking already includes these checks | Off |
 | `--strict` | Treat warnings as validation failures | Off |
 
 Validation failures keep the watcher running until a corrected edit arrives.
-Ctrl-C finishes any active validation and stops with exit **0**; it does not
+Ctrl-C cancels an active standalone renderer process, waits for cleanup and stops
+with exit **0**; it does not
 encode the last validation result in that exit code. Use `zel check --strict`
-for a single CI check. JSON output and a renderer override are unsupported.
+for a single CI check. JSON output is unsupported. The renderer/target is fixed
+for the session.
 
-For hosted sites, an unavailable container runtime is a startup error with exit
-**4** and setup guidance. No runtime is installed or started automatically, and
-portable validation never probes Docker. See [`zel doctor`](/cli/doctor).
+Rich validation downloads its matching renderer once if needed, then uses the
+verified cache for every check. `--offline` prevents that initial download. An
+unavailable or damaged cache is a startup error, rather than a repeated content
+failure. Explicit `--target static` requires a container runtime and stops with
+exit **4** if none is usable; an active container check finishes before shutdown.
+See [`zel doctor`](/cli/doctor).
 
 ## See also
 
 - [`zel fmt`](/cli/fmt) — format YAML without changing its values
 - [`zel dev`](/cli/dev) — run the hosted development server
-- [`zel view`](/cli/view) — build and preview portable output
+- [`zel view`](/cli/view) — build and preview portable or rich output

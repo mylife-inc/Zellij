@@ -14,6 +14,8 @@ export interface CheckOptions {
   strict?: boolean;
   /** Emit one versioned validation report instead of terminal output. */
   json?: boolean;
+  /** Internal standalone protocol: receive the JSON report without console output. */
+  onReport?: (report: JsonCheckReport) => void;
 }
 
 export interface CheckDiagnostic {
@@ -66,7 +68,8 @@ export async function check(options: CheckOptions = {}): Promise<CheckResult> {
         ...errors,
       ],
     };
-    console.log(JSON.stringify(report));
+    if (options.onReport) options.onReport(report);
+    else console.log(JSON.stringify(report));
   };
 
   try {

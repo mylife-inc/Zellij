@@ -76,6 +76,40 @@ fn workflow(root: &Path) -> Value {
 }
 
 #[test]
+fn delivery_checks_pin_the_renderer_used_for_publication_in_every_ci_system() {
+    for (renderer, target) in [("hosted", "static"), ("portable", "portable")] {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path();
+        repo(root);
+        write(
+            root,
+            "docs/zellij/zel.yaml",
+            &format!("version: 1\nrenderer: {renderer}\n"),
+        );
+        write(root, "docs/zellij/content/index.md", "# Manual\n");
+        if renderer == "hosted" {
+            write(root, "docs/zellij/content/site.yaml", "name: Manual\n");
+        }
+        for (system, file) in [
+            ("github", ".github/workflows/docs.yml"),
+            ("gitlab", ".gitlab-ci.yml"),
+            ("circle", ".circleci/config.yml"),
+        ] {
+            run(root, &["ci", "--system", system], 0);
+            let text = fs::read_to_string(root.join(file)).unwrap();
+            let checks: Vec<_> = text
+                .lines()
+                .filter(|line| line.contains("zel check "))
+                .collect();
+            assert!(!checks.is_empty(), "{renderer}/{system}");
+            for check in checks {
+                assert!(check.contains(&format!("--target {target}")), "{check}");
+            }
+        }
+    }
+}
+
+#[test]
 fn combined_publication_builds_natively_and_joins_only_successful_digest_outputs() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();

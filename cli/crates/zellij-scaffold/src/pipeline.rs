@@ -121,13 +121,13 @@ fn install(version: &str) -> Value {
         "run": "set -eu\nbase=\"https://github.com/mylife-inc/releases/releases/download/zellij-$ZEL_VERSION\"\ncurl --fail --silent --show-error --location \"$base/install.sh\" --output \"$RUNNER_TEMP/zel-install.sh\" || { echo 'The pinned zel release must be published before this workflow can run.' >&2; exit 1; }\nsh \"$RUNNER_TEMP/zel-install.sh\"\nprintf '%s\\n' \"$ZEL_INSTALL_DIR\" >> \"$GITHUB_PATH\"\n"
     })
 }
-fn initial_steps(version: &str, selector: &str, no_check: bool) -> Vec<Value> {
+fn initial_steps(version: &str, selector: &str, no_check: bool, target: &str) -> Vec<Value> {
     let mut steps = vec![
         json!({"uses":"actions/checkout@v7", "with":{"persist-credentials": false}}),
         install(version),
     ];
     if !no_check {
-        steps.push(json!({"name":"Validate documentation", "run":format!("zel check {selector} --strict --deep")}));
+        steps.push(json!({"name":"Validate documentation", "run":format!("zel check {selector} --target {target} --strict --deep")}));
     }
     steps
 }
@@ -410,7 +410,7 @@ pub fn github(options: &CiOptions) -> Result<String> {
     }
     let condition = publication_condition(settings);
     let delivering = !matches!(publish, Publish::Nothing);
-    let mut steps = initial_steps(&version, selector, overrides.no_check);
+    let mut steps = initial_steps(&version, selector, overrides.no_check, html_target(options));
     let build = match publish {
         Publish::Image { kind, .. } | Publish::Fly { kind, .. } | Publish::Railway { kind, .. } => {
             format!(
@@ -428,7 +428,7 @@ pub fn github(options: &CiOptions) -> Result<String> {
     let mut jobs = json!({"verify": {"runs-on":runner, "timeout-minutes":30, "steps": steps}});
     if delivering {
         jobs["verify"]["if"] = json!(format!("${{{{ !({condition}) }}}}"));
-        let mut steps = initial_steps(&version, selector, overrides.no_check);
+        let mut steps = initial_steps(&version, selector, overrides.no_check, html_target(options));
         let mut permissions = json!({"contents":"read"});
         match publish {
             Publish::Image { .. } | Publish::LegacyImage => {

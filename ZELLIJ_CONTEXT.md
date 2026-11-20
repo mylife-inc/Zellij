@@ -3,6 +3,26 @@
 Last refreshed: **2026-11-19**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-19: standalone rich authoring — in progress**
+
+The next authorized task extends the cached renderer to rich `check`, `watch`,
+`view` and `view --watch`. Branch `codex/standalone-authoring` prepares rc.14:
+rich commands default to `file`, accept `--offline`, and require no separately
+installed Docker, Node.js or Python. Explicit `--target static` preserves the
+container/Next workflows. Shared validation does not execute authored MDX or
+write an export; preview stages successful builds, retains the previous site on
+errors, pins basePath and cancels/reaps renderer processes on Ctrl-C. Delivery
+CI explicitly selects its static/portable checker. Public rc.13 and the private
+HP handoff remain unchanged. Implementation and native/browser verification are
+in progress; see [the contract](specs/zellij-standalone-authoring-2026-11-19.md).
+Do not describe rc.14 as released until its immutable assets pass acceptance.
+Local acceptance passes 825 Rust tests, 540 engine tests, strict/deep docs, types,
+Clippy/format, schema/workflow checks and zero-advisory npm audits. The actual
+Mac package passes empty-PATH builds and authoring, plus Chromium/WebKit reload
+and recovery. Five rich-template README updates use new 0.1.2 identities with
+minimum CLI rc.14; website content/artwork is unchanged. Full hosted CI and
+publication remain pending.
+
 **2026-11-19: common resource home and client migration — completed**
 
 The user-selected directory policy is now released as `v0.2.0-rc.13`.
