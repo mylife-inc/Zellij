@@ -752,6 +752,9 @@
     "pr": 218,
     "testedImplementation": "2ecf4b7bf1eeb2188facc6e76df8852609f0c1eb",
     "runtimeInputsUnchangedFrom": "0cced2b801ca83e7393f1d3f2cfd3cc9599c0774",
-    "generalRuntimeCiIntentionallyNotRepeated": true
+    "generalRuntimeCiIntentionallyNotRepeated": true,
+    "merge": "212da35f2cae1da395312c9ad3b508c983d2efab",
+    "mergedHead": "17f875c8f2da397b97b46f8e91d85f1a9b44be27",
+    "mergeTreeMatchesHead": true
   }
 }

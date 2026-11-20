@@ -30,7 +30,8 @@ and `scripts/check-handoff-scripts.mjs`. Initial harness errors (Windows tar's
 ANSI arguments, the extra home-alias route, and distinct config/content exit
 statuses) are corrected in `fec2f51`, `52452f8` and `84aa32d`; they were not CLI
 runtime defects. `2ecf4b7` adds command progress and bounded failure cleanup.
-PR #218 carries these support scripts and records. Final harness run
+PR #218 merges these support scripts and records as `212da35f`, with a tree
+identical to reviewed head `17f875c`. Final harness run
 `44700110119` passes all four jobs on `2ecf4b7`; its first attempt had three
 passes and an agent-cancelled slow ARM64 PowerShell 5.1 case, which passed
 when rerun alone on unchanged source. CLI/engine/template/deployment inputs
