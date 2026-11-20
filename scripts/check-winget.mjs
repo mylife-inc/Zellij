@@ -116,9 +116,10 @@ try {
   await assert.rejects(readFile(alias), { code: 'ENOENT' });
   assert.equal(await readFile(sentinel, 'utf8'), 'retain cache');
   // A fresh custom-location user install exercises the same ownership guard.
-  await run(manager, ['install', '--manifest', current, '--architecture', arch, '--scope', 'user', '--location', location, '--accept-package-agreements', ...flags]); installed = true;
+  await run(manager, ['install', '--manifest', current, ...(process.env.ZEL_WINGET_PUBLIC === 'true' ? [] : ['--architecture', arch]), '--scope', 'user', '--location', location, '--accept-package-agreements', ...flags]); installed = true;
   assert.equal(await realpath(alias), await realpath(path.join(location, 'zel.exe')));
   assert.equal((await run(alias, ['--version'])).out.trim(), `zel ${version}`);
+  assert.equal(JSON.parse((await run(alias, ['version', '--json'])).out).cli.target, target, 'WinGet must select the native architecture');
   const customGuard = await run(alias, ['upgrade', '--check'], { expected: 1 });
   assert.match(customGuard.out + customGuard.err, /WinGet manages this installation/);
   await run(manager, ['uninstall', '--product-code', productCode, '--exact', ...flags]); installed = false;
@@ -135,7 +136,7 @@ try {
   await run(manager, ['uninstall', '--product-code', productCode, '--exact', '--scope', 'machine', ...flags]); installed = false;
   await assert.rejects(readFile(machineExe), { code: 'ENOENT' });
   assert.equal(await readFile(sentinel, 'utf8'), 'retain cache');
-  const receipt = { version, previous, target, harnessCommit: process.env.GITHUB_SHA, binaryRun: process.env.ZEL_WINGET_BINARY_RUN, winGet: '1.29.380', manifestValidated: true, realUpgrade: true, customLocation: true, defaultLocation: true, machineScope: true, launcherVerified: true, checksumFailurePreserved: true, selfUpgradeBlocked: true, standaloneUnaffected: true, portableBuildWithoutTools: true, cacheRetained: true, uninstall: true, publicUrlInstalls: process.env.ZEL_WINGET_PUBLIC === 'true', publicCatalogSubmitted: false };
+  const receipt = { version, previous, target, harnessCommit: process.env.GITHUB_SHA, binaryRun: process.env.ZEL_WINGET_BINARY_RUN, winGet: '1.29.380', manifestValidated: true, realUpgrade: true, customLocation: true, defaultLocation: true, machineScope: true, launcherVerified: true, checksumFailurePreserved: true, selfUpgradeBlocked: true, standaloneUnaffected: true, portableBuildWithoutTools: true, cacheRetained: true, uninstall: true, nativeArchitecture: true, publicUrlInstalls: process.env.ZEL_WINGET_PUBLIC === 'true', publicCatalogSubmitted: false };
   if (process.env.ZEL_WINGET_RECEIPT) await writeFile(process.env.ZEL_WINGET_RECEIPT, JSON.stringify(receipt, null, 2) + '\n');
   console.log(JSON.stringify(receipt)); completed = true;
 } finally {

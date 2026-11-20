@@ -1,7 +1,7 @@
 {
   "date": "2026-11-20",
   "version": "v0.2.0-rc.15",
-  "status": "Source merged after all 37 required CI jobs passed; normal release preflight in progress",
+  "status": "Tagged after verified merge and normal local release preflight; hosted release is building",
   "source": {
     "pr": 219,
     "head": "7bacba01ef1638a21b5a5d10da5c9ee6e81be176",
@@ -23,7 +23,10 @@
       "repositoryFull": 0,
       "freshAllFeaturesWrapperProduction": 0,
       "freshAllFeaturesWrapperFull": 0
-    }
+    },
+    "normalReleasePreflight": "passed",
+    "engineTestsPassed": 540,
+    "finalPreTagDependencyAudits": "Both production and development clean"
   },
   "sourceCI": {
     "run": 44716061788,
@@ -329,5 +332,12 @@
     "Private HP handoff remains rc.14 and rollback requires rc.13; preserve their renderer downloads.",
     "Live provider verification remains deferred.",
     "Pre-1.0 candidate, no zero-bug claim."
-  ]
+  ],
+  "tag": {
+    "name": "v0.2.0-rc.15",
+    "commit": "e1f6ff3c51a1d53ab11320dff0ce50e107f486d1",
+    "procedure": "normal zrelease helper, all preflight checks passed",
+    "releaseRun": 44724715433,
+    "trigger": "Explicit workflow_dispatch against the immutable tag; merge skip-ci marker suppressed the push trigger."
+  }
 }
