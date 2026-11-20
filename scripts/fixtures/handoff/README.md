@@ -9,7 +9,8 @@ The default operation builds the rich, double-clickable website with diagrams.
 No client documentation, names, assets or credentials belong in this fixture.
 
 `scripts/check-handoff-scripts.mjs` downloads a checksum-verified public release
-and tests these exact scripts with a disposable two-page documentation project.
+and tests these exact scripts with a disposable two-page documentation project
+(three public routes including the root home alias).
 The Windows matrix covers x64/ARM64 and Windows PowerShell 5.1/PowerShell 7.
 This checks the scripts and public CLI, not any private client collection.
 
