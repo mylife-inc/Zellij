@@ -3,7 +3,7 @@
 These sites exercise complete GitHub workflows from the current CLI generator,
 using the **selected 0.2.0-rc.15 executable and exact engine image** at execution
 time. This candidate includes the current generators and multi-site queue fix.
-Run only after rc.11 publication succeeds. Previous rc.1/rc.2 verification
+Run only after the selected release publication succeeds. Previous rc.1/rc.2 verification
 records remain evidence for those versions; retargeting does not rerun live delivery.
 
 | Workflow | PR behavior | Manual run on main |
@@ -47,3 +47,9 @@ node scripts/check-delivery-http.mjs https://DEPLOY-ID--SITE.netlify.app hosted
 Record workflow IDs, source/generator commits, released version, image digests,
 preview URLs and verification outcomes in the project audit. A successful local
 generator check is not evidence that GitHub execution or external delivery passed.
+
+Current rc.15 checkpoint (2026-11-20): all six PR verification workflows pass.
+Static and Next image publication runs `44730196617` and `44730200827` pass;
+fresh-pull HTTP/health/user checks pass in `44730534861`. No provider deployment
+was performed in this checkpoint. See
+[the release evidence](../../../specs/evidence/zellij-rc15-release-2026-11-20.json).

@@ -28,12 +28,25 @@ The user's physical Mac CLI is upgraded from rc.14 to verified public rc.15 in
 rich builds populate the default resource home and rebuild offline, covering
 28 routes. Isolated public acceptance also passes Chrome/WebKit, validation,
 watch, preview, recovery, cancellation and cache-integrity cases. Homebrew and
-Scoop now publish rc.15; their actual rc.14 upgrade receipts and the documentation
-publication are tracked in the [release evidence](specs/evidence/zellij-rc15-release-2026-11-20.json).
+Scoop now publish rc.15; all eight public lifecycle/actual rc.14 upgrade cases
+pass (Homebrew `44728881405`, Scoop `44728913397`). PR #220 merges guides,
+public WinGet acceptance and consumer pins as `ad70e529`, identical to reviewed
+head `8fbbb88`. All six generated workflow checks and the 59-route docs check
+pass. Runtime inputs are unchanged from the release; duplicate full CI runs
+`44729618944`/`44730090105` were explicitly cancelled, not counted as passes.
+
+Automatic production workflow `44730090071` publishes and verifies deploy
+`6b00337104876f9f8906f54a`. Live Chrome checks confirm rc.15 CLI, upgrade and
+quickstart pages hydrate without captured errors. Static/Next acceptance images
+were republished at rc.15 (`44730196617`, `44730200827`); fresh registry pulls,
+HTTP pages/assets, health checks and nonroot users pass in `44730534861`.
+The main image workflow also passes all 13 jobs. Exact digests, production
+receipt and job history are in the [release evidence](specs/evidence/zellij-rc15-release-2026-11-20.json).
 
 The private HP handoff remains unchanged at rc.14; retain that renderer and the
 rc.13 private rollback renderer. Inventory `44719616497` is read-only and shows
-old acceptance images that need replacement before a fresh retirement plan.
+old assets; the acceptance images now have verified rc.15 replacements. A fresh
+scoped retirement plan is still required.
 No old release/image deletion has occurred in this milestone. Deferred live
 providers and the two unresolved browser timing findings remain separate.
 
