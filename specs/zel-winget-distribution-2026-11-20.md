@@ -8,12 +8,14 @@ remain unchanged. No Microsoft community catalog submission or acceptance.
 `Shebka.Zel` identifies Shebka's documentation CLI, distinct from the terminal
 multiplexer. Native Windows x64 and ARM64 archives contain `zel.exe` at their
 root. WinGet uses ZIP/nested-portable installation with the `zel` alias and
-user scope; a custom installation location is supported. No new executable
+WinGet-selected scope; user/machine and custom installation locations are
+covered by acceptance. Portable manifests must not hard-code `Scope`. No new executable
 installer or wrapper runtime is added. The package uses the existing
 proprietary license designation; public source visibility does not change it.
 
 `scripts/winget-manifest.mjs` generates the three version/installer/locale YAML
-files from a release tag and authoritative SHA256SUMS. Missing, malformed or
+files from a release tag and authoritative SHA256SUMS, using the community
+PR template's current 1.28 schema. Missing, malformed or
 duplicate checksums fail closed. URLs target the durable `mylife-inc/releases`
 mirror. Versions before rc.15 are refused because they lack manager ownership
 protection. The release workflow packages the manifest set in
@@ -53,7 +55,14 @@ It is not distributed. Tests cover managed self-upgrade refusal, a standalone
 copy, a portable build without system tools, uninstall and cache preservation.
 Native registry tests cover incorrect identities/types and stale paths.
 
-The initial native run is `44710734699`; results are pending. Local workspace
+Initial run `44710734699` compiled both architectures, then ARM64 manifest
+validation reported unsupported portable Scope and missing schema headers.
+Those packaging issues are corrected; x64 setup and superseded jobs were
+cancelled rather than counted as passes. Run `44711498242` passes both native
+ownership suites, including real isolated registry fixtures, before its
+superseded lifecycle jobs were cancelled. Full CI `44711923286` caught an rc.14
+image-recipe pin after the rc.15 source bump, fixed in `2343b35`; that run was
+superseded. Final lifecycle and full CI evidence are pending. Local workspace
 Rust tests, Clippy and the manifest tests pass; final source/Windows evidence
 must be recorded before merging or releasing. CI and releases call the same
 lifecycle workflow, and release publication requires it to pass.

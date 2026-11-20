@@ -75,7 +75,7 @@ try {
     InstallerSha256: createHash('sha256').update(old.contents[old.archive]).digest('hex').toUpperCase(),
   }];
   const oldManifest = await manifests('old', oldDocs);
-  await run(manager, ['install', '--manifest', oldManifest, '--architecture', arch, '--location', location, '--accept-package-agreements', ...flags]); installed = true;
+  await run(manager, ['install', '--manifest', oldManifest, '--architecture', arch, '--location', location, '--scope', 'user', '--accept-package-agreements', ...flags]); installed = true;
   assert.equal((await run(executable, ['--version'])).out.trim(), `zel ${previous.slice(1)}`);
   await mkdir(path.dirname(sentinel), { recursive: true }); await writeFile(sentinel, 'retain cache');
   const badDocs = structuredClone(docs);
@@ -117,11 +117,23 @@ try {
   await run(manager, ['uninstall', '--id', wingetId, '--exact', ...flags]); installed = false;
   await assert.rejects(readFile(alias), { code: 'ENOENT' });
   assert.equal(await readFile(sentinel, 'utf8'), 'retain cache');
-  const receipt = { version, previous, target, commit: process.env.GITHUB_SHA, winGet: '1.29.380', manifestValidated: true, realUpgrade: true, customLocation: true, defaultLocation: true, launcherVerified: true, checksumFailurePreserved: true, selfUpgradeBlocked: true, standaloneUnaffected: true, portableBuildWithoutTools: true, cacheRetained: true, uninstall: true, publicCatalogSubmitted: false };
+  // Machine scope is selected by WinGet, not hard-coded in portable manifests.
+  // Exercise both registry views on the corresponding native runners.
+  const machine = path.join(root, 'machine install 日本');
+  const machineExe = path.join(machine, 'zel.exe');
+  await run(manager, ['install', '--manifest', current, '--architecture', arch, '--scope', 'machine', '--location', machine, '--accept-package-agreements', ...flags]); installed = true;
+  assert.equal((await run(machineExe, ['--version'])).out.trim(), `zel ${version}`);
+  const machineGuard = await run(machineExe, ['upgrade', '--check'], { expected: 1 });
+  assert.match(machineGuard.out + machineGuard.err, /WinGet manages this installation/);
+  await run(manager, ['uninstall', '--id', wingetId, '--exact', '--scope', 'machine', ...flags]); installed = false;
+  await assert.rejects(readFile(machineExe), { code: 'ENOENT' });
+  assert.equal(await readFile(sentinel, 'utf8'), 'retain cache');
+  const receipt = { version, previous, target, commit: process.env.GITHUB_SHA, winGet: '1.29.380', manifestValidated: true, realUpgrade: true, customLocation: true, defaultLocation: true, machineScope: true, launcherVerified: true, checksumFailurePreserved: true, selfUpgradeBlocked: true, standaloneUnaffected: true, portableBuildWithoutTools: true, cacheRetained: true, uninstall: true, publicCatalogSubmitted: false };
   if (process.env.ZEL_WINGET_RECEIPT) await writeFile(process.env.ZEL_WINGET_RECEIPT, JSON.stringify(receipt, null, 2) + '\n');
   console.log(JSON.stringify(receipt));
 } finally {
   if (installed) await run(manager, ['uninstall', '--id', wingetId, '--exact', ...flags]).catch(e => { console.error(`Cleanup failed: ${e.message}`); process.exitCode = 1; });
+  server.closeAllConnections();
   await new Promise(resolve => server.close(resolve));
-  await rm(root, { recursive: true, force: true });
+  await rm(root, { recursive: true, force: true, maxRetries: 3, retryDelay: 200 });
 }

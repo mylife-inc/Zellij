@@ -35,7 +35,7 @@ pub(super) fn owns(executable: &Path) -> io::Result<bool> {
         ),
         (
             HKEY_LOCAL_MACHINE,
-            r"Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall",
+            r"Software\Microsoft\Windows\CurrentVersion\Uninstall",
             KEY_WOW64_32KEY,
         ),
     ] {

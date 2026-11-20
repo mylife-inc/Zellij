@@ -10,12 +10,14 @@ test('WinGet pins both public archives and installs one managed portable command
   for (const doc of Object.values(docs)) {
     assert.equal(doc.PackageIdentifier, 'Shebka.Zel');
     assert.equal(doc.PackageVersion, '0.2.0-rc.15');
+    assert.equal(doc.ManifestVersion, '1.28.0');
     assert.deepEqual(yaml.load(manifestYaml(doc)), doc);
+    assert(manifestYaml(doc).includes(`https://aka.ms/winget-manifest.${doc.ManifestType}.1.28.0.schema.json`));
   }
   const installer = docs[`${wingetId}.installer.yaml`];
   assert.equal(installer.InstallerType, 'zip'); assert.equal(installer.NestedInstallerType, 'portable');
   assert.deepEqual(installer.NestedInstallerFiles, [{ RelativeFilePath: 'zel.exe', PortableCommandAlias: 'zel' }]);
-  assert.equal(installer.Scope, 'user');
+  assert.equal(installer.Scope, undefined, 'WinGet portable scope is selected at install time');
   assert.deepEqual(installer.Installers.map(i => i.Architecture), ['x64', 'arm64']);
   for (const i of installer.Installers) {
     assert.match(i.InstallerUrl, /^https:\/\/github.com\/mylife-inc\/releases\/releases\/download\/zellij-v0\.2\.0-rc\.15\/zel-v0\.2\.0-rc\.15-/);
