@@ -3,6 +3,56 @@
 Last refreshed: **2026-11-19**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-19: standalone rich authoring — released as rc.14**
+
+Rich `zel check`, `zel watch`, `zel view` and `zel view --watch` now share
+the downloaded renderer with rich file builds. Only `zel` needs installation;
+the first rich operation downloads its matching renderer and `--offline`
+requires a verified cache. The `ZELLIJ_HOME` policy from rc.13 is unchanged.
+Explicit `--target static` preserves container/Next validation and preview.
+Hosted `dev`, deployment exports, images and PDF retain their prerequisites.
+
+PR #216 merged as `0e0258611d9d11c4299e180938d2417b337c58a0`, with the same
+tree as tested head `7f4bc741bd2ef7cca2784a6767223c97f22cb27a`. All 35 source
+CI jobs pass. Fix `e33c0f670e64fcb8ec11af1355cb39ca427b4059` preserves legacy-dot
+content discovery during rich preview/watch and honors explicit static dispatch;
+native regressions and actual cached-renderer acceptance pass. Normal release
+preflight passes 827 Rust tests (five existing hosted-only ignores), 540 engine
+tests, types, schema drift, Clippy/format; full/production npm audits are clean.
+All 38 release jobs pass, including public downloads from both repositories on
+all six native platforms. Both repositories have the same 39 asset digests.
+
+Five rich starters now use 0.1.2/minimum CLI rc.14 for their authoring READMEs;
+their website content/artwork is unchanged. The other four template archives
+are byte-identical. Verified public digests are registered without rewriting
+earlier identities. Homebrew, Scoop and the shared mirror now point to rc.14.
+All four Homebrew and four Scoop public lifecycle/actual rc.13-to-rc.14 upgrade
+jobs pass; their logs confirm both installed versions. All 13 refreshed main
+image jobs also pass.
+
+The local standalone CLI is rc.14 at `~/Dev/config/zellij/bin/zel`, resolved by
+a new shell. An empty-PATH check downloads its renderer into the default home;
+offline rebuilding preserves all 98 files byte for byte. Real validation/watch,
+preview recovery, legacy discovery, Ctrl-C and Chromium/WebKit reload tests
+pass; both browsers also pass the four-route public template through file://
+without captured errors or HTTP requests. Prior caches remain intact. The
+private HP handoff is unchanged and still bundles rc.13: retain its public
+renderer download assets until that package is deliberately migrated.
+
+Guide PR #217 merged as `508c8492742d921009c390af7969aa7f025924ef`, with an
+identical tested tree and unchanged executable source. Strict/deep validation,
+the 59-route Chromium/WebKit file crawl, and all seven documentation/consumer
+workflows pass. Production run `44689951271` verifies deploy
+`6affecfc5156949e83018624` at `2026-11-20T06:47:33.434Z`; seven live guide pages
+pass with no captured page errors. Duplicate general CI runs were deliberately
+cancelled after scope/tree checks and are not counted as passes. See the
+[release evidence](specs/evidence/zellij-rc14-release-2026-11-19.json) and
+[authoring contract](specs/zellij-standalone-authoring-2026-11-19.md).
+
+This supersedes the pending checkpoints below, retained as dated history.
+Live provider verification, prior-candidate retirement and the separately
+recorded product backlog remain separate. Do not claim zero bugs.
+
 **2026-11-19: standalone rich authoring — in progress**
 
 The next authorized task extends the cached renderer to rich `check`, `watch`,

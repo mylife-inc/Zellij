@@ -1,5 +1,35 @@
 # Standalone rich authoring
 
+## Released acceptance — 2026-11-19
+
+Released as **v0.2.0-rc.14** from PR #216, merge
+`0e0258611d9d11c4299e180938d2417b337c58a0`. The merge tree matches tested
+head `7f4bc741bd2ef7cca2784a6767223c97f22cb27a`. All 35 source CI jobs and all
+38 release jobs pass, including the actual public downloads on six native
+platforms. Local preflight passes 827 Rust tests (five existing hosted-only
+ignores), 540 engine tests, types, schema drift and Clippy/format. The fixing
+commit and earlier harness corrections remain documented below.
+
+The installed public Mac CLI passes default-home, cold-download and empty-PATH
+checks, byte-identical offline rebuilds, validation/watch recovery, preview
+recovery, legacy discovery, cancellation and Chromium/WebKit live reload.
+Both browsers also pass the generated four-route template through file://.
+Five rich template READMEs use new immutable 0.1.2 identities; authored website
+content and artwork are unchanged. All nine locally packaged templates and the
+catalog match the verified public bytes.
+All four Homebrew and four Scoop jobs verify actual public rc.13-to-rc.14
+upgrades, alongside install, ownership, completion and uninstall checks.
+
+Guide PR #217 merges as `508c8492742d921009c390af7969aa7f025924ef` with the
+same checked tree. All seven documentation/consumer workflows pass, as do
+strict/deep validation and a 59-route Chromium/WebKit file crawl. Automatic
+Netlify publication verifies the production deployment and seven live pages.
+See [the release evidence](evidence/zellij-rc14-release-2026-11-19.json).
+The private client handoff remains on rc.13 and is not changed by this release.
+This completed result supersedes the intermediate pending states below.
+
+## Initial implementation status (historical)
+
 Status: implementation on `codex/standalone-authoring`, preparing **rc.14**.
 The published rc.13 already builds rich double-click websites without external
 tools. This change extends its cached renderer to validation and preview.
