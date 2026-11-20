@@ -1,6 +1,12 @@
 # Product expansion: branding, composition, templates, books and installation
 
-**Current rc.11 distribution status — 2026-11-18.** The candidate, Homebrew,
+**Current checkpoint — 2026-11-20:** rc.14 includes the later composer, book,
+theme, template and standalone rich-authoring milestones. Production
+documentation is deployed. Read the [current readiness table](zellij-readiness-2026-11-20.md)
+before treating the dated plans below as outstanding work; historical evidence
+and explicitly bounded features remain preserved.
+
+**Historical rc.11 distribution status — 2026-11-18.** The candidate, Homebrew,
 Scoop and verified guides are published. Documentation PR #208 merges as
 `79de857`. All source/release/public-artifact, managed lifecycle/upgrade and
 consumer checks pass. PR #209 completes reviewed rc.10 retirement: two releases,

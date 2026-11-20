@@ -1,7 +1,45 @@
 # Zellij — durable project context
 
-Last refreshed: **2026-11-19**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-20**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
+
+**2026-11-20: private rc.14 handoff and current readiness**
+
+The HP handoff is now installed with the four verified public rc.14 Mac/Windows
+binaries. Its generation scripts expose build, check, watch, view and serve;
+the README and AI context explain standalone validation and live preview.
+All 468 source files and 535 generated files remain byte-identical to the
+previous package. Actual Intel Mac tests pass strict/deep validation of all
+200 routes, cold-cache/empty-PATH building, offline regeneration, JSON/error
+statuses, watch recovery, live preview/reload, last-good-site preservation,
+Ctrl-C and static serving. Chromium/WebKit each pass all 200 file:// routes
+without captured errors or HTTP requests, plus desktop menu/theme/mobile checks.
+
+The exact PowerShell wrapper passes native Windows x64/ARM64 in PowerShell
+5.1 and 7 using a small public fixture (run `44699816473`, all four jobs).
+Private client content was not uploaded. This is separate from testing the
+full client collection on Windows or Apple Silicon and from physical-iPhone
+acceptance. The optional Next wrapper is unchanged; its preceding rc.13 build
+evidence remains historical. The verified ZIP is 193,364,965 bytes. The prior
+folder/ZIP/checksum remain in a dated private rollback directory. Running the
+installed script offline preserves all 1,111 package files, including its
+manifest; every ZIP member hash and Mac executable permission is verified.
+
+Generic wrappers and Windows acceptance now live under `scripts/fixtures/handoff`
+and `scripts/check-handoff-scripts.mjs`. Initial harness errors (Windows tar's
+ANSI arguments, the extra home-alias route, and distinct config/content exit
+statuses) are corrected in `fec2f51`, `52452f8` and `84aa32d`; they were not CLI
+runtime defects. `2ecf4b7` adds command progress and bounded failure cleanup.
+See [handoff evidence](specs/evidence/zellij-handoff-authoring-2026-11-20.json).
+
+The [current readiness table](specs/zellij-readiness-2026-11-20.md) supersedes
+stale pending statements in the older completion/expansion records while
+retaining history. WinGet packaging/acceptance and a fresh scoped retirement
+audit follow; live Fly/S3 and GitLab/CircleCI verification stay last, and Vercel
+remains user-deferred. Retain rc.13 renderer availability for the private
+rollback package until its dependency is explicitly archived or retired.
+Two older browser timing findings remain unexplained, not erased by later
+passes. No stable 1.0 or zero-bug claim. Public CLI/docs remain rc.14.
 
 **2026-11-19: standalone rich authoring — released as rc.14**
 
