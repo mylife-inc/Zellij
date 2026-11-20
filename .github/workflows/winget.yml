@@ -1,0 +1,79 @@
+name: WinGet acceptance
+on:
+  workflow_call:
+    inputs:
+      from_artifacts:
+        type: boolean
+        default: true
+  workflow_dispatch:
+  push:
+    branches: ['codex/winget-*']
+permissions:
+  contents: read
+jobs:
+  build:
+    if: ${{ !inputs.from_artifacts }}
+    name: WinGet binary (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: windows-2025, target: x86_64-pc-windows-msvc}
+          - {os: windows-11-arm, target: aarch64-pc-windows-msvc}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
+          key: release-${{ matrix.target }}
+      - name: Package current CLI
+        env:
+          TARGET: ${{ matrix.target }}
+        run: node scripts/package-native.mjs workspace "$env:TARGET" dist
+      - name: Native ownership and upgrade regressions
+        run: cargo test --manifest-path cli/Cargo.toml --locked --release -p zellij-cli --bin zel maintenance::upgrade
+      - uses: actions/upload-artifact@v7
+        with:
+          name: winget-native-${{ matrix.target }}
+          path: dist/zel-*
+          if-no-files-found: error
+          retention-days: 7
+  install:
+    needs: build
+    if: ${{ always() && (needs.build.result == 'success' || (inputs.from_artifacts && needs.build.result == 'skipped')) }}
+    name: WinGet lifecycle (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: windows-2025, target: x86_64-pc-windows-msvc}
+          - {os: windows-11-arm, target: aarch64-pc-windows-msvc}
+    env:
+      TARGET: ${{ matrix.target }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: ${{ inputs.from_artifacts && 'binary-*-pc-windows-msvc' || 'winget-native-*' }}
+          merge-multiple: true
+          path: dist
+      - name: Provision checksum-pinned Microsoft WinGet
+        shell: powershell
+        run: .\scripts\prepare-winget.ps1
+      - name: Validate manifests and test managed lifecycle
+        run: node scripts/check-winget.mjs dist
