@@ -57,7 +57,12 @@ async function manifests(name, documents, local = true) {
   }
   return folder;
 }
-const location = path.join(root, 'custom install 日本'), executable = path.join(location, 'zel.exe');
+const location = path.join(root, 'custom install 日本');
+const alias = path.join(process.env.LOCALAPPDATA, 'Microsoft/WinGet/Links/zel.exe');
+// Local manifests have no community-source identity. WinGet records this exact
+// product code in their UninstallString; --id is for catalog-correlated packages.
+const productCode = `${wingetId}__DefaultSource`;
+let executable;
 const sentinel = path.join(env.ZELLIJ_HOME, 'cache/engines/keep.txt');
 let installed = false, completed = false;
 try {
@@ -77,19 +82,19 @@ try {
     InstallerSha256: createHash('sha256').update(old.contents[old.archive]).digest('hex').toUpperCase(),
   }];
   const oldManifest = await manifests('old', oldDocs);
-  await run(manager, ['install', '--manifest', oldManifest, '--architecture', arch, '--location', location, '--scope', 'user', '--accept-package-agreements', ...flags]); installed = true;
+  await run(manager, ['install', '--manifest', oldManifest, '--architecture', arch, '--scope', 'user', '--accept-package-agreements', ...flags]); installed = true;
+  executable = await realpath(alias);
   assert.equal((await run(executable, ['--version'])).out.trim(), `zel ${previous.slice(1)}`);
   await mkdir(path.dirname(sentinel), { recursive: true }); await writeFile(sentinel, 'retain cache');
   const badDocs = structuredClone(docs);
   for (const i of badDocs[`${wingetId}.installer.yaml`].Installers) i.InstallerSha256 = '0'.repeat(64);
   const badManifest = await manifests('bad-checksum', badDocs);
   const beforeUpgrade = await readFile(executable);
-  const bad = await run(manager, ['upgrade', '--manifest', badManifest, '--architecture', arch, '--scope', 'user', '--location', location, '--accept-package-agreements', ...flags], { expected: 'nonzero' });
-  assert.match(bad.out + bad.err, /hash.*(?:match|fail)|(?:match|fail).*hash/i);
+  const bad = await run(manager, ['upgrade', '--manifest', badManifest, '--architecture', arch, '--accept-package-agreements', ...flags], { expected: 'nonzero' });
+  assert.match(bad.out + bad.err, /Installer hash does not match/i);
   assert((await readFile(executable)).equals(beforeUpgrade), 'Failed checksum changed the installed CLI');
-  await run(manager, ['upgrade', '--manifest', current, '--architecture', arch, '--scope', 'user', '--location', location, '--accept-package-agreements', ...flags]);
+  await run(manager, ['upgrade', '--manifest', current, '--architecture', arch, '--accept-package-agreements', ...flags]);
   assert.equal((await run(executable, ['--version'])).out.trim(), `zel ${version}`);
-  const alias = path.join(process.env.LOCALAPPDATA, 'Microsoft/WinGet/Links/zel.exe');
   assert.equal((await run(alias, ['--version'])).out.trim(), `zel ${version}`);
   const before = await readFile(executable);
   for (const args of [['upgrade', '--check'], ['upgrade', '--force', version, '--release-base-url', 'http://127.0.0.1:1']]) {
@@ -105,18 +110,18 @@ try {
   await writeFile(path.join(root, 'docs/index.md'), '# WinGet installed CLI\n');
   await run(executable, ['build', path.join(root, 'docs'), '--target', 'portable', '--out', path.join(root, 'site')], { extraEnv: { PATH: '' } });
   assert.match(await readFile(path.join(root, 'site/index.html'), 'utf8'), /WinGet installed CLI/);
-  await run(manager, ['list', '--id', wingetId, '--exact', ...flags]);
-  await run(manager, ['uninstall', '--id', wingetId, '--exact', ...flags]); installed = false;
+  await run(manager, ['list', '--name', 'Zellij CLI', '--exact', ...flags]);
+  await run(manager, ['uninstall', '--product-code', productCode, '--exact', ...flags]); installed = false;
   await assert.rejects(readFile(executable), { code: 'ENOENT' });
   await assert.rejects(readFile(alias), { code: 'ENOENT' });
   assert.equal(await readFile(sentinel, 'utf8'), 'retain cache');
-  // Also exercise WinGet's ordinary default location with the same archive.
-  await run(manager, ['install', '--manifest', current, '--architecture', arch, '--accept-package-agreements', ...flags]); installed = true;
-  assert.notEqual((await realpath(alias)).toLowerCase(), executable.toLowerCase());
+  // A fresh custom-location user install exercises the same ownership guard.
+  await run(manager, ['install', '--manifest', current, '--architecture', arch, '--scope', 'user', '--location', location, '--accept-package-agreements', ...flags]); installed = true;
+  assert.equal(await realpath(alias), await realpath(path.join(location, 'zel.exe')));
   assert.equal((await run(alias, ['--version'])).out.trim(), `zel ${version}`);
-  const defaultGuard = await run(alias, ['upgrade', '--check'], { expected: 1 });
-  assert.match(defaultGuard.out + defaultGuard.err, /WinGet manages this installation/);
-  await run(manager, ['uninstall', '--id', wingetId, '--exact', ...flags]); installed = false;
+  const customGuard = await run(alias, ['upgrade', '--check'], { expected: 1 });
+  assert.match(customGuard.out + customGuard.err, /WinGet manages this installation/);
+  await run(manager, ['uninstall', '--product-code', productCode, '--exact', ...flags]); installed = false;
   await assert.rejects(readFile(alias), { code: 'ENOENT' });
   assert.equal(await readFile(sentinel, 'utf8'), 'retain cache');
   // Machine scope is selected by WinGet, not hard-coded in portable manifests.
@@ -127,7 +132,7 @@ try {
   assert.equal((await run(machineExe, ['--version'])).out.trim(), `zel ${version}`);
   const machineGuard = await run(machineExe, ['upgrade', '--check'], { expected: 1 });
   assert.match(machineGuard.out + machineGuard.err, /WinGet manages this installation/);
-  await run(manager, ['uninstall', '--id', wingetId, '--exact', '--scope', 'machine', ...flags]); installed = false;
+  await run(manager, ['uninstall', '--product-code', productCode, '--exact', '--scope', 'machine', ...flags]); installed = false;
   await assert.rejects(readFile(machineExe), { code: 'ENOENT' });
   assert.equal(await readFile(sentinel, 'utf8'), 'retain cache');
   const receipt = { version, previous, target, harnessCommit: process.env.GITHUB_SHA, binaryRun: process.env.ZEL_WINGET_BINARY_RUN, winGet: '1.29.380', manifestValidated: true, realUpgrade: true, customLocation: true, defaultLocation: true, machineScope: true, launcherVerified: true, checksumFailurePreserved: true, selfUpgradeBlocked: true, standaloneUnaffected: true, portableBuildWithoutTools: true, cacheRetained: true, uninstall: true, publicCatalogSubmitted: false };
@@ -140,7 +145,7 @@ try {
       "$roots = @('HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall', 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall', 'HKLM:\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall'); Get-ChildItem $roots -ErrorAction SilentlyContinue | Where-Object { $_.PSChildName -like 'Shebka.Zel_*' } | ForEach-Object { Get-ItemProperty $_.PSPath } | Select-Object PSPath,DisplayName,DisplayVersion,WinGetPackageIdentifier,WinGetInstallerType,InstallLocation,TargetFullPath | ConvertTo-Json -Depth 2"
     ]).catch(error => console.error(`Registry diagnostics: ${error.message}`));
   }
-  if (installed) await run(manager, ['uninstall', '--id', wingetId, '--exact', ...flags]).catch(e => { console.error(`Cleanup failed: ${e.message}`); process.exitCode = 1; });
+  if (installed) await run(manager, ['uninstall', '--product-code', productCode, '--exact', ...flags]).catch(e => { console.error(`Cleanup failed: ${e.message}`); process.exitCode = 1; });
   if (evidence) {
     const logs = path.join(process.env.LOCALAPPDATA, 'Packages/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe/LocalState/DiagOutputDir');
     await cp(logs, path.join(evidence, 'logs'), { recursive: true }).catch(error => console.error(`WinGet diagnostics: ${error.message}`));
