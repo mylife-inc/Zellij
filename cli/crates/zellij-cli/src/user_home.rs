@@ -16,7 +16,9 @@ fn resolve(configured: Option<OsString>, user_home: Option<PathBuf>) -> Result<P
                     "Cannot locate your home directory; set ZELLIJ_HOME to an absolute path".into(),
                 )
             })?
-            .join("Dev/config/zellij"),
+            .join("Dev")
+            .join("config")
+            .join("zellij"),
     };
     if !root.is_absolute() {
         return Err(Error::InvalidArgument(
@@ -34,7 +36,7 @@ mod tests {
     fn home_policy_is_independent_of_installer_and_platform_cache_directories() {
         let temp = tempfile::tempdir().unwrap();
         let home = temp.path().join("User 日本");
-        let expected = home.join("Dev/config/zellij");
+        let expected = home.join("Dev").join("config").join("zellij");
         assert_eq!(resolve(None, Some(home.clone())).unwrap(), expected);
         assert_eq!(
             resolve(Some(OsString::new()), Some(home)).unwrap(),

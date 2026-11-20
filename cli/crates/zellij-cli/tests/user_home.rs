@@ -23,7 +23,7 @@ fn rich_doctor_honors_resource_home_without_creating_it() {
     assert!(output.status.success(), "{output:?}");
     let report: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
     let cache = Path::new(report["rich_engine"]["cache"].as_str().unwrap());
-    assert_eq!(cache.parent().unwrap(), home.join("cache/engines"));
+    assert_eq!(cache.parent().unwrap(), home.join("cache").join("engines"));
     assert!(
         !home.exists(),
         "doctor must not create the resource directory"

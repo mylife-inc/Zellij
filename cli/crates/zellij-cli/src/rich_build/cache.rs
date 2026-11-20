@@ -34,7 +34,7 @@ fn root() -> Result<PathBuf> {
     if let Some(value) = std::env::var_os("ZEL_ENGINE_CACHE").filter(|value| !value.is_empty()) {
         return Ok(PathBuf::from(value));
     }
-    Ok(crate::user_home::root()?.join("cache/engines"))
+    Ok(crate::user_home::root()?.join("cache").join("engines"))
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
