@@ -255,7 +255,7 @@ pub(crate) fn inspect() -> Result<serde_json::Value> {
         serde_json::json!({"status":if cached {"cached"} else {"download_required"},"version":VERSION,"platform":platform,"cache":installed.to_string_lossy()}),
     )
 }
-pub(super) fn obtain(offline: bool) -> Result<PathBuf> {
+pub(super) fn obtain(offline: bool, announce: bool) -> Result<PathBuf> {
     let platform = platform()?;
     let cache = root()?;
     let installed = cache.join(format!("{VERSION}-{platform}"));
@@ -265,7 +265,7 @@ pub(super) fn obtain(offline: bool) -> Result<PathBuf> {
     }
     if offline {
         return Err(fail(
-            "engine is not cached; run this build once with internet access before using --offline",
+            "engine is not cached; run zel build or zel check once with internet access before using --offline",
         ));
     }
     fs::create_dir_all(&cache)?;
@@ -309,9 +309,11 @@ pub(super) fn obtain(offline: bool) -> Result<PathBuf> {
     {
         return Err(fail("invalid archive checksum"));
     }
-    zellij_core::statusln!(
-        "  Downloading rich renderer {VERSION} ({platform}); later builds use the cache."
-    );
+    if announce {
+        zellij_core::statusln!(
+            "  Downloading rich renderer {VERSION} ({platform}); later commands use the cache."
+        );
+    }
     let archive = stage.path().join("download.tar.gz");
     download(
         &client,

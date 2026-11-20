@@ -1,9 +1,9 @@
 schema: 1
 id: api-platform
-version: 0.1.1
+version: 0.1.2
 title: API platform
 description: A Kie-inspired platform website with blue light, expressive typography, model cards and a practical guide.
-minimum-cli: 0.2.0-rc.12
+minimum-cli: 0.2.0-rc.14
 minimum-engine: 0.2.0-rc.10
 renderer: hosted
 kind: site

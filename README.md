@@ -211,6 +211,12 @@ or Python installation is required. `zel build` selects this for rich sites;
 `--target static` and image commands retain their container workflow. Commands that describe Zellij's content
 model read the schema compiled into the native binary.
 
+The next candidate, rc.14, extends the cached renderer to rich `zel check`,
+`zel watch`, `zel view` and `zel view --watch`. These source commands accept
+`--offline`; `--target static` selects their existing container paths explicitly.
+The currently published rc.13 still needs a container for rich checks/previews.
+See [the implementation contract](specs/zellij-standalone-authoring-2026-11-19.md).
+
 ```bash
 zel explain bento-grid      # every field, with a worked example
 zel new section hero        # a section file, fields filled in

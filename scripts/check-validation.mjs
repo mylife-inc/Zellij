@@ -36,7 +36,7 @@ try {
   await copyFile(path.join(repo, 'engine/packages/zellij/bin/zellij.mjs'), cli);
   await copyFile(path.join(repo, 'engine/packages/zellij/dist/cli/check-bundle.js'), path.join(packaged, 'dist/cli/check-bundle.js'));
   const commands = [[process.execPath, [cli, 'check']]];
-  if (binary) commands.push([binary, ['check']]);
+  if (binary) commands.push([binary, ['check', '--target', 'static']]);
   function check(args, success, matches = []) {
     for (const [program, prefix] of commands) {
       const result = spawnSync(program, [...prefix, ...args, content], { encoding: 'utf8', cwd: root });

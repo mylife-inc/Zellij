@@ -319,9 +319,12 @@ pub(crate) enum Command {
     Check {
         /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
         dir: Option<SiteInput>,
-        /// Override automatic selection: portable Markdown or hosted static content.
-        #[arg(long, value_parser = ["portable", "static"])]
+        /// Override selection: native portable, standalone rich file, or container static.
+        #[arg(long, value_parser = ["portable", "file", "static"])]
         target: Option<String>,
+        /// Require a cached rich renderer; do not download one.
+        #[arg(long)]
+        offline: bool,
         /// Hosted: parse MDX and check local references. Portable always checks references.
         #[arg(long)]
         deep: bool,
@@ -474,6 +477,12 @@ pub(crate) enum Command {
     View {
         /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
         dir: Option<SiteInput>,
+        /// Override selection: native portable, standalone rich file, or container static.
+        #[arg(long, value_parser = ["portable", "file", "static"])]
+        target: Option<String>,
+        /// Require a cached rich renderer; do not download one.
+        #[arg(long)]
+        offline: bool,
         #[arg(long)]
         out: Option<String>,
         /// Portable site name; hosted sites use content/site.yaml.
@@ -513,6 +522,12 @@ pub(crate) enum Command {
     /// Validate initially and after edits, without building or serving.
     Watch {
         dir: Option<SiteInput>,
+        /// Override selection: native portable, standalone rich file, or container static.
+        #[arg(long, value_parser = ["portable", "file", "static"])]
+        target: Option<String>,
+        /// Require a cached rich renderer; do not download one.
+        #[arg(long)]
+        offline: bool,
         /// Perform hosted MDX/reference checks; portable checking is already deep.
         #[arg(long)]
         deep: bool,

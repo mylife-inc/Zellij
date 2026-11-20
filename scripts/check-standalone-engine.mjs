@@ -5,6 +5,7 @@ import { mkdtemp, mkdir, readFile, writeFile, cp, rm, readdir } from 'node:fs/pr
 import path from 'node:path';
 import os from 'node:os';
 import assert from 'node:assert/strict';
+import { checkStandaloneAuthoring } from './check-standalone-authoring.mjs';
 const repo = path.resolve(import.meta.dirname, '..');
 const binary = path.resolve(process.argv[2] ?? `cli/target/debug/zel${process.platform === 'win32' ? '.exe' : ''}`);
 const target = JSON.parse(execFileSync(binary, ['version', '--json'], { encoding: 'utf8' })).cli.target;
@@ -48,6 +49,8 @@ try {
     assert.equal((await readdir(engineCache)).length, 0);
     downloads.set(archive + '.sha256', checksum); requests.length = 0;
   }
+  const coldCheck = JSON.parse(await run(['check', '--json']));
+  assert.equal(coldCheck.target, 'file'); assert.equal(coldCheck.ok, true);
   await run(['build']);assert.equal(requests.length, publicBase ? 0 : 2);
   const before = await readFile(path.join(root, 'site/index.html'));
   const manifest = JSON.parse(await readFile(path.join(root, 'site/_zellij/file/manifest.json')));
@@ -93,6 +96,7 @@ try {
     await mkdir(process.env.ZEL_STANDALONE_RESULT, { recursive: true });
     await cp(path.join(root, 'prefix-site'), process.env.ZEL_STANDALONE_RESULT, { recursive: true });
   }
+  await checkStandaloneAuthoring(binary, env, root);
   assert.equal((await readdir(root)).some(n => n.startsWith('.zel-build-')), false);
   console.log(JSON.stringify({ platform, initialDownloads: requests.length, pages: manifest.pages, completeStarterPages: complete.pages, cachedOfflineBuild: true, failedBuildPreservedSite: true, tamperRejected: true, routeTraversalRejected: true, metadataOverrides: true, systemTools: false }));
 } finally { server.close();await rm(root, { recursive: true, force: true }); }

@@ -28,6 +28,8 @@ pub fn run(
         return crate::preview::view(
             Some(&dir),
             crate::preview::ViewOptions {
+                target: None,
+                offline: false,
                 host: host.unwrap_or(Ipv4Addr::LOCALHOST.into()),
                 out: None,
                 name: None,

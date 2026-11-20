@@ -94,6 +94,8 @@ fn forwards_validation_options_and_preserves_success_errors_and_strict_warnings(
         let mut cmd = command(root);
         cmd.args([
             "check",
+            "--target",
+            "static",
             "docs 日本 \"quoted\"",
             "--deep",
             "--strict",
@@ -130,6 +132,8 @@ fn incompatible_engine_and_runtime_failures_are_not_content_failures() {
         let mut cmd = command(root);
         cmd.args([
             "check",
+            "--target",
+            "static",
             "docs 日本 \"quoted\"",
             "--deep",
             "--strict",
@@ -149,8 +153,14 @@ fn incompatible_engine_and_runtime_failures_are_not_content_failures() {
         assert!(!actual.to_string().contains("internal fixture stderr"));
     }
     let mut cmd = command(root);
-    cmd.args(["check", "docs 日本 \"quoted\"", "--json"])
-        .env("PATH", root.join("no-tools"));
+    cmd.args([
+        "check",
+        "--target",
+        "static",
+        "docs 日本 \"quoted\"",
+        "--json",
+    ])
+    .env("PATH", root.join("no-tools"));
     let missing = report(cmd, 4);
     assert_eq!(missing["diagnostics"][0]["code"], "runtime");
     assert_eq!(missing["ok"], false);
@@ -160,7 +170,7 @@ fn incompatible_engine_and_runtime_failures_are_not_content_failures() {
     )
     .unwrap();
     let mut cmd = command(root);
-    cmd.args(["check", ".", "--target", "static", "--json"]);
+    cmd.args(["check", "--target", "static", ".", "--json"]);
     let config = report(cmd, 2);
     assert_eq!(config["diagnostics"][0]["code"], "configuration");
 }

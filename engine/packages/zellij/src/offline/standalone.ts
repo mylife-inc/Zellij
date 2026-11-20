@@ -10,7 +10,7 @@ import { createZellijRootLayout } from '../render/root-layout';
 import { createZellijSitemap, createZellijRobots } from '../render/seo';
 import { syncAssets } from '../cli/sync-assets';
 import { writeSearchIndex } from '../cli/write-search-index';
-import { check } from '../cli/check';
+import { check, type JsonCheckReport } from '../cli/check';
 import { exportOffline } from './export';
 import { assetHref } from '../content/asset-href';
 import { validateOfflineRoutes } from './validate-routes';
@@ -18,10 +18,12 @@ import { validateOfflineRoutes } from './validate-routes';
 const escape = (value: unknown) => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 
 async function main() {
-  if (process.argv.length !== 3) throw new Error('Expected the build request JSON path');
+  if (process.argv.length !== 3) throw new Error('Expected the renderer request JSON path');
   const request = JSON.parse(await readFile(process.argv[2]!, 'utf8'));
-  const { content, output, features, noCheck } = request;
-  if (typeof content !== 'string' || typeof output !== 'string' || !path.isAbsolute(content) || !path.isAbsolute(output)) throw new Error('Expected absolute content/output paths');
+  const { content, output, features, noCheck, operation = 'build' } = request;
+  if (!['build', 'check'].includes(operation)) throw new Error('Unknown renderer operation');
+  if (typeof content !== 'string' || !path.isAbsolute(content)) throw new Error('Expected absolute content path');
+  if (operation === 'build' && (typeof output !== 'string' || !path.isAbsolute(output))) throw new Error('Expected absolute output path');
   if (!Array.isArray(features) || features.some(f => !['maths', 'diagrams'].includes(f))) throw new Error('Invalid feature selection');
   // All writes stay in the CLI-owned temporary work directory and staged output.
   const appRoot = process.cwd();
@@ -29,6 +31,16 @@ async function main() {
   await writeFile(path.join(appRoot, 'zellij.config.yaml'), JSON.stringify({ version: 1, content }));
   process.env.ZELLIJ_MATHS = String(features.includes('maths'));
   process.env.NEXT_PUBLIC_ZELLIJ_DIAGRAMS = String(features.includes('diagrams'));
+  if (operation === 'check') {
+    if (typeof request.deep !== 'boolean' || typeof request.strict !== 'boolean') throw new Error('Invalid validation options');
+    let report: JsonCheckReport | undefined;
+    const result = await check({ cwd: appRoot, contentDir: content, deep: request.deep, strict: request.strict,
+      json: true, onReport: value => { report = value; } });
+    if (!report) throw new Error('Validation did not produce a report');
+    await writeFile(path.join(appRoot, 'check-report.json'), JSON.stringify(report));
+    process.exitCode = result.ok ? 0 : 1;
+    return;
+  }
   if (!noCheck && !(await check({ cwd: appRoot, contentDir: content })).ok) throw new Error('Content validation failed');
   await syncAssets({ appRoot });
   await writeSearchIndex({ appRoot });
@@ -74,5 +86,6 @@ async function main() {
   await writeFile(path.join(output, 'robots.txt'), `User-agent: *\nAllow: /\n${robots.sitemap ? `Sitemap: ${robots.sitemap}\n` : ''}`);
   await writeFile(path.join(output, '404.html'), '<!DOCTYPE html><title>Page not found</title>');
   await exportOffline(appRoot, output);
+  await writeFile(path.join(appRoot, 'build-report.json'), JSON.stringify({ basePath: site.config.basePath }));
 }
 main().catch(error => { console.error(`[zellij] ${error instanceof Error ? error.message : String(error)}`); process.exitCode = 1; });

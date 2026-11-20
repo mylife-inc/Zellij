@@ -67,12 +67,13 @@ a subdirectory deployment.
 
 ## Build, serve, view, and dev
 
-- [`zel build`](/cli/build) creates an output directory and exits. Portable output
-  also works by double-clicking `index.html` without any server.
+- [`zel build`](/cli/build) creates an output directory and exits. Portable and default rich output
+  also work by double-clicking `index.html` without any server.
 - `zel serve` previews an existing output directory over HTTP. It does not
   watch the Markdown source or rebuild pages.
-- [`zel view`](/cli/view) builds portable Markdown once, serves it, and opens a
-  browser. Add `--watch` to rebuild Markdown and reload that preview on edits.
+- [`zel view`](/cli/view) builds once, serves the export, and opens a
+  browser. Add `--watch` to rebuild and reload that preview on edits. Source rc.14
+  supports the standalone rich renderer as well as portable Markdown.
 - [`zel dev`](/cli/dev) runs the existing hosted YAML/MDX development workflow
   through the container engine.
 

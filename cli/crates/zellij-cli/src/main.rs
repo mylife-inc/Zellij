@@ -96,6 +96,7 @@ fn main() {
         Command::Check {
             ref dir,
             ref target,
+            offline,
             deep,
             strict,
         } => validation::check(
@@ -103,6 +104,7 @@ fn main() {
             target.as_deref(),
             zellij_engine::CheckOptions { deep, strict },
             cli.json,
+            offline,
         ),
         Command::Dev {
             ref dir,
@@ -124,9 +126,16 @@ fn main() {
         Command::Fmt { ref dir, check } => formatting::run(dir.as_ref(), check),
         Command::Watch {
             ref dir,
+            ref target,
+            offline,
             deep,
             strict,
-        } => watch::run(dir.as_ref(), zellij_engine::CheckOptions { deep, strict }),
+        } => watch::run(
+            dir.as_ref(),
+            target.as_deref(),
+            zellij_engine::CheckOptions { deep, strict },
+            offline,
+        ),
         Command::Serve {
             ref dir,
             port,
@@ -134,6 +143,8 @@ fn main() {
         } => preview::serve(dir.as_ref(), port, base_path),
         Command::View {
             ref dir,
+            ref target,
+            offline,
             ref out,
             ref name,
             ref theme,
@@ -146,6 +157,8 @@ fn main() {
         } => preview::view(
             dir.as_ref(),
             preview::ViewOptions {
+                target: target.as_deref(),
+                offline,
                 host: std::net::Ipv4Addr::LOCALHOST.into(),
                 out: out.as_deref(),
                 name: name.as_deref(),

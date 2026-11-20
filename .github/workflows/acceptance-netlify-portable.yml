@@ -32,7 +32,7 @@ jobs:
         sh "$RUNNER_TEMP/zel-install.sh"
         printf '%s\n' "$ZEL_INSTALL_DIR" >> "$GITHUB_PATH"
     - name: Validate documentation
-      run: zel check --config "$SITE_CONFIG" --strict --deep
+      run: zel check --config "$SITE_CONFIG" --target portable --strict --deep
     - env:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID || secrets.NETLIFY_SITE_ID }}
@@ -57,7 +57,7 @@ jobs:
         sh "$RUNNER_TEMP/zel-install.sh"
         printf '%s\n' "$ZEL_INSTALL_DIR" >> "$GITHUB_PATH"
     - name: Validate documentation
-      run: zel check --config "$SITE_CONFIG" --strict --deep
+      run: zel check --config "$SITE_CONFIG" --target portable --strict --deep
     - name: Build without publishing
       run: zel build --config "$SITE_CONFIG" --target portable --out "$RUNNER_TEMP/zellij-site"
     timeout-minutes: 30

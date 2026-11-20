@@ -47,6 +47,51 @@ fn content(root: &Path) {
     fs::write(root.join("content/index.md"), "# Test\n").unwrap();
 }
 
+#[test]
+fn legacy_dot_rich_preview_resolves_content_before_output_preflight() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    content(root);
+    let output = command(root)
+        .args(["view", ".", "--offline", "--port", "0", "--no-open"])
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(2));
+    let error = String::from_utf8_lossy(&output.stderr);
+    assert!(error.contains("not cached"), "{error}");
+    assert!(
+        !error.contains("overlap"),
+        "repository root must not become the content root"
+    );
+    assert!(!root.join("dist").exists());
+}
+
+#[test]
+fn explicit_static_preview_uses_container_preflight_even_for_raw_markdown() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fs::create_dir(root.join("manual")).unwrap();
+    fs::write(root.join("manual/index.md"), "# Manual\n").unwrap();
+    // A wrong portable dispatch fails at this occupied port (2) rather than
+    // hanging in a server, while the selected container path fails first (4).
+    let socket = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+    let port = socket.local_addr().unwrap().port().to_string();
+    let output = command(root)
+        .args([
+            "view",
+            "manual",
+            "--target",
+            "static",
+            "--port",
+            &port,
+            "--no-open",
+        ])
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(4), "{output:?}");
+    assert!(!root.join("manual-site").exists());
+}
+
 fn doctor_report(root: &Path, args: &[&str], code: i32) -> serde_json::Value {
     let output = command(root).args(args).arg("--json").output().unwrap();
     assert_eq!(output.status.code(), Some(code), "{output:?}");
@@ -233,13 +278,21 @@ fn container_commands_fail_with_exit_four_before_touching_content_or_output() {
     for args in [
         vec!["build", "content", "--target", "static", "--out", "site"],
         vec!["build", "content", "--target", "image"],
-        vec!["check", "content"],
-        vec!["watch", "content"],
+        vec!["check", "content", "--target", "static"],
+        vec!["watch", "content", "--target", "static"],
         vec!["dev", "content"],
         vec!["dev", "content", "--features", "all"],
-        vec!["view", "content", "--no-open"],
-        vec!["view", "content", "--no-open", "--features", "none"],
-        vec!["v", "content", "--watch", "--no-open"],
+        vec!["view", "content", "--target", "static", "--no-open"],
+        vec![
+            "view",
+            "content",
+            "--target",
+            "static",
+            "--no-open",
+            "--features",
+            "none",
+        ],
+        vec!["v", "content", "--target", "static", "--watch", "--no-open"],
         vec!["image", "build", "content"],
         vec!["image", "static", "content"],
         vec!["si", "content"],
@@ -248,7 +301,7 @@ fn container_commands_fail_with_exit_four_before_touching_content_or_output() {
         vec!["image", "run", "test:latest"],
         vec!["image", "push", "test:latest"],
         vec!["b", "content", "--target", "static", "--out", "site"],
-        vec!["c", "content"],
+        vec!["c", "content", "--target", "static"],
         vec!["ir", "test:latest"],
         vec!["ip", "test:latest"],
     ] {

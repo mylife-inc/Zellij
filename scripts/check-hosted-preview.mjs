@@ -54,7 +54,7 @@ function invocationEnv(args) {
   return { ...env, ZELLIJ_PREVIEW_FEATURES: index < 0 ? '' : args[index + 1] };
 }
 function launch(args = ['view', '--watch', '--browser', browserExe, '--features', 'all']) {
-  args = [...args, '--config', path.join(site, 'hosted-preview.yaml')];
+  args = [...args, '--target', 'static', '--config', path.join(site, 'hosted-preview.yaml')];
   const child = spawn(windows ? consoleExe : zel, windows ? [zel, ...args] : args, { cwd: root, env: invocationEnv(args), stdio: ['pipe', 'pipe', 'pipe'] });
   const state = { child, stdout: '', stderr: '', exit: undefined };
   child.stdout.on('data', b => state.stdout += b); child.stderr.on('data', b => state.stderr += b);
@@ -74,7 +74,7 @@ async function stop(state) {
   active.delete(state);
 }
 function fails(args, expected) {
-  const result = spawnSync(zel, [...args, '--config', path.join(site, 'hosted-preview.yaml')], { cwd: root, env: invocationEnv(args), encoding: 'utf8', timeout: real ? 240000 : 15000 });
+  const result = spawnSync(zel, [...args, '--target', 'static', '--config', path.join(site, 'hosted-preview.yaml')], { cwd: root, env: invocationEnv(args), encoding: 'utf8', timeout: real ? 240000 : 15000 });
   assert.notEqual(result.status, 0, result.stdout);
   assert.match(result.stderr, expected); assert(!result.stdout.includes('Serving at '));
 }

@@ -6,17 +6,22 @@ pub fn check(
     target: Option<&str>,
     options: zellij_engine::CheckOptions,
     as_json: bool,
+    offline: bool,
 ) -> Result<()> {
     let selected = crate::select_site(dir)?;
     let dir = &selected;
     // Invalid configuration is reported through the native check's structured
     // diagnostics, preserving --json's one-report/no-stderr contract.
-    let automatic = match crate::default_target(dir).unwrap_or("portable") {
-        "file" => "static", // Rich validation retains its existing explicit engine path.
-        target => target,
-    };
-    match target.unwrap_or(automatic) {
-        "static" if as_json => return hosted_json(dir, options),
+    let automatic = crate::default_target(dir).unwrap_or(if offline { "file" } else { "portable" });
+    let selected = target.unwrap_or(automatic);
+    if offline && selected != "file" {
+        return Err(Error::InvalidArgument(
+            "--offline applies to standalone rich validation (--target file)".into(),
+        ));
+    }
+    match selected {
+        "file" => return hosted_report(dir, options, as_json, true, offline),
+        "static" if as_json => return hosted_report(dir, options, true, false, false),
         "static" => return crate::check(dir, options),
         "portable" => {}
         _ => unreachable!("clap validates the check target"),
@@ -31,13 +36,23 @@ pub fn check(
     Ok(())
 }
 
-fn hosted_json(dir: &SiteInput, options: zellij_engine::CheckOptions) -> Result<()> {
+fn hosted_report(
+    dir: &SiteInput,
+    options: zellij_engine::CheckOptions,
+    as_json: bool,
+    standalone: bool,
+    offline: bool,
+) -> Result<()> {
     use zellij_engine::{ContainerEngine, HostedCheckReport, HostedDiagnostic, Severity};
     let mut root = dir.root().to_string();
     let result = (|| {
         let content = crate::resolve_content(dir)?;
         root = content.to_string();
-        ContainerEngine::detect(None)?.check_json(&content, options)
+        if standalone {
+            crate::rich_build::check(&content, options, offline, None)?.ok_or(Error::ContentInvalid)
+        } else {
+            ContainerEngine::detect(None)?.check_json(&content, options)
+        }
     })();
     let (report, exit_code) = match result {
         Ok(report) => {
@@ -53,7 +68,7 @@ fn hosted_json(dir: &SiteInput, options: zellij_engine::CheckOptions) -> Result<
             (
                 HostedCheckReport {
                     schema_version: 1,
-                    target: "static".into(),
+                    target: if standalone { "file" } else { "static" }.into(),
                     root,
                     deep: options.deep,
                     strict: options.strict,
@@ -70,11 +85,42 @@ fn hosted_json(dir: &SiteInput, options: zellij_engine::CheckOptions) -> Result<
             )
         }
     };
-    crate::print_json(&serde_json::to_value(report).map_err(std::io::Error::other)?)?;
+    if as_json {
+        crate::print_json(&serde_json::to_value(report).map_err(std::io::Error::other)?)?;
+    } else {
+        emit_hosted(&report);
+    }
     if exit_code != 0 {
         std::process::exit(exit_code);
     }
     Ok(())
+}
+
+pub(crate) fn emit_hosted(report: &zellij_engine::HostedCheckReport) {
+    zellij_core::statusln!("{} {}", if report.ok { "✓" } else { "✗" }, report.root);
+    for d in &report.diagnostics {
+        zellij_core::diagnosticln!(
+            "{}: {}",
+            if d.severity == zellij_engine::Severity::Error {
+                "error"
+            } else {
+                "warning"
+            },
+            d.message
+        );
+    }
+    if let Some(pages) = report.pages {
+        zellij_core::statusln!("  {pages} routes checked; no site files written");
+    }
+    if report.strict
+        && !report.ok
+        && report
+            .diagnostics
+            .iter()
+            .all(|d| d.severity == zellij_engine::Severity::Warning)
+    {
+        zellij_core::diagnosticln!("error: warnings are rejected by --strict");
+    }
 }
 
 pub fn portable(dir: &SiteInput, strict: bool, as_json: bool) -> Result<i32> {

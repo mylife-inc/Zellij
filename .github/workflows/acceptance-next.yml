@@ -38,7 +38,7 @@ jobs:
       run: |
         timeout --kill-after=5s 60s docker info || { echo 'The configured Docker runtime is unavailable. Check the runner daemon and endpoint; no alternate runtime was selected.' >&2; exit 1; }
     - name: Validate documentation
-      run: zel check --config "$SITE_CONFIG" --strict --deep
+      run: zel check --config "$SITE_CONFIG" --target portable --strict --deep
     - name: Sign in to registry
       uses: docker/login-action@v3
       with:
@@ -73,7 +73,7 @@ jobs:
       run: |
         timeout --kill-after=5s 60s docker info || { echo 'The configured Docker runtime is unavailable. Check the runner daemon and endpoint; no alternate runtime was selected.' >&2; exit 1; }
     - name: Validate documentation
-      run: zel check --config "$SITE_CONFIG" --strict --deep
+      run: zel check --config "$SITE_CONFIG" --target portable --strict --deep
     - name: Build without publishing
       run: zel image next --config "$SITE_CONFIG" --tag zel-ci-check:local
     timeout-minutes: 30

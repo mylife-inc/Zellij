@@ -218,8 +218,9 @@ fn install_script(
     }
     if !options.overrides.no_check {
         script.push_str(&format!(
-            "zel check {} --strict --deep\n",
-            prepared.selector
+            "zel check {} --target {} --strict --deep\n",
+            prepared.selector,
+            super::html_target(options)
         ));
     }
     Ok(script)

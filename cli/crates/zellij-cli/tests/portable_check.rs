@@ -11,6 +11,8 @@ fn run(root: &Path, args: &[&str]) -> Output {
         .current_dir(root)
         .args(args)
         .env("PATH", root.join("no-external-tools"))
+        .env("ZELLIJ_HOME", root.join("uncached-resources"))
+        .env_remove("ZEL_ENGINE_CACHE")
         // Conflicting explicit endpoints fail before probing even a runtime
         // discoverable through Windows' executable-directory search.
         .env("DOCKER_HOST", "unix:///fixture-docker.sock")
@@ -191,7 +193,15 @@ fn check_target_selection_matches_build_and_hosted_json_reports_missing_runtime(
     let root = temp.path();
     fs::write(root.join("README.md"), "# Home\n").unwrap();
     fs::write(root.join("site.yaml"), "name: Hosted\n").unwrap();
-    let hosted = report(root, &["check", ".", "--json"], 4);
+    let standalone = report(root, &["check", ".", "--offline", "--json"], 2);
+    assert_eq!(standalone["target"], "file");
+    assert!(
+        standalone["diagnostics"][0]["message"]
+            .as_str()
+            .unwrap()
+            .contains("not cached")
+    );
+    let hosted = report(root, &["check", ".", "--target", "static", "--json"], 4);
     assert_eq!(hosted["target"], "static");
     assert_eq!(hosted["ok"], false);
     assert_eq!(hosted["diagnostics"][0]["code"], "runtime");

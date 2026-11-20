@@ -1,10 +1,7 @@
 //! Serial validation watching; no output, browser, server or publication.
 use std::{
     io::{self, Write},
-    sync::{
-        Arc,
-        atomic::{AtomicBool, Ordering},
-    },
+    sync::atomic::Ordering,
     thread,
     time::Duration,
 };
@@ -16,30 +13,66 @@ use zellij_core::{
 use zellij_docs::watch::Snapshot;
 use zellij_engine::{CheckOptions, ContainerEngine, Engine};
 
-pub fn run(dir: Option<&SiteInput>, options: CheckOptions) -> Result<()> {
-    let site = Site::load(crate::select_site(dir)?)?;
-    // Missing runtime is a startup error, not an endless watch loop. Portable
-    // validation never probes external tools. Hosted checks reuse this engine.
-    let engine = (site.renderer == Renderer::Hosted)
+pub fn run(
+    dir: Option<&SiteInput>,
+    target: Option<&str>,
+    options: CheckOptions,
+    offline: bool,
+) -> Result<()> {
+    let selected = crate::select_site(dir)?;
+    let mut site = Site::load(&selected)?;
+    let target = target.unwrap_or(if site.renderer == Renderer::Hosted {
+        "file"
+    } else {
+        "portable"
+    });
+    site.require(if target == "portable" {
+        Renderer::Portable
+    } else {
+        Renderer::Hosted
+    })?;
+    if offline && target != "file" {
+        return Err(zellij_core::Error::InvalidArgument(
+            "--offline applies to standalone rich validation".into(),
+        ));
+    }
+    if target != "portable" && !site.configured {
+        site.input = crate::resolve_content(&selected)?.into();
+    }
+    // Missing prerequisites fail once at startup; bad content remains watched.
+    let engine = (target == "static")
         .then(|| ContainerEngine::detect(None))
         .transpose()?;
-    let stop = Arc::new(AtomicBool::new(false));
-    let signal = stop.clone();
-    ctrlc::set_handler(move || signal.store(true, Ordering::Release)).map_err(io::Error::other)?;
+    if target == "file" {
+        crate::rich_build::ensure_cached(offline)?;
+    }
+    let stop = crate::preview::signals()?;
     let snapshot = || {
         Snapshot::site_for(&site.input, site.configured, site.renderer).map_err(|e| e.to_string())
     };
     let validate = || {
-        zellij_core::statusln!("Checking {}", site.root);
+        zellij_core::statusln!("Checking {}", site.input.root());
         let result = if let Some(engine) = &engine {
             crate::resolve_content(&site.input).and_then(|content| {
                 let report = engine.check(&content, options)?;
                 zellij_core::reporting::emit(format_args!("{}", report.output), false);
                 if report.ok { Ok(0) } else { Ok(3) }
             })
+        } else if target == "file" {
+            crate::resolve_content(&site.input).and_then(|content| {
+                let Some(report) = crate::rich_build::check(&content, options, true, Some(&stop))?
+                else {
+                    return Ok(0);
+                };
+                crate::validation::emit_hosted(&report);
+                Ok(if report.ok { 0 } else { 3 })
+            })
         } else {
             crate::validation::portable(&site.input, options.strict, false)
         };
+        if stop.load(Ordering::Acquire) {
+            return;
+        }
         match result {
             Ok(0) => zellij_core::statusln!("Validation passed."),
             Ok(_) if zellij_core::reporting::options().quiet => {
@@ -61,7 +94,7 @@ pub fn run(dir: Option<&SiteInput>, options: CheckOptions) -> Result<()> {
     }
     zellij_core::statusln!(
         "Watching {} for validation. Press Ctrl-C to stop.",
-        site.root
+        site.input.root()
     );
     io::stdout().flush()?;
     let mut observed = attempted.clone();
