@@ -109,25 +109,7 @@ fn cache_root(options: &TemplateSourceArgs) -> Result<Utf8PathBuf> {
         ensure(!root.is_empty(), "--cache-dir must not be empty")?;
         return Ok(root.into());
     }
-    let root = if let Some(path) = std::env::var_os("XDG_CACHE_HOME").filter(|p| !p.is_empty()) {
-        std::path::PathBuf::from(path)
-    } else if cfg!(windows) {
-        std::env::var_os("LOCALAPPDATA")
-            .map(std::path::PathBuf::from)
-            .ok_or_else(|| invalid("set --cache-dir or LOCALAPPDATA"))?
-    } else {
-        let home = std::env::var_os("HOME").ok_or_else(|| invalid("set --cache-dir or HOME"))?;
-        std::path::PathBuf::from(home).join(if cfg!(target_os = "macos") {
-            "Library/Caches"
-        } else {
-            ".cache"
-        })
-    };
-    ensure(
-        root.is_absolute(),
-        "OS cache directory must be absolute; use --cache-dir",
-    )?;
-    Utf8PathBuf::from_path_buf(root.join("zel/templates"))
+    Utf8PathBuf::from_path_buf(crate::user_home::root()?.join("cache/templates"))
         .map_err(|_| invalid("cache path is not UTF-8; use --cache-dir"))
 }
 fn cache_path(options: &TemplateSourceArgs, name: &str) -> Result<Utf8PathBuf> {

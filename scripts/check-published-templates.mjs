@@ -5,10 +5,10 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 export async function verifyPublishedTemplates(binary, base, root) {
-  const env={...process.env}; delete env.GITHUB_TOKEN; delete env.GH_TOKEN;
+  const env={...process.env,ZELLIJ_HOME:path.join(root,'resources café')}; delete env.GITHUB_TOKEN; delete env.GH_TOKEN;
   const run=args=>execFileSync(binary,args,{env,encoding:'utf8',stdio:'pipe',timeout:180000});
   const bundled=JSON.parse(run(['templates','--json','--offline']));
-  const options=['--catalog',`${base}/templates-catalog.json`,'--cache-dir',path.join(root,'cache')];
+  const options=['--catalog',`${base}/templates-catalog.json`];
   const published=JSON.parse(run(['templates','--json',...options]));
   assert.deepEqual(published,bundled,'Published catalog must describe the templates in the released CLI');
   const records=[];

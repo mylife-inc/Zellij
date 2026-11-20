@@ -52,7 +52,18 @@ try {
     if (-not $uri.IsAbsoluteUri -or ($uri.Scheme -ne 'https' -and -not ($uri.Scheme -eq 'http' -and $uri.IsLoopback)) -or $uri.Query -or $uri.Fragment -or $uri.UserInfo) {
         throw 'ReleaseBaseUrl must be HTTPS (or loopback HTTP), without credentials, query or fragment.'
     }
-    if (-not $InstallDir) { $InstallDir = Join-Path $env:LOCALAPPDATA 'Programs\Zellij\bin' }
+    if (-not $InstallDir) {
+        $zellijRoot = $env:ZELLIJ_HOME
+        if (-not $zellijRoot) {
+            $userProfilePath = [Environment]::GetFolderPath('UserProfile')
+            if (-not $userProfilePath) { throw 'Cannot locate your home directory; set ZELLIJ_HOME to an absolute path.' }
+            $zellijRoot = Join-Path $userProfilePath 'Dev\config\zellij'
+        }
+        if ($zellijRoot -notmatch '^(?:[A-Za-z]:[\\/]|[\\/]{2}[^\\/]+[\\/][^\\/]+(?:[\\/]|$))') {
+            throw 'ZELLIJ_HOME must be an absolute path (expand ~ to your home directory).'
+        }
+        $InstallDir = Join-Path $zellijRoot 'bin'
+    }
     $InstallDir = [IO.Path]::GetFullPath($InstallDir)
     $destination = Join-Path $InstallDir 'zel.exe'
     if (Test-Path -LiteralPath $destination) {

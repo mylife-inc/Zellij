@@ -7,7 +7,8 @@
 # Binaries live in the shared public releases repository. No token is required.
 #
 #   ZEL_VERSION      pin a version, e.g. v0.1.0. Default: the latest.
-#   ZEL_INSTALL_DIR  where to put the binary. Default: ~/.local/bin.
+#   ZELLIJ_HOME     resource root. Default: ~/Dev/config/zellij.
+#   ZEL_INSTALL_DIR  explicit binary location. Default: $ZELLIJ_HOME/bin.
 #   ZEL_RELEASE_BASE_URL  mirror directory of assets; requires ZEL_VERSION.
 #
 # POSIX sh on purpose: this runs on whatever the machine has.
@@ -18,11 +19,25 @@ REPO="${ZEL_REPO:-mylife-inc/releases}"
 # Releases in the shared repository are named for the project that produced
 # them, so several private repositories can publish into one public one.
 SCOPE="${ZEL_SCOPE:-zellij}"
-INSTALL_DIR="${ZEL_INSTALL_DIR:-$HOME/.local/bin}"
 
 say()  { printf '\033[1;36m▸\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m!\033[0m %s\n' "$*" >&2; }
 die()  { printf '\033[1;31m✗\033[0m %s\n' "$*" >&2; exit 1; }
+
+if [ -n "${ZEL_INSTALL_DIR:-}" ]; then
+  INSTALL_DIR="$ZEL_INSTALL_DIR"
+else
+  zellij_root="${ZELLIJ_HOME:-}"
+  if [ -z "$zellij_root" ]; then
+    [ -n "${HOME:-}" ] || die "Cannot locate your home directory; set ZELLIJ_HOME to an absolute path."
+    zellij_root="$HOME/Dev/config/zellij"
+  fi
+  case "$zellij_root" in
+    /*) ;;
+    *) die "ZELLIJ_HOME must be an absolute path (expand ~ to your home directory)." ;;
+  esac
+  INSTALL_DIR="$zellij_root/bin"
+fi
 
 need() { command -v "$1" >/dev/null 2>&1 || die "$1 is required and was not found."; }
 

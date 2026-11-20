@@ -21,7 +21,9 @@ const server = createServer((req,res) => {
   res.writeHead(data ? 200 : 404);res.end(data ?? 'not found');
 });
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-const env = { ...process.env, PATH: path.join(root, 'empty-path'), ZEL_ENGINE_CACHE: path.join(root, 'cache'), ZEL_ENGINE_BASE_URL: publicBase ?? `http://127.0.0.1:${server.address().port}` };
+const env = { ...process.env, PATH: path.join(root, 'empty-path'), ZELLIJ_HOME: path.join(root, 'resources café'), ZEL_ENGINE_BASE_URL: publicBase ?? `http://127.0.0.1:${server.address().port}` };
+delete env.ZEL_ENGINE_CACHE;
+const engineCache = path.join(env.ZELLIJ_HOME, 'cache/engines');
 await mkdir(env.PATH);await cp(path.join(repo, 'examples/showcase/content'), path.join(root, 'content'), { recursive: true });
 await writeFile(path.join(root, 'zel.yaml'), 'version: 1\nrenderer: hosted\n');
 async function run(args, code = 0, overrides = {}) {
@@ -38,11 +40,12 @@ try {
   assert.equal(requests.length, 0);
   const doctor = JSON.parse(await run(['doctor', '--json']));
   assert.equal(doctor.runtime.status, 'not_required');assert.equal(doctor.rich_engine.status, 'download_required');
+  assert.equal(doctor.rich_engine.cache, path.join(engineCache, `${version}-${platform}`));
   if (!publicBase) {
     const checksum = downloads.get(archive + '.sha256');
     downloads.set(archive + '.sha256', Buffer.from(`${'0'.repeat(64)}  ${archive}\n`));
     assert.match(await run(['build'], 2), /checksum mismatch/);
-    assert.equal((await readdir(env.ZEL_ENGINE_CACHE)).length, 0);
+    assert.equal((await readdir(engineCache)).length, 0);
     downloads.set(archive + '.sha256', checksum); requests.length = 0;
   }
   await run(['build']);assert.equal(requests.length, publicBase ? 0 : 2);
@@ -52,6 +55,10 @@ try {
   assert.match(before.toString(), /file\/styles\.css/);
   await new Promise(resolve => server.close(resolve));
   await run(['build', '--offline']);
+  assert.match(await run(['build', '--offline'], 2, { ZELLIJ_HOME: path.join(root, 'other-home') }), /not cached/);
+  const overrideDoctor = JSON.parse(await run(['doctor', '--json'], 0, { ZELLIJ_HOME: path.join(root, 'other-home'), ZEL_ENGINE_CACHE: engineCache }));
+  assert.equal(overrideDoctor.rich_engine.status, 'cached');
+  assert.equal(overrideDoctor.rich_engine.cache, path.join(engineCache, `${version}-${platform}`));
   assert.equal(requests.length, publicBase ? 0 : 2);
   assert((await readFile(path.join(root, 'site/index.html'))).equals(before));
   await run(['new', 'docs', 'full', '--full', '--guide']);
@@ -75,7 +82,7 @@ try {
   const content = path.join(root, 'content/site.yaml');const original = await readFile(content);
   await writeFile(content, 'broken: [');await run(['build', '--offline'], 3);
   assert((await readFile(path.join(root, 'site/index.html'))).equals(before));await writeFile(content, original);
-  const cached = path.join(env.ZEL_ENGINE_CACHE, `${version}-${platform}`);
+  const cached = path.join(engineCache, `${version}-${platform}`);
   const originalStyles = await readFile(path.join(cached, 'engine/styles.css'));
   await writeFile(path.join(cached, 'engine/styles.css'), 'tampered');
   assert.match(await run(['build', '--offline'], 2), /integrity verification/);
