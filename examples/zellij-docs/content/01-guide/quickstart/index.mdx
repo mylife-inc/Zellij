@@ -15,27 +15,31 @@ See the [CLI overview](/cli) for command availability and verification limits.
 
 ## Before you start
 
-Zellij asks for very little, and it is worth being precise about what — "install
-the prerequisites" is where most tools lose people.
+For rich double-click websites, skip container setup and go directly to
+[installing `zel`](#install-zel). The first build needs a connection to download
+its private renderer; subsequent builds can reuse it offline.
 
 | | Needed for | |
 | --- | --- | --- |
-| **A container runtime** | Hosted `check`, `dev`, explicit `build --target static`, image and deployment commands | Docker Desktop, Colima, Podman or Rancher Desktop |
+| **A container runtime** | Hosted `check`, `dev`, explicit `build --target static`, images and image-backed deployments | Docker Desktop, Colima, Podman or Rancher Desktop |
 | `curl` or `wget`, plus `tar` | Unix installer | macOS, GNU/Linux or WSL |
 | PowerShell 5.1 or 7 | Native Windows installer | Windows x64 or ARM64 |
 
 And what you do **not** need:
 
-- **Node.js, npm, a lockfile.** The engine is a Next.js application and it runs
-  inside the container. Nothing is installed on your machine.
+- **A separate Node.js/npm installation or project lockfile.** Rich file builds
+  use the private runtime downloaded into the Zellij cache. Container-based
+  commands run the engine inside their image.
 - **`docker-compose`.** One container at a time; nothing to compose.
 - **`gh`, the GitHub CLI**, for local documentation. GitHub workflow commands
   may use it when you explicitly invoke them.
-- **A container runtime at all**, if you only want to write and convert. `new`,
-  `explain`, `list`, `context`, `detect` and `convert` are native code with the
-  content model compiled in.
+- **A container runtime at all**, for rich double-click builds or portable
+  web-only builds. `new`, `explain`, `list`, `context`, `detect` and `convert`
+  also run natively with the content model compiled in.
 
 ### Installing a container runtime
+
+This optional setup is for the container-based commands listed above.
 
 <Tabs>
 <Tab title="macOS">
@@ -116,11 +120,11 @@ the difference between a build that takes one minute and four.
 
 ### Start the image downloading now
 
-The first hosted command waits for its engine image to download if it is missing.
+The first container-based command waits for its engine image to download if it is missing.
 You can pull the matching candidate image ahead of time:
 
 ```bash title="terminal"
-export ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base:0.2.0-rc.12
+export ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base:0.2.0-rc.13
 docker pull "$ZELLIJ_IMAGE" &
 ```
 
@@ -130,10 +134,10 @@ It is a public image — no login, no account. By the time you have installed
 ## Install `zel`
 
 `zel` is the Zellij CLI: a single native binary, with no runtime of its own.
-Use published [candidate 0.2.0-rc.12](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.12)
+Use published [candidate 0.2.0-rc.13](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.13)
 for this guide. Stable `0.1.3` predates these workflows. The candidate's six native
 packages and both Linux image architectures passed
-[public-artifact acceptance](https://github.com/mylife-inc/Zellij/actions/runs/43496517451).
+[public-artifact acceptance](https://github.com/mylife-inc/Zellij/actions/runs/44667507062).
 
 If you already use a package manager, choose one of these installation methods:
 
@@ -154,8 +158,8 @@ another option. Use one installation method to avoid competing copies on PATH.
 <Tab title="macOS and Linux">
 
 ```bash title="terminal"
-curl -fsSL https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.12/install.sh -o install.sh
-ZEL_VERSION=v0.2.0-rc.12 ZEL_RELEASE_BASE_URL=https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.12 sh ./install.sh
+curl -fsSL https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.13/install.sh -o install.sh
+ZEL_VERSION=v0.2.0-rc.13 ZEL_RELEASE_BASE_URL=https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.13 sh ./install.sh
 ```
 
 Works on **Apple Silicon and Intel Macs**, and on Linux **x86-64 and arm64** —
@@ -165,27 +169,37 @@ includes native Windows x64 and ARM64 archives.
 To select another installation directory, reuse the downloaded installer:
 
 ```bash title="terminal"
-ZEL_VERSION=v0.2.0-rc.12 \
-ZEL_RELEASE_BASE_URL=https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.12 \
+ZEL_VERSION=v0.2.0-rc.13 \
+ZEL_RELEASE_BASE_URL=https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.13 \
 ZEL_INSTALL_DIR="$HOME/.local/bin" sh ./install.sh
 ```
 
-It installs to `~/.local/bin` by default, and says so if that is not on your
-PATH.
+It installs to `$ZELLIJ_HOME/bin`, defaulting to `~/Dev/config/zellij/bin`,
+and prints PATH guidance. `ZEL_INSTALL_DIR` takes precedence. For the default
+resource home, add this line to your shell profile and open a new terminal:
+
+```bash
+export PATH="${ZELLIJ_HOME:-$HOME/Dev/config/zellij}/bin:$PATH"
+```
+
+The installer does not edit shell profiles. Homebrew keeps its own executable
+location. Renderer and remote-template downloads share the
+[Zellij resource home](/cli/config#zellij-home).
 
 </Tab>
 <Tab title="Windows">
 
-Candidate 0.2.0-rc.12 supports native Windows x64 and ARM64. In PowerShell:
+Candidate 0.2.0-rc.13 supports native Windows x64 and ARM64. In PowerShell:
 
 ```powershell
-Invoke-WebRequest https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.12/install.ps1 -OutFile install.ps1
-.\install.ps1 -Version v0.2.0-rc.12 -ReleaseBaseUrl https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.12
-$env:ZELLIJ_IMAGE = 'ghcr.io/mylife-inc/zellij-base:0.2.0-rc.12'
+Invoke-WebRequest https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.13/install.ps1 -OutFile install.ps1
+.\install.ps1 -Version v0.2.0-rc.13 -ReleaseBaseUrl https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.13
+$env:ZELLIJ_IMAGE = 'ghcr.io/mylife-inc/zellij-base:0.2.0-rc.13'
 ```
 
-`-InstallDir` selects a directory;
-the default is `%LOCALAPPDATA%\Programs\Zellij\bin`. Add that directory to your
+`-InstallDir` selects a directory and takes precedence over `ZELLIJ_HOME`.
+The default is `$env:ZELLIJ_HOME\bin`, falling back to
+`%USERPROFILE%\Dev\config\zellij\bin`. Add the resolved directory to your
 user PATH and open a new terminal. The installer checks the archive checksum and
 binary version before replacing a prior installation.
 
@@ -203,8 +217,8 @@ selected directory. It preserves the existing executable if validation fails and
 does not edit your PATH. The default user locations need no administrator rights.
 
 You can read the attached
-[install.sh](https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.12/install.sh)
-or [install.ps1](https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.12/install.ps1)
+[install.sh](https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.13/install.sh)
+or [install.ps1](https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.13/install.ps1)
 before running it.
 </Callout>
 
@@ -215,10 +229,11 @@ zel --version
 zel doctor
 ```
 
-`zel --version` should report `zel 0.2.0-rc.12`. `zel doctor` checks container
-runtime availability for hosted commands and reports the selected engine image.
-Portable commands do not require a successful Docker check. If a hosted runtime
-is missing, see [`zel doctor`](/cli/doctor) for setup and endpoint diagnostics.
+`zel --version` should report `zel 0.2.0-rc.13`. For a rich site, `zel doctor`
+reports the standalone renderer's cache path and readiness without downloading
+it. Neither a rich file build nor a portable web-only build needs a successful
+Docker check. Container-based operations have separate requirements; see
+[`zel doctor`](/cli/doctor) for setup and endpoint diagnostics.
 
 ---
 
