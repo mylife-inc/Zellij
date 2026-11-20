@@ -1,13 +1,15 @@
 {
   "date": "2026-11-20",
   "version": "v0.2.0-rc.15",
-  "status": "Source verification in progress; release not yet tagged or published",
+  "status": "Source merged after all 37 required CI jobs passed; normal release preflight in progress",
   "source": {
     "pr": 219,
     "head": "7bacba01ef1638a21b5a5d10da5c9ee6e81be176",
     "testedMergeSnapshot": "45885daaa7415b751dc6cad87727f8aaedfae690",
     "tree": "4e09609f6e7647acfb81121cb934186d5735f757",
-    "mergeSnapshotTreeMatchesHead": true
+    "mergeSnapshotTreeMatchesHead": true,
+    "merge": "e1f6ff3c51a1d53ab11320dff0ce50e107f486d1",
+    "mergeTreeMatchesHead": true
   },
   "local": {
     "rustPassed": 828,
@@ -32,7 +34,206 @@
       "verifiedRecovery": "At 2026-11-20T10:26:10Z the original archive URL returned HTTP 200 and matched the published SHA-512 integrity. No source change or checksum bypass.",
       "retry": "Only failed CLI job retried, job 136230473402; all other successes retained."
     },
-    "status": "Retry in progress"
+    "status": "passed",
+    "final": {
+      "databaseId": 44716061788,
+      "headSha": "7bacba01ef1638a21b5a5d10da5c9ee6e81be176",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44716061788",
+      "jobs": [
+        {
+          "name": "CLI",
+          "id": 136230473402,
+          "conclusion": "success"
+        },
+        {
+          "name": "Rich website without HTTP",
+          "id": 136230475030,
+          "conclusion": "success"
+        },
+        {
+          "name": "next-pdf / Next PDF (ubuntu-latest)",
+          "id": 136230475665,
+          "conclusion": "success"
+        },
+        {
+          "name": "Portable docs (windows-latest)",
+          "id": 136230475675,
+          "conclusion": "success"
+        },
+        {
+          "name": "native-packages / Package and install (aarch64-apple-darwin)",
+          "id": 136230476368,
+          "conclusion": "success"
+        },
+        {
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+          "id": 136230476447,
+          "conclusion": "success"
+        },
+        {
+          "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+          "id": 136230476613,
+          "conclusion": "success"
+        },
+        {
+          "name": "native-packages / Package and install (x86_64-apple-darwin)",
+          "id": 136230476622,
+          "conclusion": "success"
+        },
+        {
+          "name": "Portable docs (macos-latest)",
+          "id": 136230476898,
+          "conclusion": "success"
+        },
+        {
+          "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+          "id": 136230477084,
+          "conclusion": "success"
+        },
+        {
+          "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+          "id": 136230477098,
+          "conclusion": "success"
+        },
+        {
+          "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+          "id": 136230477280,
+          "conclusion": "success"
+        },
+        {
+          "name": "Rich standalone file website",
+          "id": 136230477869,
+          "conclusion": "success"
+        },
+        {
+          "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+          "id": 136230477954,
+          "conclusion": "success"
+        },
+        {
+          "name": "winget / WinGet binary (${{ matrix.target }})",
+          "id": 136230478110,
+          "conclusion": "skipped"
+        },
+        {
+          "name": "homebrew / Homebrew (macos-15)",
+          "id": 136230478310,
+          "conclusion": "success"
+        },
+        {
+          "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+          "id": 136230478363,
+          "conclusion": "success"
+        },
+        {
+          "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+          "id": 136230478721,
+          "conclusion": "success"
+        },
+        {
+          "name": "winget / WinGet lifecycle (aarch64-pc-windows-msvc)",
+          "id": 136230478914,
+          "conclusion": "success"
+        },
+        {
+          "name": "homebrew / Homebrew (ubuntu-latest)",
+          "id": 136230479046,
+          "conclusion": "success"
+        },
+        {
+          "name": "winget / WinGet lifecycle (x86_64-pc-windows-msvc)",
+          "id": 136230479192,
+          "conclusion": "success"
+        },
+        {
+          "name": "homebrew / Homebrew (macos-15-intel)",
+          "id": 136230479223,
+          "conclusion": "success"
+        },
+        {
+          "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+          "id": 136230479378,
+          "conclusion": "success"
+        },
+        {
+          "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+          "id": 136230479413,
+          "conclusion": "success"
+        },
+        {
+          "name": "Native images (arm64)",
+          "id": 136230519169,
+          "conclusion": "success"
+        },
+        {
+          "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+          "id": 136230520200,
+          "conclusion": "success"
+        },
+        {
+          "name": "websites / Websites (ubuntu-24.04-arm)",
+          "id": 136230520981,
+          "conclusion": "success"
+        },
+        {
+          "name": "Showcase end to end",
+          "id": 136230522579,
+          "conclusion": "success"
+        },
+        {
+          "name": "native-packages / Compile shared rich renderer",
+          "id": 136230528169,
+          "conclusion": "success"
+        },
+        {
+          "name": "Combined image manifests",
+          "id": 136230530799,
+          "conclusion": "success"
+        },
+        {
+          "name": "Website and book templates",
+          "id": 136230531113,
+          "conclusion": "success"
+        },
+        {
+          "name": "Engine",
+          "id": 136230535476,
+          "conclusion": "success"
+        },
+        {
+          "name": "websites / Websites (ubuntu-latest)",
+          "id": 136230540343,
+          "conclusion": "success"
+        },
+        {
+          "name": "Native images (amd64)",
+          "id": 136230542570,
+          "conclusion": "success"
+        },
+        {
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+          "id": 136230542955,
+          "conclusion": "success"
+        },
+        {
+          "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+          "id": 136230547016,
+          "conclusion": "success"
+        },
+        {
+          "name": "Portable docs (ubuntu-latest)",
+          "id": 136230547928,
+          "conclusion": "success"
+        },
+        {
+          "name": "Embedded schema is current",
+          "id": 136230556204,
+          "conclusion": "success"
+        }
+      ]
+    }
   },
   "integratedWinGetReceipts": [
     {
