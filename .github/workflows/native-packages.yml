@@ -80,9 +80,9 @@ jobs:
         env:
           TARGET: ${{ matrix.target }}
         run: node scripts/check-native-install.mjs
-      - name: Windows upgrade lock recovery and preservation
+      - name: Windows upgrade ownership, lock recovery and preservation
         if: runner.os == 'Windows'
-        run: cargo test --manifest-path cli/Cargo.toml --locked --release -p zellij-cli --bin zel maintenance::upgrade::tests
+        run: cargo test --manifest-path cli/Cargo.toml --locked --release --target '${{ matrix.target }}' -p zellij-cli --bin zel maintenance::upgrade
       - uses: actions/download-artifact@v8
         with:
           name: standalone-engine

@@ -88,6 +88,14 @@ before any network request or file change.
 See the [Scoop verification record](https://github.com/mylife-inc/Zellij/blob/main/specs/zel-scoop-distribution-2026-11-13.md)
 for the tested Windows versions, shells and update boundaries.
 
+### WinGet status
+
+WinGet packaging is being verified for the next candidate (source rc.15,
+unreleased). It uses native x64/ARM64 ZIPs and preserves WinGet ownership during
+updates. The package has not been submitted to Microsoft's catalog;
+`winget install --id Shebka.Zel --exact` is not yet an available installation
+method. Use Scoop or the pinned standalone installer below.
+
 ### Native archives and installers
 
 Candidate rc.14 implements every registered command family. Imports cover

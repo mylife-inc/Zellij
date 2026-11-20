@@ -35,7 +35,7 @@ async function run(command, args, { expected = 0, quiet = false, extraEnv = {}, 
     child.stdout.on('data', d => { out += d; if (!quiet) process.stdout.write(d); });
     child.stderr.on('data', d => { err += d; if (!quiet) process.stderr.write(d); });
     child.once('error', reject);
-    child.once('close', code => code === expected ? resolve({ out, err, code }) : reject(Error(`exit ${code}, expected ${expected}\n${out}\n${err}`)));
+    child.once('close', code => (expected === 'nonzero' ? code !== 0 && code !== null : code === expected) ? resolve({ out, err, code }) : reject(Error(`exit ${code}, expected ${expected}\n${out}\n${err}`)));
   });
 }
 const flags = ['--disable-interactivity', '--accept-source-agreements'];
@@ -78,27 +78,37 @@ try {
   await run(manager, ['install', '--manifest', oldManifest, '--architecture', arch, '--location', location, '--accept-package-agreements', ...flags]); installed = true;
   assert.equal((await run(executable, ['--version'])).out.trim(), `zel ${previous.slice(1)}`);
   await mkdir(path.dirname(sentinel), { recursive: true }); await writeFile(sentinel, 'retain cache');
+  const badDocs = structuredClone(docs);
+  for (const i of badDocs[`${wingetId}.installer.yaml`].Installers) i.InstallerSha256 = '0'.repeat(64);
+  const badManifest = await manifests('bad-checksum', badDocs);
+  const beforeUpgrade = await readFile(executable);
+  const bad = await run(manager, ['upgrade', '--manifest', badManifest, '--architecture', arch, '--accept-package-agreements', ...flags], { expected: 'nonzero' });
+  assert.match(bad.out + bad.err, /hash.*(?:match|fail)|(?:match|fail).*hash/i);
+  assert((await readFile(executable)).equals(beforeUpgrade), 'Failed checksum changed the installed CLI');
   await run(manager, ['upgrade', '--manifest', current, '--architecture', arch, '--accept-package-agreements', ...flags]);
   assert.equal((await run(executable, ['--version'])).out.trim(), `zel ${version}`);
+  const alias = path.join(process.env.LOCALAPPDATA, 'Microsoft/WinGet/Links/zel.exe');
+  assert.equal((await run(alias, ['--version'])).out.trim(), `zel ${version}`);
   const before = await readFile(executable);
-  for (const args of [['upgrade', '--check'], ['upgrade', '--force', '--version', version, '--release-base-url', 'http://127.0.0.1:1']]) {
-    const rejected = await run(executable, args, { expected: 1 });
+  for (const args of [['upgrade', '--check'], ['upgrade', '--force', version, '--release-base-url', 'http://127.0.0.1:1']]) {
+    const rejected = await run(alias, args, { expected: 1 });
     assert.match(rejected.err + rejected.out, /WinGet manages this installation/);
     assert.match(rejected.err + rejected.out, /winget upgrade --id Shebka\.Zel --exact/);
     assert((await readFile(executable)).equals(before));
   }
   const loose = path.join(root, 'standalone.exe'); await copyFile(executable, loose);
-  const standalone = await run(loose, ['upgrade', '--check', '--version', version]);
+  const standalone = await run(loose, ['upgrade', '--check', version]);
   assert.doesNotMatch(standalone.out + standalone.err, /WinGet manages/);
   await mkdir(path.join(root, 'docs'));
   await writeFile(path.join(root, 'docs/index.md'), '# WinGet installed CLI\n');
-  await run(executable, ['build', path.join(root, 'docs'), '--renderer', 'portable', '--out', path.join(root, 'site')], { extraEnv: { PATH: '' } });
+  await run(executable, ['build', path.join(root, 'docs'), '--target', 'portable', '--out', path.join(root, 'site')], { extraEnv: { PATH: '' } });
   assert.match(await readFile(path.join(root, 'site/index.html'), 'utf8'), /WinGet installed CLI/);
   await run(manager, ['list', '--id', wingetId, '--exact', ...flags]);
   await run(manager, ['uninstall', '--id', wingetId, '--exact', ...flags]); installed = false;
   await assert.rejects(readFile(executable), { code: 'ENOENT' });
+  await assert.rejects(readFile(alias), { code: 'ENOENT' });
   assert.equal(await readFile(sentinel, 'utf8'), 'retain cache');
-  console.log(JSON.stringify({ version, previous, target, winGet: '1.29.380', manifestValidated: true, realUpgrade: true, customLocation: true, selfUpgradeBlocked: true, standaloneUnaffected: true, portableBuildWithoutTools: true, cacheRetained: true, uninstall: true, publicCatalogSubmitted: false }));
+  console.log(JSON.stringify({ version, previous, target, winGet: '1.29.380', manifestValidated: true, realUpgrade: true, customLocation: true, launcherVerified: true, checksumFailurePreserved: true, selfUpgradeBlocked: true, standaloneUnaffected: true, portableBuildWithoutTools: true, cacheRetained: true, uninstall: true, publicCatalogSubmitted: false }));
 } finally {
   if (installed) await run(manager, ['uninstall', '--id', wingetId, '--exact', ...flags]).catch(e => { console.error(`Cleanup failed: ${e.message}`); process.exitCode = 1; });
   await new Promise(resolve => server.close(resolve));
