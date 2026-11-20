@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
 import { createHash } from 'node:crypto';
-import { mkdir, mkdtemp, readFile, readdir, writeFile, rm, copyFile, realpath } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, writeFile, rm, copyFile, realpath, cp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { wingetManifests, manifestYaml, wingetId } from './winget-manifest.mjs';
@@ -16,6 +16,8 @@ const arch = target.startsWith('aarch64') ? 'arm64' : 'x64';
 const version = (await readFile('cli/Cargo.toml', 'utf8')).match(/^version = "([^"]+)"/m)[1];
 const tag = `v${version}`, previous = 'v0.2.0-rc.14'; assert.notEqual(tag, previous);
 const root = await mkdtemp(path.join(tmpdir(), 'zel winget 日本 '));
+const evidence = process.env.ZEL_WINGET_RECEIPT ? path.dirname(process.env.ZEL_WINGET_RECEIPT) : null;
+if (evidence) await mkdir(evidence, { recursive: true });
 const env = { ...process.env, ZELLIJ_HOME: path.join(root, 'resources') };
 for (const key of Object.keys(env)) if (key.toLowerCase() === 'psmodulepath') delete env[key];
 const dist = path.resolve(process.argv[2] || 'dist');
@@ -57,7 +59,7 @@ async function manifests(name, documents, local = true) {
 }
 const location = path.join(root, 'custom install 日本'), executable = path.join(location, 'zel.exe');
 const sentinel = path.join(env.ZELLIJ_HOME, 'cache/engines/keep.txt');
-let installed = false;
+let installed = false, completed = false;
 try {
   const publicManifest = await manifests('public-manifest', docs, false);
   await run(manager, ['validate', '--manifest', publicManifest]);
@@ -82,10 +84,10 @@ try {
   for (const i of badDocs[`${wingetId}.installer.yaml`].Installers) i.InstallerSha256 = '0'.repeat(64);
   const badManifest = await manifests('bad-checksum', badDocs);
   const beforeUpgrade = await readFile(executable);
-  const bad = await run(manager, ['upgrade', '--manifest', badManifest, '--architecture', arch, '--accept-package-agreements', ...flags], { expected: 'nonzero' });
+  const bad = await run(manager, ['upgrade', '--manifest', badManifest, '--architecture', arch, '--scope', 'user', '--location', location, '--accept-package-agreements', ...flags], { expected: 'nonzero' });
   assert.match(bad.out + bad.err, /hash.*(?:match|fail)|(?:match|fail).*hash/i);
   assert((await readFile(executable)).equals(beforeUpgrade), 'Failed checksum changed the installed CLI');
-  await run(manager, ['upgrade', '--manifest', current, '--architecture', arch, '--accept-package-agreements', ...flags]);
+  await run(manager, ['upgrade', '--manifest', current, '--architecture', arch, '--scope', 'user', '--location', location, '--accept-package-agreements', ...flags]);
   assert.equal((await run(executable, ['--version'])).out.trim(), `zel ${version}`);
   const alias = path.join(process.env.LOCALAPPDATA, 'Microsoft/WinGet/Links/zel.exe');
   assert.equal((await run(alias, ['--version'])).out.trim(), `zel ${version}`);
@@ -128,11 +130,21 @@ try {
   await run(manager, ['uninstall', '--id', wingetId, '--exact', '--scope', 'machine', ...flags]); installed = false;
   await assert.rejects(readFile(machineExe), { code: 'ENOENT' });
   assert.equal(await readFile(sentinel, 'utf8'), 'retain cache');
-  const receipt = { version, previous, target, commit: process.env.GITHUB_SHA, winGet: '1.29.380', manifestValidated: true, realUpgrade: true, customLocation: true, defaultLocation: true, machineScope: true, launcherVerified: true, checksumFailurePreserved: true, selfUpgradeBlocked: true, standaloneUnaffected: true, portableBuildWithoutTools: true, cacheRetained: true, uninstall: true, publicCatalogSubmitted: false };
+  const receipt = { version, previous, target, harnessCommit: process.env.GITHUB_SHA, binaryRun: process.env.ZEL_WINGET_BINARY_RUN, winGet: '1.29.380', manifestValidated: true, realUpgrade: true, customLocation: true, defaultLocation: true, machineScope: true, launcherVerified: true, checksumFailurePreserved: true, selfUpgradeBlocked: true, standaloneUnaffected: true, portableBuildWithoutTools: true, cacheRetained: true, uninstall: true, publicCatalogSubmitted: false };
   if (process.env.ZEL_WINGET_RECEIPT) await writeFile(process.env.ZEL_WINGET_RECEIPT, JSON.stringify(receipt, null, 2) + '\n');
-  console.log(JSON.stringify(receipt));
+  console.log(JSON.stringify(receipt)); completed = true;
 } finally {
+  if (!completed) {
+    // Only this test package's public metadata is collected, never other apps.
+    await run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
+      "$roots = @('HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall', 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall', 'HKLM:\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall'); Get-ChildItem $roots -ErrorAction SilentlyContinue | Where-Object { $_.PSChildName -like 'Shebka.Zel_*' } | ForEach-Object { Get-ItemProperty $_.PSPath } | Select-Object PSPath,DisplayName,DisplayVersion,WinGetPackageIdentifier,WinGetInstallerType,InstallLocation,TargetFullPath | ConvertTo-Json -Depth 2"
+    ]).catch(error => console.error(`Registry diagnostics: ${error.message}`));
+  }
   if (installed) await run(manager, ['uninstall', '--id', wingetId, '--exact', ...flags]).catch(e => { console.error(`Cleanup failed: ${e.message}`); process.exitCode = 1; });
+  if (evidence) {
+    const logs = path.join(process.env.LOCALAPPDATA, 'Packages/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe/LocalState/DiagOutputDir');
+    await cp(logs, path.join(evidence, 'logs'), { recursive: true }).catch(error => console.error(`WinGet diagnostics: ${error.message}`));
+  }
   server.closeAllConnections();
   await new Promise(resolve => server.close(resolve));
   await rm(root, { recursive: true, force: true, maxRetries: 3, retryDelay: 200 });

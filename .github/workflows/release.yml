@@ -250,6 +250,7 @@ jobs:
     uses: ./.github/workflows/winget.yml
     permissions:
       contents: read
+      actions: read
 
   # --------------------------------------------------------------------- docs
   docs:
