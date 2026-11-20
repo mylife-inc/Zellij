@@ -1,6 +1,6 @@
 # WinGet distribution — 20 November 2026
 
-Status: source rc.15 in progress. Public rc.14 and the private client handoff
+Status: source rc.15 native WinGet acceptance passed; final source CI/release pending. Public rc.14 and the private client handoff
 remain unchanged. No Microsoft community catalog submission or acceptance.
 
 ## Package contract
@@ -55,10 +55,11 @@ It is not distributed. Tests cover managed self-upgrade refusal, a standalone
 copy, a portable build without system tools, uninstall and cache preservation.
 Native registry tests cover incorrect identities/types and stale paths.
 
-Initial run `44710734699` compiled both architectures, then ARM64 manifest
-validation reported unsupported portable Scope and missing schema headers.
-Those packaging issues are corrected; x64 setup and superseded jobs were
-cancelled rather than counted as passes. Run `44711498242` passes both native
+Initial run `44710734699` compiled both architectures, then both manifest
+validators reported unsupported portable Scope and missing schema headers.
+Those packaging issues are corrected in `6b0d6e4`. Cancellation was requested
+for the superseded run, but both validator failures completed; neither is a
+pass. Run `44711498242` passes both native
 ownership suites, including real isolated registry fixtures, before its
 superseded lifecycle jobs were cancelled. Full CI `44711923286` caught an rc.14
 image-recipe pin after the rc.15 source bump, fixed in `2343b35`; that run was
@@ -71,7 +72,9 @@ Microsoft's [manifest guidance](https://learn.microsoft.com/en-us/windows/packag
 and [submission process](https://learn.microsoft.com/en-us/windows/package-manager/package/repository)
 require a separate community pull request and validation. Confirm identifier
 availability, published URLs, package eligibility and lifecycle evidence before
-submission. Never advertise `winget install --id Shebka.Zel --exact` as available
+submission. On 2026-11-20, the public `manifests/s/Shebka` path returned
+404 and an open-PR search for `Shebka.Zel` found no entry; recheck immediately
+before submission. Never advertise `winget install --id Shebka.Zel --exact` as available
 until the catalog accepts it and an ordinary public install succeeds.
 
 Retirement must account for external catalog entries: remove/update references
@@ -79,3 +82,30 @@ before deleting archives they serve. The native upgrade fixture currently needs
 rc.14; the private rollback also needs rc.13 renderers. Neither may be removed
 merely because a newer version is published. This extends the existing scoped
 consumer audit, not a blanket promise to retain every candidate forever.
+
+## Native acceptance checkpoint
+
+Run `44715233447` passes both lifecycle jobs with harness `2758907` and the
+exact native artifacts from source `6b0d6e4`/run `44713052307`. CLI source trees
+match. Both native suites pass 12 upgrade/ownership tests. The manifests validate
+without warnings under schema 1.28. Real rc.14-to-rc.15 upgrades, deliberately
+incorrect checksums, launcher invocation, default/custom user and machine
+installations, self-upgrade refusal, separate standalone copies, empty-PATH
+portable builds, uninstall and cache preservation pass. See the
+[receipts and failure history](evidence/zellij-winget-distribution-2026-11-20.json).
+
+Local manifests lack catalog correlation, so acceptance uses WinGet's recorded
+`Shebka.Zel__DefaultSource` product code for uninstall. Public catalog `--id`
+lookup remains a separate post-submission check. WinGet v1.29.380 rejects
+`--location` on a local-manifest upgrade, and an upgrade without it relocates a
+custom portable install to its default location. Acceptance therefore tests a
+real default-location upgrade and a separate custom installation. It does not
+claim that WinGet preserves a custom location during such an upgrade. No
+checksum or security check is disabled; the bad-checksum assertion requires the
+specific rejection message, not a generic help-text match.
+
+Manual harness-only reruns may use `binary_run` to reuse previously verified
+artifacts; receipts identify both source run and harness commit. Ordinary CI
+and tagged releases always use their own native artifacts. Diagnostics are
+copied into one runner-temporary directory before upload to avoid cross-volume
+artifact roots. Final integrated source CI and publication remain pending.
