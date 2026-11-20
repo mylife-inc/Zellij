@@ -132,6 +132,12 @@ jobs:
     permissions:
       contents: read
 
+  winget:
+    needs: native-packages
+    uses: ./.github/workflows/winget.yml
+    permissions:
+      contents: read
+
   engine:
     name: Engine
     runs-on: ubuntu-latest
@@ -142,7 +148,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: node --test scripts/publish-docs.test.mjs scripts/check-print-fonts.test.mjs scripts/retire-release-images.test.mjs scripts/homebrew-formula.test.mjs scripts/scoop-manifest.test.mjs scripts/release-policy.test.mjs scripts/download-release.test.mjs scripts/check-delivery-http.test.mjs scripts/check-live-providers.test.mjs scripts/check-vercel-live.test.mjs scripts/check-fly-live.test.mjs scripts/check-s3-live.test.mjs scripts/preview-client.test.mjs scripts/browser-failure-state.test.mjs
+      - run: node --test scripts/publish-docs.test.mjs scripts/check-print-fonts.test.mjs scripts/retire-release-images.test.mjs scripts/homebrew-formula.test.mjs scripts/scoop-manifest.test.mjs scripts/winget-manifest.test.mjs scripts/release-policy.test.mjs scripts/download-release.test.mjs scripts/check-delivery-http.test.mjs scripts/check-live-providers.test.mjs scripts/check-vercel-live.test.mjs scripts/check-fly-live.test.mjs scripts/check-s3-live.test.mjs scripts/preview-client.test.mjs scripts/browser-failure-state.test.mjs
       - run: node --test scripts/check-dependency-audit.test.mjs
       - name: Audit production and development dependencies
         run: node scripts/check-dependency-audit.mjs

@@ -25,6 +25,8 @@ test('WinGet pins both public archives and installs one managed portable command
 });
 test('stable publication omits preview wording and malformed inventories cannot produce manifests', () => {
   assert.doesNotMatch(wingetManifests('v1.0.0', sums('v1.0.0'))[`${wingetId}.locale.en-US.yaml`].Description, /preview/);
+  for (const tag of ['v0.1.0', 'v0.2.0-rc.14', 'v0.2.0-beta.20']) assert.throws(() => wingetManifests(tag, sums(tag)), /ownership protection/);
+  for (const tag of ['v0.2.0-rc.16', 'v0.2.0', 'v0.3.0-rc.1']) assert.doesNotThrow(() => wingetManifests(tag, sums(tag)));
   const tag = 'v0.2.0-rc.15', inventory = sums(tag);
   for (const bad of ['', inventory.split('\n')[0], inventory + inventory, inventory.replace('a'.repeat(64), 'bad')]) assert.throws(() => wingetManifests(tag, bad));
   for (const bad of ['main', 'v1.0.0\n', 'v1.0.0+extra', 'v1.0.0-rc.01']) assert.throws(() => wingetManifests(bad, inventory));

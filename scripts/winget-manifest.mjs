@@ -7,6 +7,13 @@ import { releasePolicy } from './release-policy.mjs';
 export const wingetId = 'Shebka.Zel';
 export function wingetManifests(tag, checksums) {
   const { version, prerelease } = releasePolicy(tag);
+  const [core, preview] = version.split('-');
+  const parts = core.split('.').map(BigInt);
+  const newerCore = parts[0] > 0n || parts[1] > 2n || (parts[1] === 2n && parts[2] > 0n);
+  const supportedCore = parts[0] === 0n && parts[1] === 2n && parts[2] === 0n;
+  if (!(newerCore || (supportedCore && (!preview || /^rc\.\d+$/.test(preview) && BigInt(preview.slice(3)) >= 15n)))) {
+    throw new Error('WinGet ownership protection requires CLI v0.2.0-rc.15 or newer');
+  }
   const hashes = new Map();
   for (const line of checksums.split(/\r?\n/).filter(line => line.trim())) {
     const match = /^([a-fA-F0-9]{64})\s+\*?(?:\.\/)?([^\s]+)$/.exec(line);

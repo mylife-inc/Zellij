@@ -66,7 +66,14 @@ try {
   const installers = await downloadTaggedInstallers({ version: previous, repository: 'mylife-inc/Zellij' });
   const old = await downloadRelease({ version: previous, target, repository: 'mylife-inc/Zellij', destination: path.join(root, 'previous'), installers });
   bytes.set(old.archive, old.contents[old.archive]);
-  const oldDocs = wingetManifests(previous, old.contents.SHA256SUMS.toString());
+  // rc.14 predates ownership protection: never generate a distributable
+  // WinGet manifest for it. This local-only fixture tests a genuine upgrade.
+  const oldDocs = structuredClone(docs);
+  for (const doc of Object.values(oldDocs)) doc.PackageVersion = previous.slice(1);
+  oldDocs[`${wingetId}.installer.yaml`].Installers = [{
+    Architecture: arch, InstallerUrl: `${origin}/${old.archive}`,
+    InstallerSha256: createHash('sha256').update(old.contents[old.archive]).digest('hex').toUpperCase(),
+  }];
   const oldManifest = await manifests('old', oldDocs);
   await run(manager, ['install', '--manifest', oldManifest, '--architecture', arch, '--location', location, '--accept-package-agreements', ...flags]); installed = true;
   assert.equal((await run(executable, ['--version'])).out.trim(), `zel ${previous.slice(1)}`);

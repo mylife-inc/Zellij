@@ -3,6 +3,20 @@
 Last refreshed: **2026-11-20**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-20: WinGet distribution — in progress**
+
+Branch `codex/winget-distribution` prepares source rc.15; public CLI/docs and the
+private handoff remain rc.14. The Windows self-upgrade guard now checks WinGet
+portable registry identity and the actual file identity, including custom
+locations and hardlinks. Standalone copies are not treated as manager-owned.
+The manifest generator pins x64/ARM64 public ZIPs by SHA-256 and refuses releases
+before rc.15, which lack this guard. CI/release lifecycle acceptance provisions
+checksum-pinned Microsoft WinGet on disposable native Windows runners; testing
+is in progress. No public catalog submission or acceptance is claimed. See the
+[distribution contract](specs/zel-winget-distribution-2026-11-20.md). Retain rc.14
+while the actual-version upgrade fixture uses it, alongside existing private
+rollback dependencies. Do not infer release completion from source version.
+
 **2026-11-20: private rc.14 handoff and current readiness**
 
 The HP handoff is now installed with the four verified public rc.14 Mac/Windows

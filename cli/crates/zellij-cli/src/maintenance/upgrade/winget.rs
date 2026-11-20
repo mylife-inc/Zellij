@@ -121,6 +121,135 @@ mod registry {
             Ok(Some(OsString::from_wide(&data)))
         }
     }
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+
+        struct Fixture {
+            key: Key,
+            path: Vec<u16>,
+            files: tempfile::TempDir,
+        }
+        impl Fixture {
+            fn new() -> Self {
+                let files = tempfile::tempdir().unwrap();
+                let name = format!(
+                    r"Software\Zellij\Tests\{}",
+                    files.path().file_name().unwrap().to_string_lossy()
+                );
+                let path = wide(name.as_ref());
+                let key = create(HKEY_CURRENT_USER, &name);
+                Self { key, path, files }
+            }
+        }
+        impl Drop for Fixture {
+            fn drop(&mut self) {
+                // Only this fixture's uniquely-created subtree is removed.
+                unsafe {
+                    assert_eq!(RegDeleteTreeW(self.key.0, ptr::null()), ERROR_SUCCESS);
+                    assert_eq!(
+                        RegDeleteKeyW(HKEY_CURRENT_USER, self.path.as_ptr()),
+                        ERROR_SUCCESS
+                    );
+                }
+            }
+        }
+        fn create(parent: HKEY, name: &str) -> Key {
+            let mut key = ptr::null_mut();
+            let mut disposition = 0;
+            let result = unsafe {
+                RegCreateKeyExW(
+                    parent,
+                    wide(name.as_ref()).as_ptr(),
+                    0,
+                    ptr::null(),
+                    REG_OPTION_NON_VOLATILE,
+                    KEY_ALL_ACCESS,
+                    ptr::null(),
+                    &mut key,
+                    &mut disposition,
+                )
+            };
+            assert_eq!(result, ERROR_SUCCESS);
+            assert_eq!(disposition, REG_CREATED_NEW_KEY);
+            Key(key)
+        }
+        fn set(key: &Key, name: &str, value: &OsStr) {
+            let data = wide(value);
+            assert_eq!(
+                unsafe {
+                    RegSetValueExW(
+                        key.0,
+                        wide(name.as_ref()).as_ptr(),
+                        0,
+                        REG_SZ,
+                        data.as_ptr().cast(),
+                        (data.len() * 2) as u32,
+                    )
+                },
+                ERROR_SUCCESS
+            );
+        }
+        #[test]
+        fn registry_ownership_requires_identity_type_and_the_actual_installed_file() {
+            let fixture = Fixture::new();
+            let location = fixture.files.path().join("custom 日本");
+            std::fs::create_dir(&location).unwrap();
+            let exe = location.join("zel.exe");
+            std::fs::write(&exe, b"binary").unwrap();
+            let loose = fixture.files.path().join("standalone.exe");
+            std::fs::copy(&exe, &loose).unwrap();
+            assert!(!owns_in(&fixture.key, &exe).unwrap());
+            let unrelated = create(fixture.key.0, "Unrelated_Application");
+            set(&unrelated, "WinGetPackageIdentifier", PACKAGE_ID.as_ref());
+            set(&unrelated, "WinGetInstallerType", "portable".as_ref());
+            set(&unrelated, "InstallLocation", location.as_os_str());
+            assert!(!owns_in(&fixture.key, &exe).unwrap());
+            let entry = create(fixture.key.0, "shebka.zel_test-source");
+            set(&entry, "WinGetPackageIdentifier", "Other.Package".as_ref());
+            set(&entry, "WinGetInstallerType", "portable".as_ref());
+            set(&entry, "InstallLocation", location.as_os_str());
+            assert!(!owns_in(&fixture.key, &exe).unwrap());
+            set(&entry, "WinGetPackageIdentifier", PACKAGE_ID.as_ref());
+            set(&entry, "WinGetInstallerType", "msi".as_ref());
+            assert!(!owns_in(&fixture.key, &exe).unwrap());
+            set(&entry, "WinGetInstallerType", "portable".as_ref());
+            assert!(owns_in(&fixture.key, &exe).unwrap());
+            assert!(!owns_in(&fixture.key, &loose).unwrap());
+            set(
+                &entry,
+                "InstallLocation",
+                fixture.files.path().join("missing").as_os_str(),
+            );
+            assert!(!owns_in(&fixture.key, &exe).unwrap());
+            set(&entry, "TargetFullPath", exe.as_os_str());
+            assert!(owns_in(&fixture.key, &exe).unwrap());
+            let alias = fixture.files.path().join("launcher.exe");
+            std::fs::hard_link(&exe, &alias).unwrap();
+            assert!(owns_in(&fixture.key, &alias).unwrap());
+            set(&entry, "TargetFullPath", "zel.exe".as_ref());
+            assert!(!owns_in(&fixture.key, &exe).unwrap());
+            // Embedded NULs and non-string values cannot become ownership.
+            set(&entry, "TargetFullPath", "invalid\0path".as_ref());
+            assert!(!owns_in(&fixture.key, &exe).unwrap());
+            let data = 42u32;
+            assert_eq!(
+                unsafe {
+                    RegSetValueExW(
+                        entry.0,
+                        wide("TargetFullPath".as_ref()).as_ptr(),
+                        0,
+                        REG_DWORD,
+                        (&data as *const u32).cast(),
+                        4,
+                    )
+                },
+                ERROR_SUCCESS
+            );
+            assert!(!owns_in(&fixture.key, &exe).unwrap());
+        }
+    }
+
     pub(super) fn owns_in(root: &Key, executable: &Path) -> io::Result<bool> {
         let prefix = format!("{PACKAGE_ID}_");
         for index in 0.. {

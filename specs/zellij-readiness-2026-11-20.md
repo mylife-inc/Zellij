@@ -18,7 +18,7 @@ This checkpoint does not declare stable 1.0 or absence of undiscovered bugs.
 | Branding, menus and themes | Separate company/product branding, centered navigation, full-width desktop panels, mobile drilldown, responsive theme colors and the Kie theme are implemented. | Kie is an inspected design interpretation; blocked live reference access did not establish a 100% pixel-identical clone. |
 | Composer and templates | Responsive nested layouts, supported media/semantic/interactive nodes, bounded scroll effects, eight inline built-in section types, nine editable presets and nine website/book starters are implemented. | The composer is bounded. Arbitrary executable components, arbitrary section embedding and unrestricted animation timelines are not promised. |
 | Books and PDF | Shared publication model, technical/study editions, equations/statements, numeric citations, glossary/index, print styling, Arabic RTL and French/German/Spanish print are implemented. | Arbitrary citation styles/BibTeX, unrestricted font inventories and broader format fidelity are separate expansion requests. Existing PDF generation uses its external toolchain. |
-| Installation | Public standalone packages for six native targets, Homebrew and Scoop pass release and upgrade acceptance. | WinGet packaging/acceptance is the next distribution task. Check registry eligibility and compatibility with the user's preview-retirement policy before submitting it; no submission or acceptance is claimed. |
+| Installation | Public standalone packages for six native targets, Homebrew and Scoop pass release and upgrade acceptance. | WinGet source rc.15 is in progress: ownership protection and manifest generation are implemented; native acceptance is running. Public rc.14 remains current. No catalog submission or acceptance is claimed. |
 | Private client handoff | The installed rc.14 package preserves all 468 source files and all 535 generated files. Actual Intel Mac validation, build, watch, preview and Chromium/WebKit acceptance pass for all 200 routes; installed regeneration preserves all 1,111 package files. | Four native Windows script combinations pass using a public fixture. Actual private-client execution on Windows, Apple Silicon and physical iPhone remains distinct acceptance. See the [handoff evidence](evidence/zellij-handoff-authoring-2026-11-20.json). |
 | Retention | rc.14 consumers have migrated in the owned public channels. | Inventory remaining older releases/images and their consumers before applying a new reviewed retirement plan. Preserve private rollback renderer availability before deleting a version it requires. Do not reuse an earlier executed deletion plan. |
 | Live providers and generated runners | Adapters and build/protocol harnesses exist. Earlier live Netlify, Cloudflare, GitHub Pages and Railway checks have their recorded evidence. | Fly, S3 and actual GitLab/CircleCI runner acceptance stay at the end by user instruction. Vercel remains explicitly deferred after payment was required. |
@@ -31,16 +31,12 @@ runs alone does not establish a root cause or resolve them. See the
 new recurrences using retained evidence rather than silently erasing these
 findings or repeatedly running unrelated suites.
 
-WinGet work includes an implementation prerequisite, not just a manifest:
-[`zel upgrade` ownership detection](../cli/crates/zellij-cli/src/maintenance/upgrade.rs)
-currently reads the Homebrew/Scoop marker under a `bin/` parent layout. Add and
-test ownership handling for the actual WinGet installation layout before
-publishing that channel, so self-upgrade cannot bypass its package manager.
-The planned package uses the verified Windows x64/ARM64 binaries; validate
-installation, upgrade and uninstall on both architectures. Microsoft's
-[manifest guidance](https://learn.microsoft.com/en-us/windows/package-manager/package/manifest)
-and [submission process](https://learn.microsoft.com/en-us/windows/package-manager/package/repository)
-remain the external acceptance reference. No manifest has been submitted.
+WinGet source rc.15 adds registry/file ownership detection before self-upgrade,
+verified x64/ARM64 portable manifests and native install/upgrade/uninstall
+acceptance. It is not released or listed in Microsoft's catalog. See the
+[distribution contract](zel-winget-distribution-2026-11-20.md) for validation,
+retention and external acceptance boundaries. The native upgrade fixture uses
+real rc.14 archives; retain them until that dependency is deliberately migrated.
 
 Next order: complete private Windows acceptance when a machine is available,
 prepare and verify WinGet distribution, perform the scoped older-candidate
