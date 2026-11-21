@@ -43,7 +43,7 @@ zel build docs
 zel view docs --watch
 ```
 
-Open `docs-site/index.html` directly in a browser, or use `zel serve docs-site`
+Open `docs/site/index.html` directly in a browser, or use `zel serve docs`
 for HTTP preview. The generated folder can be moved or shared intact, including
 its offline search and local fonts/assets. `--minimal` creates only a home page
 and `zel.yaml`; an existing Markdown folder needs no scaffolding.

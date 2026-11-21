@@ -1,0 +1,225 @@
+{
+  "date": "2026-11-20",
+  "status": "Local validation complete; hosted documentation build and publication pending.",
+  "baseline": "e72dfb69e6e3bc10b21866bb5cd4f3cce137f400",
+  "public_cli": "v0.2.0-rc.15 remains unchanged; new template revisions are source-only until a future candidate publishes them.",
+  "corrected_guides": [
+    "README.md output docs/site/index.html for versioned portable scaffolding",
+    "Deployment guide distinguishes rich file output from optional Next HTTP export",
+    "Wrapper guide distinguishes cached standalone commands from container commands",
+    "From-scratch quickstart uses cached check/build requirements and explicit container sharing boundaries",
+    "Eject guide points the same hosted content at the standalone rich build"
+  ],
+  "templates": {
+    "new_identities": [
+      "product-launch@0.1.3",
+      "software-platform@0.1.3",
+      "creative-studio@0.1.3"
+    ],
+    "changes": "Only the three inline guide paragraphs and manifest versions; content design, assets, engine and minimum CLI stay unchanged.",
+    "published_archive_rewrites": false,
+    "local_artifacts": [
+      {
+        "name": "template-product-docs-0.1.0.tar.gz",
+        "size": 1297,
+        "sha256": "f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+      },
+      {
+        "name": "template-product-studio-0.1.2.tar.gz",
+        "size": 2792,
+        "sha256": "bad023420061d2f3bc051dcfc732d6aec3120af297544cb58d82631ab12393a1"
+      },
+      {
+        "name": "template-book-classic-0.2.0.tar.gz",
+        "size": 4394,
+        "sha256": "70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+      },
+      {
+        "name": "template-book-technical-0.1.0.tar.gz",
+        "size": 3959,
+        "sha256": "8d350a0072bfb36f44edfb3f10f5961f3edf7d715eeb3641a2bc2bb1e4fbcf26"
+      },
+      {
+        "name": "template-book-study-0.1.0.tar.gz",
+        "size": 3845,
+        "sha256": "0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"
+      },
+      {
+        "name": "template-product-launch-0.1.3.tar.gz",
+        "size": 6396,
+        "sha256": "f7d446e59fb21bb8f5bce71382d666a2c7ee2d982b3027c265de73109b4fce40"
+      },
+      {
+        "name": "template-software-platform-0.1.3.tar.gz",
+        "size": 6282,
+        "sha256": "5412e9735419813ee519b68d3e5c8fdd314f0cb49c88472a9de8fdb8ac6a16ba"
+      },
+      {
+        "name": "template-creative-studio-0.1.3.tar.gz",
+        "size": 6191,
+        "sha256": "e54f2905adc90a58ad8a9b725101a78cfdf06ca2b668075d0a242ab27a4ee4dd"
+      },
+      {
+        "name": "template-api-platform-0.1.2.tar.gz",
+        "size": 6135,
+        "sha256": "15121abc9fe6f4c11230d17b9d02bc7f4250b31d1692e975da19b140664c0504"
+      },
+      {
+        "name": "templates-catalog.json",
+        "size": 9537,
+        "sha256": "5c892696837feb1f3e9a1721952108a728a5472b5ec7591a1541a4c74839a893"
+      }
+    ],
+    "deterministic_repack": "Two independent packaging directories produce identical names, lengths and hashes; unchanged six archives match published.json.",
+    "source_to_bundle": "All nine authored/local and bundled receipt hashes match."
+  },
+  "validation": {
+    "strict_deep_documentation": {
+      "routes": 59,
+      "pages": 2,
+      "guide_pages": 57,
+      "examples": 33,
+      "result": "passed"
+    },
+    "native_template_integration": {
+      "cases": 6,
+      "result": "passed"
+    },
+    "public_binary_acceptance": {
+      "binary": "/Users/hamid/Dev/config/zellij/bin/zel",
+      "binary_sha256": "162ea6a8e9a3c096886c46021927f9d43172a869726471b8119eec7dcb7c9c22",
+      "version": "zel 0.2.0-rc.15",
+      "system_path": "empty directory",
+      "private_content": false,
+      "native_readme_output": "docs/site/index.html",
+      "rich_templates": [
+        "product-launch@0.1.3",
+        "software-platform@0.1.3",
+        "creative-studio@0.1.3"
+      ],
+      "commands": [
+        {
+          "args": [
+            "new",
+            "portable",
+            "docs",
+            "--name",
+            "My documentation"
+          ],
+          "exit": 0
+        },
+        {
+          "args": [
+            "check",
+            "docs",
+            "--strict"
+          ],
+          "exit": 0
+        },
+        {
+          "args": [
+            "build",
+            "docs"
+          ],
+          "exit": 0
+        },
+        {
+          "args": [
+            "create",
+            "product-launch",
+            "-t",
+            "/Users/hamid/Dev/MyLife/Zellij/templates/product-launch",
+            "--offline"
+          ],
+          "exit": 0
+        },
+        {
+          "args": [
+            "check",
+            "product-launch",
+            "--deep",
+            "--strict",
+            "--offline"
+          ],
+          "exit": 0
+        },
+        {
+          "args": [
+            "build",
+            "product-launch",
+            "--offline"
+          ],
+          "exit": 0
+        },
+        {
+          "args": [
+            "create",
+            "software-platform",
+            "-t",
+            "/Users/hamid/Dev/MyLife/Zellij/templates/software-platform",
+            "--offline"
+          ],
+          "exit": 0
+        },
+        {
+          "args": [
+            "check",
+            "software-platform",
+            "--deep",
+            "--strict",
+            "--offline"
+          ],
+          "exit": 0
+        },
+        {
+          "args": [
+            "build",
+            "software-platform",
+            "--offline"
+          ],
+          "exit": 0
+        },
+        {
+          "args": [
+            "create",
+            "creative-studio",
+            "-t",
+            "/Users/hamid/Dev/MyLife/Zellij/templates/creative-studio",
+            "--offline"
+          ],
+          "exit": 0
+        },
+        {
+          "args": [
+            "check",
+            "creative-studio",
+            "--deep",
+            "--strict",
+            "--offline"
+          ],
+          "exit": 0
+        },
+        {
+          "args": [
+            "build",
+            "creative-studio",
+            "--offline"
+          ],
+          "exit": 0
+        },
+        {
+          "args": [
+            "--version"
+          ],
+          "exit": 0
+        }
+      ],
+      "status": "passed; all generated sites removed with temporary fixture"
+    }
+  },
+  "remaining_acceptance": {
+    "private_windows": "User confirmed no Windows computer available now; public native fixture evidence does not establish full private-client execution.",
+    "winget": "No Microsoft administrator response at refreshed PR state; CLA passed, catalog pending.",
+    "browser_timing": "Both historical findings remain unexplained; no new stress run or resolution claim."
+  }
+}

@@ -3,8 +3,21 @@ title: Deploying
 description: Static output, path prefixes, SEO, and where the content folder lives.
 ---
 
-A Zellij site is a Next.js app that statically generates every page. Deploy it
-wherever you deploy Next.js.
+Zellij can generate a rich website directly from its content, or render it
+through a Next.js wrapper. For the rich double-clickable edition:
+
+```bash title="terminal"
+zel build docs/zellij
+zel serve docs/zellij    # optional HTTP preview of the generated site/
+```
+
+Open `docs/zellij/site/index.html` directly, or publish the complete `site/`
+folder to a static host. The first build downloads the renderer; later builds
+can use `--offline`. No separately installed Docker, Node.js or Python is
+required. Keep the complete output folder together when sharing it.
+
+The remainder of this guide explains the optional Next.js wrapper and its HTTP
+deployment. In a wrapper checkout, use:
 
 ```bash title="terminal"
 npm run build     # runs `zellij prepare`, then `next build`
@@ -82,11 +95,13 @@ requests, social-card images and sitemap URLs. CI checks a production build with
 home/guide redirects, nested links, optimized and ordinary images, fonts/scripts,
 search navigation and metadata under a nonempty prefix.
 
-This hosted export requires HTTP serving. For ordinary Markdown documentation,
-the native [portable renderer](/cli/build#portable-markdown) already builds
-a separate output that opens directly through `file://`, with navigation and
-search working without a server. Select `renderer: portable` in `zel.yaml`;
-hosted MDX/section sites retain their HTTP requirement.
+The Next export produced by `zel build --target static` or the wrapper's
+`npm run build` requires HTTP serving. Default `zel build` for a
+`renderer: hosted` site instead produces the rich `file://` edition, including
+MDX, sections, navigation and search. The native
+[portable renderer](/cli/build#portable-markdown) also supports double-clicking
+for ordinary Markdown sites. These output choices are separate from the
+`renderer` setting that selects the authored content format.
 
 ## SEO
 

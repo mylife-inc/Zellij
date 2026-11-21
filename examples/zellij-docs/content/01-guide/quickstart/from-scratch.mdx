@@ -38,7 +38,7 @@ zel new docs my-docs --guide
   content/01-guide/index.mdx
   content/assets/.gitkeep
 
-  Next: zel dev my-docs
+  Next: zel build my-docs
 ```
 
 **What just happened.** You have a small site that is complete and correct — not
@@ -62,8 +62,10 @@ two commands have nothing in common except the folder they both care about.
 | --- | --- | --- |
 | `zel new docs` | Writes files | No container |
 | `zel dev` | Serves them | Starts one |
-| `zel check` | Validates them | Starts one |
-| `zel build` | Compiles them | Starts one |
+| `zel check` | Validates them | Uses the cached rich renderer |
+| `zel build` | Builds the rich double-clickable site | Uses the cached rich renderer |
+| `zel view --watch` | Builds and previews edits | Uses the cached rich renderer and native HTTP server |
+| `zel build --target static` | Builds the Next HTTP export | Starts one |
 </Callout>
 
 <Callout type="tip" title="What about the Next.js app?">
@@ -223,15 +225,20 @@ Every internal link is resolved, every section type checked, every sidebar entry
 matched to a file that exists. It exits non-zero when something is wrong, so it
 works as a pre-commit hook.
 
-This runs the engine in a container with your folder mounted read-only, so it
-needs a container runtime. Timing depends on the image and dependency cache.
+This uses the same downloaded renderer as rich `zel build`. It needs no
+separately installed Docker, Node.js or Python. The first check downloads that
+renderer; add `--offline` once it is cached. Source files remain unchanged.
 
-<Callout type="warning" title="If your folder is outside your home directory">
+<Callout type="warning" title="File sharing for optional container commands">
+This applies to hosted `zel dev`, `zel check --target static`, explicit static
+exports and deployment commands. Default rich `zel check` and `zel build` read
+the local filesystem directly and do not need container file sharing.
+
 Container runtimes only share part of your filesystem with the virtual machine
 they run in. Colima shares `$HOME` and not `/tmp`. A bind mount of a path it
 cannot reach does not fail — it mounts an empty directory.
 
-`zel check` detects that and says so:
+The container check detects that and says so:
 
 ```
 error: my-docs is not shared with the container runtime

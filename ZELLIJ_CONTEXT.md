@@ -3,6 +3,19 @@
 Last refreshed: **2026-11-20**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-20: correcting standalone workflow guidance**
+
+The rc.15 runtime remains unchanged. Five guide/README locations still described
+old container/HTTP requirements or the legacy output path; source now describes
+the actual cached rich renderer and configured `site/` output. Three website
+starters' inline guides receive new 0.1.3 identities without rewriting published
+0.1.2 archives. Their publication awaits a future CLI candidate. Local strict/deep
+59-route validation, six native template cases, all nine deterministic packages
+and real public rc.15 empty-PATH/offline builds pass. Hosted documentation
+acceptance/publication are pending. See the [guidance record](specs/zellij-standalone-guidance-2026-11-20.md).
+The user has no Windows computer available now; full private-client Windows
+acceptance remains pending independently of public fixture acceptance.
+
 **2026-11-20: rc.15 released; public WinGet acceptance and catalog submission**
 
 PR #219 merged as `e1f6ff3c51a1d53ab11320dff0ce50e107f486d1`, with an
