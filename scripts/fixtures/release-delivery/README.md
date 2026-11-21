@@ -1,7 +1,7 @@
 # Generated delivery acceptance
 
 These sites exercise complete GitHub workflows from the current CLI generator,
-using the **selected 0.2.0-rc.16 executable and exact engine image** at execution
+using the **selected 0.2.0-rc.17 executable and exact engine image** at execution
 time. This candidate includes the current generators and multi-site queue fix.
 Run only after the selected release publication succeeds. Previous rc.1/rc.2 verification
 records remain evidence for those versions; retargeting does not rerun live delivery.
@@ -10,8 +10,8 @@ records remain evidence for those versions; retargeting does not rerun live deli
 | --- | --- | --- |
 | acceptance-portable.yml | Native validation and portable build | Same |
 | acceptance-hosted.yml | Hosted validation and static export | Same |
-| acceptance-static.yml | Build portable static image | Publish ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.16 |
-| acceptance-next.yml | Build portable Next.js image | Publish ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.16 |
+| acceptance-static.yml | Build portable static image | Publish ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.17 |
+| acceptance-next.yml | Build portable Next.js image | Publish ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.17 |
 | acceptance-netlify-portable.yml | Native validation and portable build | Create a Netlify draft preview |
 | acceptance-netlify-hosted.yml | Hosted validation and static export | Create a Netlify draft preview |
 
@@ -54,7 +54,7 @@ fresh-pull HTTP/health/user checks pass in `44730534861`. No provider deployment
 was performed in this checkpoint. See
 [the release evidence](../../../specs/evidence/zellij-rc15-release-2026-11-20.json).
 
-Current rc.16 checkpoint (2026-11-21): all six generated PR verification
+Historical rc.16 checkpoint (2026-11-21): all six generated PR verification
 workflows pass on `e9ce97a`, merged with an identical tree as `2e8be27`.
 Static and Next publication runs `44883674082` and `44883676471` pass; fresh-pull
 HTTP/health/nonroot checks pass in `44883840228`. No provider deployment was
