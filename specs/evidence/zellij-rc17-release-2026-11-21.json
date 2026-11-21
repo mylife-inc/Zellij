@@ -1,7 +1,7 @@
 {
   "date": "2026-11-21",
   "version": "v0.2.0-rc.17",
-  "status": "Published and verified on six native targets, public Mac/default-home/browser checks and all eight managed-channel actual upgrades. Production guides and fixture publication follow.",
+  "status": "Released and verified: all 37 source and 40 release jobs, six native targets, both 40-asset public copies, local Mac upgrade/default-home/offline/file-browser checks, all eight managed-channel actual upgrades, six generated consumer checks, production documentation and fresh-pull static/Next fixture images. Proposed cached-toolchain migrations are not implemented; earlier timing findings and deferred external acceptance remain open.",
   "source": {
     "pr": 231,
     "head": "fe942fb052250859efaa5c969dddb3a00a21e2d7",
@@ -147,7 +147,8 @@
       "compatibilitySymlink": "preserved",
       "upgradeFrom": "v0.2.0-rc.16",
       "bytesMatchVerifiedPublicArchive": true
-    }
+    },
+    "productionCheckerCorrection": "The supplemental live checker first required the full 0.2.0-rc.17 string on every page. The authored and deployed menu guide correctly uses CLI rc.17. Correcting only that temporary route-specific assertion passed all four live pages without captured browser errors; the original result is preserved. No product, release asset or deployed content changed."
   },
   "sourceCI": {
     "conclusion": "success",
@@ -362,7 +363,9 @@
     "preTagAudit": "73fe156517463837a0d2a077f57170d2feb642bf1845ae981605f6ce71bb2bbe",
     "publicFileBrowsers": "7ed0e73566c393fa759edf80f13d7918e6b45fe8f13b64943b3fc4cd3aa3c53e",
     "localUpgrade": "fc7ed2a9ce2b4e56135d4385e8bf1f20431657ac6cb12ff96de831042693e785",
-    "defaultHome": "1585548cb3f2a7182bf7e87938b6057a5fec9385e27274bad785b5020e252f3d"
+    "defaultHome": "1585548cb3f2a7182bf7e87938b6057a5fec9385e27274bad785b5020e252f3d",
+    "productionCheckerFirst": "e747e7a4b671e91089883dd3f7165b8c8d72ad978a0af12d73d07341aa33325d",
+    "productionCheckerFinal": "a7eb56f61ee2ef54e9467676a7580e2e463030f487a93dbe79fa48dfe6fd1063"
   },
   "channels": {
     "previousHomebrewHead": "d24d6a0e164f202c52fb77aa308ac14d86e823cd",
@@ -1074,6 +1077,149 @@
         "databaseId": 44949492320,
         "status": "completed",
         "workflowName": "Deploy documentation"
+      }
+    ],
+    "head": "3a2f77519a59233e1943070ca20f818469dd7124",
+    "merge": "01f90e9c65c461c2d561c89e364c66bde074df7e",
+    "mergeTreeMatchesReviewedHead": true,
+    "afterTestedHead": "Receipt-only context/readiness/evidence changes; deployed MDX, workflows, runtime and packaging are identical to tested 127fb13.",
+    "productionRun": 44951019765,
+    "duplicateMainCI": {
+      "run": 44951019775,
+      "status": "completed",
+      "reason": "Same runtime and package inputs; targeted changed docs/workflow checks passed. Not a pass.",
+      "conclusion": "cancelled"
+    },
+    "duplicateMainBase": {
+      "run": 44951019705,
+      "status": "completed",
+      "reason": "Same engine, wrapper scaffold and dependency manifests; base inputs that affect output already passed 13 main jobs. Not a pass.",
+      "conclusion": "cancelled"
+    }
+  },
+  "fixturePublication": {
+    "static": {
+      "run": 44951056149,
+      "status": "completed",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "name": "publish",
+          "id": 136988850061,
+          "conclusion": "success"
+        },
+        {
+          "name": "verify",
+          "id": 136988851568,
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    "next": {
+      "run": 44951058940,
+      "status": "completed",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "name": "publish",
+          "id": 136988857679,
+          "conclusion": "success"
+        },
+        {
+          "name": "verify",
+          "id": 136988859770,
+          "conclusion": "skipped"
+        }
+      ]
+    }
+  },
+  "production": {
+    "run": 44951019765,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "Validate and build documentation",
+        "id": 136988738908,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish production documentation",
+        "id": 136989364132,
+        "conclusion": "success"
+      }
+    ],
+    "receipt": {
+      "source": "01f90e9c65c461c2d561c89e364c66bde074df7e",
+      "site_id": "91774174-d4c2-41b5-aa4b-ac61eeadbf51",
+      "domain": "zellij.shebka.net",
+      "deploy_id": "6b020bc93cfac026c3fa39d4",
+      "previous_deploy_id": "6b0170369ba63b773b8d74fa",
+      "preview": "https://6b020bc93cfac026c3fa39d4--zellij-docs.netlify.app",
+      "state": "verified",
+      "published_at": "2026-11-21T21:23:30.361Z"
+    },
+    "liveBrowser": {
+      "source": "01f90e9c65c461c2d561c89e364c66bde074df7e",
+      "browser": "installed Chrome on Intel macOS",
+      "pages": [
+        {
+          "url": "https://zellij.shebka.net/cli",
+          "http": 200,
+          "hydrated": true,
+          "version": "0.2.0-rc.17"
+        },
+        {
+          "url": "https://zellij.shebka.net/cli/build",
+          "http": 200,
+          "hydrated": true,
+          "version": "0.2.0-rc.17"
+        },
+        {
+          "url": "https://zellij.shebka.net/guide/menu",
+          "http": 200,
+          "hydrated": true,
+          "version": "0.2.0-rc.17"
+        },
+        {
+          "url": "https://zellij.shebka.net/guide/quickstart",
+          "http": 200,
+          "hydrated": true,
+          "version": "0.2.0-rc.17"
+        }
+      ],
+      "errors": []
+    }
+  },
+  "fixtureInspection": {
+    "run": 44951268820,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "inspect (next)",
+        "id": 136989493932,
+        "conclusion": "success"
+      },
+      {
+        "name": "inspect (static)",
+        "id": 136989494106,
+        "conclusion": "success"
+      },
+      {
+        "name": "live-providers",
+        "id": 136989495037,
+        "conclusion": "skipped"
+      }
+    ],
+    "images": [
+      {
+        "kind": "next",
+        "digest": "ghcr.io/mylife-inc/zellij/acceptance-next@sha256:07db7d1e0cbe03e6200afc0355dde8a4eb49d0983022a81310ba01006d4542c9",
+        "logSha256": "22b7c685492ec3e2ecd53e716b2a8436c77439fc91a48d28b9202a98c6f57baf"
+      },
+      {
+        "kind": "static",
+        "digest": "ghcr.io/mylife-inc/zellij/acceptance-static@sha256:e96d8c54fc20cb29ca8837a7915152dda2bdb685c5b0171938490aa33246ef0d",
+        "logSha256": "45f6444f9b661bdda38bcd7fc2940ec33ec68892106e8650bad5af921e618f1d"
       }
     ]
   }
