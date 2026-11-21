@@ -6,7 +6,9 @@ The public renderer includes `f80596b`'s menu focus correction. Public Mac
 standalone/direct-file checks, local verified upgrade and all eight actual
 rc.16-to-rc.17 Homebrew/Scoop lifecycle cases pass. The nine template identities
 are unchanged. Main images pass 13 jobs; seven targeted guide/consumer checks
-pass before production publication. No old distributions are retired. See the
+pass. Production `44951019765` and live rc.17 page checks pass; both current
+fixture images publish and pass fresh-pull inspection `44951268820`. No old
+distributions are retired. See the
 [release evidence](evidence/zellij-rc17-release-2026-11-21.json). Proposed cached
 static validation, HTTP export, wrapper and optional typesetting/development
 packages remain future work; do not describe them as rc.17 behavior.

@@ -29,9 +29,15 @@ actual rc.16-to-rc.17 upgrade/lifecycle cases pass (`44950122407`, `44950125485`
 Main images pass all 13 jobs in `44947567673`. Duplicate main/source CI runs
 are explicitly cancelled, not counted as passes.
 
-PR #232 updates the public guides and six generated consumer workflows; all
-seven targeted checks pass on `127fb13`. Production publication and the current
-fixture-image receipts follow its merge. See the
+PR #232 merges as `01f90e9`, identical to reviewed `3a2f775`; all seven targeted
+guide/consumer checks pass on `127fb13`, with only receipt records added after
+that tested head. Automatic production `44951019765` verifies deploy
+`6b020bc93cfac026c3fa39d4`; four live rc.17 pages hydrate without captured errors.
+Static/Next publication `44951056149`/`44951058940` and fresh-pull HTTP, health
+and nonroot checks `44951268820` pass. Duplicate unchanged-runtime/main-image
+runs are cancelled, not counted as passes. One supplemental live checker needed
+its menu-page version assertion corrected to the authored shorthand `CLI rc.17`;
+the original result is retained, with no product or release-asset change. See the
 [release evidence](specs/evidence/zellij-rc17-release-2026-11-21.json) and
 [readiness record](specs/zellij-readiness-2026-11-21.md).
 

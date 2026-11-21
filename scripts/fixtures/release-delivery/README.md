@@ -62,6 +62,7 @@ performed by these fixture workflows. The separate docs workflow publishes the
 authorized production site. See [the rc.16 release evidence](../../../specs/evidence/zellij-rc16-release-2026-11-21.json).
 
 Current rc.17 checkpoint (2026-11-21): all six generated PR verification
-workflows pass on `127fb13`. Publishing the two owned image fixtures and their
-fresh-pull verification follow the guide merge. Provider deployment is not part
-of this checkpoint. See [the release evidence](../../../specs/evidence/zellij-rc17-release-2026-11-21.json).
+workflows pass on `127fb13`, merged with receipt-only additions as `01f90e9`.
+Static and Next publication runs `44951056149` and `44951058940` pass;
+fresh-pull HTTP/health/nonroot checks pass in `44951268820`. Provider deployment
+is not part of this checkpoint. See [the release evidence](../../../specs/evidence/zellij-rc17-release-2026-11-21.json).
