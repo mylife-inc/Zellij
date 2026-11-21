@@ -25,7 +25,10 @@ archives match their published digests. Using the actual public rc.15 binary
 with an empty system PATH, the README's portable commands produce the documented
 path and all three corrected website starters validate and build offline; their
 rendered guide HTML contains the corrected instructions. No private client data
-is used. Hosted documentation acceptance and publication follow.
+is used. Hosted documentation acceptance `44875709182` passes on `f26000f`: all
+59 routes, 282 original heading IDs, 82 compatibility mappings and 29 identical
+images are preserved; hydration and search checks pass. Production publication
+follows the reviewed merge.
 
 The user confirmed that no Windows computer is currently available. Keep full
 private Windows handoff acceptance pending, separately from passing public

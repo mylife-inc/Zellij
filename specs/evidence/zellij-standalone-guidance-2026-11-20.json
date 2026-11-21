@@ -1,6 +1,6 @@
 {
   "date": "2026-11-20",
-  "status": "Local validation complete; hosted documentation build and publication pending.",
+  "status": "Local and targeted hosted documentation acceptance pass; merge and production publication pending.",
   "baseline": "e72dfb69e6e3bc10b21866bb5cd4f3cce137f400",
   "public_cli": "v0.2.0-rc.15 remains unchanged; new template revisions are source-only until a future candidate publishes them.",
   "corrected_guides": [
@@ -221,5 +221,49 @@
     "private_windows": "User confirmed no Windows computer available now; public native fixture evidence does not establish full private-client execution.",
     "winget": "No Microsoft administrator response at refreshed PR state; CLA passed, catalog pending.",
     "browser_timing": "Both historical findings remain unexplained; no new stress run or resolution claim."
-  }
+  },
+  "documentation_acceptance": {
+    "run": 44875709182,
+    "head": "f26000faa1cd2e827f0da735a91ce9bc4df2a23c",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "Validate and build documentation",
+        "id": 136759836951,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish production documentation",
+        "id": 136760392568,
+        "conclusion": "skipped"
+      }
+    ]
+  },
+  "production_before": [
+    {
+      "route": "/guide/deploying",
+      "http": 200,
+      "html_sha256": "e8c7286193b6690e3519fca8ca5f13b81d0933aa9c0c888f709bb5867d8e1aea",
+      "old_instruction_found": true
+    },
+    {
+      "route": "/guide/wrapper",
+      "http": 200,
+      "html_sha256": "5f5a23bdb88111693261ff03a39587404e1e2b3ac9491f01dbd0316ee24d774a",
+      "old_instruction_found": false
+    },
+    {
+      "route": "/guide/quickstart/from-scratch",
+      "http": 200,
+      "html_sha256": "0d1c07aa9eb6ebd9d3e3defc3927722cfa23a16416471de3bf2dea363bea7213",
+      "old_instruction_found": true
+    },
+    {
+      "route": "/cli/eject",
+      "http": 200,
+      "html_sha256": "d1418addf7cdf1e77731721db4240b99869d45956104124205d40d9215bcfbe3",
+      "old_instruction_found": true
+    }
+  ],
+  "pull_request": 223
 }

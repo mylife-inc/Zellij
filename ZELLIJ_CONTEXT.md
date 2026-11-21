@@ -12,7 +12,8 @@ starters' inline guides receive new 0.1.3 identities without rewriting published
 0.1.2 archives. Their publication awaits a future CLI candidate. Local strict/deep
 59-route validation, six native template cases, all nine deterministic packages
 and real public rc.15 empty-PATH/offline builds pass. Hosted documentation
-acceptance/publication are pending. See the [guidance record](specs/zellij-standalone-guidance-2026-11-20.md).
+acceptance `44875709182` passes on `f26000f`; production publication follows
+the reviewed merge. See the [guidance record](specs/zellij-standalone-guidance-2026-11-20.md).
 The user has no Windows computer available now; full private-client Windows
 acceptance remains pending independently of public fixture acceptance.
 
