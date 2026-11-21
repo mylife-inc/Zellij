@@ -24,6 +24,12 @@ corrected and their original failures retained. Public CLI rc.16 is unchanged;
 the focus correction must ship in a later renderer candidate. See the [record](specs/zellij-overflow-focus-2026-11-21.md)
 and [evidence](specs/evidence/zellij-overflow-focus-2026-11-21.json).
 
+PR #229 merges as `4d16549`, identical to reviewed `ab7fb7a`. Automatic production
+`44893589525` verifies deploy `6b0170369ba63b773b8d74fa`; the live home/menu guide
+hydrate without captured errors and the new guidance is present. Main images
+pass all 13 jobs in `44893589526`. Duplicate main CI `44893589549` is cancelled,
+not counted as a pass. No CLI release or release-retirement step is performed.
+
 The two historical browser timing findings remain unexplained. Re-reading the
 original logs locates hydration failure in legacy-heading alias navigation but
 does not identify its cause. Current failure diagnostics remain necessary; this

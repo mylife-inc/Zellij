@@ -1,6 +1,6 @@
 {
   "date": "2026-11-21",
-  "status": "Desktop overflow focus defect reproduced and fixed; source CI, documentation validation and full retry-free browser acceptance pass. Original overflow and hydration timeouts remain unexplained.",
+  "status": "Desktop overflow focus defect reproduced, fixed, merged and published in production documentation/main images. Source CI and full retry-free browser acceptance pass. Public CLI rc.16 and the two unexplained historical timing findings remain unchanged.",
   "base": "5406f71e6ed50e522a881410fc155310563b6bb3",
   "fix": "f80596b63ae7799c96c0181a1d0c4bcb6166e3e4",
   "historicalFindings": [
@@ -92,7 +92,11 @@
     "anchorLocalReport": "4970ebfdc9f7c2b45c6807fa9cc5425d9af14bc47bb924d5ba3bf3f6eb6ea4bb",
     "firstRetryFreeReport": "e0105f3d07b962648873be43c8c518aeb05de129d633e5f496eb70efe0cb6a01",
     "finalHostedBrowserReport": "578c4f0b10b3fbd03ea418e78aab6d1b773bf0e6f6a2242b55d6869e0da73df3",
-    "sourceCISummary": "94f2b17ad49932aaeb5f6ea0363b5ea223aa19eb78ae588b736d430ec742486c"
+    "sourceCISummary": "94f2b17ad49932aaeb5f6ea0363b5ea223aa19eb78ae588b736d430ec742486c",
+    "liveBrowserScript": "3cd439426aea2a1906c854ef8beeb612cfd0a597db0b5ac55d27794f2da0982f",
+    "liveBrowserReceipt": "9634e66f99d1dac4878f7c7ef120a7f8c922221cc6ea4c6d7bce1c819afc33cc",
+    "documentationPublication": "abb64435792fd48e207267d8ce2db9ab2d1fa762c1a66c78f8f592fd8c6c3e7e",
+    "mainImagesCISummary": "e40e7d95cdf689675032ed885dc280926119df80d9558be3febceebb8b17447a"
   },
   "pr": 229,
   "hosted": {
@@ -190,5 +194,47 @@
     },
     "retries": 0,
     "relationToHistoricalHydration": "No link click or route navigation occurred, so this failure does not establish the cause of the older legacy-heading hydration timeout."
+  },
+  "merge": "4d1654954e027dc6905775f90a5ab60672c0fa07",
+  "reviewedHead": "ab7fb7a43b58dd6d282a79c95f9e555a06e88fdc",
+  "mergeTreeIdentical": true,
+  "publication": {
+    "documentation": {
+      "run": 44893589525,
+      "status": "success",
+      "deploy": "6b0170369ba63b773b8d74fa",
+      "source": "4d1654954e027dc6905775f90a5ab60672c0fa07",
+      "publishedAt": "2026-11-21T10:19:46.448Z",
+      "liveBrowser": {
+        "checkedAt": "2026-11-21T10:20:59.977Z",
+        "results": [
+          {
+            "route": "/",
+            "status": 200,
+            "hydrated": true,
+            "updatedMenuGuidance": false,
+            "browserErrors": []
+          },
+          {
+            "route": "/guide/menu",
+            "status": 200,
+            "hydrated": true,
+            "updatedMenuGuidance": true,
+            "browserErrors": []
+          }
+        ]
+      }
+    },
+    "baseImages": {
+      "run": 44893589526,
+      "status": "success",
+      "jobsPassed": 13
+    },
+    "duplicateMainCI": {
+      "run": 44893589549,
+      "status": "cancelled",
+      "reason": "Merged tree is identical to the reviewed tree; source CI and final test-only browser acceptance are already recorded. Cancellation is not a pass."
+    },
+    "cli": "Public rc.16 remains unchanged; the focus fix will ship in a later renderer candidate."
   }
 }
