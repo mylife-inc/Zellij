@@ -10,7 +10,7 @@ defaults:
 env:
   SITE_CONFIG: ./scripts/fixtures/release-delivery/hosted/hosted.yaml
   SITE_ROOT: ./scripts/fixtures/release-delivery/hosted
-  ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.16
+  ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.17
 jobs:
   verify:
     env:
@@ -22,7 +22,7 @@ jobs:
         persist-credentials: false
     - env:
         ZEL_INSTALL_DIR: ${{ runner.temp }}/zel-bin
-        ZEL_VERSION: v0.2.0-rc.16
+        ZEL_VERSION: v0.2.0-rc.17
       name: Install pinned zel
       run: |
         set -eu

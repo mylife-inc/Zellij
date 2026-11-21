@@ -1,6 +1,6 @@
 # zel CLI implementation status — 2026-11-05
 
-**Current checkpoint — 2026-11-21:** rc.16 is published. All documented command
+**Current checkpoint — 2026-11-21:** rc.17 is published. All documented command
 families have implementations; see the [current readiness table](zellij-readiness-2026-11-21.md)
 for the remaining product investigations, distribution tasks and explicit feature
 limits. Release statements below are dated history.

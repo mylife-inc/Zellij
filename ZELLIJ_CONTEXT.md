@@ -8,6 +8,40 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-21**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-21: rc.17 released with desktop overflow focus correction**
+
+Immutable `v0.2.0-rc.17` points to `0bd1e8b`, the merge of PR #231 and an
+identical tree to reviewed `fe942fb`. Source CI `44943983247` passes all 37
+required jobs; the browser suite passes 552 cases, 169 conditional skips and
+zero observed failures/retries. Normal local preflight passes 828 Rust tests
+(5 existing ignores), 540 engine tests, format, Clippy, types and schema drift.
+Fresh production/development audits report no findings. Release `44947576591`
+passes all 40 required jobs. Both public repositories have 40 identical asset
+names, sizes and SHA-256 digests; the nine template identities are unchanged.
+
+The renderer now includes focus fix `f80596b`. Public Intel Mac acceptance
+passes tool-free check/build/watch/view, recovery/cancellation, offline reuse,
+cache-integrity and traversal cases, the 28-page starter and direct-file
+Chromium/WebKit browsing without captured errors or HTTP requests. The installed
+Mac CLI matches the verified public binary; a cold default-resource-home build
+and empty-PATH offline rebuild pass. Homebrew and Scoop publish rc.17; all eight
+actual rc.16-to-rc.17 upgrade/lifecycle cases pass (`44950122407`, `44950125485`).
+Main images pass all 13 jobs in `44947567673`. Duplicate main/source CI runs
+are explicitly cancelled, not counted as passes.
+
+PR #232 updates the public guides and six generated consumer workflows; all
+seven targeted checks pass on `127fb13`. Production publication and the current
+fixture-image receipts follow its merge. See the
+[release evidence](specs/evidence/zellij-rc17-release-2026-11-21.json) and
+[readiness record](specs/zellij-readiness-2026-11-21.md).
+
+The [cached-toolchain roadmap](specs/zellij-cached-toolchains-2026-11-21.md)
+prioritizes static validation, HTTP export/deployment builds, editable wrapper
+packages, optional LuaLaTeX and Next development. These are proposals, not new
+rc.17 capabilities. Image creation still needs a builder. The two historical
+browser timing findings remain unexplained; catalog/provider acceptance stays
+separate. No versions are retired in this step.
+
 **2026-11-21: desktop overflow focus correction — acceptance passed**
 
 Fix `f80596b` prevents delayed More-menu restoration from stealing a newer

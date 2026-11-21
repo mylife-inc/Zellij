@@ -3,7 +3,7 @@ title: zel build
 description: Build a rich double-click website, portable Markdown documentation, a hosted export, or a container image.
 ---
 
-<Callout type="tip" title="Available in candidate 0.2.0-rc.16">
+<Callout type="tip" title="Available in candidate 0.2.0-rc.17">
 The portable target runs entirely inside `zel`. It needs no Docker, Node, or
 network connection. The existing `static` and `image` targets use the container
 engine. Use `zel list targets` to inspect the available outputs and prerequisites.
@@ -77,7 +77,7 @@ local images, bundled fonts, syntax highlighting, and all 15 Zellij themes work
 without an HTTP server. Content and ordinary navigation remain available with
 JavaScript disabled; search and theme controls need JavaScript.
 
-Candidate rc.16 can build a [book manuscript](/cli/books) with the same
+Candidate rc.17 can build a [book manuscript](/cli/books) with the same
 command. Its manifest defines front matter, parts, chapters and appendices; the
 export includes a publication record. Optional [PDF publishing](/cli/books#optional-pdf-export-current-source) is also available.
 
@@ -484,7 +484,7 @@ or start a local container runtime.
 
 ## Image build arguments
 
-For `build --target image` (also `b --target image`), candidate rc.16 accepts
+For `build --target image` (also `b --target image`), candidate rc.17 accepts
 repeatable `--build-arg NAME=VALUE`. Static-folder and portable HTML builds reject
 it before output or runtime work. Prefer `zel ni --build-arg
 NODE_OPTIONS=--max-old-space-size=4096` for the short image form. See

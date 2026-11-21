@@ -1,6 +1,6 @@
 # CLI completion gates — 2026-11-11
 
-**Current checkpoint — 2026-11-21:** rc.16 and production documentation are
+**Current checkpoint — 2026-11-21:** rc.17 and production documentation are
 published. Rich file build/check/watch/view require only the CLI and its cached
 renderer. Later composer, print and template milestones supersede older open
 items below. See the [current readiness table](zellij-readiness-2026-11-21.md)
