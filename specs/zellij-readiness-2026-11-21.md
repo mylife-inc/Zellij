@@ -14,7 +14,7 @@ This checkpoint does not declare stable 1.0 or absence of undiscovered bugs.
 | --- | --- | --- |
 | Documented CLI command families | Implemented, with native tests and the recorded release acceptance. | Provider-specific live behavior and external runners require separate acceptance. |
 | Rich double-click website | Standalone build, check, watch and view share the verified cached renderer. First use downloads it; later operations support `--offline`. No user-installed Docker, Node or Python is required for these operations. | Hosted development, explicit static/Next exports, container images and PDF retain their documented prerequisites. |
-| Documentation and publishing | rc.16 instructions and template 0.1.3 documentation are deployed at `zellij.shebka.net`; automatic run 44883600267 and four live browser checks pass. | Keep release pins and production evidence current when executable behavior changes. Production migration itself is complete. |
+| Documentation and publishing | rc.16 instructions and template 0.1.3 documentation are deployed at `zellij.shebka.net`. The latest menu-guide update is published by run 44893589525; live home/menu hydration checks pass. | Keep release pins and production evidence current when executable behavior changes. Production migration itself is complete. |
 | Branding, menus and themes | Separate company/product branding, centered navigation, full-width desktop panels, mobile drilldown, responsive theme colors and the Kie theme are implemented. | Kie is an inspected design interpretation; blocked live reference access did not establish a 100% pixel-identical clone. |
 | Composer and templates | Responsive nested layouts, supported media/semantic/interactive nodes, bounded scroll effects, eight inline built-in section types, nine editable presets and nine website/book starters are implemented. | Three website starters ship corrected inline guides at template version 0.1.3 in rc.16, while prior 0.1.2 archive bytes remain unchanged. The composer is bounded; arbitrary executable components, arbitrary section embedding and unrestricted animation timelines are not promised. |
 | Books and PDF | Shared publication model, technical/study editions, equations/statements, numeric citations, glossary/index, print styling, Arabic RTL and French/German/Spanish print are implemented. | Arbitrary citation styles/BibTeX, unrestricted font inventories and broader format fidelity are separate expansion requests. Existing PDF generation uses its external toolchain. |
@@ -27,7 +27,7 @@ delayed menu restoration now respects a newer focus or pointer choice. The
 regression fails on the old engine and passes locally in Chromium/WebKit.
 All 37 required source CI jobs and documentation validation pass. The final
 full browser run passes 552 cases without failures or retries (169 conditional
-skips). Delivery in a later CLI renderer remains pending; rc.16 is unchanged. See the [implementation record](zellij-overflow-focus-2026-11-21.md).
+skips). PR #229 is merged; production documentation and main images are updated. Delivery in a later CLI renderer remains pending; rc.16 is unchanged. See the [implementation record](zellij-overflow-focus-2026-11-21.md).
 
 Two historical browser timing findings remain unexplained: WebKit navigation
 overflow after resize and one documentation hydration-readiness timeout.

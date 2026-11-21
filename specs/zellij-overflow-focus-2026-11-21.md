@@ -88,3 +88,16 @@ from optional expansion, including broader import fidelity, additional citation
 formats and unrestricted executable/animation composition. Older status pages
 now point directly to that current record instead of presenting rc.7/rc.14
 milestones as today's status.
+
+## Merge and publication
+
+PR #229 merges as `4d1654954e027dc6905775f90a5ab60672c0fa07`, identical in
+content to reviewed `ab7fb7a`. Automatic production run `44893589525` verifies
+deploy `6b0170369ba63b773b8d74fa`. The live home and menu-guide pages hydrate
+without captured browser errors; the guide contains the new focus explanation.
+Main base-image publication `44893589526` passes all 13 jobs, including building
+and serving the showcase from the published image.
+
+Duplicate main CI `44893589549` was explicitly cancelled after confirming tree
+identity, not counted as a pass. Public CLI rc.16 and all release archives remain
+unchanged; a later renderer/CLI candidate must carry this correction.
