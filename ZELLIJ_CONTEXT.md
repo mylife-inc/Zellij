@@ -3,7 +3,7 @@
 Last refreshed: **2026-11-20**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-20: correcting standalone workflow guidance**
+**2026-11-20: standalone workflow guidance corrected and published**
 
 The rc.15 runtime remains unchanged. Five guide/README locations still described
 old container/HTTP requirements or the legacy output path; source now describes
@@ -12,8 +12,11 @@ starters' inline guides receive new 0.1.3 identities without rewriting published
 0.1.2 archives. Their publication awaits a future CLI candidate. Local strict/deep
 59-route validation, six native template cases, all nine deterministic packages
 and real public rc.15 empty-PATH/offline builds pass. Hosted documentation
-acceptance `44875709182` passes on `f26000f`; production publication follows
-the reviewed merge. See the [guidance record](specs/zellij-standalone-guidance-2026-11-20.md).
+acceptance `44875709182` passes on `f26000f`. PR #223 merges as `02ea7f7`,
+identical to reviewed `aebd217`. Automatic publication `44876017308` verifies
+deploy `6b013ba7b190b04a18945a9b`; all four changed live pages hydrate and contain
+the corrected instructions. General CI/base-image repeats were cancelled;
+all four main image tags remain unchanged. See the [guidance record](specs/zellij-standalone-guidance-2026-11-20.md).
 The user has no Windows computer available now; full private-client Windows
 acceptance remains pending independently of public fixture acceptance.
 
