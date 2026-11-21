@@ -3,11 +3,12 @@ title: zel templates and create
 description: Choose a versioned starter and create an editable documentation or book site.
 ---
 
-<Callout type="info" title="Nine starters in candidate 0.2.0-rc.15">
-The five rich website starters use version 0.1.2 and require CLI rc.14. Their
-READMEs explain standalone rich validation and live preview; their authored
-websites are unchanged. Previously published template versions keep their
-original bytes. `product-docs` remains at 0.1.0.
+<Callout type="info" title="Nine starters in candidate 0.2.0-rc.16">
+The `product-launch`, `software-platform` and `creative-studio` starters use
+version 0.1.3 with corrected inline guides for standalone rich builds, checks
+and previews. `product-studio` and `api-platform` retain version 0.1.2. All five
+require CLI rc.14 or later; their designs are unchanged. Previously published
+template versions keep their original bytes. `product-docs` remains at 0.1.0.
 
 The book starters are `book-classic@0.2.0`, with a shared manifest and optional
 LuaLaTeX PDF, `book-technical@0.1.0`, and `book-study@0.1.0`. All nine templates
@@ -40,7 +41,7 @@ drives reading order, metadata and both web and print. PDF is disabled by defaul
 normal creation, checks and web builds need no container runtime. Enable PDF
 with `zel build my-book --pdf` or `pdf.enabled: true`; `zel pdf my-book --check`
 checks print compatibility natively. Actual typesetting requires the optional
-LuaLaTeX Linux container runtime. Candidate rc.15 supports English/LTR print,
+LuaLaTeX Linux container runtime. Candidate rc.16 supports English/LTR print,
 numeric citations, glossary and subject index, plus
 French, German, Spanish and Arabic RTL with pinned print fonts; see
 [book language and PDF configuration](/cli/books). Technical/study editions are
@@ -75,8 +76,8 @@ explains the scope. The original three template archives remain unchanged.
 
 ## Website collection
 
-<Callout type="info" title="Included in published candidate 0.2.0-rc.15">
-The current 0.1.2 website starters require CLI rc.14. They retain inverted bento
+<Callout type="info" title="Included in published candidate 0.2.0-rc.16">
+The three 0.1.3 website starters below require CLI rc.14. They retain inverted bento
 headings, Porcelain contrast, centered navigation and mobile section views.
 The catalog contains nine starters, including the API platform below. New
 template identities update build instructions; earlier archives are never
@@ -89,7 +90,7 @@ rewritten with different bytes.
 | `software-platform` | Dark software interface, clear product story and connected workflow | Product, Workflow, customization guide |
 | `creative-studio` | Expressive serif typography, original identity studies and editorial spacing | Studio, Selected work, customization guide |
 
-With the published rc.15 CLI:
+With the published rc.16 CLI:
 
 ```sh
 zel create my-product -t product-launch --name "My product"
@@ -120,8 +121,8 @@ Buttons lead to working sample pages; connect your own signup, purchase or
 contact service when you customize the site. No analytics are enabled.
 
 The default styles, alternate light/dark palettes, narrow layouts and no-JavaScript
-fallbacks are covered by browser acceptance. The 0.1.2 README updates do not
-change the starters' artwork or authored website content.
+fallbacks are covered by browser acceptance. The 0.1.3 inline guide updates
+change instructions only; the starters' layouts and artwork are unchanged.
 
 ## Create and edit
 

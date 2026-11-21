@@ -1,7 +1,7 @@
 # Zellij template catalog
 
 This is the authored source for the catalog bundled in `zel` and attached to
-CLI releases. It is independent of `examples/`. The rc.15 catalog contains nine
+CLI releases. It is independent of `examples/`. The rc.16 catalog contains nine
 starters. The five existing starters are:
 `product-docs` (portable handbook), `product-studio` (hosted product landing page),
 `book-classic` (portable book publication with optional LuaLaTeX PDF),
@@ -26,10 +26,10 @@ The catalog also includes three website starters introduced in rc.9 at template 
 These are original designs with local SVG art, not copies of Apple, Linear,
 Stripe or another company's assets. They use the existing engine sections;
 no React, external fonts, tracking, image services or new dependencies are added.
-Their released 0.1.2 revisions require CLI rc.14 and retain the bento heading contrast fix.
-The source catalog prepares 0.1.3 with corrected inline guide instructions for
-standalone building, checking and previewing; publication is pending the next
-CLI candidate. Existing released archive bytes are unchanged. Their READMEs
+Their released 0.1.3 revisions require CLI rc.14 and retain the bento heading contrast fix.
+Included in rc.16, they correct inline guide instructions for standalone
+building, checking and previewing. Existing released 0.1.2 archive bytes are
+unchanged. Their READMEs
 cover rich `check`, `watch`, `view` and `view --watch` using the cached renderer.
 Create them by ID, for example `zel create my-website -t product-launch`.
 The rich builder downloads the matching renderer once. Local templates are also supported:
@@ -145,6 +145,6 @@ at the far right. The mobile header uses the complete navigation drawer.
 `api-platform` uses the `kie` theme, with a wide introduction, pricing,
 model cards, integration steps and a code example. Its four pages and original
 SVG artwork use no remote assets or services. Its current 0.1.2 revision requires
-CLI rc.14; the design uses features introduced in engine rc.10. The rc.15 catalog
+CLI rc.14; the design uses features introduced in engine rc.10. The rc.16 catalog
 includes nine starters. New template versions update build instructions without
 rewriting older archive identities. The API, plans and product names are fictional examples.

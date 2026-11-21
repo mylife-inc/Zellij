@@ -1,7 +1,44 @@
 # Zellij — durable project context
 
-Last refreshed: **2026-11-20**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-21**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
+
+**2026-11-21: rc.16 released with corrected starter guides**
+
+PR #225 merges as `e3fe0867be113c8ba8a837b730e0760d9b955771`, identical in
+content to reviewed `ad6cac3`. All 37 required source CI jobs pass in
+`44878630407`; local normal preflight passes 828 Rust tests (5 existing ignores),
+540 engine tests, format, Clippy, typechecks and schema drift. Immutable
+`v0.2.0-rc.16` release `44880978719` passes all 40 required jobs. Both public
+repositories have the same 40 asset names, sizes and SHA-256 digests.
+
+Product-launch, software-platform and creative-studio now ship template 0.1.3
+with corrected inline standalone-authoring guides. Their artwork/layouts and
+runtime behavior are unchanged. Six other current template identities and all
+previously published hashes remain intact. All nine public/bundled/cached
+receipts match, and all nine archives reproduce. Physical Intel Mac public
+binary acceptance passes tool-free build/check/watch/view, recovery, offline
+cache, the 28-page full starter and direct-file Chromium/WebKit browsing without
+captured page errors or network requests. The installed Mac CLI is rc.16.
+
+Public-URL WinGet x64/ARM64 lifecycle acceptance `44882554939` passes. Microsoft's
+rc.15 submission #484934 remains open: the executable-error label was removed,
+latest automation reports no errors, and moderator approval is now requested.
+Installation Validation remains neutral; catalog availability is not claimed.
+No third-party comment was sent. Keep rc.15 URLs for that submission and actual
+channel upgrades, rc.14 for the private handoff/WinGet upgrade fixture, and
+rc.11/rc.13 for private rollback packages. No versions are retired in this step.
+
+Homebrew and Scoop now publish rc.16; actual rc.15 upgrade acceptance is in
+progress. Public documentation and generated-consumer promotion are prepared
+and still await their hosted checks and production receipt. Main base images
+pass all 13 jobs in `44880926585`. Duplicate main CI `44880926617` was cancelled
+on the identical already-tested tree, not counted as a pass. See the
+[release evidence](specs/evidence/zellij-rc16-release-2026-11-21.json) and
+[current readiness checkpoint](specs/zellij-readiness-2026-11-21.md).
+The private client package remains rc.14; no Windows computer is available for
+its distinct private acceptance. Deferred providers and the two unresolved
+browser timing findings remain unchanged.
 
 **2026-11-20: standalone workflow guidance corrected and published**
 
