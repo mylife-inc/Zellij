@@ -1,6 +1,6 @@
 {
   "date": "2026-11-20",
-  "status": "Reviewed rc.12-only plans committed before execution; deletion not yet applied.",
+  "status": "Complete: two rc.12 releases, 78 assets, two tags and 12 image versions retired; independent inventory, fresh-pull HTTP and anonymous retained checksum downloads pass.",
   "replacement": "v0.2.0-rc.15",
   "scope_reason": "Older private rollback packages require rc.11; retain rc.11, rc.13, rc.14 and rc.15 in both repositories and image graphs. The current private handoff uses rc.14. Actual-version upgrade acceptance also requires rc.14.",
   "gates": [
@@ -143,5 +143,1060 @@
     "No CLI runtime, engine, template, published guide or private handoff changes.",
     "Two historical browser timing findings remain unexplained.",
     "Deferred live providers remain last; Vercel remains deferred."
-  ]
+  ],
+  "retirement_pull_request": 222,
+  "plans_committed_at": "444f57f7b177e275e7bfa58076e4b9d571e2f9b1",
+  "native_execution": {
+    "plan_sha256": "3cbebb341fe76e4cc4aeff5e954a72f9f1bc5302e0ec697766bcca95d752ad70",
+    "replacement": "v0.2.0-rc.15",
+    "started_at": "2026-11-21T06:06:41.294231+00:00",
+    "events": [
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.12",
+        "id": 452071949,
+        "action": "deleted-release",
+        "assets": 39
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.12",
+        "action": "deleted-tag"
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.12",
+        "id": 452072007,
+        "action": "deleted-release",
+        "assets": 39
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.12",
+        "action": "deleted-tag"
+      }
+    ],
+    "complete": true,
+    "finished_at": "2026-11-21T06:07:10.498310+00:00"
+  },
+  "image_workflow_attempt": {
+    "run": 44873949569,
+    "planSha256": "8d51c596d1775922eba7fdad4879a24a2c5f53b84d2c63d4a7d64b7c6efaa96f",
+    "sourceCommit": "444f57f7b177e275e7bfa58076e4b9d571e2f9b1",
+    "execution": "github-actions",
+    "keepVersion": "0.2.0-rc.15",
+    "startedAt": "2026-11-21T06:06:24.891Z",
+    "complete": false,
+    "events": [],
+    "error": "DELETE users/mylife-inc/packages/container/zellij-base/versions/1600863389: HTTP 404: Package not found."
+  },
+  "image_remaining": {
+    "targets": 0,
+    "authorization": "User refreshed intended owner CLI scopes; exact reviewed plan executed successfully.",
+    "failed_workflow_attempt_preserved": true
+  },
+  "post_native_inventory": {
+    "run": 44874073982,
+    "head": "444f57f7b177e275e7bfa58076e4b9d571e2f9b1",
+    "conclusion": "success",
+    "sha256": "22b57edafd7125e1fdf4ce03d6e9c83a418083ba8fa310d3d7b9f1df0f5a8f72",
+    "retained_releases": "rc.11/rc.13/rc.14/rc.15 unchanged in both repositories; CodeSeal assets and tags verified by native executor",
+    "image_versions": "All 4096 package version identities unchanged: 4077 base, 10 static, 9 next."
+  },
+  "post_native_http": {
+    "run": 44874076219,
+    "conclusion": "success",
+    "headSha": "444f57f7b177e275e7bfa58076e4b9d571e2f9b1",
+    "jobs": [
+      {
+        "completedAt": "2026-11-21T06:08:21Z",
+        "conclusion": "success",
+        "databaseId": 136754786365,
+        "name": "inspect (next)",
+        "startedAt": "2026-11-21T06:07:55Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-21T06:07:58Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-21T06:07:56Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:08:04Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7",
+            "number": 2,
+            "startedAt": "2026-11-21T06:07:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:08:09Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v7",
+            "number": 3,
+            "startedAt": "2026-11-21T06:08:04Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:08:11Z",
+            "conclusion": "success",
+            "name": "Run docker/login-action@v3",
+            "number": 4,
+            "startedAt": "2026-11-21T06:08:09Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:08:17Z",
+            "conclusion": "success",
+            "name": "Pull the published image and check its HTTP behavior",
+            "number": 5,
+            "startedAt": "2026-11-21T06:08:11Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:08:17Z",
+            "conclusion": "success",
+            "name": "Post Run docker/login-action@v3",
+            "number": 8,
+            "startedAt": "2026-11-21T06:08:17Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:08:18Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v7",
+            "number": 9,
+            "startedAt": "2026-11-21T06:08:17Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:08:18Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7",
+            "number": 10,
+            "startedAt": "2026-11-21T06:08:18Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:08:18Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-11-21T06:08:18Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44874076219/job/136754786365"
+      },
+      {
+        "completedAt": "2026-11-21T06:08:03Z",
+        "conclusion": "success",
+        "databaseId": 136754786723,
+        "name": "inspect (static)",
+        "startedAt": "2026-11-21T06:07:54Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-21T06:07:56Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-21T06:07:55Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:07:58Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7",
+            "number": 2,
+            "startedAt": "2026-11-21T06:07:56Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:07:58Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v7",
+            "number": 3,
+            "startedAt": "2026-11-21T06:07:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:07:59Z",
+            "conclusion": "success",
+            "name": "Run docker/login-action@v3",
+            "number": 4,
+            "startedAt": "2026-11-21T06:07:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:08:01Z",
+            "conclusion": "success",
+            "name": "Pull the published image and check its HTTP behavior",
+            "number": 5,
+            "startedAt": "2026-11-21T06:07:59Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:08:01Z",
+            "conclusion": "success",
+            "name": "Post Run docker/login-action@v3",
+            "number": 8,
+            "startedAt": "2026-11-21T06:08:01Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:08:01Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v7",
+            "number": 9,
+            "startedAt": "2026-11-21T06:08:01Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:08:01Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7",
+            "number": 10,
+            "startedAt": "2026-11-21T06:08:01Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:08:01Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-11-21T06:08:01Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44874076219/job/136754786723"
+      },
+      {
+        "completedAt": "2026-11-21T06:07:53Z",
+        "conclusion": "skipped",
+        "databaseId": 136754787163,
+        "name": "live-providers",
+        "startedAt": "2026-11-21T06:07:53Z",
+        "status": "completed",
+        "steps": [],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44874076219/job/136754787163"
+      }
+    ],
+    "status": "completed"
+  },
+  "public_download_checks": {
+    "checked_at": "2026-11-21T06:08:36.078703+00:00",
+    "authentication": "none",
+    "checks": [
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.15",
+        "asset": "SHA256SUMS",
+        "size": 2390,
+        "sha256": "37c00c75df8eef9a06dc071abedfb9ca9858ff999c053f09bd208357e7b6089b",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.15",
+        "asset": "zel-renderer-v0.2.0-rc.15-darwin-arm64.tar.gz.sha256",
+        "size": 112,
+        "sha256": "2abeed54966008ff2d32fc21e4b5459a333511cb5db32760a5a61d48ac7cd5b0",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.15",
+        "asset": "zel-renderer-v0.2.0-rc.15-darwin-x64.tar.gz.sha256",
+        "size": 110,
+        "sha256": "638eb256d1ab06ea044efd27e28b1da6f08b2446007008c016dd3f2f33a33a2e",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.15",
+        "asset": "zel-renderer-v0.2.0-rc.15-linux-arm64.tar.gz.sha256",
+        "size": 111,
+        "sha256": "56be27db2c73305e8ab1f546e8b0d8bd0f6019ed66f9407ef8b4e3054d79d746",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.15",
+        "asset": "zel-renderer-v0.2.0-rc.15-linux-x64.tar.gz.sha256",
+        "size": 109,
+        "sha256": "1ef81021b9d68c2839a5d6485c255ec38168c5e34d13720d920a36a44164046d",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.15",
+        "asset": "zel-renderer-v0.2.0-rc.15-win-arm64.tar.gz.sha256",
+        "size": 109,
+        "sha256": "b57b1b8f85ba8f80cf36f80ee43d78dde3a1020a4071ef9bd217fbbf8a15c1d8",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.15",
+        "asset": "zel-renderer-v0.2.0-rc.15-win-x64.tar.gz.sha256",
+        "size": 107,
+        "sha256": "73755701fc6e79ab29df99b1ee06195c6ea7b1701ca8124dffafc6e58b7e753c",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.14",
+        "asset": "SHA256SUMS",
+        "size": 1355,
+        "sha256": "62cb301c539f1dbd87878c2f42ba15a25115d4a79bd7ba8ab52a96f8938021e6",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.14",
+        "asset": "zel-renderer-v0.2.0-rc.14-darwin-arm64.tar.gz.sha256",
+        "size": 112,
+        "sha256": "fc36d1c3cfa656638b08d8b4e6c977ccaeb35d582105676da09b22fa513edf9b",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.14",
+        "asset": "zel-renderer-v0.2.0-rc.14-darwin-x64.tar.gz.sha256",
+        "size": 110,
+        "sha256": "437471ee1e1968685414c4c84c10c5465360981c9648c86da318269aecb6200a",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.14",
+        "asset": "zel-renderer-v0.2.0-rc.14-linux-arm64.tar.gz.sha256",
+        "size": 111,
+        "sha256": "190b41385da9e0ae6d6f81dadca78f9a344c30932241ef18dee7d98e37c958b9",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.14",
+        "asset": "zel-renderer-v0.2.0-rc.14-linux-x64.tar.gz.sha256",
+        "size": 109,
+        "sha256": "43c9176609ce539633471eaa297dd49a70bb18d457396583555468c83416c795",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.14",
+        "asset": "zel-renderer-v0.2.0-rc.14-win-arm64.tar.gz.sha256",
+        "size": 109,
+        "sha256": "0c9c503e939fb6215455b32c1d5d772fdfef1ce18b86119105fb6f9616ac7d71",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.14",
+        "asset": "zel-renderer-v0.2.0-rc.14-win-x64.tar.gz.sha256",
+        "size": 107,
+        "sha256": "9e57166a136bf063bde9110e669c0dce764a60e3693ebe31f7cd48608a28d186",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.13",
+        "asset": "SHA256SUMS",
+        "size": 1355,
+        "sha256": "88d56daa745397aec8187e4608b8fab5b53002a399ae8398ab495877d44303b8",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.13",
+        "asset": "zel-renderer-v0.2.0-rc.13-darwin-arm64.tar.gz.sha256",
+        "size": 112,
+        "sha256": "e95191688edf84122a7aa9719df8b046b7abe7b5f260db13c055d663178513ab",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.13",
+        "asset": "zel-renderer-v0.2.0-rc.13-darwin-x64.tar.gz.sha256",
+        "size": 110,
+        "sha256": "5152c4356f5b20212fd388b343691861b7c1f0ed5bc78d2ad3d591cbc894926c",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.13",
+        "asset": "zel-renderer-v0.2.0-rc.13-linux-arm64.tar.gz.sha256",
+        "size": 111,
+        "sha256": "439ac94dee92dff04c7723ea4fac2a1b4e8cdc03dd0390852e1155caae8d1839",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.13",
+        "asset": "zel-renderer-v0.2.0-rc.13-linux-x64.tar.gz.sha256",
+        "size": 109,
+        "sha256": "5b6afa39b9883cd92535abe4bf5f4d6113a80d5d7cc231083f8904edad0eb758",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.13",
+        "asset": "zel-renderer-v0.2.0-rc.13-win-arm64.tar.gz.sha256",
+        "size": 109,
+        "sha256": "04b1516eb65c6956fe6176e149854c281c8e56816e57b950caace074b389d9c8",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.13",
+        "asset": "zel-renderer-v0.2.0-rc.13-win-x64.tar.gz.sha256",
+        "size": 107,
+        "sha256": "03d6f6312151e9729f48d523ed1387866b27d7ddb905c224c5164895d7ce7c7a",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.15",
+        "asset": "SHA256SUMS",
+        "size": 2390,
+        "sha256": "37c00c75df8eef9a06dc071abedfb9ca9858ff999c053f09bd208357e7b6089b",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.15",
+        "asset": "zel-renderer-v0.2.0-rc.15-darwin-arm64.tar.gz.sha256",
+        "size": 112,
+        "sha256": "2abeed54966008ff2d32fc21e4b5459a333511cb5db32760a5a61d48ac7cd5b0",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.15",
+        "asset": "zel-renderer-v0.2.0-rc.15-darwin-x64.tar.gz.sha256",
+        "size": 110,
+        "sha256": "638eb256d1ab06ea044efd27e28b1da6f08b2446007008c016dd3f2f33a33a2e",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.15",
+        "asset": "zel-renderer-v0.2.0-rc.15-linux-arm64.tar.gz.sha256",
+        "size": 111,
+        "sha256": "56be27db2c73305e8ab1f546e8b0d8bd0f6019ed66f9407ef8b4e3054d79d746",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.15",
+        "asset": "zel-renderer-v0.2.0-rc.15-linux-x64.tar.gz.sha256",
+        "size": 109,
+        "sha256": "1ef81021b9d68c2839a5d6485c255ec38168c5e34d13720d920a36a44164046d",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.15",
+        "asset": "zel-renderer-v0.2.0-rc.15-win-arm64.tar.gz.sha256",
+        "size": 109,
+        "sha256": "b57b1b8f85ba8f80cf36f80ee43d78dde3a1020a4071ef9bd217fbbf8a15c1d8",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.15",
+        "asset": "zel-renderer-v0.2.0-rc.15-win-x64.tar.gz.sha256",
+        "size": 107,
+        "sha256": "73755701fc6e79ab29df99b1ee06195c6ea7b1701ca8124dffafc6e58b7e753c",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.14",
+        "asset": "SHA256SUMS",
+        "size": 1355,
+        "sha256": "62cb301c539f1dbd87878c2f42ba15a25115d4a79bd7ba8ab52a96f8938021e6",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.14",
+        "asset": "zel-renderer-v0.2.0-rc.14-darwin-arm64.tar.gz.sha256",
+        "size": 112,
+        "sha256": "fc36d1c3cfa656638b08d8b4e6c977ccaeb35d582105676da09b22fa513edf9b",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.14",
+        "asset": "zel-renderer-v0.2.0-rc.14-darwin-x64.tar.gz.sha256",
+        "size": 110,
+        "sha256": "437471ee1e1968685414c4c84c10c5465360981c9648c86da318269aecb6200a",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.14",
+        "asset": "zel-renderer-v0.2.0-rc.14-linux-arm64.tar.gz.sha256",
+        "size": 111,
+        "sha256": "190b41385da9e0ae6d6f81dadca78f9a344c30932241ef18dee7d98e37c958b9",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.14",
+        "asset": "zel-renderer-v0.2.0-rc.14-linux-x64.tar.gz.sha256",
+        "size": 109,
+        "sha256": "43c9176609ce539633471eaa297dd49a70bb18d457396583555468c83416c795",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.14",
+        "asset": "zel-renderer-v0.2.0-rc.14-win-arm64.tar.gz.sha256",
+        "size": 109,
+        "sha256": "0c9c503e939fb6215455b32c1d5d772fdfef1ce18b86119105fb6f9616ac7d71",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.14",
+        "asset": "zel-renderer-v0.2.0-rc.14-win-x64.tar.gz.sha256",
+        "size": 107,
+        "sha256": "9e57166a136bf063bde9110e669c0dce764a60e3693ebe31f7cd48608a28d186",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.13",
+        "asset": "SHA256SUMS",
+        "size": 1355,
+        "sha256": "88d56daa745397aec8187e4608b8fab5b53002a399ae8398ab495877d44303b8",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.13",
+        "asset": "zel-renderer-v0.2.0-rc.13-darwin-arm64.tar.gz.sha256",
+        "size": 112,
+        "sha256": "e95191688edf84122a7aa9719df8b046b7abe7b5f260db13c055d663178513ab",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.13",
+        "asset": "zel-renderer-v0.2.0-rc.13-darwin-x64.tar.gz.sha256",
+        "size": 110,
+        "sha256": "5152c4356f5b20212fd388b343691861b7c1f0ed5bc78d2ad3d591cbc894926c",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.13",
+        "asset": "zel-renderer-v0.2.0-rc.13-linux-arm64.tar.gz.sha256",
+        "size": 111,
+        "sha256": "439ac94dee92dff04c7723ea4fac2a1b4e8cdc03dd0390852e1155caae8d1839",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.13",
+        "asset": "zel-renderer-v0.2.0-rc.13-linux-x64.tar.gz.sha256",
+        "size": 109,
+        "sha256": "5b6afa39b9883cd92535abe4bf5f4d6113a80d5d7cc231083f8904edad0eb758",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.13",
+        "asset": "zel-renderer-v0.2.0-rc.13-win-arm64.tar.gz.sha256",
+        "size": 109,
+        "sha256": "04b1516eb65c6956fe6176e149854c281c8e56816e57b950caace074b389d9c8",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.13",
+        "asset": "zel-renderer-v0.2.0-rc.13-win-x64.tar.gz.sha256",
+        "size": 107,
+        "sha256": "03d6f6312151e9729f48d523ed1387866b27d7ddb905c224c5164895d7ce7c7a",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "codeseal-v1.1.0",
+        "asset": "SHA256SUMS",
+        "size": 434,
+        "sha256": "ea1c436ab93d25d834cde182342d1a65032164b28c56d3baedf77134b44c37c3",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "codeseal-v1.0.4",
+        "asset": "SHA256SUMS",
+        "size": 216,
+        "sha256": "5c19c9c9ad75fe9e9b92679b3e3519b661c154a393e122f578350d9e8d4555a8",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.11",
+        "asset": "SHA256SUMS",
+        "size": 685,
+        "sha256": "fe6e7be9f9ca6a811652d09c3eca259237282585e438dcdaa7d7b6832ca42a79",
+        "http": 200
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.11",
+        "asset": "SHA256SUMS",
+        "size": 685,
+        "sha256": "fe6e7be9f9ca6a811652d09c3eca259237282585e438dcdaa7d7b6832ca42a79",
+        "http": 200
+      }
+    ],
+    "scope": "Anonymous GET and digest verification of every protected release SHA256SUMS and all retained renderer checksum assets; not a repeat runtime acceptance."
+  },
+  "image_owner_execution": {
+    "planSha256": "8d51c596d1775922eba7fdad4879a24a2c5f53b84d2c63d4a7d64b7c6efaa96f",
+    "sourceCommit": "444f57f7b177e275e7bfa58076e4b9d571e2f9b1",
+    "execution": "local-owner",
+    "authenticatedOwner": "mylife-inc",
+    "keepVersion": "0.2.0-rc.15",
+    "startedAt": "2026-11-21T06:11:59.691Z",
+    "complete": true,
+    "events": [
+      {
+        "package": "zellij-base",
+        "id": 1600863389,
+        "digest": "sha256:ba8b1316fa174a67dd705bdc9ec7431de05f23b6cb5ef9a7f80bf87f6759732a",
+        "tags": [
+          "0.2.0-rc.12-all"
+        ],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1600862727,
+        "digest": "sha256:9961f6610df099c87663fb83f06b636f82e35e9e6e916074a609be4148988a71",
+        "tags": [
+          "0.2.0-rc.12-maths"
+        ],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1600862067,
+        "digest": "sha256:3ace5a97fbd63cc6b12d44af7ba3043a0312b1b760f229a36fefb3e2916051da",
+        "tags": [
+          "0.2.0-rc.12"
+        ],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1600861593,
+        "digest": "sha256:17d8e37613c06336ef64130388a8f67f0d87adcfe25a6aaa0357f2b250c4c6fc",
+        "tags": [
+          "0.2.0-rc.12-diagrams"
+        ],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1600859769,
+        "digest": "sha256:6536b813983939e81a01aae7afdb95be67e396b71b05d2d13cf30a7ced45ff1b",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1600859468,
+        "digest": "sha256:b67e5a389af09084bb52b0ba6f38052cf8bd11a6dc4376f55eafbe46e6b439aa",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1600859210,
+        "digest": "sha256:90516bf59bcc88c631289507eaada0906b7160cf91531769b9e6bcbd479b905f",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1600859168,
+        "digest": "sha256:86f28c033419dafb67cb65c1674eeb836636c637774734f58dbb8b48417174a9",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1600859152,
+        "digest": "sha256:3a3f0957b20f155f0d3c3729bb4570b0c3a2bfb1105d80a6ffb72d45193b3600",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1600859125,
+        "digest": "sha256:1de6c818bf60bed3cd7c817cc88281a0a4be458cd4eef285e0d71435d227715d",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1600859021,
+        "digest": "sha256:5b5adedc39d6a6d77253cfa2f98ae4bcb482b628fd0209875f535b84c40d42d9",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1600858888,
+        "digest": "sha256:c940b3d034464de911e830850371457ea5ccd27ee49c6c0deab68845b0a72819",
+        "tags": [],
+        "status": "deleted"
+      }
+    ],
+    "finishedAt": "2026-11-21T06:14:09.768Z"
+  },
+  "post_image_inventory": {
+    "run": 44874568810,
+    "conclusion": "success",
+    "headSha": "444f57f7b177e275e7bfa58076e4b9d571e2f9b1",
+    "jobs": [
+      {
+        "completedAt": "2026-11-21T06:14:58Z",
+        "conclusion": "success",
+        "databaseId": 136756320337,
+        "name": "inventory",
+        "startedAt": "2026-11-21T06:14:08Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-21T06:14:10Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-21T06:14:09Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:12Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7",
+            "number": 2,
+            "startedAt": "2026-11-21T06:14:10Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:12Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v7",
+            "number": 3,
+            "startedAt": "2026-11-21T06:14:12Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:13Z",
+            "conclusion": "success",
+            "name": "Check exact-scope deletion safeguards",
+            "number": 4,
+            "startedAt": "2026-11-21T06:14:12Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:20Z",
+            "conclusion": "success",
+            "name": "Check native release deletion safeguards without networking",
+            "number": 5,
+            "startedAt": "2026-11-21T06:14:13Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:52Z",
+            "conclusion": "success",
+            "name": "List exact Zellij release and image version identities",
+            "number": 6,
+            "startedAt": "2026-11-21T06:14:20Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:56Z",
+            "conclusion": "success",
+            "name": "Generate a read-only retained and retired manifest plan",
+            "number": 7,
+            "startedAt": "2026-11-21T06:14:52Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:57Z",
+            "conclusion": "success",
+            "name": "Run actions/upload-artifact@v7",
+            "number": 8,
+            "startedAt": "2026-11-21T06:14:56Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:57Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v7",
+            "number": 15,
+            "startedAt": "2026-11-21T06:14:57Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:57Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7",
+            "number": 16,
+            "startedAt": "2026-11-21T06:14:57Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:57Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 17,
+            "startedAt": "2026-11-21T06:14:57Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44874568810/job/136756320337"
+      },
+      {
+        "completedAt": "2026-11-21T06:14:07Z",
+        "conclusion": "skipped",
+        "databaseId": 136756321326,
+        "name": "retire-images",
+        "startedAt": "2026-11-21T06:14:07Z",
+        "status": "completed",
+        "steps": [],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44874568810/job/136756321326"
+      }
+    ],
+    "status": "completed",
+    "inventory_sha256": "bfdc4551101105eab48068956d75bae8bf53a16cb8ee699095a156c898bae6e1",
+    "comparison": "All remaining release and image version identities match the reviewed before snapshot exactly; only the two rc.12 releases and 12 planned image versions are absent.",
+    "remaining_eligible_targets": 0,
+    "packages": [
+      {
+        "package": "zellij-base",
+        "before": 4077,
+        "after": 4065,
+        "deleted": 12,
+        "protected_manifests": 100,
+        "excluded_unchanged": 3965
+      },
+      {
+        "package": "zellij/acceptance-static",
+        "before": 10,
+        "after": 10,
+        "deleted": 0,
+        "protected_manifests": 6,
+        "excluded_unchanged": 4
+      },
+      {
+        "package": "zellij/acceptance-next",
+        "before": 9,
+        "after": 9,
+        "deleted": 0,
+        "protected_manifests": 6,
+        "excluded_unchanged": 3
+      }
+    ]
+  },
+  "post_image_http": {
+    "run": 44874571313,
+    "conclusion": "success",
+    "headSha": "444f57f7b177e275e7bfa58076e4b9d571e2f9b1",
+    "jobs": [
+      {
+        "completedAt": "2026-11-21T06:14:32Z",
+        "conclusion": "success",
+        "databaseId": 136756328903,
+        "name": "inspect (next)",
+        "startedAt": "2026-11-21T06:14:11Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-21T06:14:12Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-21T06:14:11Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:15Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7",
+            "number": 2,
+            "startedAt": "2026-11-21T06:14:12Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:18Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v7",
+            "number": 3,
+            "startedAt": "2026-11-21T06:14:15Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:20Z",
+            "conclusion": "success",
+            "name": "Run docker/login-action@v3",
+            "number": 4,
+            "startedAt": "2026-11-21T06:14:18Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:28Z",
+            "conclusion": "success",
+            "name": "Pull the published image and check its HTTP behavior",
+            "number": 5,
+            "startedAt": "2026-11-21T06:14:20Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:29Z",
+            "conclusion": "success",
+            "name": "Post Run docker/login-action@v3",
+            "number": 8,
+            "startedAt": "2026-11-21T06:14:28Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:29Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v7",
+            "number": 9,
+            "startedAt": "2026-11-21T06:14:29Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:29Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7",
+            "number": 10,
+            "startedAt": "2026-11-21T06:14:29Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:29Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-11-21T06:14:29Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44874571313/job/136756328903"
+      },
+      {
+        "completedAt": "2026-11-21T06:14:20Z",
+        "conclusion": "success",
+        "databaseId": 136756329110,
+        "name": "inspect (static)",
+        "startedAt": "2026-11-21T06:14:10Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-21T06:14:12Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-21T06:14:11Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:14Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7",
+            "number": 2,
+            "startedAt": "2026-11-21T06:14:12Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:14Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v7",
+            "number": 3,
+            "startedAt": "2026-11-21T06:14:14Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:15Z",
+            "conclusion": "success",
+            "name": "Run docker/login-action@v3",
+            "number": 4,
+            "startedAt": "2026-11-21T06:14:14Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:18Z",
+            "conclusion": "success",
+            "name": "Pull the published image and check its HTTP behavior",
+            "number": 5,
+            "startedAt": "2026-11-21T06:14:15Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:18Z",
+            "conclusion": "success",
+            "name": "Post Run docker/login-action@v3",
+            "number": 8,
+            "startedAt": "2026-11-21T06:14:18Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:18Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v7",
+            "number": 9,
+            "startedAt": "2026-11-21T06:14:18Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:18Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7",
+            "number": 10,
+            "startedAt": "2026-11-21T06:14:18Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-21T06:14:18Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-11-21T06:14:18Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44874571313/job/136756329110"
+      },
+      {
+        "completedAt": "2026-11-21T06:14:09Z",
+        "conclusion": "skipped",
+        "databaseId": 136756330922,
+        "name": "live-providers",
+        "startedAt": "2026-11-21T06:14:09Z",
+        "status": "completed",
+        "steps": [],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44874571313/job/136756330922"
+      }
+    ],
+    "status": "completed"
+  },
+  "final_scope": "All 112 protected manifest nodes, 3972 excluded build-history versions and ten protected releases (including CodeSeal) retained. Original workflow permission failure preserved; user-authorized owner fallback completed the same plan.",
+  "browser_followup": "zellij-browser-timing-followup-2026-11-20.json; no new diagnostic evidence for either historical finding in the inspected attempts, no resolution claimed.",
+  "final_record_update": "Final follow-up modifies context/evidence/procedure prose only; runtime, active guides, templates, workflows, deletion guards and committed plans match the hosted verified tree 444f57f."
 }

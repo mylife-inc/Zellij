@@ -26,7 +26,7 @@ dated release records remain valid historical evidence; add retirement records
 rather than silently rewrite them. The user has authorized this cleanup policy;
 do not repeatedly request approval for a reviewed cleanup within its scope.
 
-## Current rc.15 retirement plan — 2026-11-20
+## Current rc.15 retirement result — 2026-11-20
 
 The published rc.15 replacement, managed channels, production guides and current
 acceptance images pass all 17 recorded gates. A fresh consumer audit found two
@@ -39,7 +39,17 @@ The final reviewed plan targets only two rc.12 releases (78 assets), two tags
 and 12 exact base-image versions. It protects all 112 retained manifest nodes,
 3,972 excluded build-history versions and both CodeSeal releases. Inventory
 `44873543634` passes 16 image and 13 native safeguards; the live native preflight
-also passes. Plans are committed before execution. No deletion is claimed yet.
+also passes. Plans were committed at `444f57f` before execution. Both rc.12
+releases, all 78 assets and both tags are removed; the executor verifies all ten
+protected release/asset/tag identities unchanged. Independent inventory
+`44874073982`, fresh-pull HTTP `44874076219` and 46 anonymous checksum downloads
+pass. The image workflow `44873949569` is denied on its first deletion (HTTP
+404, Package not found); no image mutation occurred during that attempt. After
+the user refreshed owner package scopes, the same committed 12-version plan
+completed successfully. Final inventory `44874568810` confirms all remaining
+identities match exactly and zero eligible targets remain. All 112 protected
+manifests and 3,972 excluded versions are intact; fresh-pull HTTP `44874571313`
+passes. Preserve the failed workflow attempt and successful owner receipt.
 See the [evidence](evidence/zellij-rc15-retirement-2026-11-20.json).
 Do not reuse executed plans or infer that private consumers can migrate without
 separate preservation and regeneration checks.

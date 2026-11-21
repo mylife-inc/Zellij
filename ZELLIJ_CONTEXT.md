@@ -54,7 +54,16 @@ assets, two tags and 12 base-image versions. All 112 retained image manifests,
 3,972 unreferenced build-history versions and both CodeSeal releases are protected.
 Inventory `44873543634` passes all 16 image and 13 native deletion guards; the
 live native preflight and all 17 replacement gates pass. The earlier broader
-plan was superseded before any deletion. Execution is pending; see the
+plan was superseded before any deletion. The two rc.12 releases, 78 assets and
+two tags are now retired; all ten protected releases/assets/tags are unchanged.
+Independent inventory `44874073982`, fresh-pull HTTP `44874076219` and 46
+anonymous checksum downloads pass. Workflow `44873949569` could read image
+versions but GitHub rejected its first deletion with HTTP 404; its journal has
+zero mutations. The user refreshed owner package authorization; the same exact
+12-image plan then completed successfully. Final inventory `44874568810` matches
+all remaining identities and has zero eligible targets. All 112 protected
+manifest nodes and 3,972 excluded image versions remain intact; fresh-pull HTTP
+`44874571313` passes. See the
 [retirement evidence](specs/evidence/zellij-rc15-retirement-2026-11-20.json).
 Deferred live providers and the two unresolved browser timing findings remain
 separate. No new CLI release is required for these maintenance records.

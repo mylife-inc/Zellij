@@ -1,0 +1,176 @@
+{
+  "date": "2026-11-20",
+  "scope": "Read-only follow-up of ordinary CI history; no new browser stress run or product change.",
+  "queried_created_since": "2026-11-14",
+  "actual_first_created": "2026-11-14T00:04:11Z",
+  "actual_last_created": "2026-11-20T11:44:49Z",
+  "run_count": 111,
+  "conclusions": {
+    "cancelled": 73,
+    "failure": 2,
+    "success": 36
+  },
+  "reviewed_attempts": [
+    {
+      "id": 44716061788,
+      "head_sha": "7bacba01ef1638a21b5a5d10da5c9ee6e81be176",
+      "run_attempt": 2,
+      "conclusion": "success",
+      "created_at": "2026-11-20T10:04:22Z",
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/44716061788",
+      "nonpassing_jobs": [
+        {
+          "id": 136219793504,
+          "name": "CLI",
+          "conclusion": "failure",
+          "started_at": "2026-11-20T10:04:41Z",
+          "failed_steps": [
+            "Ejected distribution installs, validates and builds outside the checkout"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 44628797826,
+      "head_sha": "d3cc2d5078d8d1d554aff30b340d085ec718ed3a",
+      "run_attempt": 1,
+      "conclusion": "failure",
+      "created_at": "2026-11-19T22:27:30Z",
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/44628797826",
+      "nonpassing_jobs": [
+        {
+          "id": 135929820163,
+          "name": "CLI",
+          "conclusion": "failure",
+          "started_at": "2026-11-19T22:27:54Z",
+          "failed_steps": [
+            "Static exports preserve the previous site on failure"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 44426799314,
+      "head_sha": "d1daba6b0327a17b8fc0674769739c26eebb5325",
+      "run_attempt": 2,
+      "conclusion": "success",
+      "created_at": "2026-11-19T00:10:09Z",
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/44426799314",
+      "nonpassing_jobs": [
+        {
+          "id": 135233628577,
+          "name": "Showcase end to end",
+          "conclusion": "cancelled",
+          "started_at": "2026-11-19T00:13:15Z",
+          "failed_steps": []
+        }
+      ]
+    },
+    {
+      "id": 44397663238,
+      "head_sha": "2f69966d49ae571a1e1a1114c95717fa6d0b8a61",
+      "run_attempt": 2,
+      "conclusion": "success",
+      "created_at": "2026-11-18T21:04:37Z",
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/44397663238",
+      "nonpassing_jobs": [
+        {
+          "id": 135132002174,
+          "name": "Portable docs (macos-latest)",
+          "conclusion": "cancelled",
+          "started_at": "2026-11-18T21:04:56Z",
+          "failed_steps": []
+        }
+      ]
+    },
+    {
+      "id": 44366531686,
+      "head_sha": "9ef8e369a436d6caeb873e4694a9d9d85ef96956",
+      "run_attempt": 2,
+      "conclusion": "success",
+      "created_at": "2026-11-18T18:09:09Z",
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/44366531686",
+      "nonpassing_jobs": [
+        {
+          "id": 135021632492,
+          "name": "Portable docs (macos-latest)",
+          "conclusion": "cancelled",
+          "started_at": "2026-11-18T18:09:09Z",
+          "failed_steps": []
+        }
+      ]
+    },
+    {
+      "id": 44086609777,
+      "head_sha": "7b6f052f8ad3dcb19fa4622b11113fb30699d10d",
+      "run_attempt": 2,
+      "conclusion": "success",
+      "created_at": "2026-11-17T12:48:31Z",
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/44086609777",
+      "nonpassing_jobs": [
+        {
+          "id": 134050572822,
+          "name": "native-packages / Package and install (aarch64-apple-darwin)",
+          "conclusion": "cancelled",
+          "started_at": "2026-11-17T12:48:32Z",
+          "failed_steps": []
+        }
+      ]
+    },
+    {
+      "id": 43553446088,
+      "head_sha": "ed869ceb208090da4c3440979b325cbcae92cf6e",
+      "run_attempt": 1,
+      "conclusion": "failure",
+      "created_at": "2026-11-14T03:47:48Z",
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/43553446088",
+      "nonpassing_jobs": [
+        {
+          "id": 132320951411,
+          "name": "CLI",
+          "conclusion": "failure",
+          "started_at": "2026-11-14T03:48:11Z",
+          "failed_steps": [
+            "Next image publication and portable/hosted browser acceptance"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 43540700668,
+      "head_sha": "36c78826ddf36d6c632540bb70e46e6b56a86a61",
+      "run_attempt": 2,
+      "conclusion": "success",
+      "created_at": "2026-11-14T01:27:29Z",
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/43540700668",
+      "nonpassing_jobs": [
+        {
+          "id": 132280394586,
+          "name": "Engine",
+          "conclusion": "failure",
+          "started_at": "2026-11-14T01:27:43Z",
+          "failed_steps": [
+            "Documentation tolerates head annotations and rejects hydration and runtime errors"
+          ]
+        }
+      ]
+    }
+  ],
+  "classification": {
+    "44716061788": "CLI npm publication/CDN race recorded in rc.15 release evidence; unrelated to the two browser findings.",
+    "44628797826": "CLI integration commands still selected the changed rich default and attempted an unpublished renderer. Corrected with explicit --target static; see standalone rich build record.",
+    "43553446088": "Authored fragment colon mistaken for a URL scheme. Fixed in 4c399af, with query/fragment regressions and hosted acceptance recorded in book-equations evidence.",
+    "44426799314": "Showcase timed out during apt system-dependency downloads before app build/browser execution. Unchanged retry passed; recorded in rc.11 release evidence.",
+    "43540700668": "The original known Engine hydration-readiness timeout; unchanged retry passed. Still unexplained.",
+    "other_retried_jobs": "Cancelled native-package jobs are not new overflow or hydration evidence."
+  },
+  "limitations": [
+    "The 73 entirely cancelled workflow runs were not exhaustively investigated in this bounded follow-up.",
+    "No new failure evidence for the two browser timing findings was identified in the eight inspected first attempts. This is not proof of absence or a root-cause fix.",
+    "Continue collecting failure-only state/trace/network evidence; do not declare the historical findings resolved."
+  ],
+  "request_failures": [
+    "Initial gh query combined incompatible --slurp and --jq flags; rerun with local JSON parsing.",
+    "Aggregate filter=all jobs queries returned GitHub HTTP 502; bounded first-attempt endpoints succeeded for all eight inspected runs."
+  ]
+}
