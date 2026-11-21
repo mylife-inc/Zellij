@@ -25,8 +25,9 @@ This checkpoint does not declare stable 1.0 or absence of undiscovered bugs.
 A separate desktop overflow focus defect is corrected in source `f80596b`:
 delayed menu restoration now respects a newer focus or pointer choice. The
 regression fails on the old engine and passes locally in Chromium/WebKit.
-Hosted acceptance and delivery in a later CLI renderer remain pending; rc.16
-is unchanged. See the [implementation record](zellij-overflow-focus-2026-11-21.md).
+All 37 required source CI jobs and documentation validation pass. The final
+full browser run passes 552 cases without failures or retries (169 conditional
+skips). Delivery in a later CLI renderer remains pending; rc.16 is unchanged. See the [implementation record](zellij-overflow-focus-2026-11-21.md).
 
 Two historical browser timing findings remain unexplained: WebKit navigation
 overflow after resize and one documentation hydration-readiness timeout.
@@ -45,7 +46,9 @@ acceptance. The rc.15 Microsoft catalog submission awaits moderator approval. Se
 retention and external acceptance boundaries. The native upgrade fixture uses
 real rc.14 archives; retain them until that dependency is deliberately migrated.
 
-Next order: follow Microsoft catalog moderator review and investigate any browser timing recurrence
-with its retained diagnostics, then return to deferred external acceptance.
+Next implementation delivery: include the accepted focus correction in the next
+renderer/CLI candidate. Investigate any original timing recurrence using retained
+diagnostics. Catalog review and deferred external acceptance remain separate
+from this implementation work.
 A supported command may be implementation-complete while one of these acceptance
 or distribution tasks remains open.

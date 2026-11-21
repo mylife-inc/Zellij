@@ -1,7 +1,9 @@
 # Desktop overflow focus — 21 November 2026
 
-Fixing commit: `f80596b63ae7799c96c0181a1d0c4bcb6166e3e4`. Local regression acceptance passes; hosted review is
-pending. Public CLI rc.16 is unchanged.
+Fixing commit: `f80596b63ae7799c96c0181a1d0c4bcb6166e3e4`, PR #229. Local
+regression acceptance, all 37 required source CI jobs (`44890416888`),
+documentation validation and the final full browser run without retries pass.
+One source CI job is intentionally skipped. Public CLI rc.16 is unchanged.
 
 ## Reproduction and correction
 
@@ -37,6 +39,46 @@ Current readiness errors and failure captures already collect that information.
 Neither log establishes a cause. This new focus correction does not establish
 that either historical timeout is fixed; both remain open in the
 [browser investigation](zellij-browser-timing-investigation-2026-11-13.md).
+
+## Story-theme assertion race found during hosted acceptance
+
+Source CI's first showcase run passes 550 cases, skips 167 and retries one
+mobile story-theme assertion successfully. The original failure is retained.
+Its trace shows the dark foreground token (`#f5f5f7`) already applied while
+computed inherited text still reports the previous `rgb(29, 29, 31)`. The test
+captures that old heading value once, then waits five seconds for text that has
+already become `rgb(245, 245, 247)` to match it. The later frame shows both
+heading and paragraph correctly light on dark; the frozen expected value is
+stale, not evidence of a persistent contrast failure.
+
+Test correction `e4d9d53` waits for the showcase's requested Cupertino foreground
+and compares each related color pair in one browser evaluation. It changes no
+product CSS, assertion timeout or retry count. Eighteen local repetitions pass
+across desktop Chromium, mobile Chromium and mobile WebKit without retries.
+The full Linux run without retries (`44891618278`) passes the corrected story
+case but fails an independent menu assertion: 550 passed, 167 skipped, one
+failed. That first failure remains recorded below; it is not counted as a clean
+acceptance run.
+
+## Menu anchor test selected the pre-hydration layout
+
+The failed trace shows `data-measured="false"` after navigation. The test's
+immediate More count returns zero, then measurement commits `data-measured="true"`
+and moves Specs into More. Since the test skipped opening More, it waits for a
+link that is inside the closed panel. Its click never occurs, so this does not
+explain the older documentation hydration timeout after route navigation.
+
+Test correction `e9e486b` waits for measured navigation and exercises both known
+layouts: Specs inside More at 901px and directly visible at 1600px. Both must
+navigate to the same anchored route. Twelve local repetitions pass without
+retries; showcase types pass. No product code, timeout or retry setting changes.
+
+Full Linux browser acceptance `44892687678` passes **552 cases**, with 169
+conditional skips, zero failures/flaky cases and **zero retries**. Its branch
+differs from source `e9e486b` only by the scoped verification workflow. The
+first failing runs remain recorded above. Native/runtime checks are reused from
+the unchanged implementation in source CI `44890416888`. Documentation validation
+`44890416851` passes; publication is intentionally skipped for a pull request.
 
 ## Product scope review
 
