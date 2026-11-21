@@ -68,15 +68,26 @@ test.describe('menu', () => {
     await expect(about).not.toHaveAttribute('target', '_blank');
   });
 
-  test('follows a url item carrying an anchor', async ({ page }) => {
-    await page.goto('/');
-    const nav = page.getByRole('navigation', { name: 'Main', exact: true });
-    if (await nav.getByRole('button', { name: 'More', exact: true }).count()) {
-      await nav.getByRole('button', { name: 'More', exact: true }).click();
-    }
-    await nav.getByRole('link', { name: 'Specs', exact: true }).click();
-    await expect(page).toHaveURL(/\/lumen-3-pro#specs$/);
-  });
+  for (const width of [901, 1600]) {
+    test(`follows a url item carrying an anchor at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/');
+      const nav = page.getByRole('navigation', { name: 'Main', exact: true });
+      // Server markup initially contains every item. Wait for the measured
+      // layout and exercise both known paths instead of branching on an early
+      // count that can change as hydration moves Specs into More.
+      await expect(nav).toHaveAttribute('data-measured', 'true');
+      const more = nav.getByRole('button', { name: 'More', exact: true });
+      if (width === 901) {
+        await expect(more).toBeVisible();
+        await more.click();
+      } else {
+        await expect(more).toHaveCount(0);
+      }
+      await nav.getByRole('link', { name: 'Specs', exact: true }).click();
+      await expect(page).toHaveURL(/\/lumen-3-pro#specs$/);
+    });
+  }
 });
 
 test.describe('pages composed from section files', () => {

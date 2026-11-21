@@ -1,8 +1,8 @@
 # Product expansion: branding, composition, templates, books and installation
 
-**Current checkpoint — 2026-11-20:** rc.14 includes the later composer, book,
+**Current checkpoint — 2026-11-21:** rc.16 includes the later composer, book,
 theme, template and standalone rich-authoring milestones. Production
-documentation is deployed. Read the [current readiness table](zellij-readiness-2026-11-20.md)
+documentation is deployed. Read the [current readiness table](zellij-readiness-2026-11-21.md)
 before treating the dated plans below as outstanding work; historical evidence
 and explicitly bounded features remain preserved.
 

@@ -125,6 +125,11 @@ and keyboard focus moves to a visible navigation control. Focus already in the
 page content stays there. Rapid changes use the final viewport width, even if
 a navigation control briefly disappears and returns. Choosing another control
 or clicking page content takes precedence over that restoration.
+
+The next engine update after CLI rc.16 applies the same rule when desktop links
+move into or out of **More**: delayed restoration respects a newer focus or
+pointer choice instead of pulling focus back to the menu.
+
 Header updates, such as changing from transparent to
 solid while scrolling, preserve the focused link inside an open drawer.
 

@@ -1,0 +1,194 @@
+{
+  "date": "2026-11-21",
+  "status": "Desktop overflow focus defect reproduced and fixed; source CI, documentation validation and full retry-free browser acceptance pass. Original overflow and hydration timeouts remain unexplained.",
+  "base": "5406f71e6ed50e522a881410fc155310563b6bb3",
+  "fix": "f80596b63ae7799c96c0181a1d0c4bcb6166e3e4",
+  "historicalFindings": [
+    {
+      "run": 43539410410,
+      "job": 132276191750,
+      "finding": "WebKit retained More after widening to 1600 pixels.",
+      "review": "Original log reconfirms the 5000 ms count assertion. No original overflow artifact is returned by the current run-artifacts endpoint. Existing recorded trace observations remain historical evidence.",
+      "resolved": false
+    },
+    {
+      "run": 43540700668,
+      "job": 132280394586,
+      "finding": "Annotation-case hydration readiness exceeded 15000 ms.",
+      "review": "Original stack locates the timeout in the legacy-heading alias navigation loop. It records no failing URL or browser cause; existing current diagnostics add both URL and failure state.",
+      "resolved": false
+    }
+  ],
+  "reproducedDefect": {
+    "trigger": "A desktop resize commits a different More-menu layout while focus restoration is queued; the user then focuses content/branding or clicks non-focusable page content.",
+    "cause": "The queued callback captured a target and restored it unconditionally; existing cancellation guarded breakpoint restoration but not desktop overflow restoration.",
+    "fix": "Read live overflow intent in the callback; cancel it on new focus or an outside pointer choice; preserve a currently visible focus destination and restore without scrolling."
+  },
+  "local": {
+    "baseline": {
+      "passed": 8,
+      "failed": 12,
+      "retries": 0,
+      "browsers": [
+        "Chromium",
+        "WebKit"
+      ],
+      "failureStage": "All twelve failures are the final focus assertion, after both layout and user-choice preconditions pass.",
+      "controls": "Ordinary navigation restoration and reciprocal resize cases pass."
+    },
+    "fixed": {
+      "startTime": "2026-11-21T09:33:37.724Z",
+      "duration": 78980.379,
+      "expected": 90,
+      "skipped": 46,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "engineTests": 540,
+    "engineTestFiles": 49,
+    "scopedNavigationTests": 10,
+    "typechecks": [
+      "engine",
+      "showcase"
+    ],
+    "builds": [
+      "engine",
+      "showcase",
+      "documentation"
+    ],
+    "documentationAcceptance": {
+      "strictDeepRoutes": 59,
+      "validatedExamples": 33,
+      "preservation": {
+        "originalRoutes": 46,
+        "addedRoutes": 13,
+        "headingIds": 282,
+        "compatibilityMappings": 82,
+        "authoredImagesByteIdentical": 29
+      },
+      "regressionTestsPassed": 10,
+      "regressionTestsSkipped": 0,
+      "unexpectedFailureArtifacts": 0
+    }
+  },
+  "harnessNotes": [
+    "The first frame-gate attempt could drain before ResizeObserver delivery; the final fixture allows a native frame before draining queued application work. The recorded baseline and fixed runs use the same corrected test source.",
+    "An initial invocation from the repository root selected no tests; the actual baseline runs from the showcase workspace.",
+    "The showcase prebuild regenerated tracked images with local tooling; those generated edits were restored. Final source contains no image changes."
+  ],
+  "scope": "Repository-owned showcase and documentation fixtures only. No provider verification or release publication.",
+  "remaining": "Original timing findings need new causal evidence; expanded imports, citation formats and unrestricted composition are documented expansion boundaries, not stubbed CLI handlers.",
+  "sha256": {
+    "baselineReport": "11552dc33cd2a385ad394945ecceb7511ae8d52a5e41cb6ebeee35bc8acc9b95",
+    "fixedReport": "6ce158a7cd1041b1ad793d17799bf681c21e3e6bf9a836f6fd526c267af0fc6a",
+    "overflowOriginalLog": "2d8ac7d09486bad340babaa1d88556290aca7f470d56076c10e60434a4034b3b",
+    "hydrationOriginalLog": "41f0c0f560a99f4ba28dd010de3acb018560cb2d2b439d947afbe623d84af627",
+    "browserRegressionSource": "acb541798ab77d3ca0d82a750165f2c4efbf7e8f585e66596a4281cdc50cf21e",
+    "documentationPreservation": "faef7dedd8b0d60363117cb2a641ae3245576aee6fe7fa9eaa85bdedb149ddd8",
+    "documentationRegressions": "0904023c05b6cb67c86b006140b11ba752ac6c9cdf81814fac29861e8a308be6",
+    "engineTests": "e08407364d9ca075ddefd4a1067abbf42a030ef5166a8f5f897686a13f8822a9",
+    "storyFailureFrame": "168e2d2e9da1fcbb7db5002f9bb94122b2236fd5d7d4a2be7c91982760b56660",
+    "anchorFailureTrace": "1513e4d4588191caeb7c5d477173ba6207b1c65f9265cc52f7ccdfe7bdb79bea",
+    "anchorLocalReport": "4970ebfdc9f7c2b45c6807fa9cc5425d9af14bc47bb924d5ba3bf3f6eb6ea4bb",
+    "firstRetryFreeReport": "e0105f3d07b962648873be43c8c518aeb05de129d633e5f496eb70efe0cb6a01",
+    "finalHostedBrowserReport": "578c4f0b10b3fbd03ea418e78aab6d1b773bf0e6f6a2242b55d6869e0da73df3",
+    "sourceCISummary": "94f2b17ad49932aaeb5f6ea0363b5ea223aa19eb78ae588b736d430ec742486c"
+  },
+  "pr": 229,
+  "hosted": {
+    "sourceCI": 44890416888,
+    "documentation": 44890416851,
+    "status": "success",
+    "retryFreeBrowser": {
+      "run": 44892687678,
+      "head": "4213e9e43fc99749eb8fe5913b9aabc36fa7e4a9",
+      "status": "success",
+      "retries": 0,
+      "scope": "Same implementation and test source as e9e486b; only the dedicated verification workflow differs.",
+      "artifact": 14703290376,
+      "artifactSha256": "fb7a3aa74b4a89d5a4fcd7a991e65dfe8c46912da8ce61768923fc5df4c36020",
+      "stats": {
+        "startTime": "2026-11-21T10:07:29.012Z",
+        "duration": 296814.57700000005,
+        "expected": 552,
+        "skipped": 169,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "documentationStatus": "success: validation passed; production intentionally skipped for pull request",
+    "sourceHead": "6c752c3c312a04ad031127882549a3c472fe9b19",
+    "requiredJobsPassed": 37,
+    "intentionalJobsSkipped": 1,
+    "reuse": "Only two browser test files change after source CI head. The final test source is exercised by the separate retry-free browser run. Subsequent receipt edits do not change implementation or tests."
+  },
+  "storyAssertion": {
+    "originalRun": 44890416888,
+    "originalJob": 136804797033,
+    "artifact": 14701946870,
+    "failedCase": "mobile: stories retain readable light/dark layouts, imagery and ordinary scene order",
+    "firstRun": {
+      "passed": 550,
+      "flaky": 1,
+      "skipped": 167
+    },
+    "cause": "Dark-mode emulation completed before all computed colors settled. The test froze the old heading RGB as its expected value, then compared updated text to it for five seconds.",
+    "traceObservation": {
+      "darkModeRequestStartMs": 128954.53,
+      "darkColorAttachmentMs": 129005.661,
+      "rootForegroundToken": "#f5f5f7",
+      "bodyAndStoryTextAtAttachment": "rgb(29, 29, 31)",
+      "frozenExpectedHeading": "rgb(29, 29, 31)",
+      "laterTextColor": "rgb(245, 245, 247)"
+    },
+    "fix": "e4d9d53",
+    "change": "Await the known showcase palette and compare computed color pairs atomically inside each browser evaluation. No runtime color change, timeout increase or retry increase.",
+    "local": {
+      "startTime": "2026-11-21T09:50:54.952Z",
+      "duration": 33735.701,
+      "expected": 18,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "hosted": {
+      "run": 44891618278,
+      "head": "f9d9c14d8096c4f27891542c255090593fb51cf5",
+      "status": "failed at unrelated pre-navigation menu assertion",
+      "retries": 0,
+      "passed": 550,
+      "failed": 1,
+      "skipped": 167,
+      "flaky": 0,
+      "artifact": 14702173222
+    },
+    "traceSha256": "1e9d308b7960a6ad45fd9ae1439f957830322c2fb9c516bc2925295585e2f5c4",
+    "finalTraceFrame": "The retained frame shows the heading and paragraph both light on the dark background during the failed assertion."
+  },
+  "anchorAssertion": {
+    "originalRun": 44891618278,
+    "artifact": 14702173222,
+    "failedCase": "desktop: follows a url item carrying an anchor",
+    "cause": "The test queried More before menu measurement, received zero, and skipped opening it. Hydration then moved Specs into More. The link click never occurred and navigation never began.",
+    "traceObservation": {
+      "afterGotoTimeMs": 26081.184,
+      "afterGotoMeasured": "false",
+      "moreCount": 0,
+      "afterQueryTimeMs": 26160.46,
+      "afterQueryMeasured": "true",
+      "finalSnapshot": "More visible and closed; Specs absent from accessible navigation"
+    },
+    "fix": "e9e486b11eeb7bf7abefcd4bb383b7c0d0423560",
+    "change": "Wait for data-measured and assert explicit 901px overflow and 1600px direct-link paths, instead of taking a one-time early count as the layout decision.",
+    "local": {
+      "startTime": "2026-11-21T10:05:08.660Z",
+      "duration": 12102.532000000001,
+      "expected": 12,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "retries": 0,
+    "relationToHistoricalHydration": "No link click or route navigation occurred, so this failure does not establish the cause of the older legacy-heading hydration timeout."
+  }
+}

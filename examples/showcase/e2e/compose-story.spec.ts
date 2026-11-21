@@ -30,18 +30,29 @@ test('stories retain readable light/dark layouts, imagery and ordinary scene ord
   for (const img of await page.locator('main img').all()) await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
   for (const colorScheme of ['light','dark'] as const) {
     await page.emulateMedia({colorScheme});
+    // emulateMedia can resolve before inherited colors have settled. The
+    // showcase uses the Cupertino palette; wait for the requested mode before
+    // sampling it, and compare pairs in one evaluation rather than freezing
+    // an expected color from an earlier rendering state.
+    const foreground = colorScheme === 'light' ? 'rgb(29, 29, 31)' : 'rgb(245, 245, 247)';
+    await expect(page.locator('body')).toHaveCSS('color', foreground);
+    await expect(page.locator('main h1')).toHaveCSS('color', foreground);
     const heading = page.locator('#independent-story .zellij-compose-heading').first();
-    expect(await heading.evaluate(el => getComputedStyle(el).color)).toBe(await heading.evaluate(el => getComputedStyle(el.parentElement!).color));
+    await expect.poll(() => heading.evaluate(el =>
+      getComputedStyle(el).color === getComputedStyle(el.parentElement!).color)).toBe(true);
     await info.attach(`story-colors-${colorScheme}`, {contentType:'application/json',body:JSON.stringify(await page.evaluate(()=>
       ['html','body','main','#composed-story','#composed-story .zellij-container','#composed-story .zellij-compose-layout','#composed-story .zellij-compose-story','#composed-story .zellij-story-copy','#composed-story .zellij-story-copy .zellij-compose-text'].map(selector=>{
         const el=document.querySelector(selector)!;const css=getComputedStyle(el);
         return {selector,color:css.color,fg:css.getPropertyValue('--zellij-fg'),localFg:css.getPropertyValue('--zellij-compose-fg')};
       })),null,2)});
     for (const copy of await page.locator('.zellij-story-copy').all()) {
-      const color = await copy.locator('.zellij-compose-heading').evaluate(el => getComputedStyle(el).color);
-      await expect(copy.locator('.zellij-compose-text')).toHaveCSS('color',color);
+      await expect.poll(() => copy.evaluate(el =>
+        getComputedStyle(el.querySelector('.zellij-compose-heading')!).color ===
+        getComputedStyle(el.querySelector('.zellij-compose-text')!).color)).toBe(true);
     }
-    await expect(page.locator('#composed-story > .zellij-container > .zellij-compose-layout > .zellij-compose-text')).toHaveCSS('color',await page.locator('main h1').evaluate(el=>getComputedStyle(el).color));
+    await expect.poll(() => page.evaluate(() =>
+      getComputedStyle(document.querySelector('#composed-story > .zellij-container > .zellij-compose-layout > .zellij-compose-text')!).color ===
+      getComputedStyle(document.querySelector('main h1')!).color)).toBe(true);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
     await page.screenshot({path:info.outputPath(`compose-story-${colorScheme}.png`),fullPage:true,animations:'disabled'});
   }

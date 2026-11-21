@@ -278,12 +278,16 @@ export function NavBarClient({ model }: { model: NavModel }) {
   const overflow = useMemo(() => overflowItem(model.items.slice(visibleCount)), [model.items, visibleCount]);
 
   useEffect(() => {
-    const target = focusAfterResize.current;
-    if (target === null) return;
-    // Panel cleanup may restore the old trigger first; then move to a visible one.
+    if (focusAfterResize.current === null) return;
+    // A new focus destination or pointer choice can cancel restoration after
+    // this effect schedules its frame. Read the live intent, not a stale target.
     const frame = requestAnimationFrame(() => {
-      menuBarRef.current?.querySelector<HTMLElement>(`[data-nav-index="${target}"] [data-zellij-navitem]`)?.focus();
+      const target = focusAfterResize.current;
       focusAfterResize.current = null;
+      if (target === null) return;
+      const active = document.activeElement;
+      if (active !== document.body && active?.getClientRects().length) return;
+      menuBarRef.current?.querySelector<HTMLElement>(`[data-nav-index="${target}"] [data-zellij-navitem]`)?.focus({ preventScroll: true });
     });
     return () => cancelAnimationFrame(frame);
   }, [visibleCount]);
@@ -298,6 +302,7 @@ export function NavBarClient({ model }: { model: NavModel }) {
       // A new focus destination, including a visible navigation control, wins
       // over restoration that has not run yet.
       pendingResizeFocus.current = false;
+      focusAfterResize.current = null;
     };
     const blurred = (event: FocusEvent) => {
       const previous = lastNavigationFocus.current;
@@ -310,6 +315,7 @@ export function NavBarClient({ model }: { model: NavModel }) {
         lastNavigationFocus.current = null;
         lostNavigationFocus.current = false;
         pendingResizeFocus.current = false;
+        focusAfterResize.current = null;
       }
     };
     document.addEventListener('focusin', focused, true);

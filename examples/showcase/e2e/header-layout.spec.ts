@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 import { browserFailureState } from '../../../scripts/browser-failure-state.mjs';
 
@@ -12,6 +12,44 @@ test.afterEach(async ({ page }, info) => {
     console.error(`Header diagnostic capture failed: ${error}`);
   }
 });
+
+// Delay application work without stopping native resize/media delivery. A single
+// batch can commit the new menu while its focus-restoration frame stays queued.
+async function holdApplicationFrames(page: Page) {
+  await page.evaluate(() => {
+    const request = window.requestAnimationFrame.bind(window);
+    const cancel = window.cancelAnimationFrame.bind(window);
+    const callbacks = new Map<number, FrameRequestCallback>();
+    let held = true;
+    const render = () => { if (held) request(render); };
+    request(render);
+    let id = 0;
+    window.requestAnimationFrame = callback => {
+      if (!held) return request(callback);
+      callbacks.set(--id, callback);
+      return id;
+    };
+    window.cancelAnimationFrame = handle => {
+      if (handle < 0) callbacks.delete(handle);
+      else cancel(handle);
+    };
+    const advance = () => new Promise<void>(resolve => request(() => request(time => {
+      for (const handle of [...callbacks.keys()]) {
+        const callback = callbacks.get(handle);
+        callbacks.delete(handle);
+        callback?.(time);
+      }
+      request(() => request(() => resolve()));
+    })));
+    const state = {
+      events: 0,
+      advance,
+      release: () => { held = false; return advance(); },
+    };
+    (window as unknown as { delayedFocusFrames: typeof state }).delayedFocusFrames = state;
+    matchMedia('(max-width: 900px)').addEventListener('change', () => state.events++);
+  });
+}
 
 test('product navigation stays centered while controls stay at the viewport edge', async ({ page }) => {
   await page.goto('/');
@@ -101,6 +139,83 @@ test.describe('measured overflow', () => {
     await expect(nav.getByRole('link', { name: 'Guide', exact: true })).toBeVisible();
     await expect(nav.locator('[data-zellij-navitem]:focus')).toHaveCount(1);
   });
+
+  for (const direction of ['shrink', 'grow'] as const) {
+    for (const destination of ['navigation', 'content', 'brand', 'pointer'] as const) {
+      test(`preserves ${destination} focus when overflow ${direction} commits before queued focus`, async ({ page }) => {
+        const initial = direction === 'shrink' ? 1600 : 901;
+        await page.setViewportSize({ width: initial, height: 900 });
+        await page.goto('/');
+        await page.evaluate(() => document.fonts.ready);
+        await page.addStyleTag({ content: '.zellij-nav-link, .zellij-nav-probe-label { font-size: 1.25rem; }' });
+        const nav = page.getByRole('navigation', { name: 'Main', exact: true });
+        const more = nav.locator('[data-nav-index="more"] > button');
+        const guide = nav.getByRole('link', { name: 'Guide', exact: true });
+        const before = direction === 'shrink' ? guide : more;
+        const after = direction === 'shrink' ? more : nav.locator('[data-zellij-navitem]').first();
+        await expect(nav).toHaveAttribute('data-measured', 'true');
+        if (direction === 'grow') {
+          await expect(nav.locator('[data-nav-index]:not([data-nav-index="more"])')).toHaveCount(0);
+        } else {
+          await expect(more).toHaveCount(0);
+        }
+        await before.focus();
+        await expect(before).toBeFocused();
+        await holdApplicationFrames(page);
+        await page.setViewportSize({ width: direction === 'shrink' ? 901 : 1600, height: 900 });
+        await page.evaluate(() =>
+          (window as unknown as { delayedFocusFrames: { advance(): Promise<void> } }).delayedFocusFrames.advance());
+        await expect(before).toHaveCount(0);
+        await expect(after).toBeVisible();
+        const content = page.locator('main a[href]').first();
+        const brand = page.locator('.zellij-logo');
+        if (destination === 'content' || destination === 'brand') {
+          const target = destination === 'content' ? content : brand;
+          await target.focus();
+          await expect(target).toBeFocused();
+        } else if (destination === 'pointer') {
+          const paragraph = page.locator('main').getByText('Lumen 3 Pro', { exact: true });
+          await paragraph.evaluate(element => element.addEventListener('pointerdown', () => {
+            element.setAttribute('data-pointer-received', 'true');
+          }, { once: true }));
+          const bounds = await paragraph.boundingBox();
+          expect(bounds).not.toBeNull();
+          await page.mouse.click(bounds!.x + bounds!.width / 2, bounds!.y + bounds!.height / 2);
+          await expect(paragraph).toHaveAttribute('data-pointer-received', 'true');
+        }
+        await page.evaluate(() =>
+          (window as unknown as { delayedFocusFrames: { release(): Promise<void> } }).delayedFocusFrames.release());
+        if (destination === 'navigation') await expect(after).toBeFocused();
+        else if (destination === 'content') await expect(content).toBeFocused();
+        else if (destination === 'brand') await expect(brand).toBeFocused();
+        else await expect(page.locator('body')).toBeFocused();
+      });
+    }
+  }
+
+  for (const width of [901, 1600]) {
+    test(`restores overflow focus for the final ${width}px width after two queued resizes`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/');
+      await page.evaluate(() => document.fonts.ready);
+      await page.addStyleTag({ content: '.zellij-nav-link, .zellij-nav-probe-label { font-size: 1.25rem; }' });
+      const nav = page.getByRole('navigation', { name: 'Main', exact: true });
+      const more = nav.locator('[data-nav-index="more"] > button');
+      await expect(more).toHaveCount(width === 901 ? 1 : 0);
+      if (width === 901) await expect(nav.locator('[data-nav-index]:not([data-nav-index="more"])')).toHaveCount(0);
+      await (width === 901 ? more : nav.getByRole('link', { name: 'Guide', exact: true })).focus();
+      await holdApplicationFrames(page);
+      for (const next of [width === 901 ? 1600 : 901, width]) {
+        await page.setViewportSize({ width: next, height: 900 });
+        await page.evaluate(() =>
+          (window as unknown as { delayedFocusFrames: { advance(): Promise<void> } }).delayedFocusFrames.advance());
+        await expect(more).toHaveCount(next === 901 ? 1 : 0);
+      }
+      await page.evaluate(() =>
+        (window as unknown as { delayedFocusFrames: { release(): Promise<void> } }).delayedFocusFrames.release());
+      await expect(nav.locator('[data-zellij-navitem]:focus')).toHaveCount(1);
+    });
+  }
 
   test('reacts to larger text and retains nested destinations and external links', async ({ page }) => {
     await page.goto('/');
@@ -244,39 +359,7 @@ test.describe('measured overflow', () => {
       await expect(drawer).toBeFocused();
       // Hold only animation callbacks after the drawer is ready. DOM commits and
       // real media-query events still run, modelling a delayed rendering frame.
-      await page.evaluate(() => {
-        const request = window.requestAnimationFrame.bind(window);
-        const cancel = window.cancelAnimationFrame.bind(window);
-        const callbacks = new Map<number, FrameRequestCallback>();
-        let held = true;
-        // Keep the browser rendering while only application callbacks wait.
-        // Media-query and ResizeObserver delivery must continue independently.
-        const render = () => { if (held) request(render); };
-        request(render);
-        let id = 0;
-        window.requestAnimationFrame = callback => {
-          if (!held) return request(callback);
-          callbacks.set(--id, callback);
-          return id;
-        };
-        window.cancelAnimationFrame = handle => {
-          if (handle < 0) callbacks.delete(handle);
-          else cancel(handle);
-        };
-        const state = { events: 0, release: () => new Promise<void>(resolve => {
-          held = false;
-          request(time => {
-            for (const handle of [...callbacks.keys()]) {
-              const callback = callbacks.get(handle);
-              callbacks.delete(handle);
-              callback?.(time);
-            }
-            request(() => request(() => resolve()));
-          });
-        }) };
-        (window as unknown as { delayedFocusFrames: typeof state }).delayedFocusFrames = state;
-        matchMedia('(max-width: 900px)').addEventListener('change', () => state.events++);
-      });
+      await holdApplicationFrames(page);
       const events = () => page.evaluate(() =>
         (window as unknown as { delayedFocusFrames: { events: number } }).delayedFocusFrames.events);
       await page.setViewportSize({ width: 1280, height: 900 });
