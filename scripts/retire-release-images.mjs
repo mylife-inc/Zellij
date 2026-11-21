@@ -1,4 +1,4 @@
-// Reviewed, exact-scope rc.11/rc.12 retirement after rc.15 acceptance. Unreferenced build history is not swept.
+// Reviewed, exact-scope rc.12 retirement after rc.15 acceptance. Unreferenced build history is not swept.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -8,13 +8,13 @@ import { fileURLToPath } from 'node:url';
 
 export const packages = ['zellij-base', 'zellij/acceptance-static', 'zellij/acceptance-next'];
 const keepVersion = '0.2.0-rc.15';
-const retainedVersions = ['0.2.0-rc.13', '0.2.0-rc.14', keepVersion];
+const retainedVersions = ['0.2.0-rc.11', '0.2.0-rc.13', '0.2.0-rc.14', keepVersion];
 const suffixes = ['', '-maths', '-diagrams', '-all'];
 const digestPattern = /^sha256:[a-f0-9]{64}$/;
-// Only these two reviewed candidates are eligible; unknown tags stay protected.
+// Only this reviewed candidate is eligible; unknown tags stay protected.
 const isRetired = (name, tag) => name === 'zellij-base'
-  ? /^0\.2\.0-rc\.(?:11|12)(?:-(?:maths|diagrams|all))?$/.test(tag)
-  : /^0\.2\.0-rc\.(?:11|12)$/.test(tag);
+  ? /^0\.2\.0-rc\.12(?:-(?:maths|diagrams|all))?$/.test(tag)
+  : /^0\.2\.0-rc\.12$/.test(tag);
 const sorted = values => [...values].sort();
 const requiredTags = name => name === 'zellij-base' ? [...retainedVersions, 'main'].flatMap(v => suffixes.map(s => v + s)) : [keepVersion];
 

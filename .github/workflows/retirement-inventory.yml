@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: Read inventory and plan, or execute the reviewed rc.11/rc.12 image retirement plan
+        description: Read inventory and plan, or execute the reviewed rc.12 image retirement plan
         type: choice
         options: [inventory, retire-images]
         default: inventory
@@ -35,6 +35,8 @@ jobs:
           node-version: 24
       - name: Check exact-scope deletion safeguards
         run: node --test scripts/retire-release-images.test.mjs
+      - name: Check native release deletion safeguards without networking
+        run: python3 scripts/retire-native-releases.test.py specs/evidence/zellij-rc15-native-retirement-plan-2026-11-20.json
       - name: List exact Zellij release and image version identities
         env:
           GH_TOKEN: ${{ github.token }}
