@@ -26,8 +26,11 @@ The catalog also includes three website starters introduced in rc.9 at template 
 These are original designs with local SVG art, not copies of Apple, Linear,
 Stripe or another company's assets. They use the existing engine sections;
 no React, external fonts, tracking, image services or new dependencies are added.
-Their current 0.1.2 revisions require CLI rc.14 and retain the bento heading contrast fix.
-Their READMEs cover rich `check`, `watch`, `view` and `view --watch` using the cached renderer.
+Their released 0.1.2 revisions require CLI rc.14 and retain the bento heading contrast fix.
+The source catalog prepares 0.1.3 with corrected inline guide instructions for
+standalone building, checking and previewing; publication is pending the next
+CLI candidate. Existing released archive bytes are unchanged. Their READMEs
+cover rich `check`, `watch`, `view` and `view --watch` using the cached renderer.
 Create them by ID, for example `zel create my-website -t product-launch`.
 The rich builder downloads the matching renderer once. Local templates are also supported:
 

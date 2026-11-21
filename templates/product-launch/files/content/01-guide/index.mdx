@@ -24,8 +24,15 @@ zel build
 zel view --watch
 ```
 
-These are hosted website sections. Building uses the matching engine through
-a supported container runtime; the generated site needs an HTTP server.
-Creation itself works offline. This starter does not enable book PDF output.
+These are rich website sections. `zel check`, `zel build` and `zel view --watch`
+use the matching renderer downloaded and cached by `zel`; no separately installed
+Docker, Node.js or Python is needed. After building, double-click `site/index.html`
+and keep the complete `site/` folder together when sharing it. HTTP preview is
+optional. Once the renderer is cached, add `--offline` to reuse it without a
+network connection.
+
+Hosted `zel dev`, explicit `zel build --target static` and hosted deployment
+commands retain their container requirements. Creation itself works offline.
+This starter does not enable book PDF output.
 
 [Artwork and navigation](/guide/customize) · [Back to the website](/)

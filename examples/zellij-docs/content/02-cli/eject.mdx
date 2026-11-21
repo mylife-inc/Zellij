@@ -37,8 +37,10 @@ npm run dev
 ```
 
 `npm run build` builds the Next.js app; `npm start` serves it. This hosted app
-requires HTTP serving. Native portable [`build`](/cli/build) still produces output
-that works by opening `index.html` directly. Extraction installs no dependencies.
+requires HTTP serving. To produce a rich double-clickable site from the same
+hosted content, use default [`zel build`](/cli/build) on its Zellij site root;
+the portable Markdown target also supports direct `index.html` viewing.
+Extraction installs no dependencies.
 
 ## Runtime and compatibility
 

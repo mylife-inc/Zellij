@@ -4,9 +4,13 @@ description: The Next.js application that renders a content folder — what is i
 ---
 
 <Callout type="info" title="You may not need this page">
-If you write content and ship it with [`zel`](/cli), there is no application in
-your repository and nothing here applies. `zel dev`, `zel build` and
-`zel deploy` run the wrapper inside a container you never see.
+If you write content and build it with [`zel`](/cli), you do not need an
+application in your repository. Default rich `zel build`, `zel check` and
+`zel view --watch` use a downloaded, cached renderer without separately installed
+Docker, Node.js or Python. The generated `site/index.html` opens directly.
+
+Hosted `zel dev`, explicit `zel build --target static` and hosted deployment
+commands use the Next.js wrapper in a container.
 
 This page is for the case where you keep a wrapper app checked in — because you
 host on a platform that builds Next.js itself, or because Zellij pages are part
