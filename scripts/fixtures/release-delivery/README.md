@@ -48,8 +48,15 @@ Record workflow IDs, source/generator commits, released version, image digests,
 preview URLs and verification outcomes in the project audit. A successful local
 generator check is not evidence that GitHub execution or external delivery passed.
 
-Current rc.15 checkpoint (2026-11-20): all six PR verification workflows pass.
+Previous rc.15 checkpoint (2026-11-20): all six PR verification workflows pass.
 Static and Next image publication runs `44730196617` and `44730200827` pass;
 fresh-pull HTTP/health/user checks pass in `44730534861`. No provider deployment
 was performed in this checkpoint. See
 [the release evidence](../../../specs/evidence/zellij-rc15-release-2026-11-20.json).
+
+Current rc.16 checkpoint (2026-11-21): all six generated PR verification
+workflows pass on `e9ce97a`, merged with an identical tree as `2e8be27`.
+Static and Next publication runs `44883674082` and `44883676471` pass; fresh-pull
+HTTP/health/nonroot checks pass in `44883840228`. No provider deployment was
+performed by these fixture workflows. The separate docs workflow publishes the
+authorized production site. See [the rc.16 release evidence](../../../specs/evidence/zellij-rc16-release-2026-11-21.json).

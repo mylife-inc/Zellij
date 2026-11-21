@@ -1,7 +1,7 @@
 {
   "date": "2026-11-21",
   "version": "v0.2.0-rc.16",
-  "status": "All 40 release jobs passed; channel and documentation promotion in progress",
+  "status": "Released and verified: six native targets, all 40 release jobs, both public repositories, nine immutable templates, local Mac, public WinGet manifests, all eight managed-channel upgrades, generated consumers, published fixture images and production documentation. Microsoft catalog moderator approval and previously deferred acceptance remain pending.",
   "source": {
     "pr": 225,
     "base": "dbd77f99287ddf813856126acb92465c5865ae88",
@@ -182,7 +182,8 @@
         "pages": 4,
         "emptyPath": true,
         "offlineRebuild": true
-      }
+      },
+      "shellResolution": "$HOME/.local/bin/zel compatibility link reports zel 0.2.0-rc.16"
     }
   },
   "sourceCI": {
@@ -548,7 +549,8 @@
         "summary": "Moderator approval is required."
       }
     ],
-    "interpretation": "Still open and review required. Validation-Executable-Error label removed, Validation-Completed present. Installation Validation remains neutral; this is not a public catalog installation result."
+    "interpretation": "Still open and review required. Validation-Executable-Error label removed, Validation-Completed present. Installation Validation remains neutral; this is not a public catalog installation result.",
+    "finalRead": "Still open and unmerged, head 2c5df55c5fa1a1f75635b00075eafa29c39dec6a, checked again after production verification."
   },
   "tag": {
     "name": "v0.2.0-rc.16",
@@ -1094,5 +1096,382 @@
     "status": "completed",
     "url": "https://github.com/mylife-inc/Zellij/actions/runs/44882554939"
   },
-  "preparationDate": "2026-11-20"
+  "preparationDate": "2026-11-20",
+  "guides": {
+    "pr": 226,
+    "testedHead": "e9ce97a8ecc72e56617c5ea930ca24fafa708b37",
+    "targetedRuns": {
+      "docs": 44883320551,
+      "portable": 44883320506,
+      "hosted": 44883320477,
+      "static": 44883320472,
+      "next": 44883320495,
+      "netlifyPortable": 44883320505,
+      "netlifyHosted": 44883320512
+    },
+    "duplicateCI": {
+      "run": 44883320517,
+      "action": "cancel requested",
+      "reason": "Runtime inputs identical to immutable released source; targeted changed docs/workflow checks remain required. Not counted as a pass.",
+      "conclusion": "cancelled",
+      "status": "completed"
+    },
+    "checks": {
+      "docs": {
+        "conclusion": "success",
+        "databaseId": 44883320551,
+        "headSha": "e9ce97a8ecc72e56617c5ea930ca24fafa708b37",
+        "jobs": [
+          {
+            "name": "Validate and build documentation",
+            "databaseId": 136783143796,
+            "conclusion": "success"
+          },
+          {
+            "name": "Publish production documentation",
+            "databaseId": 136783700822,
+            "conclusion": "skipped"
+          }
+        ],
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44883320551"
+      },
+      "portable": {
+        "conclusion": "success",
+        "databaseId": 44883320506,
+        "headSha": "e9ce97a8ecc72e56617c5ea930ca24fafa708b37",
+        "jobs": [
+          {
+            "name": "verify",
+            "databaseId": 136783143737,
+            "conclusion": "success"
+          }
+        ],
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44883320506"
+      },
+      "hosted": {
+        "conclusion": "success",
+        "databaseId": 44883320477,
+        "headSha": "e9ce97a8ecc72e56617c5ea930ca24fafa708b37",
+        "jobs": [
+          {
+            "name": "verify",
+            "databaseId": 136783143790,
+            "conclusion": "success"
+          }
+        ],
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44883320477"
+      },
+      "static": {
+        "conclusion": "success",
+        "databaseId": 44883320472,
+        "headSha": "e9ce97a8ecc72e56617c5ea930ca24fafa708b37",
+        "jobs": [
+          {
+            "name": "verify",
+            "databaseId": 136783143312,
+            "conclusion": "success"
+          },
+          {
+            "name": "publish",
+            "databaseId": 136783144796,
+            "conclusion": "skipped"
+          }
+        ],
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44883320472"
+      },
+      "next": {
+        "conclusion": "success",
+        "databaseId": 44883320495,
+        "headSha": "e9ce97a8ecc72e56617c5ea930ca24fafa708b37",
+        "jobs": [
+          {
+            "name": "verify",
+            "databaseId": 136783143403,
+            "conclusion": "success"
+          },
+          {
+            "name": "publish",
+            "databaseId": 136783144608,
+            "conclusion": "skipped"
+          }
+        ],
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44883320495"
+      },
+      "netlifyPortable": {
+        "conclusion": "success",
+        "databaseId": 44883320505,
+        "headSha": "e9ce97a8ecc72e56617c5ea930ca24fafa708b37",
+        "jobs": [
+          {
+            "name": "verify",
+            "databaseId": 136783143605,
+            "conclusion": "success"
+          },
+          {
+            "name": "publish",
+            "databaseId": 136783145382,
+            "conclusion": "skipped"
+          }
+        ],
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44883320505"
+      },
+      "netlifyHosted": {
+        "conclusion": "success",
+        "databaseId": 44883320512,
+        "headSha": "e9ce97a8ecc72e56617c5ea930ca24fafa708b37",
+        "jobs": [
+          {
+            "name": "verify",
+            "databaseId": 136783143678,
+            "conclusion": "success"
+          },
+          {
+            "name": "publish",
+            "databaseId": 136783145609,
+            "conclusion": "skipped"
+          }
+        ],
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/44883320512"
+      }
+    },
+    "merge": "2e8be27764909f21d61d5d407d1f7d8ab9700cec",
+    "mergeTreeMatchesTestedHead": true,
+    "preservation": {
+      "originalRoutes": 46,
+      "addedRoutes": 13,
+      "originalHeadingIds": 282,
+      "compatibilityMappings": 82,
+      "byteIdenticalImages": 29,
+      "hydration": "no captured browser errors",
+      "source": "44883320551"
+    },
+    "production": {
+      "conclusion": "success",
+      "databaseId": 44883600267,
+      "headSha": "2e8be27764909f21d61d5d407d1f7d8ab9700cec",
+      "jobs": [
+        {
+          "name": "Validate and build documentation",
+          "databaseId": 136784000564,
+          "conclusion": "success"
+        },
+        {
+          "name": "Publish production documentation",
+          "databaseId": 136784472097,
+          "conclusion": "success"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44883600267",
+      "receipt": {
+        "source": "2e8be27764909f21d61d5d407d1f7d8ab9700cec",
+        "site_id": "91774174-d4c2-41b5-aa4b-ac61eeadbf51",
+        "domain": "zellij.shebka.net",
+        "deploy_id": "6b01528994a6ddfe208d6997",
+        "previous_deploy_id": "6b013ba7b190b04a18945a9b",
+        "preview": "https://6b01528994a6ddfe208d6997--zellij-docs.netlify.app",
+        "state": "verified",
+        "published_at": "2026-11-21T08:13:10.553Z"
+      },
+      "liveBrowser": {
+        "source": "2e8be27764909f21d61d5d407d1f7d8ab9700cec",
+        "browser": "installed Chrome on Intel macOS",
+        "pages": [
+          {
+            "url": "https://zellij.shebka.net/cli",
+            "http": 200,
+            "hydrated": true,
+            "version": "0.2.0-rc.16"
+          },
+          {
+            "url": "https://zellij.shebka.net/cli/templates",
+            "http": 200,
+            "hydrated": true,
+            "version": "0.2.0-rc.16"
+          },
+          {
+            "url": "https://zellij.shebka.net/guide/quickstart",
+            "http": 200,
+            "hydrated": true,
+            "version": "0.2.0-rc.16"
+          },
+          {
+            "url": "https://zellij.shebka.net/cli/upgrade",
+            "http": 200,
+            "hydrated": true,
+            "version": "0.2.0-rc.16"
+          }
+        ],
+        "errors": []
+      }
+    },
+    "duplicateMainRuns": [
+      {
+        "run": 44883600349,
+        "workflow": "CI",
+        "action": "cancel requested",
+        "reason": "Same runtime and site inputs already verified; production workflow remains required.",
+        "status": "completed",
+        "conclusion": "cancelled"
+      },
+      {
+        "run": 44883600269,
+        "workflow": "Base image",
+        "action": "cancel requested",
+        "reason": "Base image inputs unchanged from the passing 13-job release-source main image run.",
+        "status": "completed",
+        "conclusion": "cancelled"
+      }
+    ]
+  },
+  "channels": {
+    "homebrew": {
+      "conclusion": "success",
+      "databaseId": 44883137249,
+      "headSha": "d24d6a0e164f202c52fb77aa308ac14d86e823cd",
+      "jobs": [
+        {
+          "name": "Install, upgrade and uninstall (macos-15-intel)",
+          "databaseId": 136782584632,
+          "conclusion": "success"
+        },
+        {
+          "name": "Install, upgrade and uninstall (macos-15)",
+          "databaseId": 136782584771,
+          "conclusion": "success"
+        },
+        {
+          "name": "Install, upgrade and uninstall (ubuntu-24.04-arm)",
+          "databaseId": 136782584772,
+          "conclusion": "success"
+        },
+        {
+          "name": "Install, upgrade and uninstall (ubuntu-latest)",
+          "databaseId": 136782584982,
+          "conclusion": "success"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/mylife-inc/homebrew-tap/actions/runs/44883137249",
+      "actualUpgradeMessages": [
+        "Install, upgrade and uninstall (macos-15-intel)\tUpgrade an actual previous CLI release\t2026-11-21T08:06:43.6907140Z Verified actual CLI upgrade: 0.2.0-rc.15 to 0.2.0-rc.16",
+        "Install, upgrade and uninstall (macos-15)\tUpgrade an actual previous CLI release\t2026-11-21T08:05:00.2820080Z Verified actual CLI upgrade: 0.2.0-rc.15 to 0.2.0-rc.16",
+        "Install, upgrade and uninstall (ubuntu-24.04-arm)\tUpgrade an actual previous CLI release\t2026-11-21T08:05:13.4573211Z Verified actual CLI upgrade: 0.2.0-rc.15 to 0.2.0-rc.16",
+        "Install, upgrade and uninstall (ubuntu-latest)\tUpgrade an actual previous CLI release\t2026-11-21T08:05:02.6949248Z Verified actual CLI upgrade: 0.2.0-rc.15 to 0.2.0-rc.16"
+      ]
+    },
+    "scoop": {
+      "conclusion": "success",
+      "databaseId": 44883141178,
+      "headSha": "acb2eb9e86a89945ed660a7a841d6863c86a4082",
+      "jobs": [
+        {
+          "name": "Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+          "databaseId": 136782597999,
+          "conclusion": "success"
+        },
+        {
+          "name": "Scoop (x86_64-pc-windows-msvc, pwsh)",
+          "databaseId": 136782598139,
+          "conclusion": "success"
+        },
+        {
+          "name": "Scoop (aarch64-pc-windows-msvc, pwsh)",
+          "databaseId": 136782598241,
+          "conclusion": "success"
+        },
+        {
+          "name": "Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+          "databaseId": 136782598257,
+          "conclusion": "success"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/mylife-inc/scoop-bucket/actions/runs/44883141178",
+      "actualUpgradeMessages": [
+        "Scoop (aarch64-pc-windows-msvc, powershell.exe)\tScoop lifecycle and public install\t2026-11-21T08:11:43.6966048Z Verified actual CLI upgrade: 0.2.0-rc.15 to 0.2.0-rc.16",
+        "Scoop (x86_64-pc-windows-msvc, pwsh)\tScoop lifecycle and public install\t2026-11-21T08:05:42.1004269Z Verified actual CLI upgrade: 0.2.0-rc.15 to 0.2.0-rc.16",
+        "Scoop (aarch64-pc-windows-msvc, pwsh)\tScoop lifecycle and public install\t2026-11-21T08:06:02.7366255Z Verified actual CLI upgrade: 0.2.0-rc.15 to 0.2.0-rc.16",
+        "Scoop (x86_64-pc-windows-msvc, powershell.exe)\tScoop lifecycle and public install\t2026-11-21T08:05:45.9850263Z Verified actual CLI upgrade: 0.2.0-rc.15 to 0.2.0-rc.16"
+      ]
+    },
+    "status": "All eight public lifecycle and actual rc.15-to-rc.16 upgrade cases pass.",
+    "upgradeFrom": "v0.2.0-rc.15",
+    "releaseMirrorReadmeCommit": "590b8b89f284cca5ee876ba75ed5fe62a9e72acc"
+  },
+  "publishedImages": {
+    "static": {
+      "conclusion": "success",
+      "databaseId": 44883674082,
+      "headSha": "2e8be27764909f21d61d5d407d1f7d8ab9700cec",
+      "jobs": [
+        {
+          "name": "publish",
+          "databaseId": 136784230762,
+          "conclusion": "success"
+        },
+        {
+          "name": "verify",
+          "databaseId": 136784232204,
+          "conclusion": "skipped"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44883674082"
+    },
+    "next": {
+      "conclusion": "success",
+      "databaseId": 44883676471,
+      "headSha": "2e8be27764909f21d61d5d407d1f7d8ab9700cec",
+      "jobs": [
+        {
+          "name": "publish",
+          "databaseId": 136784237191,
+          "conclusion": "success"
+        },
+        {
+          "name": "verify",
+          "databaseId": 136784238407,
+          "conclusion": "skipped"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44883676471"
+    },
+    "freshPullHttp": {
+      "conclusion": "success",
+      "databaseId": 44883840228,
+      "headSha": "2e8be27764909f21d61d5d407d1f7d8ab9700cec",
+      "jobs": [
+        {
+          "name": "inspect (static)",
+          "databaseId": 136784739021,
+          "conclusion": "success"
+        },
+        {
+          "name": "inspect (next)",
+          "databaseId": 136784739324,
+          "conclusion": "success"
+        },
+        {
+          "name": "live-providers",
+          "databaseId": 136784740224,
+          "conclusion": "skipped"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44883840228"
+    },
+    "digestMessages": [
+      "inspect (static)\tPull the published image and check its HTTP behavior\t2026-11-21T08:13:28.6278858Z ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.16: fresh pull and HTTP acceptance passed (ghcr.io/mylife-inc/zellij/acceptance-static@sha256:ad12e4ee4d500672f2d9d36718217cc92c62dc2c062a6dfd4ecce0df80ed5793)",
+      "inspect (next)\tPull the published image and check its HTTP behavior\t2026-11-21T08:13:37.8141279Z ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.16: fresh pull and HTTP acceptance passed (ghcr.io/mylife-inc/zellij/acceptance-next@sha256:98d7a9f724db7c7c58c2182211242d58665b510011ab49176e320eb72dcf407e)"
+    ]
+  }
 }

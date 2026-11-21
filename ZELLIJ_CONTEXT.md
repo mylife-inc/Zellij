@@ -29,11 +29,23 @@ No third-party comment was sent. Keep rc.15 URLs for that submission and actual
 channel upgrades, rc.14 for the private handoff/WinGet upgrade fixture, and
 rc.11/rc.13 for private rollback packages. No versions are retired in this step.
 
-Homebrew and Scoop now publish rc.16; actual rc.15 upgrade acceptance is in
-progress. Public documentation and generated-consumer promotion are prepared
-and still await their hosted checks and production receipt. Main base images
-pass all 13 jobs in `44880926585`. Duplicate main CI `44880926617` was cancelled
-on the identical already-tested tree, not counted as a pass. See the
+Homebrew and Scoop now publish rc.16; all eight actual rc.15 upgrade cases pass
+(`44883137249`, `44883141178`). The installed Mac binary matches the verified
+public archive, preserves its compatibility symlink and passes a cold/default
+resource-home rich build plus an empty-PATH offline rebuild of product-launch.
+PR #226 merges as `2e8be27`, identical to tested `e9ce97a`; all six generated
+workflow checks and hosted documentation preservation pass (59 routes, 282
+heading IDs, 82 mappings and 29 unchanged images). Production `44883600267`
+verifies deploy `6b01528994a6ddfe208d6997`; four live rc.16 pages hydrate without
+captured browser errors. Static/Next publication `44883674082`/`44883676471`
+and fresh-pull HTTP/health/nonroot checks `44883840228` pass.
+
+Main base images pass all 13 jobs in `44880926585`. Duplicate unchanged-runtime
+CI/base-image repeats were explicitly cancelled, not counted as passes. One
+supplemental local download verifier incorrectly expected recipes in the
+archive-only SHA256SUMS; correcting that temporary verifier to use published
+asset digests and tagged generators passed. No product code or release assets
+were changed. See the
 [release evidence](specs/evidence/zellij-rc16-release-2026-11-21.json) and
 [current readiness checkpoint](specs/zellij-readiness-2026-11-21.md).
 The private client package remains rc.14; no Windows computer is available for

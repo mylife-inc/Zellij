@@ -1,6 +1,18 @@
 # Zellij release channels and candidate procedure
 
-**Current rc.12 distribution status — 2026-11-19.** Immutable `v0.2.0-rc.12` at `73979de`
+**2026-11-21: rc.16 publication completed.** Immutable source `e3fe086` passes
+37 required source CI and 40 required release jobs. Both repositories publish
+40 matching assets, including the three corrected 0.1.3 website-starter guides.
+All nine public template identities and archive reproductions pass. All eight
+real rc.15-to-rc.16 Homebrew/Scoop upgrades, public WinGet x64/ARM64 manifests,
+physical Mac standalone/browser acceptance and production docs publication pass.
+No releases are retired: rc.11/rc.13 private backups, rc.14 handoff/WinGet fixture
+and rc.15 Microsoft submission/channel upgrade tests still have consumers.
+See [the dated evidence](evidence/zellij-rc16-release-2026-11-21.json) and
+[current readiness](zellij-readiness-2026-11-21.md). Earlier entries below remain
+historical records, not the current release status.
+
+**Historical rc.12 distribution status — 2026-11-19.** Immutable `v0.2.0-rc.12` at `73979de`
 passes all 38 release jobs in `44637677186`, including final public-artifact
 checks. Both repositories have 39 matching asset digests. Homebrew and Scoop
 public lifecycle and actual rc.11-to-rc.12 upgrades pass on all eight managed
