@@ -1,0 +1,74 @@
+{
+  "date": "2026-11-21",
+  "status": "Desktop overflow focus defect reproduced and fixed locally; hosted acceptance pending. Original overflow and hydration timeouts remain unexplained.",
+  "base": "5406f71e6ed50e522a881410fc155310563b6bb3",
+  "fix": "f80596b63ae7799c96c0181a1d0c4bcb6166e3e4",
+  "historicalFindings": [
+    {
+      "run": 43539410410,
+      "job": 132276191750,
+      "finding": "WebKit retained More after widening to 1600 pixels.",
+      "review": "Original log reconfirms the 5000 ms count assertion. No original overflow artifact is returned by the current run-artifacts endpoint. Existing recorded trace observations remain historical evidence.",
+      "resolved": false
+    },
+    {
+      "run": 43540700668,
+      "job": 132280394586,
+      "finding": "Annotation-case hydration readiness exceeded 15000 ms.",
+      "review": "Original stack locates the timeout in the legacy-heading alias navigation loop. It records no failing URL or browser cause; existing current diagnostics add both URL and failure state.",
+      "resolved": false
+    }
+  ],
+  "reproducedDefect": {
+    "trigger": "A desktop resize commits a different More-menu layout while focus restoration is queued; the user then focuses content/branding or clicks non-focusable page content.",
+    "cause": "The queued callback captured a target and restored it unconditionally; existing cancellation guarded breakpoint restoration but not desktop overflow restoration.",
+    "fix": "Read live overflow intent in the callback; cancel it on new focus or an outside pointer choice; preserve a currently visible focus destination and restore without scrolling."
+  },
+  "local": {
+    "baseline": {
+      "passed": 8,
+      "failed": 12,
+      "retries": 0,
+      "browsers": [
+        "Chromium",
+        "WebKit"
+      ],
+      "failureStage": "All twelve failures are the final focus assertion, after both layout and user-choice preconditions pass.",
+      "controls": "Ordinary navigation restoration and reciprocal resize cases pass."
+    },
+    "fixed": {
+      "startTime": "2026-11-21T09:33:37.724Z",
+      "duration": 78980.379,
+      "expected": 90,
+      "skipped": 46,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "engineTests": 540,
+    "engineTestFiles": 49,
+    "scopedNavigationTests": 10,
+    "typechecks": [
+      "engine",
+      "showcase"
+    ],
+    "builds": [
+      "engine",
+      "showcase"
+    ],
+    "documentationAcceptance": "pending"
+  },
+  "harnessNotes": [
+    "The first frame-gate attempt could drain before ResizeObserver delivery; the final fixture allows a native frame before draining queued application work. The recorded baseline and fixed runs use the same corrected test source.",
+    "An initial invocation from the repository root selected no tests; the actual baseline runs from the showcase workspace.",
+    "The showcase prebuild regenerated tracked images with local tooling; those generated edits were restored. Final source contains no image changes."
+  ],
+  "scope": "Repository-owned showcase and documentation fixtures only. No provider verification or release publication.",
+  "remaining": "Original timing findings need new causal evidence; expanded imports, citation formats and unrestricted composition are documented expansion boundaries, not stubbed CLI handlers.",
+  "sha256": {
+    "baselineReport": "11552dc33cd2a385ad394945ecceb7511ae8d52a5e41cb6ebeee35bc8acc9b95",
+    "fixedReport": "6ce158a7cd1041b1ad793d17799bf681c21e3e6bf9a836f6fd526c267af0fc6a",
+    "overflowOriginalLog": "2d8ac7d09486bad340babaa1d88556290aca7f470d56076c10e60434a4034b3b",
+    "hydrationOriginalLog": "41f0c0f560a99f4ba28dd010de3acb018560cb2d2b439d947afbe623d84af627",
+    "browserRegressionSource": "acb541798ab77d3ca0d82a750165f2c4efbf7e8f585e66596a4281cdc50cf21e"
+  }
+}

@@ -1,5 +1,10 @@
 # zel CLI implementation status — 2026-11-05
 
+**Current checkpoint — 2026-11-21:** rc.16 is published. All documented command
+families have implementations; see the [current readiness table](zellij-readiness-2026-11-21.md)
+for the remaining product investigations, distribution tasks and explicit feature
+limits. Release statements below are dated history.
+
 **2026-11-14: v0.2.0-rc.7 is published** at immutable tag/merge
 `f3d55f6`. All 33 jobs in release `43646140679` pass. Both release repositories
 have 21 byte-identical assets; all three template archives retain their previous

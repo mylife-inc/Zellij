@@ -8,6 +8,23 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-21**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-21: desktop overflow focus correction — local acceptance**
+
+Fix `f80596b` prevents delayed More-menu restoration from stealing a newer
+focus or pointer choice. The unchanged regression fails all twelve deliberate-
+choice cases on the original engine and passes with the fix in Chromium/WebKit;
+eight control cases retain normal restoration. Full header/mobile acceptance
+passes 90 cases, 46 conditional skips, zero failures/retries. All 540 engine
+tests, engine/showcase types and both builds pass. Hosted acceptance is pending;
+public CLI rc.16 is unchanged. See the [record](specs/zellij-overflow-focus-2026-11-21.md)
+and [evidence](specs/evidence/zellij-overflow-focus-2026-11-21.json).
+
+The two historical browser timing findings remain unexplained. Re-reading the
+original logs locates hydration failure in legacy-heading alias navigation but
+does not identify its cause. Current failure diagnostics remain necessary; this
+separate focus defect does not close either old timeout. Current CLI-family
+implementation and documented expansion boundaries remain as listed in readiness.
+
 **2026-11-21: rc.16 released with corrected starter guides**
 
 PR #225 merges as `e3fe0867be113c8ba8a837b730e0760d9b955771`, identical in

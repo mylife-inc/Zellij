@@ -118,3 +118,12 @@ cancelled workflows and does not establish a fix or absence of recurrence.
 Existing failure-only capture remains the next source of diagnostic evidence.
 No runtime change or repeated stress suite was justified by this review. See
 [the dated follow-up evidence](evidence/zellij-browser-timing-followup-2026-11-20.json).
+
+## Follow-up — 2026-11-21
+
+A fresh source/log review reproduces a separate desktop overflow focus defect:
+a queued callback can steal a newer focus or pointer choice after the menu has
+already resized. Fix `f80596b` and its failing-before/passing-after regression
+are recorded in the [overflow follow-up](zellij-overflow-focus-2026-11-21.md).
+The original overflow and hydration timeouts remain unexplained; do not treat
+this separate correction or later passing coverage as their root-cause fix.
