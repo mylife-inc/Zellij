@@ -1,0 +1,1080 @@
+{
+  "date": "2026-11-21",
+  "version": "v0.2.0-rc.17",
+  "status": "Published and verified on six native targets, public Mac/default-home/browser checks and all eight managed-channel actual upgrades. Production guides and fixture publication follow.",
+  "source": {
+    "pr": 231,
+    "head": "fe942fb052250859efaa5c969dddb3a00a21e2d7",
+    "base": "dbdf4fc72112aacd410ee099d32f6082e5938858",
+    "testedHead": "d38e55f5846bea3972968a56d891cfb9d3216584",
+    "afterTestedHead": "Only two documentation links changed in candidate notes; implementation, packaging and tests remain identical.",
+    "merge": "0bd1e8b0eb9d0a3dbf7ad00afd7d4dda5ba3cf3a",
+    "mergeTreeMatchesReviewedHead": true
+  },
+  "scope": "Ship accepted desktop overflow focus fix in the cached renderer and matching images. No cached-toolchain migration, provider deployment or catalog submission.",
+  "local": {
+    "normalPreflight": {
+      "rustPassed": 828,
+      "rustIgnored": 5,
+      "enginePassed": 540,
+      "typechecks": "passed",
+      "format": "passed",
+      "clippy": "passed",
+      "schemaDrift": "passed"
+    },
+    "dependencyAudit": "production and development clean",
+    "preparedGuides": "strict/deep validation passed",
+    "preparedDocumentation": {
+      "strictRoutes": 59,
+      "examples": 33,
+      "preservation": "46 original routes, 13 added routes, 282 heading IDs, 82 mappings and 29 byte-identical authored images; browser hydration/search passed"
+    },
+    "sourceBrowserJob": {
+      "job": 136967118075,
+      "passed": 552,
+      "skipped": 169,
+      "flaky": 0,
+      "failed": 0,
+      "retriesObserved": 0
+    },
+    "notesPreview": "Generated notes use public documentation URLs and exact rc.17 installer URLs.",
+    "preTagAudit": "production and development clean",
+    "taggingProcedure": "Normal zcheck passed concurrently with source CI on d38e55f. Only two release-note URLs changed afterward. After 37 required jobs passed, verified reviewed/merged tree equality, a clean checkout, matching version, candidate policy, absent local/remote tag and fresh audit before creating/pushing the new annotated tag. No unchanged preflight suite was repeated.",
+    "publicArtifacts": {
+      "version": "v0.2.0-rc.17",
+      "target": "x86_64-apple-darwin",
+      "authentication": "none",
+      "archives": [
+        {
+          "repository": "mylife-inc/Zellij",
+          "archive": "zel-v0.2.0-rc.17-x86_64-apple-darwin.tar.gz",
+          "sha256": "60ad9fd2a3a2536afd37aaa7b73e9f8b50af387cd0ed9fdd0172b90b8905b42f",
+          "size": 10035487
+        },
+        {
+          "repository": "mylife-inc/releases",
+          "archive": "zel-v0.2.0-rc.17-x86_64-apple-darwin.tar.gz",
+          "sha256": "60ad9fd2a3a2536afd37aaa7b73e9f8b50af387cd0ed9fdd0172b90b8905b42f",
+          "size": 10035487
+        }
+      ],
+      "recipes": "both public copies match GitHub asset SHA-256 digests and tagged generators; SHA256SUMS covers archives",
+      "templates": [
+        {
+          "id": "product-docs",
+          "version": "0.1.0",
+          "sha256": "f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+        },
+        {
+          "id": "product-studio",
+          "version": "0.1.2",
+          "sha256": "bad023420061d2f3bc051dcfc732d6aec3120af297544cb58d82631ab12393a1"
+        },
+        {
+          "id": "book-classic",
+          "version": "0.2.0",
+          "sha256": "70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+        },
+        {
+          "id": "book-technical",
+          "version": "0.1.0",
+          "sha256": "8d350a0072bfb36f44edfb3f10f5961f3edf7d715eeb3641a2bc2bb1e4fbcf26"
+        },
+        {
+          "id": "book-study",
+          "version": "0.1.0",
+          "sha256": "0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"
+        },
+        {
+          "id": "product-launch",
+          "version": "0.1.3",
+          "sha256": "f7d446e59fb21bb8f5bce71382d666a2c7ee2d982b3027c265de73109b4fce40"
+        },
+        {
+          "id": "software-platform",
+          "version": "0.1.3",
+          "sha256": "5412e9735419813ee519b68d3e5c8fdd314f0cb49c88472a9de8fdb8ac6a16ba"
+        },
+        {
+          "id": "creative-studio",
+          "version": "0.1.3",
+          "sha256": "e54f2905adc90a58ad8a9b725101a78cfdf06ca2b668075d0a242ab27a4ee4dd"
+        },
+        {
+          "id": "api-platform",
+          "version": "0.1.2",
+          "sha256": "15121abc9fe6f4c11230d17b9d02bc7f4250b31d1692e975da19b140664c0504"
+        }
+      ]
+    },
+    "publicMacStandalone": {
+      "status": "passed",
+      "platform": "darwin-x64",
+      "showcasePages": 16,
+      "fullStarterPages": 28,
+      "emptyPath": true,
+      "offlineRebuild": true,
+      "failedBuildPreservation": true,
+      "cacheTamperingRejected": true,
+      "routeTraversalRejected": true,
+      "checkWatchViewRecoveryCancellation": "passed",
+      "sha256": "6341c9b8ff85a30a99766b0162f1b4025159fdb966553444755b15df5664e1f6"
+    },
+    "publicFileBrowsers": [
+      {
+        "browser": "Chromium",
+        "pages": 16,
+        "errors": [],
+        "network": []
+      },
+      {
+        "browser": "WebKit",
+        "pages": 16,
+        "errors": [],
+        "network": []
+      }
+    ],
+    "installedMac": {
+      "version": "v0.2.0-rc.17",
+      "executable": "$HOME/Dev/config/zellij/bin/zel",
+      "sha256": "ae77cb448e9f89b2c6be0efcf93f4b6d6e1b968b7ae22c5926dbd680fcb10502",
+      "defaultResourceHome": true,
+      "initialCacheStatus": "download_required",
+      "finalCacheStatus": "cached",
+      "emptyPath": true,
+      "offlineRebuildIdentical": true,
+      "pages": 4,
+      "compatibilitySymlink": "preserved",
+      "upgradeFrom": "v0.2.0-rc.16",
+      "bytesMatchVerifiedPublicArchive": true
+    }
+  },
+  "sourceCI": {
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "Embedded schema is current",
+        "databaseId": 136967117658,
+        "conclusion": "success"
+      },
+      {
+        "name": "CLI",
+        "databaseId": 136967117902,
+        "conclusion": "success"
+      },
+      {
+        "name": "Engine",
+        "databaseId": 136967117915,
+        "conclusion": "success"
+      },
+      {
+        "name": "Native images (amd64)",
+        "databaseId": 136967117958,
+        "conclusion": "success"
+      },
+      {
+        "name": "Native images (arm64)",
+        "databaseId": 136967117985,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Compile shared rich renderer",
+        "databaseId": 136967117986,
+        "conclusion": "success"
+      },
+      {
+        "name": "Portable docs (macos-latest)",
+        "databaseId": 136967118052,
+        "conclusion": "success"
+      },
+      {
+        "name": "Website and book templates",
+        "databaseId": 136967118067,
+        "conclusion": "success"
+      },
+      {
+        "name": "Showcase end to end",
+        "databaseId": 136967118075,
+        "conclusion": "success"
+      },
+      {
+        "name": "Portable docs (ubuntu-latest)",
+        "databaseId": 136967118145,
+        "conclusion": "success"
+      },
+      {
+        "name": "Rich website without HTTP",
+        "databaseId": 136967118167,
+        "conclusion": "success"
+      },
+      {
+        "name": "websites / Websites (ubuntu-24.04-arm)",
+        "databaseId": 136967118172,
+        "conclusion": "success"
+      },
+      {
+        "name": "websites / Websites (ubuntu-latest)",
+        "databaseId": 136967118262,
+        "conclusion": "success"
+      },
+      {
+        "name": "next-pdf / Next PDF (ubuntu-latest)",
+        "databaseId": 136967118319,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "databaseId": 136967118325,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "databaseId": 136967118346,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "databaseId": 136967118437,
+        "conclusion": "success"
+      },
+      {
+        "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+        "databaseId": 136967118448,
+        "conclusion": "success"
+      },
+      {
+        "name": "Portable docs (windows-latest)",
+        "databaseId": 136967118692,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "databaseId": 136967382528,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "databaseId": 136967382532,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "databaseId": 136967382541,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "databaseId": 136967382562,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "databaseId": 136967382576,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "databaseId": 136967382693,
+        "conclusion": "success"
+      },
+      {
+        "name": "Combined image manifests",
+        "databaseId": 136968087245,
+        "conclusion": "success"
+      },
+      {
+        "name": "Rich standalone file website",
+        "databaseId": 136970319318,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "databaseId": 136970319527,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "databaseId": 136970319530,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (macos-15)",
+        "databaseId": 136970319531,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "databaseId": 136970319535,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "databaseId": 136970319538,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "databaseId": 136970319543,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "databaseId": 136970319596,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "databaseId": 136970319600,
+        "conclusion": "success"
+      },
+      {
+        "name": "winget / WinGet lifecycle (x86_64-pc-windows-msvc)",
+        "databaseId": 136970319827,
+        "conclusion": "success"
+      },
+      {
+        "name": "winget / WinGet lifecycle (aarch64-pc-windows-msvc)",
+        "databaseId": 136970319869,
+        "conclusion": "success"
+      },
+      {
+        "name": "winget / WinGet binary (${{ matrix.target }})",
+        "databaseId": 136970321458,
+        "conclusion": "skipped"
+      }
+    ],
+    "status": "completed",
+    "run": 44943983247
+  },
+  "retention": "No retirement in this release step. Preserve compatibility and catalog/upgrade dependencies; any retirement needs a fresh reviewed inventory.",
+  "limitations": [
+    "Two historical browser timing findings remain unexplained.",
+    "HTTP export, rich Next development, image building and optional PDF retain their existing prerequisites.",
+    "Live providers and WinGet catalog review remain deferred."
+  ],
+  "sha256": {
+    "preflight": "d9c24c44d352ceacc0f765532c1a083d4ffeed8c0fc71d9c00693e1e6fd70dfb",
+    "audit": "73fe156517463837a0d2a077f57170d2feb642bf1845ae981605f6ce71bb2bbe",
+    "preparedGuides": "89c26a2ca2375b63e792445c2c74125ab281318808324cefec4c2f699eeec486",
+    "docsBuild": "b6e6512ce99abf94fcd63ef0430b3fb53d0479c3321b93c27247c2567ef74dc4",
+    "docsPreservation": "faef7dedd8b0d60363117cb2a641ae3245576aee6fe7fa9eaa85bdedb149ddd8",
+    "sourceBrowserLog": "3dbf05b5d1e504fe581652af6cf91436ac27b0e5451d565b2baa2577db3bee8b",
+    "preTagAudit": "73fe156517463837a0d2a077f57170d2feb642bf1845ae981605f6ce71bb2bbe",
+    "publicFileBrowsers": "7ed0e73566c393fa759edf80f13d7918e6b45fe8f13b64943b3fc4cd3aa3c53e",
+    "localUpgrade": "fc7ed2a9ce2b4e56135d4385e8bf1f20431657ac6cb12ff96de831042693e785",
+    "defaultHome": "1585548cb3f2a7182bf7e87938b6057a5fec9385e27274bad785b5020e252f3d"
+  },
+  "channels": {
+    "previousHomebrewHead": "d24d6a0e164f202c52fb77aa308ac14d86e823cd",
+    "previousScoopHead": "acb2eb9e86a89945ed660a7a841d6863c86a4082",
+    "upgradeFrom": "v0.2.0-rc.16",
+    "status": "verified",
+    "homebrew-tapCommit": "82ae0a24f6fbc983dac279c2f3a60a295273e459",
+    "scoop-bucketCommit": "289de6c8344132ee7795d01b56e96c0217a18a6e",
+    "releasesCommit": "f56fd135c371b802bab942fe3b2a2c4a720acb60",
+    "homebrew": {
+      "run": 44950122407,
+      "status": "completed",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "name": "Install, upgrade and uninstall (ubuntu-24.04-arm)",
+          "id": 136985993095,
+          "conclusion": "success"
+        },
+        {
+          "name": "Install, upgrade and uninstall (ubuntu-latest)",
+          "id": 136985993304,
+          "conclusion": "success"
+        },
+        {
+          "name": "Install, upgrade and uninstall (macos-15)",
+          "id": 136985993344,
+          "conclusion": "success"
+        },
+        {
+          "name": "Install, upgrade and uninstall (macos-15-intel)",
+          "id": 136985993397,
+          "conclusion": "success"
+        }
+      ]
+    },
+    "scoop": {
+      "run": 44950125485,
+      "status": "completed",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "name": "Scoop (aarch64-pc-windows-msvc, pwsh)",
+          "id": 136986001970,
+          "conclusion": "success"
+        },
+        {
+          "name": "Scoop (x86_64-pc-windows-msvc, pwsh)",
+          "id": 136986002173,
+          "conclusion": "success"
+        },
+        {
+          "name": "Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+          "id": 136986002254,
+          "conclusion": "success"
+        },
+        {
+          "name": "Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+          "id": 136986002255,
+          "conclusion": "success"
+        }
+      ]
+    },
+    "actualUpgradeProof": [
+      {
+        "channel": "homebrew",
+        "name": "Install, upgrade and uninstall (ubuntu-24.04-arm)",
+        "job": 136985993095,
+        "upgradeFrom": "0.2.0-rc.16",
+        "upgradeTo": "0.2.0-rc.17",
+        "logSha256": "db6a99a50afc834cd1ed6cb59b02aec48d233dce33224c7d2c0993270fd47bc1"
+      },
+      {
+        "channel": "homebrew",
+        "name": "Install, upgrade and uninstall (ubuntu-latest)",
+        "job": 136985993304,
+        "upgradeFrom": "0.2.0-rc.16",
+        "upgradeTo": "0.2.0-rc.17",
+        "logSha256": "8d3a19cee589782149e4cd71bcb6d87654fb130511af8135b813a0fa2057aa45"
+      },
+      {
+        "channel": "homebrew",
+        "name": "Install, upgrade and uninstall (macos-15)",
+        "job": 136985993344,
+        "upgradeFrom": "0.2.0-rc.16",
+        "upgradeTo": "0.2.0-rc.17",
+        "logSha256": "43bb0a0566ec70e202ab1a3c48bf566a66a5008da02bad2e0ed92ee9b66f62ec"
+      },
+      {
+        "channel": "homebrew",
+        "name": "Install, upgrade and uninstall (macos-15-intel)",
+        "job": 136985993397,
+        "upgradeFrom": "0.2.0-rc.16",
+        "upgradeTo": "0.2.0-rc.17",
+        "logSha256": "fb9ebadfc89a38e6ab8cc71f311ef90086c503760d4057f0aeb93a70de86b87e"
+      },
+      {
+        "channel": "scoop",
+        "name": "Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "job": 136986001970,
+        "upgradeFrom": "0.2.0-rc.16",
+        "upgradeTo": "0.2.0-rc.17",
+        "logSha256": "b614c989d2467c35fc4594d28a4c300df135f0b9e6f324e1dd75b820430bae7c"
+      },
+      {
+        "channel": "scoop",
+        "name": "Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "job": 136986002173,
+        "upgradeFrom": "0.2.0-rc.16",
+        "upgradeTo": "0.2.0-rc.17",
+        "logSha256": "0ea789ec82c13e8662f94b83f6e5eb8c63bc1c5e956e4d7e1e0894d6ee9b5152"
+      },
+      {
+        "channel": "scoop",
+        "name": "Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "job": 136986002254,
+        "upgradeFrom": "0.2.0-rc.16",
+        "upgradeTo": "0.2.0-rc.17",
+        "logSha256": "9a7db8239e526fd06354428ed9da83111466c89d08f7d0cdf0aea3f1c444df68"
+      },
+      {
+        "channel": "scoop",
+        "name": "Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "job": 136986002255,
+        "upgradeFrom": "0.2.0-rc.16",
+        "upgradeTo": "0.2.0-rc.17",
+        "logSha256": "39bcdac41ded3a26fd62276ce96985c2fc5d9ffb9275e431d19c8b2a671fe246"
+      }
+    ]
+  },
+  "tag": {
+    "name": "v0.2.0-rc.17",
+    "commit": "0bd1e8b0eb9d0a3dbf7ad00afd7d4dda5ba3cf3a",
+    "immutable": true
+  },
+  "release": {
+    "run": 44947576591,
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "Verify",
+        "id": 136978165724,
+        "conclusion": "success"
+      },
+      {
+        "name": "Documentation site",
+        "id": 136979479544,
+        "conclusion": "success"
+      },
+      {
+        "name": "Image diagrams \u00b7 arm64",
+        "id": 136979479597,
+        "conclusion": "success"
+      },
+      {
+        "name": "Image maths \u00b7 amd64",
+        "id": 136979479612,
+        "conclusion": "success"
+      },
+      {
+        "name": "Image maths \u00b7 arm64",
+        "id": 136979479622,
+        "conclusion": "success"
+      },
+      {
+        "name": "Image none \u00b7 amd64",
+        "id": 136979479645,
+        "conclusion": "success"
+      },
+      {
+        "name": "Image all \u00b7 arm64",
+        "id": 136979479659,
+        "conclusion": "success"
+      },
+      {
+        "name": "Image diagrams \u00b7 amd64",
+        "id": 136979479662,
+        "conclusion": "success"
+      },
+      {
+        "name": "Image none \u00b7 arm64",
+        "id": 136979479676,
+        "conclusion": "success"
+      },
+      {
+        "name": "Image all \u00b7 amd64",
+        "id": 136979479683,
+        "conclusion": "success"
+      },
+      {
+        "name": "binaries / Compile shared rich renderer",
+        "id": 136979479784,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish image none",
+        "id": 136979601031,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish image diagrams",
+        "id": 136979601042,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish image all",
+        "id": 136979601054,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish image maths",
+        "id": 136979601078,
+        "conclusion": "success"
+      },
+      {
+        "name": "binaries / Package and install (x86_64-unknown-linux-gnu)",
+        "id": 136979717504,
+        "conclusion": "success"
+      },
+      {
+        "name": "binaries / Package and install (aarch64-apple-darwin)",
+        "id": 136979717514,
+        "conclusion": "success"
+      },
+      {
+        "name": "binaries / Package and install (x86_64-apple-darwin)",
+        "id": 136979717533,
+        "conclusion": "success"
+      },
+      {
+        "name": "binaries / Package and install (x86_64-pc-windows-msvc)",
+        "id": 136979717540,
+        "conclusion": "success"
+      },
+      {
+        "name": "binaries / Package and install (aarch64-pc-windows-msvc)",
+        "id": 136979717557,
+        "conclusion": "success"
+      },
+      {
+        "name": "binaries / Package and install (aarch64-unknown-linux-gnu)",
+        "id": 136979717572,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "id": 136982245566,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "id": 136982245569,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "id": 136982245578,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "id": 136982245592,
+        "conclusion": "success"
+      },
+      {
+        "name": "winget / WinGet lifecycle (aarch64-pc-windows-msvc)",
+        "id": 136982245844,
+        "conclusion": "success"
+      },
+      {
+        "name": "winget / WinGet lifecycle (x86_64-pc-windows-msvc)",
+        "id": 136982245845,
+        "conclusion": "success"
+      },
+      {
+        "name": "winget / WinGet binary (${{ matrix.target }})",
+        "id": 136982247530,
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Publish the release",
+        "id": 136983587174,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published images (ubuntu-24.04-arm)",
+        "id": 136983713878,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published images (ubuntu-latest)",
+        "id": 136983713890,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published install (aarch64-pc-windows-msvc)",
+        "id": 136983713895,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published Next PDF / Next PDF (ubuntu-latest)",
+        "id": 136983713944,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published install (x86_64-apple-darwin)",
+        "id": 136983713950,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published install (aarch64-apple-darwin)",
+        "id": 136983713951,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published install (x86_64-pc-windows-msvc)",
+        "id": 136983713955,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published install (aarch64-unknown-linux-gnu)",
+        "id": 136983713959,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published websites / Websites (ubuntu-latest)",
+        "id": 136983713980,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published install (x86_64-unknown-linux-gnu)",
+        "id": 136983713988,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published Next PDF / Next PDF (ubuntu-24.04-arm)",
+        "id": 136983713993,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published websites / Websites (ubuntu-24.04-arm)",
+        "id": 136983714057,
+        "conclusion": "success"
+      }
+    ]
+  },
+  "mainImages": {
+    "run": 44947567673,
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "maths \u00b7 amd64",
+        "id": 136978138378,
+        "conclusion": "success"
+      },
+      {
+        "name": "all \u00b7 arm64",
+        "id": 136978138622,
+        "conclusion": "success"
+      },
+      {
+        "name": "diagrams \u00b7 arm64",
+        "id": 136978138693,
+        "conclusion": "success"
+      },
+      {
+        "name": "diagrams \u00b7 amd64",
+        "id": 136978138704,
+        "conclusion": "success"
+      },
+      {
+        "name": "maths \u00b7 arm64",
+        "id": 136978138719,
+        "conclusion": "success"
+      },
+      {
+        "name": "all \u00b7 amd64",
+        "id": 136978138755,
+        "conclusion": "success"
+      },
+      {
+        "name": "none \u00b7 arm64",
+        "id": 136978138757,
+        "conclusion": "success"
+      },
+      {
+        "name": "none \u00b7 amd64",
+        "id": 136978138804,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish all",
+        "id": 136978744979,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish diagrams",
+        "id": 136978745005,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish maths",
+        "id": 136978745034,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish none",
+        "id": 136978745047,
+        "conclusion": "success"
+      },
+      {
+        "name": "The image can build a site",
+        "id": 136978860979,
+        "conclusion": "success"
+      }
+    ]
+  },
+  "duplicateMainCI": {
+    "run": 44947567705,
+    "status": "completed",
+    "reason": "Reviewed and merged trees match; all source gates already passed. Cancellation is not a pass.",
+    "conclusion": "cancelled"
+  },
+  "publicArtifacts": {
+    "repositories": [
+      {
+        "repo": "mylife-inc/Zellij",
+        "id": 453982711,
+        "tag": "v0.2.0-rc.17",
+        "publishedAt": "2026-11-21T21:01:45Z"
+      },
+      {
+        "repo": "mylife-inc/releases",
+        "id": 453982764,
+        "tag": "zellij-v0.2.0-rc.17",
+        "publishedAt": "2026-11-21T21:01:51Z"
+      }
+    ],
+    "count": 40,
+    "nameSizeDigestAgreement": true,
+    "assets": [
+      {
+        "name": "SHA256SUMS",
+        "size": 2390,
+        "digest": "sha256:7d99891f9815a5d81e3411b0e047edaac3c36978da7da1521c936da6c8beab69"
+      },
+      {
+        "name": "install.ps1",
+        "size": 7573,
+        "digest": "sha256:f652f0ac06bf1794be6f48c32a22e8d0a78fece873f6b1d53102ed16069a07a1"
+      },
+      {
+        "name": "install.sh",
+        "size": 13685,
+        "digest": "sha256:fdaea859ada3b454522a2413dc5d7e59908cf6d506e24457e93cd8925a3297a0"
+      },
+      {
+        "name": "template-api-platform-0.1.2.tar.gz",
+        "size": 6135,
+        "digest": "sha256:15121abc9fe6f4c11230d17b9d02bc7f4250b31d1692e975da19b140664c0504"
+      },
+      {
+        "name": "template-book-classic-0.2.0.tar.gz",
+        "size": 4394,
+        "digest": "sha256:70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+      },
+      {
+        "name": "template-book-study-0.1.0.tar.gz",
+        "size": 3845,
+        "digest": "sha256:0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"
+      },
+      {
+        "name": "template-book-technical-0.1.0.tar.gz",
+        "size": 3959,
+        "digest": "sha256:8d350a0072bfb36f44edfb3f10f5961f3edf7d715eeb3641a2bc2bb1e4fbcf26"
+      },
+      {
+        "name": "template-creative-studio-0.1.3.tar.gz",
+        "size": 6191,
+        "digest": "sha256:e54f2905adc90a58ad8a9b725101a78cfdf06ca2b668075d0a242ab27a4ee4dd"
+      },
+      {
+        "name": "template-product-docs-0.1.0.tar.gz",
+        "size": 1297,
+        "digest": "sha256:f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+      },
+      {
+        "name": "template-product-launch-0.1.3.tar.gz",
+        "size": 6396,
+        "digest": "sha256:f7d446e59fb21bb8f5bce71382d666a2c7ee2d982b3027c265de73109b4fce40"
+      },
+      {
+        "name": "template-product-studio-0.1.2.tar.gz",
+        "size": 2792,
+        "digest": "sha256:bad023420061d2f3bc051dcfc732d6aec3120af297544cb58d82631ab12393a1"
+      },
+      {
+        "name": "template-software-platform-0.1.3.tar.gz",
+        "size": 6282,
+        "digest": "sha256:5412e9735419813ee519b68d3e5c8fdd314f0cb49c88472a9de8fdb8ac6a16ba"
+      },
+      {
+        "name": "templates-catalog.json",
+        "size": 9537,
+        "digest": "sha256:ab493f84b2d6340244e740e739c5f512e89e48754f1ec2c86c2dfc0c6271a272"
+      },
+      {
+        "name": "zel-renderer-v0.2.0-rc.17-darwin-arm64.tar.gz",
+        "size": 46744252,
+        "digest": "sha256:a974d0be628cd03ae7ba4bd9cd587dd20b70400e3e56c1e46e5b3942eb45ee4f"
+      },
+      {
+        "name": "zel-renderer-v0.2.0-rc.17-darwin-arm64.tar.gz.sha256",
+        "size": 112,
+        "digest": "sha256:f783881d505204f0117f047c26cfc156d233718c398f9167bbf5d298500ee9d5"
+      },
+      {
+        "name": "zel-renderer-v0.2.0-rc.17-darwin-x64.tar.gz",
+        "size": 48098687,
+        "digest": "sha256:84a49b3c30f05f4d243f52e323130c2adc29abf4bcef4424d6f34142c880aa83"
+      },
+      {
+        "name": "zel-renderer-v0.2.0-rc.17-darwin-x64.tar.gz.sha256",
+        "size": 110,
+        "digest": "sha256:fc96c86464742d85f7849e74d006794997deadaa83ef090612d2f3e0df812173"
+      },
+      {
+        "name": "zel-renderer-v0.2.0-rc.17-linux-arm64.tar.gz",
+        "size": 51811465,
+        "digest": "sha256:37c75159ae2984e0bee883844e3b9bce1dbc49c18dae0674f7314ac3e7bc3790"
+      },
+      {
+        "name": "zel-renderer-v0.2.0-rc.17-linux-arm64.tar.gz.sha256",
+        "size": 111,
+        "digest": "sha256:cb439953edcaa4f1568edab5898722618991349dd490dfd284f2f83231dc592f"
+      },
+      {
+        "name": "zel-renderer-v0.2.0-rc.17-linux-x64.tar.gz",
+        "size": 52132296,
+        "digest": "sha256:b8c3701e514478e0c87be6919f1fa59eb9077f93415329b73bf92f4b95ba7344"
+      },
+      {
+        "name": "zel-renderer-v0.2.0-rc.17-linux-x64.tar.gz.sha256",
+        "size": 109,
+        "digest": "sha256:8e35e1a8b6b541cbbe1acb1a2bddf626c883e977e18e8f6b012617d42492a456"
+      },
+      {
+        "name": "zel-renderer-v0.2.0-rc.17-win-arm64.tar.gz",
+        "size": 38271385,
+        "digest": "sha256:d9dede24eb330aeb62a06ec24a3c07cfedab03c2d7ca9689c8fbbcac4bbeef3b"
+      },
+      {
+        "name": "zel-renderer-v0.2.0-rc.17-win-arm64.tar.gz.sha256",
+        "size": 109,
+        "digest": "sha256:151f3a9feef90dcbfee5660799a900185cfbf71f2e81bcc1a4d5e2b847d0a22d"
+      },
+      {
+        "name": "zel-renderer-v0.2.0-rc.17-win-x64.tar.gz",
+        "size": 42325012,
+        "digest": "sha256:ab439e5cd343e347165c0dd554babd0eb7fac06b75696f8e4f12b69c84702dbc"
+      },
+      {
+        "name": "zel-renderer-v0.2.0-rc.17-win-x64.tar.gz.sha256",
+        "size": 107,
+        "digest": "sha256:feb950de28be55dad66670e39791e4d01f8352c704bc880f4a521eb4349c986f"
+      },
+      {
+        "name": "zel-v0.2.0-rc.17-aarch64-apple-darwin.tar.gz",
+        "size": 9945441,
+        "digest": "sha256:36803c843acee891c82dc3ef1386273175e6e60c2dcf57b238e7cf411e303063"
+      },
+      {
+        "name": "zel-v0.2.0-rc.17-aarch64-apple-darwin.tar.gz.sha256",
+        "size": 111,
+        "digest": "sha256:9abec13ec1a6b971bac2006937a503c1f81e94738d058494006662f5dbccca6d"
+      },
+      {
+        "name": "zel-v0.2.0-rc.17-aarch64-pc-windows-msvc.zip",
+        "size": 10346744,
+        "digest": "sha256:c5df0261e1a414af451cdd60b1e4cbb190b91e2b248662e1052ab1658d988bab"
+      },
+      {
+        "name": "zel-v0.2.0-rc.17-aarch64-pc-windows-msvc.zip.sha256",
+        "size": 111,
+        "digest": "sha256:618e50120d5d1031ccdb7df5abbd0e38edf760828a8f796df17e35c169d62d5e"
+      },
+      {
+        "name": "zel-v0.2.0-rc.17-aarch64-unknown-linux-gnu.tar.gz",
+        "size": 10183957,
+        "digest": "sha256:6bb142138797551780ae500bc71203337885617d21a751f15851fbd4331d0a3e"
+      },
+      {
+        "name": "zel-v0.2.0-rc.17-aarch64-unknown-linux-gnu.tar.gz.sha256",
+        "size": 116,
+        "digest": "sha256:0892aad3f1f9db0e43120014757a1947ea41d0fc511312a4128a16b6707900a6"
+      },
+      {
+        "name": "zel-v0.2.0-rc.17-x86_64-apple-darwin.tar.gz",
+        "size": 10035487,
+        "digest": "sha256:60ad9fd2a3a2536afd37aaa7b73e9f8b50af387cd0ed9fdd0172b90b8905b42f"
+      },
+      {
+        "name": "zel-v0.2.0-rc.17-x86_64-apple-darwin.tar.gz.sha256",
+        "size": 110,
+        "digest": "sha256:6a6f5e3d2f9da9c681b78f7a24a38191d76c8fb0aca3c14f55ad9a1171a2614b"
+      },
+      {
+        "name": "zel-v0.2.0-rc.17-x86_64-pc-windows-msvc.zip",
+        "size": 10518106,
+        "digest": "sha256:3585ab8ffb0cffe65c2445ab76c67ce979d5f6b284790a60ededb6f5f9674df5"
+      },
+      {
+        "name": "zel-v0.2.0-rc.17-x86_64-pc-windows-msvc.zip.sha256",
+        "size": 110,
+        "digest": "sha256:535db570fee6c3f10285c8e6c38d1d71709812d59e49c79d3a81b0da2e2fadb9"
+      },
+      {
+        "name": "zel-v0.2.0-rc.17-x86_64-unknown-linux-gnu.tar.gz",
+        "size": 10329383,
+        "digest": "sha256:8300912856b07887360c6afb912fc3ae851d62c12f17931e14291101ab1671df"
+      },
+      {
+        "name": "zel-v0.2.0-rc.17-x86_64-unknown-linux-gnu.tar.gz.sha256",
+        "size": 115,
+        "digest": "sha256:808afbb3d6f720586bde2d2143571418463448b336576da31f378667ff4c617c"
+      },
+      {
+        "name": "zel-winget-v0.2.0-rc.17.zip",
+        "size": 1648,
+        "digest": "sha256:3cf8876852de8544b590eff43f73626774a8b9ba151b735cc737aa0418ed4517"
+      },
+      {
+        "name": "zel.json",
+        "size": 1534,
+        "digest": "sha256:3d27d18e2df207bb7f45263dfd7fd01976e51605de18378b470231a109ef84f9"
+      },
+      {
+        "name": "zel.rb",
+        "size": 2410,
+        "digest": "sha256:ccf438b6b2e8dd6e6af20aa0b4583c0df8e80ad0fa5ffd556a6907b7f81511b2"
+      }
+    ]
+  },
+  "guides": {
+    "pr": 232,
+    "testedHead": "127fb1360f5ebec6db467e86fc9c43cbdd3f8677",
+    "targetedRuns": {
+      "docs": 44949492320,
+      "portable": 44949492331,
+      "hosted": 44949492325,
+      "static": 44949492327,
+      "next": 44949492324,
+      "netlifyPortable": 44949492323,
+      "netlifyHosted": 44949492341
+    },
+    "duplicateCI": {
+      "run": 44949492336,
+      "status": "completed",
+      "reason": "Runtime/build/test inputs equal released source; targeted docs and generated consumer checks remain required. Cancellation is not a pass.",
+      "conclusion": "cancelled"
+    },
+    "checks": [
+      {
+        "conclusion": "success",
+        "databaseId": 44949492327,
+        "status": "completed",
+        "workflowName": "Documentation (acceptance-static.yml)"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 44949492323,
+        "status": "completed",
+        "workflowName": "Documentation (acceptance-netlify-portable.yml)"
+      },
+      {
+        "conclusion": "cancelled",
+        "databaseId": 44949492336,
+        "status": "completed",
+        "workflowName": "CI"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 44949492331,
+        "status": "completed",
+        "workflowName": "Documentation (acceptance-portable.yml)"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 44949492341,
+        "status": "completed",
+        "workflowName": "Documentation (acceptance-netlify-hosted.yml)"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 44949492324,
+        "status": "completed",
+        "workflowName": "Documentation (acceptance-next.yml)"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 44949492325,
+        "status": "completed",
+        "workflowName": "Documentation (acceptance-hosted.yml)"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 44949492320,
+        "status": "completed",
+        "workflowName": "Deploy documentation"
+      }
+    ]
+  }
+}

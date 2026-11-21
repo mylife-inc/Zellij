@@ -1,5 +1,17 @@
 # Zellij release channels and candidate procedure
 
+**2026-11-21: rc.17 publication completed.** Immutable source `0bd1e8b` passes
+37 source and 40 release jobs; both repositories contain 40 matching assets.
+The public renderer includes `f80596b`'s menu focus correction. Public Mac
+standalone/direct-file checks, local verified upgrade and all eight actual
+rc.16-to-rc.17 Homebrew/Scoop lifecycle cases pass. The nine template identities
+are unchanged. Main images pass 13 jobs; seven targeted guide/consumer checks
+pass before production publication. No old distributions are retired. See the
+[release evidence](evidence/zellij-rc17-release-2026-11-21.json). Proposed cached
+static validation, HTTP export, wrapper and optional typesetting/development
+packages remain future work; do not describe them as rc.17 behavior.
+
+
 **2026-11-21: rc.16 publication completed.** Immutable source `e3fe086` passes
 37 required source CI and 40 required release jobs. Both repositories publish
 40 matching assets, including the three corrected 0.1.3 website-starter guides.
