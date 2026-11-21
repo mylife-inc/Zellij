@@ -17,10 +17,10 @@ function fixture() {
       const v = { id: id++, digest: digest(id), tags }; graph[v.digest] = { children }; return v;
     };
     const shared = add([]), oldChild = add([]), unknownChild = add([]), orphan = add([]);
-    const currentTags = name === 'zellij-base' ? ['', '-maths', '-diagrams', '-all'].flatMap(s => ['0.2.0-rc.11' + s, 'main' + s]) : ['0.2.0-rc.11'];
+    const currentTags = name === 'zellij-base' ? ['', '-maths', '-diagrams', '-all'].flatMap(s => ['0.2.0-rc.13' + s, '0.2.0-rc.14' + s, '0.2.0-rc.15' + s, 'main' + s]) : ['0.2.0-rc.15'];
     const current = add(currentTags, [shared.digest]);
-    const old = add(['0.2.0-rc.2'], [oldChild.digest, shared.digest]);
-    const unknown = add(['user-retained', '0.2.0-rc.12', '0.2.0-rc.100'], [unknownChild.digest]);
+    const old = add(['0.2.0-rc.11'], [oldChild.digest, shared.digest]);
+    const unknown = add(['user-retained', '0.2.0-rc.16', '0.2.0-rc.100'], [unknownChild.digest]);
     return { name, versions: [shared, oldChild, unknownChild, orphan, current, old, unknown] };
   }) };
   return { inventory, graphs };
@@ -51,14 +51,14 @@ test('rejects incomplete, unexpected or ambiguous inventory', () => {
     f => f.inventory.errors.push('incomplete'),
     f => f.inventory.packages.push({ name: 'another-product', versions: [] }),
     f => f.inventory.packages[0].versions.push(clone(f.inventory.packages[0].versions[0])),
-    f => f.inventory.packages[0].versions[0].tags.push('0.2.0-rc.11'),
+    f => f.inventory.packages[0].versions[0].tags.push('0.2.0-rc.15'),
     f => { f.inventory.packages[0].versions[0].digest = 'invalid'; },
   ]) { const f = fixture(); mutate(f); assert.throws(() => buildPlan(f.inventory, f.graphs)); }
 });
 test('fails closed on new or moved tags and altered targets', () => {
   for (const mutate of [
     f => f.inventory.packages[0].versions[3].tags.push('brand-new'),
-    f => { f.inventory.packages[0].versions[5].tags = []; f.inventory.packages[0].versions[3].tags = ['0.2.0-rc.2']; },
+    f => { f.inventory.packages[0].versions[5].tags = []; f.inventory.packages[0].versions[3].tags = ['0.2.0-rc.11']; },
     f => f.inventory.packages[0].versions[1].tags.push('protect-me'),
     f => { f.inventory.packages[0].versions[1].digest = digest(1000); },
     f => { f.inventory.packages[0].versions[1].id = 1000; },
@@ -99,20 +99,45 @@ test('graph traversal handles shared nodes and cycles; missing retired leaf may 
   assert.throws(() => closure(graph, [digest(1)], false), /Missing graph entry/);
 });
 
-test('retires rc.1 through rc.10 while retaining rc.11 and every development variant', () => {
-  for (const version of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
+test('retires only rc.11 and rc.12 while preserving private and current versions', () => {
+  for (const version of [11, 12]) {
     const f = fixture();
     for (const p of f.inventory.packages) p.versions[5].tags = [`0.2.0-rc.${version}`];
     const plan = buildPlan(f.inventory, f.graphs);
-    assert.equal(plan.keepVersion, '0.2.0-rc.11');
+    assert.equal(plan.keepVersion, '0.2.0-rc.15');
     validateLive(plan, f.inventory);
     for (const p of plan.packages) {
       assert.deepEqual(p.retiredTags, [`0.2.0-rc.${version}`]);
-      assert(p.keepTags.includes('0.2.0-rc.11'));
-      assert(p.keepTags.includes('0.2.0-rc.12'));
+      assert(p.keepTags.includes('0.2.0-rc.15'));
+      assert(p.keepTags.includes('0.2.0-rc.16'));
       assert(p.keepTags.includes('0.2.0-rc.100'));
       assert(p.targets.some(t => t.tags.includes(`0.2.0-rc.${version}`)));
     }
+  }
+});
+test('requires every protected rc.13/rc.14/rc.15 and main variant', () => {
+  for (const version of ['0.2.0-rc.13', '0.2.0-rc.14', '0.2.0-rc.15', 'main']) {
+    for (const suffix of ['', '-maths', '-diagrams', '-all']) {
+      const f = fixture(), p = f.inventory.packages.find(p => p.name === 'zellij-base');
+      p.versions[4].tags = p.versions[4].tags.filter(t => t !== version + suffix);
+      assert.throws(() => buildPlan(f.inventory, f.graphs), /Missing retained tag/);
+    }
+  }
+});
+test('an eligible tag shared with any retained tag and its graph cannot be deleted', () => {
+  const f = fixture();
+  for (const p of f.inventory.packages) p.versions[5].tags.push('private-rollback');
+  const plan = buildPlan(f.inventory, f.graphs);
+  validateLive(plan, f.inventory);
+  for (const p of plan.packages) assert.deepEqual(p.targets, []);
+});
+test('versions outside this reviewed retirement scope are retained', () => {
+  for (const version of ['0.2.0-rc.10', '0.2.0-rc.13', '0.2.0-rc.14', '0.2.0-rc.17', 'latest']) {
+    const f = fixture();
+    // Use acceptance packages for rc.13/14; the base fixture requires those tags already.
+    for (const p of f.inventory.packages.filter(p => p.name !== 'zellij-base')) p.versions[5].tags = [version];
+    const plan = buildPlan(f.inventory, f.graphs);
+    for (const p of plan.packages.filter(p => p.name !== 'zellij-base')) assert.deepEqual(p.targets, []);
   }
 });
 

@@ -1,4 +1,4 @@
-// Reviewed, exact-scope rc.11 image retirement. Unreferenced build history is not swept.
+// Reviewed, exact-scope rc.11/rc.12 retirement after rc.15 acceptance. Unreferenced build history is not swept.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -7,14 +7,16 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const packages = ['zellij-base', 'zellij/acceptance-static', 'zellij/acceptance-next'];
-const keepVersion = '0.2.0-rc.11';
+const keepVersion = '0.2.0-rc.15';
+const retainedVersions = ['0.2.0-rc.13', '0.2.0-rc.14', keepVersion];
 const suffixes = ['', '-maths', '-diagrams', '-all'];
 const digestPattern = /^sha256:[a-f0-9]{64}$/;
+// Only these two reviewed candidates are eligible; unknown tags stay protected.
 const isRetired = (name, tag) => name === 'zellij-base'
-  ? /^(?:(?:0\.1\.0-rc\.[2-6]|0\.1\.3|0\.2\.0-rc\.(?:[1-9]|10))(?:-(?:maths|diagrams|all))?|latest(?:-(?:maths|diagrams|all))?)$/.test(tag)
-  : /^0\.2\.0-rc\.(?:[1-9]|10)$/.test(tag);
+  ? /^0\.2\.0-rc\.(?:11|12)(?:-(?:maths|diagrams|all))?$/.test(tag)
+  : /^0\.2\.0-rc\.(?:11|12)$/.test(tag);
 const sorted = values => [...values].sort();
-const requiredTags = name => name === 'zellij-base' ? [keepVersion, 'main'].flatMap(v => suffixes.map(s => v + s)) : [keepVersion];
+const requiredTags = name => name === 'zellij-base' ? [...retainedVersions, 'main'].flatMap(v => suffixes.map(s => v + s)) : [keepVersion];
 
 export function closure(graph, roots, strict = true) {
   const visited = new Set(), pending = [...roots];
@@ -186,23 +188,91 @@ async function main(mode, input, output) {
   try {
     // Recheck every exact replacement run and tested source before deletion.
     for (const [repository, run, head] of [
-      ["mylife-inc/Zellij", 44415698968, "f913d167e428f73f82f992322735d39edc518fcd"],
-      ["mylife-inc/Zellij", 44426799314, "d1daba6b0327a17b8fc0674769739c26eebb5325"],
-      ["mylife-inc/Zellij", 44423006473, "1f8232bcc1f029ec2aac7769c3ec2d0beb527c99"],
-      ["mylife-inc/homebrew-tap", 44426470234, "2973058fa8c54ca4ef89b241121dd3a6ea420ef2"],
-      ["mylife-inc/homebrew-tap", 44426755437, "2973058fa8c54ca4ef89b241121dd3a6ea420ef2"],
-      ["mylife-inc/scoop-bucket", 44426479590, "2d103294cb8e55348059a2a19aca08a44d0425b6"],
-      ["mylife-inc/scoop-bucket", 44427411622, "2d103294cb8e55348059a2a19aca08a44d0425b6"],
-      ["mylife-inc/Zellij", 44426799413, "d1daba6b0327a17b8fc0674769739c26eebb5325"],
-      ["mylife-inc/Zellij", 44426799150, "d1daba6b0327a17b8fc0674769739c26eebb5325"],
-      ["mylife-inc/Zellij", 44426799196, "d1daba6b0327a17b8fc0674769739c26eebb5325"],
-      ["mylife-inc/Zellij", 44426799145, "d1daba6b0327a17b8fc0674769739c26eebb5325"],
-      ["mylife-inc/Zellij", 44426799222, "d1daba6b0327a17b8fc0674769739c26eebb5325"],
-      ["mylife-inc/Zellij", 44426799223, "d1daba6b0327a17b8fc0674769739c26eebb5325"],
-      ["mylife-inc/Zellij", 44415370224, "0d25d843112e2369dfddc161576ce685d0c26c85"],
-      ["mylife-inc/Zellij", 44431833376, "79de857b2f5f0d19cfec189907b6f2db02ff25e6"],
-      ["mylife-inc/Zellij", 44431836843, "79de857b2f5f0d19cfec189907b6f2db02ff25e6"],
-      ["mylife-inc/Zellij", 44432039714, "79de857b2f5f0d19cfec189907b6f2db02ff25e6"]
+      [
+        "mylife-inc/Zellij",
+        44716061788,
+        "7bacba01ef1638a21b5a5d10da5c9ee6e81be176"
+      ],
+      [
+        "mylife-inc/Zellij",
+        44724715433,
+        "e1f6ff3c51a1d53ab11320dff0ce50e107f486d1"
+      ],
+      [
+        "mylife-inc/Zellij",
+        44727865933,
+        "ab1f70d596d6d423c1f3b9540205f9de78f3b717"
+      ],
+      [
+        "mylife-inc/homebrew-tap",
+        44728881405,
+        "23a472b54e06f9d3580ba08e88ffee233c2ccab7"
+      ],
+      [
+        "mylife-inc/scoop-bucket",
+        44728913397,
+        "9c9dfa23f0c372ac48d3ea2295c9be0db4085eef"
+      ],
+      [
+        "mylife-inc/Zellij",
+        44729618797,
+        "8fbbb8839498a9d400f46ee3f5cb5957f9d02f59"
+      ],
+      [
+        "mylife-inc/Zellij",
+        44729618711,
+        "8fbbb8839498a9d400f46ee3f5cb5957f9d02f59"
+      ],
+      [
+        "mylife-inc/Zellij",
+        44729618678,
+        "8fbbb8839498a9d400f46ee3f5cb5957f9d02f59"
+      ],
+      [
+        "mylife-inc/Zellij",
+        44729618965,
+        "8fbbb8839498a9d400f46ee3f5cb5957f9d02f59"
+      ],
+      [
+        "mylife-inc/Zellij",
+        44729618787,
+        "8fbbb8839498a9d400f46ee3f5cb5957f9d02f59"
+      ],
+      [
+        "mylife-inc/Zellij",
+        44729618852,
+        "8fbbb8839498a9d400f46ee3f5cb5957f9d02f59"
+      ],
+      [
+        "mylife-inc/Zellij",
+        44729618731,
+        "8fbbb8839498a9d400f46ee3f5cb5957f9d02f59"
+      ],
+      [
+        "mylife-inc/Zellij",
+        44730090071,
+        "ad70e529922e008ca9c9b74d67f4ff8c68f5ad7a"
+      ],
+      [
+        "mylife-inc/Zellij",
+        44730090109,
+        "ad70e529922e008ca9c9b74d67f4ff8c68f5ad7a"
+      ],
+      [
+        "mylife-inc/Zellij",
+        44730196617,
+        "ad70e529922e008ca9c9b74d67f4ff8c68f5ad7a"
+      ],
+      [
+        "mylife-inc/Zellij",
+        44730200827,
+        "ad70e529922e008ca9c9b74d67f4ff8c68f5ad7a"
+      ],
+      [
+        "mylife-inc/Zellij",
+        44730534861,
+        "ad70e529922e008ca9c9b74d67f4ff8c68f5ad7a"
+      ]
     ]) {
       const r = api(`repos/${repository}/actions/runs/${run}`);
       assert(r.status === 'completed' && r.conclusion === 'success' && r.head_sha === head, 'Replacement acceptance gate changed');
