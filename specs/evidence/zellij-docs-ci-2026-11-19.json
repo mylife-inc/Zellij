@@ -169,7 +169,6 @@
   ],
   "unchanged": [
     "production Netlify account/project/domain",
-    "staging credentials and project",
-    "private client documentation"
+    "staging credentials and project"
   ]
 }

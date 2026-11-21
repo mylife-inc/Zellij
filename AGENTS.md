@@ -17,3 +17,8 @@ This project is the Zellij product website engine and its Rust `zel` CLI, not
 the unrelated terminal multiplexer. The user does not want development to use
 the old encrypted `Zellij-Sealed` repository. Consult the context before any
 repository migration, visibility change, or publishing work.
+
+Public records must cover Zellij implementation and synthetic or repository-owned
+tests only. Keep third-party project identities, local case studies and delivery
+details out of tracked files, pull requests, release notes, logs and artifacts.
+External test projects are not Zellij deliverables or product backlog.

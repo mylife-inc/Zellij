@@ -1,85 +1,8 @@
 {
   "date": "2026-11-20",
   "version": "v0.2.0-rc.14",
-  "status": "Private handoff migrated; generic Windows wrappers verified; readiness records refreshed.",
-  "privateContentPublished": false,
+  "status": "Public Windows generation-script fixtures verified; readiness records refreshed.",
   "runtimeSourceChanged": false,
-  "scripts": {
-    "generate.sh": "78ba347b529e52daf71646cc5fd2622c04cf3b99abf58934b8cb36b3af306758",
-    "generate.ps1": "f4e68b7bae968394ca6dc666f1f309768c6aa7581e48d788076fdcb8b64d9d87"
-  },
-  "macAcceptance": {
-    "cli": "0.2.0-rc.14",
-    "platform": "darwin-x64",
-    "osTools": [
-      "sh",
-      "uname",
-      "dirname",
-      "chmod",
-      "cat"
-    ],
-    "externalBuildTools": false,
-    "strictPages": 200,
-    "build": true,
-    "help": true,
-    "unknownOperationExit": 2,
-    "jsonFailureExit": 2,
-    "watchRecovery": true,
-    "viewLiveReload": true,
-    "failedEditPreservesSite": true,
-    "sourceRestored": true,
-    "ctrlC": true,
-    "serve": true,
-    "browsers": [
-      "Chromium",
-      "WebKit"
-    ],
-    "browserErrors": []
-  },
-  "browserCrawl": [
-    {
-      "browser": "Chromium",
-      "pages": 200,
-      "errors": [],
-      "network": []
-    },
-    {
-      "browser": "WebKit",
-      "pages": 200,
-      "errors": [],
-      "network": []
-    }
-  ],
-  "interactions": [
-    {
-      "browser": "Chromium",
-      "fullWidthDrawer": true,
-      "menuIcons": true,
-      "distinctThemeChips": true,
-      "themeResponsiveButtons": true,
-      "mobileDrillDown": true,
-      "errors": [],
-      "network": []
-    },
-    {
-      "browser": "WebKit",
-      "fullWidthDrawer": true,
-      "menuIcons": true,
-      "distinctThemeChips": true,
-      "themeResponsiveButtons": true,
-      "mobileDrillDown": true,
-      "errors": [],
-      "network": []
-    }
-  ],
-  "preservation": {
-    "sourceFilesByteIdentical": 468,
-    "siteFilesByteIdentical": 535,
-    "routes": 200,
-    "priorPreservationEvidenceUnchanged": true,
-    "all244ReferencedResourcesPreserved": true,
-    "noPrivateFilesUploaded": true
-  },
   "publicFixtureWindowsAcceptance": {
     "conclusion": "success",
     "databaseId": 44699816473,
@@ -389,32 +312,6 @@
     "status": "completed",
     "url": "https://github.com/mylife-inc/Zellij/actions/runs/44699816473"
   },
-  "zip": {
-    "files": 1111,
-    "bytes": 193364965,
-    "sha256": "cbedc9bc82b88b2b36d063d1908190a1fa34851a7e34e9fc41e02d8892e2c4d6",
-    "allMemberHashesVerified": true,
-    "macExecuteBitsPreserved": true
-  },
-  "installation": {
-    "verified": true,
-    "files": 1111,
-    "durableBackupCreated": true,
-    "installedAt": "2026-11-20T08:14:09.936163+00:00",
-    "installedScriptVerified": {
-      "cli": "0.2.0-rc.14",
-      "osToolsOnly": true,
-      "offline": true,
-      "strictPages": 200,
-      "allPackageFilesUnchanged": true,
-      "files": 1111
-    }
-  },
-  "limitations": [
-    "Actual private collection on Windows/Apple Silicon remains unverified",
-    "Physical iPhone acceptance remains separate",
-    "Optional Next wrapper unchanged; its earlier production-build evidence is historical"
-  ],
   "priorAttempts": [
     {
       "run": 44698974082,
@@ -432,11 +329,6 @@
       "cause": "Test expected configuration-error status 2 for a content error; documented content status 3 is correct. Both distinct outcomes tested in 84aa32d."
     }
   ],
-  "rollbackVerification": {
-    "backupFilesVerified": 1101,
-    "priorZipVerified": true,
-    "newZipVerified": true
-  },
   "finalHarnessAcceptance": {
     "attempt": 2,
     "conclusion": "success",

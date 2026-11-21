@@ -21,7 +21,7 @@ All 224 website and 420 PDF-page captures match source verification. Six of 56
 additional book-browser captures differ in theme-icon shading or PDF-link focus
 outlines; their precise cause remains unresolved. They are recorded separately,
 not silently counted as pixel matches. Live-provider checks, reviewed old-candidate
-retirement and migration of the private HP handoff scripts remain separate tasks.
+retirement remain separate tasks.
 
 The older checkpoints below are retained as history and no longer describe
 whether the CLI, renderer and updated public guides are available.

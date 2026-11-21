@@ -392,12 +392,11 @@
       "v0.2.0-rc.14",
       "v0.2.0-rc.15"
     ],
-    "reason": "private rollback packages, current private handoff, actual-version upgrade fixtures and pending rc.15 Microsoft WinGet catalog submission",
+    "reason": "existing compatibility pins, actual-version upgrade fixtures and pending rc.15 Microsoft WinGet catalog submission",
     "deletions": []
   },
   "limitations": [
     "Microsoft WinGet catalog acceptance remains pending; no third-party comment sent.",
-    "Private client execution on Windows remains pending; the user has no Windows computer available.",
     "Two historical browser timing findings remain unexplained; unrelated passes do not resolve them.",
     "Deferred Fly/S3/GitLab/CircleCI live acceptance and explicitly deferred Vercel remain unchanged."
   ],

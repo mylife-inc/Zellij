@@ -24,8 +24,8 @@ independent reproducible packages of all nine templates. The six unchanged
 archives match their published digests. Using the actual public rc.15 binary
 with an empty system PATH, the README's portable commands produce the documented
 path and all three corrected website starters validate and build offline; their
-rendered guide HTML contains the corrected instructions. No private client data
-is used. Hosted documentation acceptance `44875709182` passes on `f26000f`: all
+rendered guide HTML contains the corrected instructions. Hosted documentation
+acceptance `44875709182` passes on `f26000f`: all
 59 routes, 282 original heading IDs, 82 compatibility mappings and 29 identical
 images are preserved; hydration and search checks pass. PR #223 merges as
 `02ea7f7`, identical to reviewed `aebd217`. Automatic production run
@@ -42,8 +42,6 @@ remain unchanged. The targeted local/template and hosted documentation checks
 above cover this content-only correction. The new template revisions remain
 unpublished; future release acceptance must package them with the new candidate.
 
-The user confirmed that no Windows computer is currently available. Keep full
-private Windows handoff acceptance pending, separately from passing public
-Windows fixtures. WinGet still awaits Microsoft catalog review after its passed
+WinGet still awaits Microsoft catalog review after its passed
 CLA check; the two historical browser timing findings remain unresolved.
 See the [verification evidence](evidence/zellij-standalone-guidance-2026-11-20.json).
