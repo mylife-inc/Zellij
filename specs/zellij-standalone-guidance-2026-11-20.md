@@ -27,8 +27,20 @@ path and all three corrected website starters validate and build offline; their
 rendered guide HTML contains the corrected instructions. No private client data
 is used. Hosted documentation acceptance `44875709182` passes on `f26000f`: all
 59 routes, 282 original heading IDs, 82 compatibility mappings and 29 identical
-images are preserved; hydration and search checks pass. Production publication
-follows the reviewed merge.
+images are preserved; hydration and search checks pass. PR #223 merges as
+`02ea7f7`, identical to reviewed `aebd217`. Automatic production run
+`44876017308` rechecks and publishes verified deploy `6b013ba7b190b04a18945a9b`.
+All four changed live pages contain the corrected instructions and hydrate in
+Chrome without captured page errors. The first local browser launch found an
+absent Playwright-managed browser; installed Chrome was used without downloading
+anything. This setup failure did not reach the site.
+
+General CI `44876017339` and base-image rebuild `44876017330` were explicitly
+cancelled because implementation, dependency, workflow and Docker inputs are
+unchanged. They are not recorded as passes. All four public `main` image tags
+remain unchanged. The targeted local/template and hosted documentation checks
+above cover this content-only correction. The new template revisions remain
+unpublished; future release acceptance must package them with the new candidate.
 
 The user confirmed that no Windows computer is currently available. Keep full
 private Windows handoff acceptance pending, separately from passing public

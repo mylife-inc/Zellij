@@ -1,6 +1,6 @@
 {
   "date": "2026-11-20",
-  "status": "Local and targeted hosted documentation acceptance pass; merge and production publication pending.",
+  "status": "Public guide corrections merged and deployed; all four changed live pages verified. Revised template 0.1.3 identities are source-only pending the next CLI candidate.",
   "baseline": "e72dfb69e6e3bc10b21866bb5cd4f3cce137f400",
   "public_cli": "v0.2.0-rc.15 remains unchanged; new template revisions are source-only until a future candidate publishes them.",
   "corrected_guides": [
@@ -265,5 +265,477 @@
       "old_instruction_found": true
     }
   ],
-  "pull_request": 223
+  "pull_request": 223,
+  "reviewed_head": "aebd217db0727e6b26e6e6777f29c1abcdc2af59",
+  "merge": "02ea7f7c63c39f68801a506a7c098e7048e1f43a",
+  "merge_tree_identical": true,
+  "production": {
+    "run": 44876017308,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "Validate and build documentation",
+        "id": 136760753857,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish production documentation",
+        "id": 136761328109,
+        "conclusion": "success"
+      }
+    ],
+    "receipt": {
+      "source": "02ea7f7c63c39f68801a506a7c098e7048e1f43a",
+      "site_id": "91774174-d4c2-41b5-aa4b-ac61eeadbf51",
+      "domain": "zellij.shebka.net",
+      "deploy_id": "6b013ba7b190b04a18945a9b",
+      "previous_deploy_id": "6b00337104876f9f8906f54a",
+      "preview": "https://6b013ba7b190b04a18945a9b--zellij-docs.netlify.app",
+      "state": "verified",
+      "published_at": "2026-11-21T06:35:28.632Z"
+    },
+    "live_check": {
+      "checked_at": "2026-11-21T06:37:53.795Z",
+      "browser": "Installed Chrome, isolated headless context",
+      "checks": [
+        {
+          "route": "/guide/deploying",
+          "http": 200,
+          "corrected_instruction": true,
+          "obsolete_instruction_absent": true,
+          "hydrated": true,
+          "page_errors": []
+        },
+        {
+          "route": "/guide/wrapper",
+          "http": 200,
+          "corrected_instruction": true,
+          "obsolete_instruction_absent": true,
+          "hydrated": true,
+          "page_errors": []
+        },
+        {
+          "route": "/guide/quickstart/from-scratch",
+          "http": 200,
+          "corrected_instruction": true,
+          "obsolete_instruction_absent": true,
+          "hydrated": true,
+          "page_errors": []
+        },
+        {
+          "route": "/cli/eject",
+          "http": 200,
+          "corrected_instruction": true,
+          "obsolete_instruction_absent": true,
+          "hydrated": true,
+          "page_errors": []
+        }
+      ]
+    }
+  },
+  "cancelled_unrelated_runs": [
+    {
+      "run": 44876017339,
+      "head": "02ea7f7c63c39f68801a506a7c098e7048e1f43a",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "jobs": [
+        {
+          "name": "Engine",
+          "conclusion": "cancelled",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run actions/setup-node@v7",
+            "Run npm ci",
+            "Run node --test scripts/publish-docs.test.mjs scripts/check-print-fonts.test.mjs scripts/retire-release-images.test.mjs scripts/homebrew-formula.test.mjs scripts/scoop-manifest.test.mjs scripts/winget-manifest.test.mjs scripts/release-policy.test.mjs scripts/download-release.test.mjs scripts/check-delivery-http.test.mjs scripts/check-live-providers.test.mjs scripts/check-vercel-live.test.mjs scripts/check-fly-live.test.mjs scripts/check-s3-live.test.mjs scripts/preview-client.test.mjs scripts/browser-failure-state.test.mjs",
+            "Run node --test scripts/check-dependency-audit.test.mjs",
+            "Audit production and development dependencies",
+            "Run npm run typecheck",
+            "Run actions/upload-artifact@v7",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "Showcase end to end",
+          "conclusion": "cancelled",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run actions/setup-node@v7",
+            "Run npm ci",
+            "Run npm run build --workspace @shebka/zellij",
+            "Run actions/upload-artifact@v7",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "Native images (arm64)",
+          "conclusion": "cancelled",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run dtolnay/rust-toolchain@stable",
+            "Run Swatinem/rust-cache@v2",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "Rich website without HTTP",
+          "conclusion": "cancelled",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run actions/setup-node@v7",
+            "Run npm ci",
+            "Run npm run build --workspace @shebka/zellij",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "Native images (amd64)",
+          "conclusion": "cancelled",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run dtolnay/rust-toolchain@stable",
+            "Run Swatinem/rust-cache@v2",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "Embedded schema is current",
+          "conclusion": "success",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run actions/setup-node@v7",
+            "Run npm ci",
+            "Run npm run build --workspace @shebka/zellij",
+            "Regenerate",
+            "Fail if it changed",
+            "Native wrapper template matches the engine initializer",
+            "Portable theme tokens match the hosted engine",
+            "Verify portable Mermaid runtime and notices",
+            "Post Run actions/setup-node@v7",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "Portable docs (macos-latest)",
+          "conclusion": "cancelled",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run dtolnay/rust-toolchain@stable",
+            "Run Swatinem/rust-cache@v2",
+            "Run actions/upload-artifact@v7",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+          "conclusion": "cancelled",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run dtolnay/rust-toolchain@stable",
+            "Run Swatinem/rust-cache@v2",
+            "Run actions/upload-artifact@v7",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+          "conclusion": "cancelled",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run actions/setup-node@v7",
+            "Run dtolnay/rust-toolchain@stable",
+            "Run Swatinem/rust-cache@v2",
+            "Run actions/upload-artifact@v7",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "Website and book templates",
+          "conclusion": "cancelled",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run dtolnay/rust-toolchain@stable",
+            "Run actions/upload-artifact@v7",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "websites / Websites (ubuntu-24.04-arm)",
+          "conclusion": "cancelled",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run actions/setup-node@v7",
+            "Run dtolnay/rust-toolchain@stable",
+            "Run Swatinem/rust-cache@v2",
+            "Run actions/upload-artifact@v7",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "Portable docs (windows-latest)",
+          "conclusion": "cancelled",
+          "completed_steps": []
+        },
+        {
+          "name": "Portable docs (ubuntu-latest)",
+          "conclusion": "cancelled",
+          "completed_steps": []
+        },
+        {
+          "name": "CLI",
+          "conclusion": "cancelled",
+          "completed_steps": []
+        },
+        {
+          "name": "websites / Websites (ubuntu-latest)",
+          "conclusion": "cancelled",
+          "completed_steps": []
+        },
+        {
+          "name": "next-pdf / Next PDF (ubuntu-latest)",
+          "conclusion": "cancelled",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run actions/setup-node@v7",
+            "Run dtolnay/rust-toolchain@stable",
+            "Run Swatinem/rust-cache@v2",
+            "Run actions/upload-artifact@v7",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "native-packages / Compile shared rich renderer",
+          "conclusion": "cancelled",
+          "completed_steps": []
+        },
+        {
+          "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+          "conclusion": "cancelled",
+          "completed_steps": []
+        },
+        {
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+          "conclusion": "cancelled",
+          "completed_steps": []
+        },
+        {
+          "name": "homebrew",
+          "conclusion": "skipped",
+          "completed_steps": []
+        },
+        {
+          "name": "native-packages / Package and install (${{ matrix.target }})",
+          "conclusion": "cancelled",
+          "completed_steps": []
+        },
+        {
+          "name": "Rich standalone file website",
+          "conclusion": "cancelled",
+          "completed_steps": []
+        },
+        {
+          "name": "winget",
+          "conclusion": "skipped",
+          "completed_steps": []
+        },
+        {
+          "name": "scoop",
+          "conclusion": "skipped",
+          "completed_steps": []
+        },
+        {
+          "name": "Combined image manifests",
+          "conclusion": "cancelled",
+          "completed_steps": []
+        }
+      ]
+    },
+    {
+      "run": 44876017330,
+      "head": "02ea7f7c63c39f68801a506a7c098e7048e1f43a",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "jobs": [
+        {
+          "name": "none \u00b7 amd64",
+          "conclusion": "cancelled",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run docker/setup-buildx-action@v3",
+            "Sign in to GHCR",
+            "Post Build and push by digest",
+            "Post Sign in to GHCR",
+            "Post Run docker/setup-buildx-action@v3",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "maths \u00b7 arm64",
+          "conclusion": "cancelled",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run docker/setup-buildx-action@v3",
+            "Sign in to GHCR",
+            "Post Build and push by digest",
+            "Post Sign in to GHCR",
+            "Post Run docker/setup-buildx-action@v3",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "none \u00b7 arm64",
+          "conclusion": "cancelled",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run docker/setup-buildx-action@v3",
+            "Sign in to GHCR",
+            "Post Build and push by digest",
+            "Post Sign in to GHCR",
+            "Post Run docker/setup-buildx-action@v3",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "diagrams \u00b7 arm64",
+          "conclusion": "cancelled",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run docker/setup-buildx-action@v3",
+            "Sign in to GHCR",
+            "Post Build and push by digest",
+            "Post Sign in to GHCR",
+            "Post Run docker/setup-buildx-action@v3",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "diagrams \u00b7 amd64",
+          "conclusion": "cancelled",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run docker/setup-buildx-action@v3",
+            "Sign in to GHCR",
+            "Post Build and push by digest",
+            "Post Sign in to GHCR",
+            "Post Run docker/setup-buildx-action@v3",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "all \u00b7 arm64",
+          "conclusion": "cancelled",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run docker/setup-buildx-action@v3",
+            "Sign in to GHCR",
+            "Post Build and push by digest",
+            "Post Sign in to GHCR",
+            "Post Run docker/setup-buildx-action@v3",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "maths \u00b7 amd64",
+          "conclusion": "cancelled",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run docker/setup-buildx-action@v3",
+            "Sign in to GHCR",
+            "Post Build and push by digest",
+            "Post Sign in to GHCR",
+            "Post Run docker/setup-buildx-action@v3",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "all \u00b7 amd64",
+          "conclusion": "cancelled",
+          "completed_steps": [
+            "Set up job",
+            "Run actions/checkout@v7",
+            "Run docker/setup-buildx-action@v3",
+            "Sign in to GHCR",
+            "Post Build and push by digest",
+            "Post Sign in to GHCR",
+            "Post Run docker/setup-buildx-action@v3",
+            "Post Run actions/checkout@v7",
+            "Complete job"
+          ]
+        },
+        {
+          "name": "The image can build a site",
+          "conclusion": "cancelled",
+          "completed_steps": []
+        },
+        {
+          "name": "Publish ${{ matrix.features }}",
+          "conclusion": "cancelled",
+          "completed_steps": []
+        }
+      ]
+    }
+  ],
+  "cancellation_reason": "CLI/engine implementation, dependency, workflow and Docker inputs are unchanged. Existing targeted template integration/package/actual-command checks and hosted docs build/preservation cover the content correction. The duplicate general CI and unrelated base-image rebuild were explicitly cancelled, not counted as passes.",
+  "main_images_unchanged": [
+    {
+      "tag": "main",
+      "digest": "sha256:9a26475835100da27a98e7c0857982ab4bd0dc959d053c6bb50bb5caa21da0ac",
+      "unchanged": true
+    },
+    {
+      "tag": "main-maths",
+      "digest": "sha256:f3636562eabc45f1e03e5faef515c381aac1ce992550f3817516e0fef9e66554",
+      "unchanged": true
+    },
+    {
+      "tag": "main-diagrams",
+      "digest": "sha256:12d0582774ec3f57f66f9287b7dcbac5198bc14519c72483072369de69d78e82",
+      "unchanged": true
+    },
+    {
+      "tag": "main-all",
+      "digest": "sha256:66bd11bde99f209260ebbfff2453ae2847fe06fb7bcaa63d8275631e1f2644be",
+      "unchanged": true
+    }
+  ],
+  "live_test_setup": "The first local browser launch found no Playwright-managed Chromium cache and made no page visit. Retried with installed Chrome in an isolated headless context; all four live routes passed. No browser was downloaded.",
+  "final_record_scope": "Context, readiness and verification evidence only; no change to verified public documentation, starter files, templates identities or implementation."
 }
