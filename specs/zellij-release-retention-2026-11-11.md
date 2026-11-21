@@ -29,10 +29,9 @@ do not repeatedly request approval for a reviewed cleanup within its scope.
 ## Current rc.15 retirement result — 2026-11-20
 
 The published rc.15 replacement, managed channels, production guides and current
-acceptance images pass all 17 recorded gates. A fresh consumer audit found two
-older private rollback packages requiring rc.11. Retain rc.11 and rc.13 for
-private rollbacks, rc.14 for the current handoff and actual-version upgrade
-fixtures, and rc.15 as the current distribution. The earlier broader read-only
+acceptance images pass all 17 recorded gates. Retain the existing rc.11/rc.13
+compatibility pins, rc.14 actual-version upgrade fixtures and rc.15 as the
+current distribution. The earlier broader read-only
 plan was superseded before any mutation.
 
 The final reviewed plan targets only two rc.12 releases (78 assets), two tags
@@ -51,8 +50,8 @@ identities match exactly and zero eligible targets remain. All 112 protected
 manifests and 3,972 excluded versions are intact; fresh-pull HTTP `44874571313`
 passes. Preserve the failed workflow attempt and successful owner receipt.
 See the [evidence](evidence/zellij-rc15-retirement-2026-11-20.json).
-Do not reuse executed plans or infer that private consumers can migrate without
-separate preservation and regeneration checks.
+Do not reuse executed plans. Review compatibility requirements and upgrade
+fixtures before changing retention pins.
 
 ## Previous rc.11 execution status — 2026-11-18
 

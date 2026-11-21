@@ -8,8 +8,7 @@ They must not be read as today's backlog.
 The released candidate is **v0.2.0-rc.15**, with 37 source CI and 40 release
 jobs passed. Public downloads, local upgrade, channel and documentation status
 are recorded in the [release evidence](evidence/zellij-rc15-release-2026-11-20.json).
-The private client handoff stays rc.14. This checkpoint does not declare stable
-1.0 or absence of undiscovered bugs.
+This checkpoint does not declare stable 1.0 or absence of undiscovered bugs.
 
 | Area | Current state | Remaining boundary or task |
 | --- | --- | --- |
@@ -20,8 +19,7 @@ The private client handoff stays rc.14. This checkpoint does not declare stable
 | Composer and templates | Responsive nested layouts, supported media/semantic/interactive nodes, bounded scroll effects, eight inline built-in section types, nine editable presets and nine website/book starters are implemented. | Three website starters have corrected inline guides at source template version 0.1.3; these await the next CLI candidate, while released 0.1.2 archives remain unchanged. The composer is bounded; arbitrary executable components, arbitrary section embedding and unrestricted animation timelines are not promised. |
 | Books and PDF | Shared publication model, technical/study editions, equations/statements, numeric citations, glossary/index, print styling, Arabic RTL and French/German/Spanish print are implemented. | Arbitrary citation styles/BibTeX, unrestricted font inventories and broader format fidelity are separate expansion requests. Existing PDF generation uses its external toolchain. |
 | Installation | Public standalone packages for six native targets, Homebrew and Scoop pass release and upgrade acceptance. | rc.15 includes ownership protection and verified public native x64/ARM64 WinGet manifests. Microsoft PR #484934 is submitted; CLA now passes after the user accepted personally. Microsoft must review its bare-executable probe (exit 2); catalog acceptance and ordinary catalog-ID installation remain pending. |
-| Private client handoff | The installed rc.14 package preserves all 468 source files and all 535 generated files. Actual Intel Mac validation, build, watch, preview and Chromium/WebKit acceptance pass for all 200 routes; installed regeneration preserves all 1,111 package files. | Four native Windows script combinations pass using a public fixture. Actual private-client execution on Windows, Apple Silicon and physical iPhone remains distinct acceptance. The user confirmed no Windows computer is available now. See the [handoff evidence](evidence/zellij-handoff-authoring-2026-11-20.json). |
-| Retention | rc.12 releases, 78 assets, two tags and 12 image versions are retired. All ten protected releases, 112 manifest nodes and 3,972 excluded image versions are intact. Final inventory 44874568810, fresh-pull HTTP 44874571313 and 46 anonymous checksum downloads pass. | Retain rc.11/rc.13 private rollbacks, current rc.14 handoff/upgrade fixtures and rc.15 until their consumers are deliberately migrated. Do not reuse completed deletion plans. |
+| Retention | rc.12 releases, 78 assets, two tags and 12 image versions are retired. All ten protected releases, 112 manifest nodes and 3,972 excluded image versions are intact. Final inventory 44874568810, fresh-pull HTTP 44874571313 and 46 anonymous checksum downloads pass. | Preserve rc.11/rc.13 compatibility pins, rc.14 upgrade fixtures and rc.15 until their dependencies are deliberately retired. Do not reuse completed deletion plans. |
 | Live providers and generated runners | Adapters and build/protocol harnesses exist. Earlier live Netlify, Cloudflare, GitHub Pages and Railway checks have their recorded evidence. | Fly, S3 and actual GitLab/CircleCI runner acceptance stay at the end by user instruction. Vercel remains explicitly deferred after payment was required. |
 
 Two historical browser timing findings remain unexplained: WebKit navigation
@@ -43,7 +41,6 @@ real rc.14 archives; retain them until that dependency is deliberately migrated.
 
 Next order: publish the corrected starter guides with the next CLI candidate,
 follow Microsoft catalog review and investigate any browser timing recurrence
-with its retained diagnostics. Complete private Windows acceptance when a machine
-is available, then return to deferred external acceptance. A supported
-command may be implementation-complete while one of these acceptance or
-distribution tasks remains open.
+with its retained diagnostics, then return to deferred external acceptance.
+A supported command may be implementation-complete while one of these acceptance
+or distribution tasks remains open.

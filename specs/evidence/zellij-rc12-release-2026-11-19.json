@@ -1338,7 +1338,6 @@
   "deferred": [
     "Live provider tests remain deferred.",
     "Prior candidate retirement requires replacement consumers/images and a reviewed plan; current local GitHub login lacks package-deletion scopes.",
-    "The six control-state screenshot differences have not been traced to a proven cause.",
-    "The private HP handoff retains its existing portable configuration and Python-driven generation scripts; migration to the standalone rich workflow was not performed in this task."
+    "The six control-state screenshot differences have not been traced to a proven cause."
   ]
 }

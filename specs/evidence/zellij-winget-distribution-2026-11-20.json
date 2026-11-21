@@ -117,8 +117,7 @@
   "boundaries": [
     "Final integrated CI pending; earlier CI 44712966353 still running with obsolete harness failures.",
     "Community catalog and ordinary public-catalog install are not yet verified.",
-    "Preserve rc.14 archives for actual upgrade fixture and rc.13 renderer for private rollback.",
-    "Private client documents and installed rc.14 handoff unchanged.",
+    "Preserve rc.14 archives for the actual upgrade fixture and rc.13 renderer under the compatibility policy.",
     "Live deployment provider verification remains deferred."
   ]
 }

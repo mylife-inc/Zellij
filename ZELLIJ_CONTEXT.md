@@ -1,5 +1,10 @@
 # Zellij — durable project context
 
+Public records must cover Zellij implementation and synthetic or repository-owned
+tests only. Keep third-party project identities, local case studies and delivery
+details out of tracked files, pull requests, release notes, logs and artifacts.
+External test projects are not Zellij deliverables or product backlog.
+
 Last refreshed: **2026-11-21**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
@@ -26,8 +31,8 @@ rc.15 submission #484934 remains open: the executable-error label was removed,
 latest automation reports no errors, and moderator approval is now requested.
 Installation Validation remains neutral; catalog availability is not claimed.
 No third-party comment was sent. Keep rc.15 URLs for that submission and actual
-channel upgrades, rc.14 for the private handoff/WinGet upgrade fixture, and
-rc.11/rc.13 for private rollback packages. No versions are retired in this step.
+channel upgrades and rc.14 for the WinGet upgrade fixture. Preserve the existing
+rc.11/rc.13 compatibility pins as well. No versions are retired in this step.
 
 Homebrew and Scoop now publish rc.16; all eight actual rc.15 upgrade cases pass
 (`44883137249`, `44883141178`). The installed Mac binary matches the verified
@@ -48,9 +53,8 @@ asset digests and tagged generators passed. No product code or release assets
 were changed. See the
 [release evidence](specs/evidence/zellij-rc16-release-2026-11-21.json) and
 [current readiness checkpoint](specs/zellij-readiness-2026-11-21.md).
-The private client package remains rc.14; no Windows computer is available for
-its distinct private acceptance. Deferred providers and the two unresolved
-browser timing findings remain unchanged.
+Deferred providers and the two unresolved browser timing findings remain
+unchanged.
 
 **2026-11-20: standalone workflow guidance corrected and published**
 
@@ -66,8 +70,6 @@ identical to reviewed `aebd217`. Automatic publication `44876017308` verifies
 deploy `6b013ba7b190b04a18945a9b`; all four changed live pages hydrate and contain
 the corrected instructions. General CI/base-image repeats were cancelled;
 all four main image tags remain unchanged. See the [guidance record](specs/zellij-standalone-guidance-2026-11-20.md).
-The user has no Windows computer available now; full private-client Windows
-acceptance remains pending independently of public fixture acceptance.
 
 **2026-11-20: rc.15 released; public WinGet acceptance and catalog submission**
 
@@ -112,9 +114,8 @@ HTTP pages/assets, health checks and nonroot users pass in `44730534861`.
 The main image workflow also passes all 13 jobs. Exact digests, production
 receipt and job history are in the [release evidence](specs/evidence/zellij-rc15-release-2026-11-20.json).
 
-The private HP handoff remains unchanged at rc.14. Retain rc.13 for its rollback,
-and rc.11 for two older private rollback packages discovered during the new
-consumer audit. Current rc.14 upgrade fixtures also require rc.14 downloads.
+Preserve the existing rc.11/rc.13 compatibility pins. Current rc.14 upgrade
+fixtures also require rc.14 downloads.
 The reviewed retirement scope is therefore **rc.12 only**: two releases, 78
 assets, two tags and 12 base-image versions. All 112 retained image manifests,
 3,972 unreferenced build-history versions and both CodeSeal releases are protected.
@@ -136,8 +137,8 @@ separate. No new CLI release is required for these maintenance records.
 
 **Earlier 2026-11-20 checkpoint: WinGet native acceptance, before release**
 
-Branch `codex/winget-distribution` prepares source rc.15; public CLI/docs and the
-private handoff remain rc.14. The Windows self-upgrade guard now checks WinGet
+Branch `codex/winget-distribution` prepares source rc.15; public CLI/docs
+remain rc.14. The Windows self-upgrade guard now checks WinGet
 portable registry identity and the actual file identity, including custom
 locations and hardlinks. Standalone copies are not treated as manager-owned.
 The manifest generator pins x64/ARM64 public ZIPs by SHA-256 and refuses releases
@@ -150,30 +151,10 @@ ownership, empty-PATH portable build and uninstall/cache preservation. Both
 native ownership suites pass 12 tests. Harness fixes are `2758907`; final source
 CI and publication remain pending. See the [evidence](specs/evidence/zellij-winget-distribution-2026-11-20.json). No public catalog submission or acceptance is claimed. See the
 [distribution contract](specs/zel-winget-distribution-2026-11-20.md). Retain rc.14
-while the actual-version upgrade fixture uses it, alongside existing private
-rollback dependencies. Do not infer release completion from source version.
+while the actual-version upgrade fixture uses it, alongside existing
+compatibility pins. Do not infer release completion from source version.
 
-**2026-11-20: private rc.14 handoff and current readiness**
-
-The HP handoff is now installed with the four verified public rc.14 Mac/Windows
-binaries. Its generation scripts expose build, check, watch, view and serve;
-the README and AI context explain standalone validation and live preview.
-All 468 source files and 535 generated files remain byte-identical to the
-previous package. Actual Intel Mac tests pass strict/deep validation of all
-200 routes, cold-cache/empty-PATH building, offline regeneration, JSON/error
-statuses, watch recovery, live preview/reload, last-good-site preservation,
-Ctrl-C and static serving. Chromium/WebKit each pass all 200 file:// routes
-without captured errors or HTTP requests, plus desktop menu/theme/mobile checks.
-
-The exact PowerShell wrapper passes native Windows x64/ARM64 in PowerShell
-5.1 and 7 using a small public fixture (run `44699816473`, all four jobs).
-Private client content was not uploaded. This is separate from testing the
-full client collection on Windows or Apple Silicon and from physical-iPhone
-acceptance. The optional Next wrapper is unchanged; its preceding rc.13 build
-evidence remains historical. The verified ZIP is 193,364,965 bytes. The prior
-folder/ZIP/checksum remain in a dated private rollback directory. Running the
-installed script offline preserves all 1,111 package files, including its
-manifest; every ZIP member hash and Mac executable permission is verified.
+**2026-11-20: public generation-script acceptance and current readiness**
 
 Generic wrappers and Windows acceptance now live under `scripts/fixtures/handoff`
 and `scripts/check-handoff-scripts.mjs`. Initial harness errors (Windows tar's
@@ -186,14 +167,14 @@ identical to reviewed head `17f875c`. Final harness run
 passes and an agent-cancelled slow ARM64 PowerShell 5.1 case, which passed
 when rerun alone on unchanged source. CLI/engine/template/deployment inputs
 remain unchanged from verified rc.14, so general runtime CI is not repeated.
-See [handoff evidence](specs/evidence/zellij-handoff-authoring-2026-11-20.json).
+See [public generation-script evidence](specs/evidence/zellij-handoff-authoring-2026-11-20.json).
 
 The [current readiness table](specs/zellij-readiness-2026-11-20.md) supersedes
 stale pending statements in the older completion/expansion records while
 retaining history. WinGet packaging/acceptance and a fresh scoped retirement
 audit follow; live Fly/S3 and GitLab/CircleCI verification stay last, and Vercel
-remains user-deferred. Retain rc.13 renderer availability for the private
-rollback package until its dependency is explicitly archived or retired.
+remains user-deferred. Retain rc.13 renderer availability under the existing
+compatibility policy.
 Two older browser timing findings remain unexplained, not erased by later
 passes. No stable 1.0 or zero-bug claim. Public CLI/docs remain rc.14.
 
@@ -229,9 +210,7 @@ a new shell. An empty-PATH check downloads its renderer into the default home;
 offline rebuilding preserves all 98 files byte for byte. Real validation/watch,
 preview recovery, legacy discovery, Ctrl-C and Chromium/WebKit reload tests
 pass; both browsers also pass the four-route public template through file://
-without captured errors or HTTP requests. Prior caches remain intact. The
-private HP handoff is unchanged and still bundles rc.13: retain its public
-renderer download assets until that package is deliberately migrated.
+without captured errors or HTTP requests. Prior caches remain intact.
 
 Guide PR #217 merged as `508c8492742d921009c390af7969aa7f025924ef`, with an
 identical tested tree and unchanged executable source. Strict/deep validation,
@@ -256,8 +235,8 @@ installed Docker, Node.js or Python. Explicit `--target static` preserves the
 container/Next workflows. Shared validation does not execute authored MDX or
 write an export; preview stages successful builds, retains the previous site on
 errors, pins basePath and cancels/reaps renderer processes on Ctrl-C. Delivery
-CI explicitly selects its static/portable checker. Public rc.13 and the private
-HP handoff remain unchanged. Implementation and native/browser verification are
+CI explicitly selects its static/portable checker. Public rc.13 remains
+unchanged. Implementation and native/browser verification are
 in progress; see [the contract](specs/zellij-standalone-authoring-2026-11-19.md).
 Do not describe rc.14 as released until its immutable assets pass acceptance.
 Local acceptance passes 825 Rust tests, 540 engine tests, strict/deep docs, types,
@@ -270,7 +249,7 @@ Review fix `e33c0f670e64fcb8ec11af1355cb39ca427b4059` corrects lost legacy-dot c
 discovery in rich preview/watch and honors explicit static preview dispatch.
 Native regressions pass; the expanded real-package legacy checks are pending.
 
-**2026-11-19: common resource home and client migration — completed**
+**2026-11-19: common resource home — completed**
 
 The user-selected directory policy is now released as `v0.2.0-rc.13`.
 `ZELLIJ_HOME` defaults to `~/Dev/config/zellij` (under the Windows user
@@ -301,20 +280,6 @@ symlink. The old executable/profile are backed up and the rc.12 renderer cache
 was moved intact under the new home. rc.13 downloaded its own verified renderer.
 This intentional local migration does not change package-manager ownership.
 
-The private client handoff has been migrated to one directly editable rich
-content tree and bundled public Mac/Windows x64/ARM64 binaries. Its 199 chapters,
-200 routes, titles, text, recorded anchors and 244 resources are preserved.
-Chromium/WebKit each pass all 200 file:// routes and focused menu/theme/mobile
-checks without captured page errors or HTTP requests. The public CLI builds
-with an empty PATH; the offline rebuild is byte-identical across 535 generated
-files. The installed generate script also passes offline with only basic OS
-commands, leaving all 1,100 manifest-listed files unchanged. The optional Next
-wrapper passes its production build. The verified ZIP is 193,317,027 bytes;
-the prior folder and ZIP are retained in a durable private rollback directory.
-Private content and assets were not published. Complete client-specific checks
-ran on Intel macOS; native release coverage is separate from client execution
-on Windows/Apple Silicon and physical-iPhone testing.
-
 Guide PR #214 merged as `05a062dac93f12ea39555160caec7a01c08032e1` with an
 identical tested tree. Documentation validation and all six released-artifact
 consumer workflows pass, plus a local 59-route Chromium/WebKit file crawl.
@@ -332,21 +297,16 @@ This supersedes the pending entries below, retained as dated history. Live
 provider verification and prior-candidate retirement remain separate work.
 Do not claim zero bugs or universal rendering of arbitrary application code.
 
-**2026-11-19: Zellij home policy and HP migration — in progress**
+**2026-11-19: Zellij home policy — in progress**
 
-The user authorized the HP handoff migration and first requested a common
-resource directory: `ZELLIJ_HOME`, defaulting to `~/Dev/config/zellij`.
+The user requested a common resource directory: `ZELLIJ_HOME`, defaulting to
+`~/Dev/config/zellij`.
 Standalone installers will use its `bin/`; renderer and remote-template caches
 use `cache/engines/` and `cache/templates/`. Homebrew and Scoop retain executable
 ownership in their native locations while using this resource root at runtime.
 Narrow explicit install/cache overrides remain supported. Branch
 `codex/zellij-home` prepares rc.13; it is not yet a public release. See
 [the directory policy](specs/zellij-home-2026-11-19.md).
-
-The private HP package currently has a portable `zel.yaml`, a Python adapter and
-a pinned container archive. Migrate it to direct rich content and `zel build`,
-with preservation checks before replacing the handoff. Do not assume updating
-the global CLI alone removes that package's old generation dependencies.
 
 **2026-11-19: standalone rich build — released and installed**
 
@@ -372,8 +332,7 @@ arbitrary application code or additional Tailwind compilation requires a wrapper
 The user's standalone Mac installation is rc.12. A public product-launch starter
 built with an empty system PATH, downloaded its renderer into the default cache,
 and rebuilt byte-identically with `--offline`. Chromium and WebKit pass all
-four file:// routes with zero captured errors or HTTP requests. Private client
-documentation and its custom generation scripts were not modified in this task.
+four file:// routes with zero captured errors or HTTP requests.
 
 The 59-route updated guide also passes a local Chromium/WebKit file crawl.
 Public-guide PR #212 passes all 35 CI jobs and six build-only consumer workflows,
@@ -519,8 +478,8 @@ The user explicitly authorized publication after the local review below.
 (reviewed docs `8168d79`, explicit icon `1b63560`, conventional favicon `e341880`)
 from deploy `6aff4d3001a5a3ee682b3ff2`. This supersedes the pending-review and
 production-cutover restrictions in older dated entries. The existing account,
-project and domain remain in place; `zel-stage` and private client content are
-untouched. No CLI version, GitHub publication or installation channel changed.
+project and domain remain in place; `zel-stage` is untouched. No CLI version,
+GitHub publication or installation channel changed.
 
 A complete verified backup of the 589-file old production deployment is retained
 locally and the old Netlify deploy remains available. Final Next export, local
@@ -554,23 +513,6 @@ the final probes wait for search readiness and isolate full-page visits. No
 engine change was made for those test diagnostics.
 This preview does not imply a complete publication audit or a new CLI release.
 
-**2026-11-19: AI authoring guide for the private handoff**
-
-The user requested a root `zellij-context.md` so a client's AI editor can
-understand and update the delivered documentation. The private package now
-includes that guide and a README prompt telling the AI to read it explicitly.
-It explains the Markdown/presentation source split, metadata and stable anchors,
-route/asset conventions, chapter navigation, rich composition recipes, bundled
-schemas, theme tokens, exact generation commands and verification boundaries.
-It also explains that the pinned handoff engine/helper must stay together and
-that generated output and historical evidence are not editable sources.
-
-The examples were checked against the current schemas and local source paths;
-the bundled native strict check passes. This is a private handoff documentation
-addition, not a new CLI-generated context feature. Private text and artifacts
-remain outside this repository. Future handoff automation can generalize the
-pattern without copying client content.
-
 **2026-11-19: offline headings duplicated on scroll — fixed locally**
 
 Fixing commit **`8021a66`** preserves absent React keys when decoding the rich
@@ -583,56 +525,32 @@ The initial file-export checks below did not exercise this failure sufficiently.
 A failing-before/passing-after regression covers absent versus literal keys.
 The file acceptance harness now scrolls section headers into view and compares
 their text against the generated HTML before and after reveal transitions.
-Validation: 54 scoped tests, typecheck/package build, 16 showcase routes in
-Chromium/WebKit and private homepage interaction checks in both browsers on
-desktop/mobile. The private engine and site were rebuilt; source Markdown and
-native binaries remain unchanged. This remains local work, not a public release.
+Validation: 54 scoped tests, typecheck/package build and 16 showcase routes in
+Chromium/WebKit pass. This remains local work, not a public release.
 See the [dated follow-up](specs/zellij-rich-file-export-2026-11-19.md#follow-up-duplicated-headings-during-scroll).
 
 **2026-11-19: rich offline renderer — local implementation**
 
-The user clarified that a double-click handoff must retain the rich website,
-not the native manual presentation. `zel build --target file` now exports the
-shared rich components with a classic-script hydration runtime, local route
+The rich double-click website must retain the shared website presentation.
+`zel build --target file` now exports the shared rich components with a classic-script hydration runtime, local route
 links, search and diagrams. See [implementation and evidence](specs/zellij-rich-file-export-2026-11-19.md).
 Implementation **`053fbfc`** lives in `engine/packages/zellij/src/offline`; the container invokes
 `zellij export-offline` before staged publication. Old images fail a capability
 guard. Static HTTP output and the native portable manual remain separate targets.
 
-The private handoff now has one editable Markdown collection inside its Next
-project, one rich `site` folder, generation scripts and four native binaries.
-No private content or artifacts enter this repository. Its local pinned engine
-makes rich file builds usable with the already verified rc.11 native binaries;
-this is not a public release or a claim about stock rc.11. Windows/ARM execution
-was not tested. The linked-heading defect below is fixed in current source;
-its original report and workaround are retained as dated history. Fixing commit: `053fbfc`.
-
 Validation: 53 scoped engine tests, typecheck/package build, 153 Rust tests
 (five existing ignored), docs strict/deep check, and a new 16-route public
-file-browser acceptance in Chromium/WebKit. Private acceptance covers 200 routes,
-64 diagrams, 60 theme/mode states across both browsers, menu/mobile interactions
-and homepage pixel parity against HTTP. A real old-image failure preserves output.
-Public release, installation-channel updates and live-provider checks remain
-outside this local handoff change.
+file-browser acceptance in Chromium/WebKit. A real old-image failure preserves
+output. Public release, installation-channel updates and live-provider checks
+remain outside this local implementation change.
 
-**2026-11-19: theme-responsive consumer presentation — authoring clarification**
+**2026-11-19: theme-responsive presentation — authoring clarification**
 
-A private consumer now omits the fixed `overrides.accent` so runtime theme
-selection controls primary buttons and gradients. Its composition uses
-`gradient.colors: [accent, fg]` and `background: glow`; both are existing engine
-capabilities. Literal hex stops and explicit brand overrides intentionally stay
-fixed. The public theme guide now explains this distinction with a small recipe.
-The consumer's footer no longer displays its assembly date, and all 18 drawer
-destinations use existing semantic vector icons on desktop/mobile. No client
-content or artifact is stored here; native CLI and bundled engine are unchanged.
-
-The strict two-edition rebuild passes; all 200 rich footers are checked. Chrome
-and WebKit each pass 15 themes × 2 modes for heading/glow/button colours, plus
-icon/navigation/mobile checks. Original content, binaries, engine and helpers
-remain byte-identical. A scripted WebKit resize followed immediately by forced
-navigation exposed cancelled-prefetch diagnostics; a settled probe and independent
-mobile page pass. No engine change was made for that test-timing diagnostic.
-These are local presentation/docs updates, not a public release or deployment.
+The public theme guide explains that omitting a fixed `overrides.accent` lets
+runtime theme selection control primary buttons and gradients. Composition
+supports `gradient.colors: [accent, fg]` and `background: glow`. Literal hex
+stops and explicit brand overrides intentionally stay fixed. These are existing
+engine capabilities; the guide adds an authoring recipe without a runtime change.
 
 **2026-11-18: full-width desktop panels and theme previews — local fix**
 
@@ -653,30 +571,16 @@ focus failure are retained in [the implementation record](specs/zellij-navigatio
 and [evidence](specs/evidence/zellij-navigation-panels-2026-11-18.json).
 Source is committed locally on `codex/full-width-navigation-theme-swatches`;
 no public push, release or production deployment was performed. The native CLI
-remains rc.11. Private consumer data remains outside this repository, with a
-bundled patched Linux amd64 engine for reproducible local builds. Consumer
-acceptance verifies four full-width grouped menus, 15 light/dark preview colours,
-retained brand overrides, mobile back/close/focus and no captured page errors in
-Chrome and WebKit; both editions rebuild with strict checks. The separate
-linked-heading defect below remains open.
+remains rc.11. The separate linked-heading defect below remains open.
 
-**2026-11-18: private documentation handoff acceptance — pending core fix**
+**2026-11-18: linked-heading hydration defect — pending core fix**
 
-A local real-project handoff uses released rc.11 native Markdown plus a private
-adapter to its inert `.zeldoc.json` format for a richer website. Client content,
-artifacts and evidence remain outside this repository and must not be published.
-The adapter is not a new supported CLI command. The portable guide renderer
-expects the document body to supply its own H1; `GuidePageView` only injects
-`page.title` for ordinary MDX guides.
-
-Browser acceptance found a general rc.11 defect: `mdx/components.tsx` wraps H2–H4
-children in a self-link even if they already contain a link, producing nested
-anchors and React hydration error 418. Removing the heading ID is insufficient
-because `rehype-slug` recreates it. The private adapter keeps heading text/IDs
-and presents destination links in a following paragraph. **The core defect is
-still open**: fix the heading component and add linked-heading browser coverage
-before the next release. Reproduce with `## [Reference](/reference)`; no client
-material is needed. No core implementation or release was changed for that initial import.
+`mdx/components.tsx` wraps H2–H4 children in a self-link even when they already
+contain a link, producing nested anchors and React hydration error 418.
+Removing the heading ID is insufficient because `rehype-slug` recreates it.
+Reproduce with `## [Reference](/reference)`. The core defect is open at this
+dated checkpoint: fix the heading component and add linked-heading browser
+coverage before the next release. The later fix is recorded above as `053fbfc`.
 
 **2026-11-18: rc.11 distribution and scoped rc.10 retirement complete**
 

@@ -2,7 +2,7 @@
   "date": "2026-11-20",
   "status": "Complete: two rc.12 releases, 78 assets, two tags and 12 image versions retired; independent inventory, fresh-pull HTTP and anonymous retained checksum downloads pass.",
   "replacement": "v0.2.0-rc.15",
-  "scope_reason": "Older private rollback packages require rc.11; retain rc.11, rc.13, rc.14 and rc.15 in both repositories and image graphs. The current private handoff uses rc.14. Actual-version upgrade acceptance also requires rc.14.",
+  "scope_reason": "Retain rc.11, rc.13, rc.14 and rc.15 compatibility pins in both repositories and image graphs. Actual-version upgrade acceptance requires rc.14.",
   "gates": [
     {
       "repository": "mylife-inc/Zellij",
@@ -122,7 +122,7 @@
   },
   "superseded_preflight": {
     "run": 44873109090,
-    "scope": "rc.11 and rc.12; superseded before deletion when additional private consumers were found",
+    "scope": "rc.11 and rc.12; superseded before deletion after compatibility requirements were reviewed",
     "mutation": false
   },
   "test_history": [
@@ -140,7 +140,7 @@
     "new_agent_comment": false
   },
   "boundaries": [
-    "No CLI runtime, engine, template, published guide or private handoff changes.",
+    "No CLI runtime, engine, template or published guide changes.",
     "Two historical browser timing findings remain unexplained.",
     "Deferred live providers remain last; Vercel remains deferred."
   ],

@@ -25,7 +25,6 @@ same checked tree. All seven documentation/consumer workflows pass, as do
 strict/deep validation and a 59-route Chromium/WebKit file crawl. Automatic
 Netlify publication verifies the production deployment and seven live pages.
 See [the release evidence](evidence/zellij-rc14-release-2026-11-19.json).
-The private client handoff remains on rc.13 and is not changed by this release.
 This completed result supersedes the intermediate pending states below.
 
 ## Initial implementation status (historical)
@@ -70,7 +69,7 @@ Hosted `dev`, explicit static exports, image packaging, deployment exports and
 PDF typesetting retain their existing prerequisites. `convert --validate` and
 `migrate` retain the container checker for hosted imports. Generated delivery CI
 selects static or portable validation explicitly to match its deployment engine.
-This change does not migrate private client data or exercise external providers.
+External provider verification remains separate.
 
 ## Implementation and verification
 

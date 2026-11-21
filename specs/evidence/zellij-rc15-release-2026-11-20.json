@@ -534,8 +534,6 @@
       "v0.2.0-rc.12",
       "v0.2.0-rc.11"
     ],
-    "privateHandoffRequires": "v0.2.0-rc.14 renderer and bundled binaries",
-    "privateRollbackRequires": "v0.2.0-rc.13 renderer",
     "wingetActualUpgradeFixtureRequires": "v0.2.0-rc.14 Windows archives",
     "acceptanceImagesRequireReplacement": [
       "zellij/acceptance-static",
@@ -558,12 +556,15 @@
       "fixturePins": "rc.15; all six generated consumers pass",
       "acceptanceStaticAndNext": "Published rc.15 copies pass fresh pull/HTTP acceptance; see publishedImages",
       "oldAssetsDeleted": false,
-      "next": "Generate a fresh scoped inventory/plan, protect private rc.13/rc.14 renderer consumers, actual rc.14 upgrade fixtures and submitted rc.15 WinGet catalog URLs, then retire only reviewed unreferenced identities."
-    }
+      "next": "Generate a fresh scoped inventory/plan, protect existing rc.13/rc.14 renderer compatibility pins, actual rc.14 upgrade fixtures and submitted rc.15 WinGet catalog URLs, then retire only reviewed unreferenced identities."
+    },
+    "compatibilityPins": [
+      "v0.2.0-rc.13 renderer",
+      "v0.2.0-rc.14 renderer and binaries"
+    ]
   },
   "limitations": [
     "Microsoft catalog PR submitted; CLA and catalog validation/ordinary public installation remain pending.",
-    "Private HP handoff remains rc.14 and rollback requires rc.13; preserve their renderer downloads.",
     "Live provider verification remains deferred.",
     "Pre-1.0 candidate, no zero-bug claim."
   ],

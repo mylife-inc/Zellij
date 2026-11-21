@@ -4,7 +4,7 @@ Status: rc.15 is released after 37 source CI and 40 release jobs passed.
 Public x64/ARM64 WinGet acceptance passes with the actual published HTTPS URLs.
 [Microsoft catalog PR #484934](https://github.com/microsoft/winget-pkgs/pull/484934)
 is submitted; the CLA and catalog checks remain separate requirements. No
-ordinary catalog install is advertised yet. The private client handoff remains rc.14.
+ordinary catalog install is advertised yet.
 
 ## Package contract
 
@@ -81,7 +81,7 @@ until the catalog accepts it and an ordinary public install succeeds.
 
 Retirement must account for external catalog entries: remove/update references
 before deleting archives they serve. The native upgrade fixture currently needs
-rc.14; the private rollback also needs rc.13 renderers. Neither may be removed
+rc.14; the compatibility policy also retains rc.13 renderers. Neither may be removed
 merely because a newer version is published. This extends the existing scoped
 consumer audit, not a blanket promise to retain every candidate forever.
 

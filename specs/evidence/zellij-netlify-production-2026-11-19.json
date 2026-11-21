@@ -125,7 +125,6 @@
     "existing production project/account",
     "custom domain and DNS",
     "separate zel-stage project",
-    "old Netlify deploy retained",
-    "private client documentation outside this repository"
+    "old Netlify deploy retained"
   ]
 }

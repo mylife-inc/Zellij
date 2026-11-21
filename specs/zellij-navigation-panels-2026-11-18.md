@@ -27,8 +27,7 @@ brand colour.
 
 The menu and theme guides distinguish the next engine update from released
 rc.11. No native CLI command or configuration syntax changes. No public release
-or production deployment is part of this local fix. Private acceptance content
-and artifacts remain outside this repository.
+or production deployment is part of this local fix.
 
 ## Verification
 
@@ -45,7 +44,6 @@ and artifacts remain outside this repository.
 - `git diff --check` passes. No public release or deployment was performed.
 
 See [the machine-readable evidence](evidence/zellij-navigation-panels-2026-11-18.json).
-Private consumer acceptance and its packaged candidate are tracked separately.
 
 ## Retained diagnostic history
 

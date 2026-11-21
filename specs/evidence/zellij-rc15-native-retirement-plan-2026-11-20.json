@@ -2608,5 +2608,5 @@
       "head": "ad70e529922e008ca9c9b74d67f4ff8c68f5ad7a"
     }
   ],
-  "scopeReason": "Older private backups additionally require rc.11; retain rc.11, rc.13, rc.14, current rc.15 and CodeSeal. Only rc.12 is eligible."
+  "scopeReason": "Retain rc.11, rc.13, rc.14, current rc.15 and CodeSeal under the compatibility policy. Only rc.12 is eligible."
 }

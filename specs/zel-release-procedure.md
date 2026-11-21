@@ -6,8 +6,8 @@
 All nine public template identities and archive reproductions pass. All eight
 real rc.15-to-rc.16 Homebrew/Scoop upgrades, public WinGet x64/ARM64 manifests,
 physical Mac standalone/browser acceptance and production docs publication pass.
-No releases are retired: rc.11/rc.13 private backups, rc.14 handoff/WinGet fixture
-and rc.15 Microsoft submission/channel upgrade tests still have consumers.
+No releases are retired: preserve rc.11/rc.13 compatibility pins, the rc.14
+WinGet fixture and rc.15 Microsoft submission/channel upgrade dependencies.
 See [the dated evidence](evidence/zellij-rc16-release-2026-11-21.json) and
 [current readiness](zellij-readiness-2026-11-21.md). Earlier entries below remain
 historical records, not the current release status.

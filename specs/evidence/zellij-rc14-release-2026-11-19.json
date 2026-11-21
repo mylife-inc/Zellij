@@ -2,7 +2,7 @@
   "date": "2026-11-19",
   "version": "v0.2.0-rc.14",
   "recordedAt": "2026-11-20T06:53:47.360Z",
-  "status": "Standalone rich validation and live preview released, managed channels upgraded, local standalone installation verified, public guides deployed. Private client handoff remains on rc.13; live provider verification and prior-candidate retirement are separate.",
+  "status": "Standalone rich validation and live preview released, managed channels upgraded, local standalone installation verified, public guides deployed. Live provider verification and prior-candidate retirement are separate.",
   "source": {
     "pr": 216,
     "head": "7f4bc741bd2ef7cca2784a6767223c97f22cb27a",
@@ -1528,7 +1528,6 @@
     "Pre-1.0 candidate; no zero-bug assertion.",
     "First rich operation needs a matching renderer download; verified cached authoring supports --offline.",
     "Hosted dev, explicit static exports, deployment exports, images and PDF retain documented prerequisites.",
-    "Private client documents and bundled rc.13 binaries were not modified. Keep rc.13 public renderer assets available for that handoff.",
     "Live provider verification and reviewed prior-candidate retirement remain deferred."
   ]
 }

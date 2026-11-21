@@ -2,7 +2,7 @@
   "date": "2026-11-19",
   "version": "v0.2.0-rc.13",
   "recordedAt": "2026-11-20T04:09:43.476Z",
-  "status": "ZELLIJ_HOME released, managed channels accepted, local standalone install/cache migrated, private client handoff migrated, public guides deployed. Live provider checks and reviewed prior-candidate retirement remain separate work.",
+  "status": "ZELLIJ_HOME released, managed channels accepted, local standalone install/cache migrated, public guides deployed. Live provider checks and reviewed prior-candidate retirement remain separate work.",
   "source": {
     "pr": 213,
     "head": "39503d76afda5f144648b8f65ea5da9ac5a545c1",
@@ -1272,65 +1272,9 @@
     "binarySha256": "7a0a4caf03e24238c7fbfcd18b9ea642017c7690c74fc523a2f09c35e8cf4b1e",
     "shellPathVerified": true,
     "oldStandalonePath": "Compatibility symlink to the new executable",
-    "priorBinaryAndProfile": "Preserved in a dated private backup",
+    "priorBinaryAndProfile": "Preserved with rollback copies",
     "priorRenderer": "Moved intact beneath the new resource home; rc.13 renderer downloaded separately",
     "homebrewOrScoopRelocated": false
-  },
-  "privateHandoff": {
-    "clientContentPublished": false,
-    "editableSourceTrees": 1,
-    "sourceChapters": 199,
-    "siteRoutes": 200,
-    "referencedResources": 244,
-    "chapterTextTitlesAndRecordedAnchorsPreserved": true,
-    "resourceBytesPreserved": true,
-    "publicBinaries": [
-      "macOS x64",
-      "macOS ARM64",
-      "Windows x64",
-      "Windows ARM64"
-    ],
-    "publicBuild": {
-      "version": "0.2.0-rc.13",
-      "systemPathEmpty": true,
-      "defaultResourceHome": true,
-      "initialCacheMissing": true,
-      "offlineRebuildIdentical": true,
-      "files": 535,
-      "matchesBrowserTestedSite": true
-    },
-    "browser": {
-      "browsers": [
-        "Chromium",
-        "WebKit"
-      ],
-      "routesPerBrowser": 200,
-      "pageErrors": 0,
-      "httpRequests": 0,
-      "menuThemesAndMobile": true
-    },
-    "optionalNextWrapper": {
-      "productionBuildPassed": true,
-      "contentRoutes": 200,
-      "platform": "Intel macOS"
-    },
-    "finalGenerateScript": {
-      "offline": true,
-      "systemToolsOnly": [
-        "uname",
-        "dirname",
-        "chmod"
-      ],
-      "manifestFilesUnchanged": 1100
-    },
-    "package": {
-      "files": 1101,
-      "bytes": 193317027,
-      "allMemberHashesVerified": true,
-      "macExecuteBitsPreserved": true,
-      "durablePriorFolderAndZipBackup": true
-    },
-    "limits": "Complete client-specific generation/browser testing on Intel macOS; release-native platform coverage does not assert complete client execution on Windows/Apple Silicon. Browser mobile emulation is not a physical iPhone test."
   },
   "nonPasses": {
     "cancelledDuplicateCodeRuns": [

@@ -1,4 +1,4 @@
-// Public-fixture coverage only. Never upload client documentation to this runner.
+// Uses only the repository-owned synthetic documentation fixture.
 import assert from 'node:assert/strict';
 import { spawn, execFileSync } from 'node:child_process';
 import { mkdtemp, mkdir, readFile, writeFile, copyFile, readdir, rm } from 'node:fs/promises';

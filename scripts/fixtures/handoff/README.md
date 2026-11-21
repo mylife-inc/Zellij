@@ -6,13 +6,13 @@ scripts. They are not automatically emitted by `zel create`.
 
 The default operation builds the rich, double-clickable website with diagrams.
 `check`, `watch`, `view` and `serve` forward options to the matching CLI command.
-No client documentation, names, assets or credentials belong in this fixture.
+Use synthetic documentation and assets only; never include credentials.
 
 `scripts/check-handoff-scripts.mjs` downloads a checksum-verified public release
 and tests these exact scripts with a disposable two-page documentation project
 (three public routes including the root home alias).
 The Windows matrix covers x64/ARM64 and Windows PowerShell 5.1/PowerShell 7.
-This checks the scripts and public CLI, not any private client collection.
+This verifies the scripts and public CLI against the synthetic fixture.
 
 Run the **Handoff script acceptance** workflow against a published CLI version.
 The harness requires Node and (for Windows console testing) Rust on the test
