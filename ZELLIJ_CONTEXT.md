@@ -18,8 +18,11 @@ Public WinGet run `44727865933` passes x64 and ARM64 actual HTTPS installs,
 automatic native selection and full upgrade/uninstall/ownership acceptance.
 The manifest set is submitted as
 [Microsoft PR #484934](https://github.com/microsoft/winget-pkgs/pull/484934).
-Microsoft's CLA bot asks the user to accept personally; no agreement was signed
-by the agent. Catalog acceptance and normal public-ID install remain pending.
+The user personally completed Microsoft's CLA; its check now passes. No agreement
+was signed by the agent. Catalog acceptance and normal public-ID install remain
+pending administrator review: Microsoft's installed-program probe invokes bare
+`zel.exe`, which prints usage and exits 2. Both architecture installations and ARP
+checks succeeded. The user has asked Microsoft to probe `zel.exe --version`.
 The public-manifest harness verifies archive checksums and the exact generated
 YAML, and safely reads archive members without extracting paths.
 
@@ -43,12 +46,18 @@ HTTP pages/assets, health checks and nonroot users pass in `44730534861`.
 The main image workflow also passes all 13 jobs. Exact digests, production
 receipt and job history are in the [release evidence](specs/evidence/zellij-rc15-release-2026-11-20.json).
 
-The private HP handoff remains unchanged at rc.14; retain that renderer and the
-rc.13 private rollback renderer. Inventory `44719616497` is read-only and shows
-old assets; the acceptance images now have verified rc.15 replacements. A fresh
-scoped retirement plan is still required.
-No old release/image deletion has occurred in this milestone. Deferred live
-providers and the two unresolved browser timing findings remain separate.
+The private HP handoff remains unchanged at rc.14. Retain rc.13 for its rollback,
+and rc.11 for two older private rollback packages discovered during the new
+consumer audit. Current rc.14 upgrade fixtures also require rc.14 downloads.
+The reviewed retirement scope is therefore **rc.12 only**: two releases, 78
+assets, two tags and 12 base-image versions. All 112 retained image manifests,
+3,972 unreferenced build-history versions and both CodeSeal releases are protected.
+Inventory `44873543634` passes all 16 image and 13 native deletion guards; the
+live native preflight and all 17 replacement gates pass. The earlier broader
+plan was superseded before any deletion. Execution is pending; see the
+[retirement evidence](specs/evidence/zellij-rc15-retirement-2026-11-20.json).
+Deferred live providers and the two unresolved browser timing findings remain
+separate. No new CLI release is required for these maintenance records.
 
 **Earlier 2026-11-20 checkpoint: WinGet native acceptance, before release**
 

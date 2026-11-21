@@ -2,7 +2,7 @@
 
 Date: 2026-11-11. This records the user's explicit follow-up to the
 [product expansion design](zellij-product-expansion-2026-11-11.md).
-Refreshed 2026-11-18 with verified rc.11 replacement and scoped rc.10 retirement.
+Refreshed 2026-11-20 with verified rc.15 replacement and reviewed rc.12-only retirement.
 Earlier records and failed attempts remain historical.
 
 ## User decision
@@ -26,7 +26,25 @@ dated release records remain valid historical evidence; add retirement records
 rather than silently rewrite them. The user has authorized this cleanup policy;
 do not repeatedly request approval for a reviewed cleanup within its scope.
 
-## Current rc.11 execution status — 2026-11-18
+## Current rc.15 retirement plan — 2026-11-20
+
+The published rc.15 replacement, managed channels, production guides and current
+acceptance images pass all 17 recorded gates. A fresh consumer audit found two
+older private rollback packages requiring rc.11. Retain rc.11 and rc.13 for
+private rollbacks, rc.14 for the current handoff and actual-version upgrade
+fixtures, and rc.15 as the current distribution. The earlier broader read-only
+plan was superseded before any mutation.
+
+The final reviewed plan targets only two rc.12 releases (78 assets), two tags
+and 12 exact base-image versions. It protects all 112 retained manifest nodes,
+3,972 excluded build-history versions and both CodeSeal releases. Inventory
+`44873543634` passes 16 image and 13 native safeguards; the live native preflight
+also passes. Plans are committed before execution. No deletion is claimed yet.
+See the [evidence](evidence/zellij-rc15-retirement-2026-11-20.json).
+Do not reuse executed plans or infer that private consumers can migrate without
+separate preservation and regeneration checks.
+
+## Previous rc.11 execution status — 2026-11-18
 
 The rc.11 candidate, Homebrew,
 Scoop and verified guides are published. Documentation PR #208 merges as
