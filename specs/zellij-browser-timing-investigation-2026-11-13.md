@@ -100,3 +100,21 @@ Public rc.6, development engine images and production documentation are
 unchanged. The next substantive feature remains shared numbered equations and
 references across web/PDF, followed by further book semantics and templates.
 Live provider verification and production-domain migration remain deferred.
+
+## Follow-up — 2026-11-20
+
+A read-only review of the ordinary CI history inspected 111 runs created from
+14–20 November: 36 successful, two failed and 73 cancelled. The first attempts
+of both failed runs and all six retried runs were checked. Their failed steps
+identify the original hydration timeout and three separately documented CLI
+issues: a publication/CDN race, outdated integration-command defaults and the
+already-fixed fragment-colon adapter defect. The cancelled Showcase attempt
+stopped during system-dependency installation before browser tests started;
+its unchanged retry passed. The other retried cancellations were native jobs.
+
+This bounded review found no new evidence for either browser timing finding in
+those eight attempts. It did not exhaustively investigate the 73 entirely
+cancelled workflows and does not establish a fix or absence of recurrence.
+Existing failure-only capture remains the next source of diagnostic evidence.
+No runtime change or repeated stress suite was justified by this review. See
+[the dated follow-up evidence](evidence/zellij-browser-timing-followup-2026-11-20.json).

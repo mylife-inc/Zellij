@@ -19,9 +19,9 @@ The private client handoff stays rc.14. This checkpoint does not declare stable
 | Branding, menus and themes | Separate company/product branding, centered navigation, full-width desktop panels, mobile drilldown, responsive theme colors and the Kie theme are implemented. | Kie is an inspected design interpretation; blocked live reference access did not establish a 100% pixel-identical clone. |
 | Composer and templates | Responsive nested layouts, supported media/semantic/interactive nodes, bounded scroll effects, eight inline built-in section types, nine editable presets and nine website/book starters are implemented. | The composer is bounded. Arbitrary executable components, arbitrary section embedding and unrestricted animation timelines are not promised. |
 | Books and PDF | Shared publication model, technical/study editions, equations/statements, numeric citations, glossary/index, print styling, Arabic RTL and French/German/Spanish print are implemented. | Arbitrary citation styles/BibTeX, unrestricted font inventories and broader format fidelity are separate expansion requests. Existing PDF generation uses its external toolchain. |
-| Installation | Public standalone packages for six native targets, Homebrew and Scoop pass release and upgrade acceptance. | rc.15 includes ownership protection and verified public native x64/ARM64 WinGet manifests. Microsoft PR #484934 is submitted; CLA, catalog acceptance and ordinary catalog-ID installation remain pending. |
+| Installation | Public standalone packages for six native targets, Homebrew and Scoop pass release and upgrade acceptance. | rc.15 includes ownership protection and verified public native x64/ARM64 WinGet manifests. Microsoft PR #484934 is submitted; CLA now passes after the user accepted personally. Microsoft must review its bare-executable probe (exit 2); catalog acceptance and ordinary catalog-ID installation remain pending. |
 | Private client handoff | The installed rc.14 package preserves all 468 source files and all 535 generated files. Actual Intel Mac validation, build, watch, preview and Chromium/WebKit acceptance pass for all 200 routes; installed regeneration preserves all 1,111 package files. | Four native Windows script combinations pass using a public fixture. Actual private-client execution on Windows, Apple Silicon and physical iPhone remains distinct acceptance. See the [handoff evidence](evidence/zellij-handoff-authoring-2026-11-20.json). |
-| Retention | Owned channels and both acceptance images have verified rc.15 replacements. Read-only inventory 44719616497 identifies old release/image consumers. | Inventory remaining older releases/images and their consumers before applying a new reviewed retirement plan. Preserve private rollback renderer availability before deleting a version it requires. Do not reuse an earlier executed deletion plan. |
+| Retention | rc.12 releases, 78 assets, two tags and 12 image versions are retired. All ten protected releases, 112 manifest nodes and 3,972 excluded image versions are intact. Final inventory 44874568810, fresh-pull HTTP 44874571313 and 46 anonymous checksum downloads pass. | Retain rc.11/rc.13 private rollbacks, current rc.14 handoff/upgrade fixtures and rc.15 until their consumers are deliberately migrated. Do not reuse completed deletion plans. |
 | Live providers and generated runners | Adapters and build/protocol harnesses exist. Earlier live Netlify, Cloudflare, GitHub Pages and Railway checks have their recorded evidence. | Fly, S3 and actual GitLab/CircleCI runner acceptance stay at the end by user instruction. Vercel remains explicitly deferred after payment was required. |
 
 Two historical browser timing findings remain unexplained: WebKit navigation
@@ -30,7 +30,9 @@ Bounded repetitions passed, and failure diagnostics were added; passing later
 runs alone does not establish a root cause or resolve them. See the
 [investigation](zellij-browser-timing-investigation-2026-11-13.md). Investigate
 new recurrences using retained evidence rather than silently erasing these
-findings or repeatedly running unrelated suites.
+findings or repeatedly running unrelated suites. The [20 November follow-up](evidence/zellij-browser-timing-followup-2026-11-20.json)
+reviewed failed/retried CI attempts without identifying new evidence for either
+finding; it makes no runtime change or resolution claim.
 
 Released rc.15 adds registry/file ownership detection before self-upgrade,
 verified x64/ARM64 portable manifests and native install/upgrade/uninstall
@@ -39,8 +41,8 @@ acceptance. Its Microsoft catalog submission is pending. See the
 retention and external acceptance boundaries. The native upgrade fixture uses
 real rc.14 archives; retain them until that dependency is deliberately migrated.
 
-Next order: complete private Windows acceptance when a machine is available,
-complete WinGet catalog acceptance, perform the scoped older-candidate
-retention audit, then return to deferred external acceptance. A supported
+Next order: follow Microsoft catalog review and investigate any browser timing recurrence
+with its retained diagnostics. Complete private Windows acceptance when a machine
+is available, then return to deferred external acceptance. A supported
 command may be implementation-complete while one of these acceptance or
 distribution tasks remains open.
