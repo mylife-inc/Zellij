@@ -61,7 +61,7 @@ ${asset('x86_64-unknown-linux-gnu', 6)}
       Update with: brew upgrade mylife-inc/tap/zel
       Portable Markdown builds need no container runtime.
       Rich file builds download their own verified renderer once.
-      Explicit static/image builds and hosted development use this image:
+      Container operations use this matching image:
         export ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base:${version}
     EOS
   end
