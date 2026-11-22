@@ -56,6 +56,29 @@ Optional typesetting must not enlarge ordinary web downloads or change authored
 content. Keep documented prerequisites accurate until a migrated command is
 released and its artifacts have passed public-download acceptance.
 
+## Next package: editable sources
+
+A maintainer-only `npm pack --dry-run --ignore-scripts --json` at source
+`15b6625` inventories the built engine at 7,560,437 compressed bytes,
+22,599,158 unpacked bytes and 1,421 entries, with no bundled dependencies.
+This is a feasibility measurement, not a published optional package.
+A wrapper/source download can therefore remain separate from the ordinary
+renderer and need not include another Node runtime.
+
+The next implementation should package complete engine sources, built CLI
+entry points, fonts/licenses and the matching editable wrapper. Default ejection
+can consume it; explicit custom-image extraction must retain its selected-image
+behavior. Cached sources should be copied into the new wrapper's vendor folder
+so package installation cannot mutate the shared cache. Explicit local
+`new app --engine` inputs retain their current validation and semantics.
+
+Require CLI-version matching, archive and per-file integrity, portable path and
+symlink checks, offline cache use, cancellation and staged destination publication.
+Run the resulting wrapper's install/check/build outside the repository on all
+supported platforms. Removing extraction prerequisites does not yet remove
+Node/npm from running an editable Next app; that is the separate development
+package milestone below the PDF work in the priority table.
+
 ## Source map
 
 - `cli/crates/zellij-cli/src/rich_build.rs` and `rich_build/cache.rs`: private runtime, build/check requests and verified cache.
