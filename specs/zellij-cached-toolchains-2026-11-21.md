@@ -10,6 +10,11 @@ ships in rc.19 with public and channel acceptance passed; see the
 development packages remain proposed work. The original opportunity review used
 `dbdf4fc` plus rc.17 version preparation; rc.17 itself remains unchanged.
 
+PDF implementation groundwork now has an
+[offline WebAssembly feasibility probe](zellij-cached-pdf-feasibility-2026-11-22.md).
+It is not wired into the released CLI; optional packaging, complete resource and
+license provenance, isolation qualification and installed acceptance remain open.
+
 ## Existing behavior
 
 Rich `file` and HTTP `static` build, check, validation watch and `view --watch` use a verified,

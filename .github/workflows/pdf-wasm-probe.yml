@@ -1,0 +1,52 @@
+name: Cached PDF feasibility
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/pdf-wasm-probe.yml
+      - scripts/pdf-wasm/**
+      - cli/crates/zellij-docs/examples/pdf_probe_inputs.rs
+permissions:
+  contents: read
+jobs:
+  probe:
+    name: Offline LuaHBTeX (${{ matrix.runner }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-latest, ubuntu-24.04-arm, macos-15-intel, macos-latest, windows-latest, windows-11-arm]
+    env:
+      ZEL_PDF_PROBE_BUNDLE: ${{ github.workspace }}/test-results/pdf-wasm-bundle
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.22.3
+      - run: cargo build --locked -p zellij-cli
+        working-directory: cli
+      - run: cargo build --locked -p zellij-docs --example pdf_probe_inputs
+        working-directory: cli
+      - name: Fetch the pinned feasibility inputs (not release assets)
+        shell: bash
+        run: node scripts/pdf-wasm/download.mjs "$ZEL_PDF_PROBE_BUNDLE"
+      - run: node --test scripts/pdf-wasm/probe.test.mjs
+      - name: Install maintainer PDF comparison tools
+        if: matrix.runner == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends poppler-utils qpdf
+      - run: node scripts/pdf-wasm/check.mjs
+        env:
+          ZEL_PDF_PROBE_BASELINE: ${{ matrix.runner == 'ubuntu-latest' && '1' || '' }}
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: pdf-wasm-probe-${{ matrix.runner }}
+          path: test-results/pdf-wasm
+          if-no-files-found: warn
+          retention-days: 14
+      # Never upload the engine/resource bundle before redistribution review.

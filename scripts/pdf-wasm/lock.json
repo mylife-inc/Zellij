@@ -1,0 +1,1215 @@
+{
+  "schemaVersion": 1,
+  "status": "maintainer-feasibility-only; redistribution and production qualification pending",
+  "engineRelease": "2026-f5d94438a7c75a23",
+  "upstreamSource": "https://github.com/corca-ai/wasmtex/tree/1334ff2f6df172fbbb2dfee11dfafebc8b921817",
+  "correspondingSource": {
+    "url": "https://github.com/corca-ai/wasmtex/releases/download/engine-2026-f5d94438a7c75a23/wasmtex-2026-f5d94438a7c75a23-source.tar.xz",
+    "sha256": "e6a1f9b8ad84c7127368bb521217af381407fcc0d5c5518114345d55b470d637"
+  },
+  "mirror": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/",
+  "engine": [
+    {
+      "name": "wasmtex-luatex.js",
+      "bytes": 116890,
+      "sha256": "2b16bc7f892a068a548e8950b7d3987f6b23ff2bac4ba6258520739a402906ef",
+      "url": "https://corca-ai.github.io/wasmtex/wasmtex/2026/wasmtex-luatex.js"
+    },
+    {
+      "name": "wasmtex-luatex.wasm",
+      "bytes": 8077323,
+      "sha256": "a5d940bf6e8f989c55816ceb06dfad8687100a58d109fa92873175ed4e48b53e",
+      "url": "https://corca-ai.github.io/wasmtex/wasmtex/2026/wasmtex-luatex.wasm"
+    },
+    {
+      "name": "wasmtex-luatex.fmt.gz",
+      "bytes": 4034143,
+      "sha256": "1e58b5d1ee400e937c5b690cc4e34af20458c42162b0340f8c06903c40a5ed0b",
+      "url": "https://corca-ai.github.io/wasmtex/wasmtex/2026/wasmtex-luatex.fmt.gz"
+    },
+    {
+      "name": "LICENSE-MANIFEST.json",
+      "bytes": 3564,
+      "sha256": "2fcf3ab799a5542f3082154abb5b5e8f975357d5d52b43b5efc49d8ef346072b",
+      "url": "https://corca-ai.github.io/wasmtex/wasmtex/2026/LICENSE-MANIFEST.json"
+    },
+    {
+      "name": "BUILD-RECEIPT.luahbtex.json",
+      "bytes": 6214,
+      "sha256": "4bb79b1f9e8ff176df2b1ff7ab3670f552fa7eab5220f666aefec410471b2a33",
+      "url": "https://corca-ai.github.io/wasmtex/wasmtex/2026/BUILD-RECEIPT.luahbtex.json"
+    }
+  ],
+  "resources": [
+    {
+      "name": "11/pdftex.map",
+      "bytes": 5609407,
+      "sha256": "0382ce7f0404251185a5f9e98e5fc8b9a5c1718efbc2e8ebec460e5e32736a49",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/11/pdftex.map"
+    },
+    {
+      "name": "26/amsbsy.sty",
+      "bytes": 2222,
+      "sha256": "938d9149d311b3a88836220bc76b057739958704a65422bee052696329fd41f8",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/amsbsy.sty"
+    },
+    {
+      "name": "26/amsgen.sty",
+      "bytes": 4173,
+      "sha256": "f78fa573b1596ea6589570f3c357b68a511fb8050607a3c898b25bc728571a9e",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/amsgen.sty"
+    },
+    {
+      "name": "26/amsmath.sty",
+      "bytes": 88826,
+      "sha256": "8bf35130be39e123cbd0e4f0c09d3806d745d4c08ee391a543a8b9675191e6a7",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/amsmath.sty"
+    },
+    {
+      "name": "26/amsopn.sty",
+      "bytes": 4474,
+      "sha256": "2d8dfd81cdb5eeffc4f03b64f5754808c809fb729d883fd4a94facada0d63765",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/amsopn.sty"
+    },
+    {
+      "name": "26/amstext.sty",
+      "bytes": 2444,
+      "sha256": "aa4458f9b4a5e6c1a79172fd670bcefbe717f3af0dfc9c18b95bc34b60afce7b",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/amstext.sty"
+    },
+    {
+      "name": "26/article.cls",
+      "bytes": 20144,
+      "sha256": "c09f5982893f8a092e69435caa151eef0d3cb4d7495abf23f08b640191cf81f6",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/article.cls"
+    },
+    {
+      "name": "26/babel-ar.ini",
+      "bytes": 4649,
+      "sha256": "f00f5c51c78dc4626c09e46a0203f7f943176911837d6aca9d8ed724d64b10cc",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/babel-ar.ini"
+    },
+    {
+      "name": "26/babel-Arab.ini",
+      "bytes": 2742,
+      "sha256": "3461e9c90ada0e49dbe9d230e025e0e6ce1e29e8ab9854c55b5782d3567d2de8",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/babel-Arab.ini"
+    },
+    {
+      "name": "26/babel-arabic.tex",
+      "bytes": 375,
+      "sha256": "075dbc746081593693e318113ed93ac07726b9f6c2620659fd8391856218ad30",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/babel-arabic.tex"
+    },
+    {
+      "name": "26/babel-ca-islamic.tex",
+      "bytes": 5514,
+      "sha256": "cc22ca51368cb9bf2b2cddacbd43b11f45b3c1ff8eef13d912861902d80c6255",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/babel-ca-islamic.tex"
+    },
+    {
+      "name": "26/babel-de.ini",
+      "bytes": 4756,
+      "sha256": "77020008d060b4178c0a137b07302f46197ae702d43a94ed5a3f0650d89e11b8",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/babel-de.ini"
+    },
+    {
+      "name": "26/babel-en.ini",
+      "bytes": 3936,
+      "sha256": "0245d0eb3732cac2b81b55b65729f8498f7291df8eadbd0f5681cd8be68fa825",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/babel-en.ini"
+    },
+    {
+      "name": "26/babel-english.tex",
+      "bytes": 374,
+      "sha256": "4aae05e9125e81791e22edde092cfff5861ac4c596895825820f683d9d1a099a",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/babel-english.tex"
+    },
+    {
+      "name": "26/babel-es.ini",
+      "bytes": 4303,
+      "sha256": "5cffabb47ac60e62ac5e3eed5afd6d5d32ce477aaa6a7fabe4863284dab563ee",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/babel-es.ini"
+    },
+    {
+      "name": "26/babel-fr.ini",
+      "bytes": 6315,
+      "sha256": "c599b7f11245e92b328525e7125b4e55b5b521bc53997b853864f6555f198979",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/babel-fr.ini"
+    },
+    {
+      "name": "26/babel-french.tex",
+      "bytes": 2179,
+      "sha256": "b1ed8e98c78420edf48f5872bc2d7751c6c09dd128d377dda80737c70e8662f4",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/babel-french.tex"
+    },
+    {
+      "name": "26/babel-ngerman.tex",
+      "bytes": 508,
+      "sha256": "577c8c385b1af9b3d51cf1e46764ee2f9344dab90cf305be6b4c9297053bc704",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/babel-ngerman.tex"
+    },
+    {
+      "name": "26/babel-spanish.tex",
+      "bytes": 374,
+      "sha256": "ad61ceb78a932e9a42eb3abdd19d710886b4841cb9d8a6c52c4185a6390d0893",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/babel-spanish.tex"
+    },
+    {
+      "name": "26/babel-und-x-nil.ini",
+      "bytes": 655,
+      "sha256": "1460fffd1199439ced07897841ad8908c9dfc2cd759ddef44e6c1e29420daf1f",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/babel-und-x-nil.ini"
+    },
+    {
+      "name": "26/babel.sty",
+      "bytes": 151526,
+      "sha256": "c1969f7625de7da83a37324de97f0eff5c2aed3894efd0a2eb48dfab26ee4d82",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/babel.sty"
+    },
+    {
+      "name": "26/bigintcalc.sty",
+      "bytes": 40635,
+      "sha256": "050f2ad3a3671a1f4f9bcf97784836301bc751507e7ada546632379406aea103",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/bigintcalc.sty"
+    },
+    {
+      "name": "26/bitset.sty",
+      "bytes": 33961,
+      "sha256": "af5c7196c69dc9d28225189169b60c9b9039125bc1756c04d54886f0a3e1891e",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/bitset.sty"
+    },
+    {
+      "name": "26/bk11.clo",
+      "bytes": 8303,
+      "sha256": "671e9553ba09971fe9cbc7864b21072527586e55bf57c197621111513168eb01",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/bk11.clo"
+    },
+    {
+      "name": "26/bkm-luatex.def",
+      "bytes": 8813,
+      "sha256": "528402dfd3fc018e6050b1a40d4d65d0e2ab8a2e1623009493fc4061d88ca0c8",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/bkm-luatex.def"
+    },
+    {
+      "name": "26/book.cls",
+      "bytes": 23268,
+      "sha256": "ff9dcfb536554e5afd36ba4dd1fb8f15ac634c4ef108b0531475523f0d5d6762",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/book.cls"
+    },
+    {
+      "name": "26/bookmark.sty",
+      "bytes": 18127,
+      "sha256": "5ffaadec366a639e1f0456dad55886059b6da8c34e21b9018349095a76d16f56",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/bookmark.sty"
+    },
+    {
+      "name": "26/booktabs.sty",
+      "bytes": 6078,
+      "sha256": "3fe694a5406f84847143e56ba1841385364277cfe7694a9f4bc0072ca8656abc",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/booktabs.sty"
+    },
+    {
+      "name": "26/CaseFolding.txt",
+      "bytes": 87539,
+      "sha256": "ff8d8fefbf123574205085d6714c36149eb946d717a0c585c27f0f4ef58c4183",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/CaseFolding.txt"
+    },
+    {
+      "name": "26/color.cfg",
+      "bytes": 1213,
+      "sha256": "a3529ccdadc8248b4c5d7c34ceea53bdc1509b54f18a192ad51b924bd297d8df",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/color.cfg"
+    },
+    {
+      "name": "26/color.sty",
+      "bytes": 7256,
+      "sha256": "d01f66306b38122993e83c664c6767627d7d11a8f0dab73de3c578ffc34ef0c0",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/color.sty"
+    },
+    {
+      "name": "26/ctablestack.sty",
+      "bytes": 1510,
+      "sha256": "2993431c0138c4c9b715e121ffea8bab0b8edd9eea7344c7d4a1665f0901643f",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/ctablestack.sty"
+    },
+    {
+      "name": "26/dehyphn-x-2024-02-28.pat",
+      "bytes": 274301,
+      "sha256": "e6cdda0e47efa1daf1673ed4737e75c826f6c0c2a074f021a28c2fb076ad64d6",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/dehyphn-x-2024-02-28.pat"
+    },
+    {
+      "name": "26/dehyphn-x-2024-02-28.tex",
+      "bytes": 4964,
+      "sha256": "d41721236b336305d7c98723e558a0b2023704eed058f3d8ef1d1e0eb9ae8967",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/dehyphn-x-2024-02-28.tex"
+    },
+    {
+      "name": "26/epstopdf-base.sty",
+      "bytes": 13886,
+      "sha256": "3d2226e3d68b4255061baa496cc9cbc107816a7d364720c1bd8c83dccb047b64",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/epstopdf-base.sty"
+    },
+    {
+      "name": "26/epstopdf-sys.cfg",
+      "bytes": 678,
+      "sha256": "10db2171b6e267720299c10b9e84f92c5cf069941dbfe3760e198304e49d5324",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/epstopdf-sys.cfg"
+    },
+    {
+      "name": "26/etexcmds.sty",
+      "bytes": 7734,
+      "sha256": "a7db2834e02bd11be0e62a3be15e3dc293ba1be9196f19b29b9d98bfdbeb7514",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/etexcmds.sty"
+    },
+    {
+      "name": "26/etoolbox.sty",
+      "bytes": 46885,
+      "sha256": "e48026fcea59b4906d1fd47bde658cb5caf0a7928c45a45ea563b18d5b40ebd4",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/etoolbox.sty"
+    },
+    {
+      "name": "26/expl3.sty",
+      "bytes": 6558,
+      "sha256": "49487d4371ee09a440f28bae83949e8683019b89eed4d08d7604a159d0d37473",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/expl3.sty"
+    },
+    {
+      "name": "26/fix-cm.sty",
+      "bytes": 14741,
+      "sha256": "e7b11f2e8d19a0d44644189a369d9649c5901962af4722de833167ed29326e6f",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/fix-cm.sty"
+    },
+    {
+      "name": "26/fontenc.sty",
+      "bytes": 5275,
+      "sha256": "ac8ca5b250f2b6b545d0d82a10a2fc17e36fe95e2e0c48eba5626cf8af877263",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/fontenc.sty"
+    },
+    {
+      "name": "26/fontspec-luatex.sty",
+      "bytes": 153608,
+      "sha256": "bc7f86bcf3fe0b5909299c0d6a944082c90593d8820590c4b9088be331c7e415",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/fontspec-luatex.sty"
+    },
+    {
+      "name": "26/fontspec.cfg",
+      "bytes": 549,
+      "sha256": "f31d038ca5322ef4fc3fbe391f42695bf1305567a04b6ac1005964703dd1232a",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/fontspec.cfg"
+    },
+    {
+      "name": "26/fontspec.sty",
+      "bytes": 3780,
+      "sha256": "b190fc3e1a226b1deeffd441183406d3c9bc490f582ff4f5f5d8d927072f6469",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/fontspec.sty"
+    },
+    {
+      "name": "26/geometry.sty",
+      "bytes": 41904,
+      "sha256": "d541ce56a3f45e2462be958ec62a50404213f26b241c7d7ad3e812685d38f5d8",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/geometry.sty"
+    },
+    {
+      "name": "26/gettitlestring.sty",
+      "bytes": 8371,
+      "sha256": "26ab10fd43fd5a90f98bcbed3a99978808da8878eb73835db4e0346371aee41e",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/gettitlestring.sty"
+    },
+    {
+      "name": "26/graphics.cfg",
+      "bytes": 1224,
+      "sha256": "feb91e48789a21e4acced98e952c77a2e2cf4a77e01bf147b59fa56a1b3f2008",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/graphics.cfg"
+    },
+    {
+      "name": "26/graphics.sty",
+      "bytes": 18585,
+      "sha256": "fb1a1a212ef63b4e928ddf1c5e37bcb468fe3f52184adae93265bd277775fe76",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/graphics.sty"
+    },
+    {
+      "name": "26/graphicx.sty",
+      "bytes": 8118,
+      "sha256": "ed13d7b0b9b619804d9dc97030aa7d121b542a04174da1a59a8e5f43c6e834da",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/graphicx.sty"
+    },
+    {
+      "name": "26/hluatex.def",
+      "bytes": 51039,
+      "sha256": "06708994717f6bac279dd3aedcd1336867621b03c2650aa89a0e9481e81c7b45",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/hluatex.def"
+    },
+    {
+      "name": "26/hycolor.sty",
+      "bytes": 17914,
+      "sha256": "8acaa03eda19a8158780356701e905e354e1dc47dc736e6e26fc860c12a15e14",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/hycolor.sty"
+    },
+    {
+      "name": "26/hyperref.sty",
+      "bytes": 223061,
+      "sha256": "da65dca8a44a4946284e6344ed731c9c1c6629bf7bd636b176a0cb2ea50af0cb",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/hyperref.sty"
+    },
+    {
+      "name": "26/hyph-ar.tex",
+      "bytes": 595,
+      "sha256": "42a876e2c31dc7e98df30850ee994fbe1242f5e49ccee8399c2ccf7793c537e7",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/hyph-ar.tex"
+    },
+    {
+      "name": "26/hyph-es.tex",
+      "bytes": 42602,
+      "sha256": "6a2e5f39a991a23d1cd8a23dbd0f6fe96a9f07561a6695f4f3320f47030e236c",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/hyph-es.tex"
+    },
+    {
+      "name": "26/hyph-fr.tex",
+      "bytes": 30353,
+      "sha256": "526cad6fe8f52fcd3caa3fcaf667cb1740cfc14bca198680e00dc343a84594de",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/hyph-fr.tex"
+    },
+    {
+      "name": "26/hyph-quote-fr.tex",
+      "bytes": 768,
+      "sha256": "708975d63ba0777eed42b57046d4514c88170c1c924ec714837870d753bd794d",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/hyph-quote-fr.tex"
+    },
+    {
+      "name": "26/iftex.sty",
+      "bytes": 7984,
+      "sha256": "0dc0cefe2131f82330a3b8e62034c184455329d7d9bb94abe21e740821630381",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/iftex.sty"
+    },
+    {
+      "name": "26/ifvtex.sty",
+      "bytes": 1057,
+      "sha256": "1138730b9ad7d9f664b4760a4ea0ae0945afd21c006b76b67e623e863bbf3756",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/ifvtex.sty"
+    },
+    {
+      "name": "26/infwarerr.sty",
+      "bytes": 8356,
+      "sha256": "8c3e23b8bb7d940ff26cb0cf96e0151f540acf55020dc3c1aa8bcdb2eb66305c",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/infwarerr.sty"
+    },
+    {
+      "name": "26/intcalc.sty",
+      "bytes": 31769,
+      "sha256": "1343ba1b10b245bfd199c22947249af1d756808690c7811c90f07fe0a3772080",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/intcalc.sty"
+    },
+    {
+      "name": "26/keyval.sty",
+      "bytes": 2671,
+      "sha256": "e82c9ff41e9f97190a716024e89f3afdc65bf40bace3a2c6cbb5f517bacee322",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/keyval.sty"
+    },
+    {
+      "name": "26/kvdefinekeys.sty",
+      "bytes": 5412,
+      "sha256": "c42f0c2628dc5fbd95b535cf8cd3cc964347653c099d38c0d416f896d84e8240",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/kvdefinekeys.sty"
+    },
+    {
+      "name": "26/kvoptions.sty",
+      "bytes": 22555,
+      "sha256": "70595629ec990ba8c0b6e6a54afcff2603464e6fce380a54a98549a78d2fc74a",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/kvoptions.sty"
+    },
+    {
+      "name": "26/kvsetkeys.sty",
+      "bytes": 13815,
+      "sha256": "e3fcf7f3372a27bb478eb9488eca1e25ed382480d02a6898f190bd955388e055",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/kvsetkeys.sty"
+    },
+    {
+      "name": "26/l3backend-luatex.def",
+      "bytes": 32074,
+      "sha256": "2628254d8aca395bdf021c41fea32d748e2d5cbc2ff9544752ae6bee5924fa06",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/l3backend-luatex.def"
+    },
+    {
+      "name": "26/l3keys2e.sty",
+      "bytes": 4674,
+      "sha256": "b3959f34308f3edc6ee9656d0e8825b2f77ada1fb14ab11b82b796317fc52e56",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/l3keys2e.sty"
+    },
+    {
+      "name": "26/language.dat",
+      "bytes": 6881,
+      "sha256": "16f004f6c0683b502062b971af12b248643c83c8fb7aa44d6a2d5be5fb81c414",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/language.dat"
+    },
+    {
+      "name": "26/loadhyph-es.tex",
+      "bytes": 1164,
+      "sha256": "6d6bfa74e8896320cea3cfc9360b33c1a02d4266ee111d674a511532e8490556",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/loadhyph-es.tex"
+    },
+    {
+      "name": "26/loadhyph-fr.tex",
+      "bytes": 1204,
+      "sha256": "42a59379a68359fb243cfc428bbc4347b1fb9832f82b9a29a62f79927ac2f95e",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/loadhyph-fr.tex"
+    },
+    {
+      "name": "26/longtable.sty",
+      "bytes": 16761,
+      "sha256": "d1074f79197cd8dc8bc1bdc546d5844ec2cd876c206b2e5935ede4a2003d51b1",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/longtable.sty"
+    },
+    {
+      "name": "26/ltxcmds.sty",
+      "bytes": 17865,
+      "sha256": "8fea89995d37ba4c69137186faafc589c470edcc5026d8a31aadbe5cef47dcb4",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/ltxcmds.sty"
+    },
+    {
+      "name": "26/luababel.def",
+      "bytes": 74564,
+      "sha256": "59cc6cc64367aebd1abad88f637ae8dd4b973de05d7d65d3fda36da33a682587",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/luababel.def"
+    },
+    {
+      "name": "26/lualatex-math.sty",
+      "bytes": 8657,
+      "sha256": "5054a75bee5ac0800110168a4df57a089969b14f883d161a1e83726021d6511d",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/lualatex-math.sty"
+    },
+    {
+      "name": "26/luaotfload.sty",
+      "bytes": 1812,
+      "sha256": "885e0f962d7c3ae83cf7c31bd535a539e37444394c414f42b46b8f15c1139a5d",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/luaotfload.sty"
+    },
+    {
+      "name": "26/luatex.def",
+      "bytes": 19638,
+      "sha256": "fded712a2a67d724f869864ae88b327bba1ff8476a65c18f11e81b16e5c47691",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/luatex.def"
+    },
+    {
+      "name": "26/luatexbase.sty",
+      "bytes": 10170,
+      "sha256": "74e7c1b13c51319dbb93a9593067084cf0552e10a6cdf7a4f3c345879664c25c",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/luatexbase.sty"
+    },
+    {
+      "name": "26/mathcolor.ltx",
+      "bytes": 2885,
+      "sha256": "0804bb6e9e1eeeaeda861f29206d308194ea7cc846e38abaa344cdefa1d408cd",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/mathcolor.ltx"
+    },
+    {
+      "name": "26/microtype-luatex.def",
+      "bytes": 42030,
+      "sha256": "37c46edf406c2e609f446ba263569db5f4db9fbc14a077df387575141d568d47",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/microtype-luatex.def"
+    },
+    {
+      "name": "26/microtype.cfg",
+      "bytes": 27642,
+      "sha256": "38ed6ed6c40d85163281b6d45ad9949c9566acf5f9fa03b1363e42f18b5e1258",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/microtype.cfg"
+    },
+    {
+      "name": "26/microtype.sty",
+      "bytes": 102845,
+      "sha256": "49f84ac779174f3295733b64fcf382fde6178b09c2c67c198fdf0167c2f3e71d",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/microtype.sty"
+    },
+    {
+      "name": "26/mt-LatinModernRoman.cfg",
+      "bytes": 10016,
+      "sha256": "1c4b8811b46ff22b107ce00048bba8008bdf731dcabdd91da3e08eb78d130101",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/mt-LatinModernRoman.cfg"
+    },
+    {
+      "name": "26/nameref.sty",
+      "bytes": 11459,
+      "sha256": "567afe6847e20afcd0cbc5898274b815055cf96db3bee2fc74b97b310d17f602",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/nameref.sty"
+    },
+    {
+      "name": "26/nil.ldf",
+      "bytes": 2697,
+      "sha256": "213a3ab69ec604b73289cf36922418896fb978cbf6a895332f402ecad8d10ae3",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/nil.ldf"
+    },
+    {
+      "name": "26/pd1enc.def",
+      "bytes": 14249,
+      "sha256": "6b33f39f29b44db26efbe3e173a4c30c12e5fb8f66fece93750aa616e64f4170",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/pd1enc.def"
+    },
+    {
+      "name": "26/pdfescape.sty",
+      "bytes": 19007,
+      "sha256": "b3f0e56366c11b85dae521f9a48a6fd415dec1ce8c83152fde813a9f64445b49",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/pdfescape.sty"
+    },
+    {
+      "name": "26/pdftexcmds.sty",
+      "bytes": 20089,
+      "sha256": "2df7e0bd148c99d8097352b8ac9948dccf91d61ba360dcf43f82206933b6045b",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/pdftexcmds.sty"
+    },
+    {
+      "name": "26/PropList.txt",
+      "bytes": 145465,
+      "sha256": "130dcddcaadaf071008bdfce1e7743e04fdfbc910886f017d9f9ac931d8c64dd",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/PropList.txt"
+    },
+    {
+      "name": "26/puenc.def",
+      "bytes": 117118,
+      "sha256": "2e89cb339ac037594b6eb96233e879a6aaf2fffe78e2c02325c598f664847359",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/puenc.def"
+    },
+    {
+      "name": "26/refcount.sty",
+      "bytes": 9878,
+      "sha256": "1bd5d42025520bef74f8808af99cf3f3be7d2e3774b9931bf85c11ba81bb6cab",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/refcount.sty"
+    },
+    {
+      "name": "26/rerunfilecheck.sty",
+      "bytes": 9684,
+      "sha256": "7771d8fb8f76147d1d6fc5b205c8989feb270bafccd6021570cd7e5152ead1d6",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/rerunfilecheck.sty"
+    },
+    {
+      "name": "26/ScriptExtensions.txt",
+      "bytes": 20707,
+      "sha256": "ec2107e58825a1586acee8e0911ce18260394ac8b87e535ca325f1ccbeb06bc6",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/ScriptExtensions.txt"
+    },
+    {
+      "name": "26/Scripts.txt",
+      "bytes": 192460,
+      "sha256": "9f5e50d3abaee7d6ce09480f325c706f485ae3240912527e651954d2d6b035bf",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/Scripts.txt"
+    },
+    {
+      "name": "26/size10.clo",
+      "bytes": 8448,
+      "sha256": "7a5ab9aa1794b8864e2963db211ca03b48a455c706190c7f85124c6ca9714183",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/size10.clo"
+    },
+    {
+      "name": "26/soul-ori.sty",
+      "bytes": 25493,
+      "sha256": "842e46b91b146591ebde3348a684b04fae92d46d4508482bc5036e1805e57f9c",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/soul-ori.sty"
+    },
+    {
+      "name": "26/soul.sty",
+      "bytes": 16881,
+      "sha256": "0bc2aecc16e0a261db88863dfc5e26b0745abf3fc02caa97fcd076f2e56bf940",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/soul.sty"
+    },
+    {
+      "name": "26/SpecialCasing.txt",
+      "bytes": 17049,
+      "sha256": "efc25faf19de21b92c1194c111c932e03d2a5eaf18194e33f1156e96de4c9588",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/SpecialCasing.txt"
+    },
+    {
+      "name": "26/stringenc.sty",
+      "bytes": 21514,
+      "sha256": "b134a7bba648a6987afc83ddfb6a3fcdad43bcae6b616e533eb484306d56ac45",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/stringenc.sty"
+    },
+    {
+      "name": "26/supp-pdf.mkii",
+      "bytes": 71627,
+      "sha256": "5dd3675b88c7b61d3703e6bf35ed75623acc6b163dff7b1477b485cee8ad71cb",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/supp-pdf.mkii"
+    },
+    {
+      "name": "26/trig.sty",
+      "bytes": 4023,
+      "sha256": "859a9a09eef2c2498ffe1ffc3c251c8c1d455af6961ec5088b90c191ae97e46b",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/trig.sty"
+    },
+    {
+      "name": "26/ts1enc.def",
+      "bytes": 8090,
+      "sha256": "b04bd3e5c6356522c91eb5cef7f6537f8ef78bc9a92be2d7c81688e996594dc7",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/ts1enc.def"
+    },
+    {
+      "name": "26/unicode-math-luatex.sty",
+      "bytes": 132734,
+      "sha256": "b901badb8469dc6b004d51e5fd5706f761d000972ade219b57ac01731504a94f",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/unicode-math-luatex.sty"
+    },
+    {
+      "name": "26/unicode-math-table.tex",
+      "bytes": 241443,
+      "sha256": "3976ff8f39c84b61055b1cb6851a1b2cfdefa918a2a642c954e6ceafdca7277e",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/unicode-math-table.tex"
+    },
+    {
+      "name": "26/unicode-math.sty",
+      "bytes": 1474,
+      "sha256": "91388a2e1332388bcf8393d79a9fb67f4bd197f982503297dbf971f5f7cec111",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/unicode-math.sty"
+    },
+    {
+      "name": "26/UnicodeData.txt",
+      "bytes": 2198209,
+      "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/UnicodeData.txt"
+    },
+    {
+      "name": "26/uniquecounter.sty",
+      "bytes": 7008,
+      "sha256": "9d11c81501953d689787ff14c073d2f1eda5874068db9e882b8dbbf9a9d863b0",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/uniquecounter.sty"
+    },
+    {
+      "name": "26/url.sty",
+      "bytes": 12796,
+      "sha256": "2373f56849ac606473e77053e5c1d14c92aba312b3f684e02a130eaf36f2de47",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/url.sty"
+    },
+    {
+      "name": "26/WordBreakProperty.txt",
+      "bytes": 114445,
+      "sha256": "72274cac1e6b919507db35655c3e175aa27274668a1ece95c28d2069f2ad9852",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/WordBreakProperty.txt"
+    },
+    {
+      "name": "26/xcolor.sty",
+      "bytes": 55384,
+      "sha256": "478888f8e8f00345fd645b6cdd6fa7db1e9efdd6f585b25c89bb3665d9029295",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/xcolor.sty"
+    },
+    {
+      "name": "26/xparse.sty",
+      "bytes": 10176,
+      "sha256": "0280c6a086e4fc115c66589db0c5883a3e2eded2e2e2bfdd73d947a5b8092933",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/xparse.sty"
+    },
+    {
+      "name": "3/cmmi10",
+      "bytes": 1528,
+      "sha256": "e442c5487f84df70218ff37f775c87060856f5b6e04c011b6cadbbadfcf46645",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/3/cmmi10"
+    },
+    {
+      "name": "3/cmmi5",
+      "bytes": 1508,
+      "sha256": "8839e40838381a0a3c976bdd5becf72afd60bde5a965c3d9b985c3479c6cf75e",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/3/cmmi5"
+    },
+    {
+      "name": "3/cmmi6",
+      "bytes": 1512,
+      "sha256": "ab6ecb4aaba9ca1b4259b1d1f64309a785bbaeb09183fd79a066b7764a448a28",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/3/cmmi6"
+    },
+    {
+      "name": "3/cmmi7",
+      "bytes": 1528,
+      "sha256": "ce55681703aae565f17286d800ea9780223132589bdbaeda1751b869aba26a38",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/3/cmmi7"
+    },
+    {
+      "name": "3/cmmi9",
+      "bytes": 1524,
+      "sha256": "20672649a2f07eef8fe07ccb42eeb731023e48f2e0797ecef57c0887da46c032",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/3/cmmi9"
+    },
+    {
+      "name": "3/ectt1000",
+      "bytes": 1536,
+      "sha256": "365b93b6dbeaa38c5e16d4951c35e66c15b200cb245b0259ade6181201bd54ec",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/3/ectt1000"
+    },
+    {
+      "name": "47/latinmodern-math.otf",
+      "bytes": 733736,
+      "sha256": "6075562b771f8b82f0c179e363389684f2dd09de30038269e2628e504bd7be0f",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/latinmodern-math.otf"
+    },
+    {
+      "name": "47/lmmono10-italic.otf",
+      "bytes": 63584,
+      "sha256": "14e6328a5383d2b927c47051093ce0aff60deea07e6df71b8b99ee8d9c2ff8f2",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmmono10-italic.otf"
+    },
+    {
+      "name": "47/lmmono10-regular.otf",
+      "bytes": 64684,
+      "sha256": "22deb6d3be3ffcb40b33f0e010afb256c677d97c2a2bdee1f5740cdc97751558",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmmono10-regular.otf"
+    },
+    {
+      "name": "47/lmroman10-bold.otf",
+      "bytes": 111240,
+      "sha256": "102fe06c430a8b681b2bf6876b7cd967ae4d47b4b6b41d915eb7913b726d9fb1",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmroman10-bold.otf"
+    },
+    {
+      "name": "47/lmroman10-bolditalic.otf",
+      "bytes": 118204,
+      "sha256": "c37a28eed7a6e03f792b98b5e5f637b2fcda378bb4855f99284f1a88fe35f124",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmroman10-bolditalic.otf"
+    },
+    {
+      "name": "47/lmroman10-italic.otf",
+      "bytes": 118828,
+      "sha256": "c1fce25075567bb8dbf2151658c3b442690041db17a2d49fc9e55905ea5b7169",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmroman10-italic.otf"
+    },
+    {
+      "name": "47/lmroman10-regular.otf",
+      "bytes": 111536,
+      "sha256": "1aa18cfefa58132c52ce5de70db1fd1154201c19cd2b2cdaffba4906a33e6852",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmroman10-regular.otf"
+    },
+    {
+      "name": "47/lmroman12-bold.otf",
+      "bytes": 110496,
+      "sha256": "28c8782ac2b6486958b5dc7610ada7800c53546ff7f36bc65909a876e1cd338e",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmroman12-bold.otf"
+    },
+    {
+      "name": "47/lmroman12-italic.otf",
+      "bytes": 117732,
+      "sha256": "ada6b3f451238784e5a5ea75d43efa1eb4329cd75ce65bf047ed2f31b7b5e2f3",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmroman12-italic.otf"
+    },
+    {
+      "name": "47/lmroman12-regular.otf",
+      "bytes": 110400,
+      "sha256": "e6be218ae83e61aa8a29990d3cdc401c678c1962188cb9a4a8b6359e4f5e5870",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmroman12-regular.otf"
+    },
+    {
+      "name": "47/lmroman17-regular.otf",
+      "bytes": 110248,
+      "sha256": "ed048c80fb4b67663b80899b89fe5fba17d7442e1286d61fd08fe5689c6b7c3c",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmroman17-regular.otf"
+    },
+    {
+      "name": "47/lmroman6-regular.otf",
+      "bytes": 112212,
+      "sha256": "501396c437f76c260b8724265b8495f318a640ee5a4674852ecbb20daf256696",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmroman6-regular.otf"
+    },
+    {
+      "name": "47/lmroman8-bold.otf",
+      "bytes": 112404,
+      "sha256": "04d4f633c3da31a169f4c54a7fe8c7e63925b39d030381f8d3eab955f16be7b2",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmroman8-bold.otf"
+    },
+    {
+      "name": "47/lmroman8-regular.otf",
+      "bytes": 111948,
+      "sha256": "f73015c3827596586faa380c398501caf9b5bcbb6f40b46af6a51277ca97c9fc",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmroman8-regular.otf"
+    },
+    {
+      "name": "47/lmroman9-regular.otf",
+      "bytes": 112680,
+      "sha256": "8ab7b017fc67ea0e30cbf9e7ebd940010442ea67b40cf65f87d73f3ca11b0e6f",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmroman9-regular.otf"
+    },
+    {
+      "name": "47/lmsans10-bold.otf",
+      "bytes": 107448,
+      "sha256": "a597b710326c1a8a2c7238d808e5d38711638a72a32383478db4829d63afd687",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmsans10-bold.otf"
+    },
+    {
+      "name": "47/lmsans10-boldoblique.otf",
+      "bytes": 114984,
+      "sha256": "e45673d84754a94f2f053bd4c15950b4b320144fbb622c630a26fd7b68cfabc5",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmsans10-boldoblique.otf"
+    },
+    {
+      "name": "47/lmsans10-oblique.otf",
+      "bytes": 101412,
+      "sha256": "1b38b36efc21f9d3f34edf6a13f9d71f59c41f824e790f5d3ee5ba5b4936f377",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmsans10-oblique.otf"
+    },
+    {
+      "name": "47/lmsans10-regular.otf",
+      "bytes": 95128,
+      "sha256": "d431b786b9b603662718e79cfe9b441f47a8b0b3e854dde89d5acb3ed7cfd682",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmsans10-regular.otf"
+    },
+    {
+      "name": "47/lmsans12-regular.otf",
+      "bytes": 95160,
+      "sha256": "f87ebdea035a96e8787e2c663cfcc78ce73205d37800eafe7948278e2cc7666a",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmsans12-regular.otf"
+    },
+    {
+      "name": "47/lmsans17-oblique.otf",
+      "bytes": 100500,
+      "sha256": "0f6a4450c5fc9afd3650f24ad9003684fff3252691bbf2a33be94b383db8a77c",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmsans17-oblique.otf"
+    },
+    {
+      "name": "47/lmsans17-regular.otf",
+      "bytes": 94828,
+      "sha256": "f6c395a436e4fa7e88bbf1445e64b9c78ce4effba3668b13cc433077fc71a984",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmsans17-regular.otf"
+    },
+    {
+      "name": "47/lmsans8-regular.otf",
+      "bytes": 94256,
+      "sha256": "04f0d25ca474494cb707e752170f6c22cdcb8ae2b5fb80872143e18d5cc463f8",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmsans8-regular.otf"
+    },
+    {
+      "name": "47/lmsans9-regular.otf",
+      "bytes": 94552,
+      "sha256": "80ef596460b7b402621780f7cd73a348efedc4cd2c6deca37da58f07ee61b85d",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/47/lmsans9-regular.otf"
+    },
+    {
+      "name": "51/babel-bidi-basic.lua",
+      "bytes": 13896,
+      "sha256": "886e1d0b36c3580b538cb667254f8edefada452dd78ce38d3748e9c2563d16d4",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/babel-bidi-basic.lua"
+    },
+    {
+      "name": "51/babel-data-bidi.lua",
+      "bytes": 123120,
+      "sha256": "9d86843116e51e7e823eb9778a860394694f08b6830db65608c12dab7cfb1217",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/babel-data-bidi.lua"
+    },
+    {
+      "name": "51/expl3.lua",
+      "bytes": 20671,
+      "sha256": "236915d5c91d3bb2d3b5129e9971591a56b137e671ba34b6b753d22c8604e932",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/expl3.lua"
+    },
+    {
+      "name": "51/fontloader-2023-12-28.lua",
+      "bytes": 885747,
+      "sha256": "02226780693404d7c80cd363c971082b3f56e27a255d47b17afeb8d97c140ab4",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/fontloader-2023-12-28.lua"
+    },
+    {
+      "name": "51/fontloader-basics-gen.lua",
+      "bytes": 12788,
+      "sha256": "4edd18bc02449161027855499a96f1e044cb029cf1d62cc95ea958216ab7b430",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/fontloader-basics-gen.lua"
+    },
+    {
+      "name": "51/fontspec.lua",
+      "bytes": 3093,
+      "sha256": "07d3754a64556ef6e74faf44a07bd89f910b7a3d0e8cb4c51a8af1566ebc7166",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/fontspec.lua"
+    },
+    {
+      "name": "51/l3backend-luatex.lua",
+      "bytes": 3855,
+      "sha256": "2af937e42d0018e49df1073bf7de22b87d312668b5d4556d64541980193dca9d",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/l3backend-luatex.lua"
+    },
+    {
+      "name": "51/ltluatex.lua",
+      "bytes": 24595,
+      "sha256": "eab6abcb337f88697af783d11ce26914d56d4762135acf219e9c5db811466612",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/ltluatex.lua"
+    },
+    {
+      "name": "51/lua-uni-case.lua",
+      "bytes": 1916,
+      "sha256": "0c55c6f21798aa474070a6117ed45703f30eea7f7514138e5f64e90be09139f8",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/lua-uni-case.lua"
+    },
+    {
+      "name": "51/lua-uni-normalize.lua",
+      "bytes": 21275,
+      "sha256": "c4ba2d9ea36980a8e9ef19e2dae069e6d10722a1c9bbfe9a48808006530dff3c",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/lua-uni-normalize.lua"
+    },
+    {
+      "name": "51/lua-uni-parse.lua",
+      "bytes": 2308,
+      "sha256": "2fab16ae6bdfef52b77b5d640f9a7debc075f5c97d251c9dccc24f8974f1db1b",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/lua-uni-parse.lua"
+    },
+    {
+      "name": "51/lua-uni-stage-tables.lua",
+      "bytes": 9371,
+      "sha256": "fec274b96e20bf8300b955f34638d99119bb9a829520c978ef9c8afc24e98725",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/lua-uni-stage-tables.lua"
+    },
+    {
+      "name": "51/lualatex-math.lua",
+      "bytes": 1313,
+      "sha256": "5b9ef1ab7eea2544accb2653c45839540ed8761d384ca00aa806293018654ea5",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/lualatex-math.lua"
+    },
+    {
+      "name": "51/lualatexquotejobname.lua",
+      "bytes": 1020,
+      "sha256": "bc04b2ddea7dafd084f3b51e12240d1107b10a7ea30a64f7b688ac65e4f0338d",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/lualatexquotejobname.lua"
+    },
+    {
+      "name": "51/lualibs-basic-merged.lua",
+      "bytes": 131460,
+      "sha256": "a7970784ab066597d5003ac0e35cecae64784a0e3056aed034ed22397e580c59",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/lualibs-basic-merged.lua"
+    },
+    {
+      "name": "51/lualibs-basic.lua",
+      "bytes": 2685,
+      "sha256": "937cf2975b322e3b2dd342ddd93e722a6b51c08d196e0af5bbed07b95219510c",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/lualibs-basic.lua"
+    },
+    {
+      "name": "51/lualibs-compat.lua",
+      "bytes": 603,
+      "sha256": "93c0a38d03278e68fb2aa3f7a1cea090555ddb981225a5771530e678d28301ba",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/lualibs-compat.lua"
+    },
+    {
+      "name": "51/lualibs-extended-merged.lua",
+      "bytes": 140360,
+      "sha256": "ada22ed59f683cfc3a645830201f77c2a3d4d06aaca2924297cef7192b0a9e13",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/lualibs-extended-merged.lua"
+    },
+    {
+      "name": "51/lualibs-extended.lua",
+      "bytes": 5000,
+      "sha256": "805bebd2d9063fd3103e98e764b3ed4eb3d3368d22c8fa2e15375a59d3ae07b1",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/lualibs-extended.lua"
+    },
+    {
+      "name": "51/lualibs.lua",
+      "bytes": 3780,
+      "sha256": "c64ac1bf3b572279d4ff6d44addfa4873c123759c021bbc23edc562c800adc2e",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/lualibs.lua"
+    },
+    {
+      "name": "51/luaotfload-arabic.lua",
+      "bytes": 5364,
+      "sha256": "4199a1409668abfa6d1219f19c8007d7ac89a9407cb99cd66d2e2c755e0b62e5",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-arabic.lua"
+    },
+    {
+      "name": "51/luaotfload-auxiliary.lua",
+      "bytes": 34354,
+      "sha256": "f5348e65ebc5092cc9a9987d430ee7cd621791462d8e853cc3616c63ce495b27",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-auxiliary.lua"
+    },
+    {
+      "name": "51/luaotfload-bcp47.lua",
+      "bytes": 3675,
+      "sha256": "a0f34ad794bbe70304b56e558f396e5e27322ec6625532658423c45791151275",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-bcp47.lua"
+    },
+    {
+      "name": "51/luaotfload-case.lua",
+      "bytes": 16116,
+      "sha256": "8d6028c760e0fa3a251427f991fffcbf5bc1b649dee0e6cc925375f0733d7d1e",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-case.lua"
+    },
+    {
+      "name": "51/luaotfload-colors.lua",
+      "bytes": 18373,
+      "sha256": "a564d0ef3b9abd494e77c253ee6dbb532d568878b226b4f8f15ffff6cacfc2b5",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-colors.lua"
+    },
+    {
+      "name": "51/luaotfload-configuration.lua",
+      "bytes": 34080,
+      "sha256": "fb81488992c9a23c66c5f4e589cd5ab934d7e748ceb955188bf69dded3f4b56d",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-configuration.lua"
+    },
+    {
+      "name": "51/luaotfload-database.lua",
+      "bytes": 135382,
+      "sha256": "9fb4c512243d7886c873785d1126498e7cfcfc395969593660b211d63707561a",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-database.lua"
+    },
+    {
+      "name": "51/luaotfload-embolden.lua",
+      "bytes": 1004,
+      "sha256": "f9f757abfe98513dda9fde79098c9d4f67a60b6c155307664a5845c2daaa090b",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-embolden.lua"
+    },
+    {
+      "name": "51/luaotfload-fallback.lua",
+      "bytes": 4046,
+      "sha256": "6c7c7964eff4e1a4840b90216499d4946a24aab4d7acbb27c785d8e209f1111e",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-fallback.lua"
+    },
+    {
+      "name": "51/luaotfload-features.lua",
+      "bytes": 35766,
+      "sha256": "35b4fef439e5cc6e9d7a9dfecce0b422f1cdab2d19f8258b907e0b2ec4de3b87",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-features.lua"
+    },
+    {
+      "name": "51/luaotfload-glyphlist.lua",
+      "bytes": 102502,
+      "sha256": "43d32f4089acc216e6a3e219863df132876df43a8d7399968e90a7c113c6bc90",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-glyphlist.lua"
+    },
+    {
+      "name": "51/luaotfload-harf-define.lua",
+      "bytes": 19703,
+      "sha256": "8459cb1749c853d68e4cd98fa4b4ae287c3bfdcaae9ef1eec48f656595086420",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-harf-define.lua"
+    },
+    {
+      "name": "51/luaotfload-harf-plug.lua",
+      "bytes": 42682,
+      "sha256": "4bc58e29dac3788900404097c7fc374f462d450133b57252b2da499896f07efe",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-harf-plug.lua"
+    },
+    {
+      "name": "51/luaotfload-harf-var-cff2.lua",
+      "bytes": 14125,
+      "sha256": "dee45277c6ea8da59792091a6b275eb6d13941d3b8ef4636672b2cf6cebf8021",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-harf-var-cff2.lua"
+    },
+    {
+      "name": "51/luaotfload-harf-var-t2-writer.lua",
+      "bytes": 4050,
+      "sha256": "fe54ff36fe6c14a0eb38334269a902f73501d9506ee11ea5416d266db59480e6",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-harf-var-t2-writer.lua"
+    },
+    {
+      "name": "51/luaotfload-harf-var-ttf.lua",
+      "bytes": 20524,
+      "sha256": "4857ec528bc9ec308e5c3fd75c9e50123128f765beb7fbb626605ba8038b06e4",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-harf-var-ttf.lua"
+    },
+    {
+      "name": "51/luaotfload-init.lua",
+      "bytes": 19746,
+      "sha256": "c2946e42dbb539ba61c5ea381b4c8f2a351397aa41294992c7899b8df7e6f552",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-init.lua"
+    },
+    {
+      "name": "51/luaotfload-letterspace.lua",
+      "bytes": 20221,
+      "sha256": "7a51031d7698ba4408221751688c6363c743cc58f17522ce309b34416a353aa2",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-letterspace.lua"
+    },
+    {
+      "name": "51/luaotfload-loaders.lua",
+      "bytes": 10733,
+      "sha256": "d8ee364a95311c33f91932f35fb92713e77ff1e896581402162576b49eb94039",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-loaders.lua"
+    },
+    {
+      "name": "51/luaotfload-log.lua",
+      "bytes": 11323,
+      "sha256": "129ec03517e625392724083a602b9023a601749dcd35235e083bcd8873c579b5",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-log.lua"
+    },
+    {
+      "name": "51/luaotfload-main.lua",
+      "bytes": 275,
+      "sha256": "a288ce8b68e2acbbc18bb67c2f8bdefd6a4dbf692fb68f756f2b4db56c3d0ab2",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-main.lua"
+    },
+    {
+      "name": "51/luaotfload-multiscript.lua",
+      "bytes": 15067,
+      "sha256": "5c2ddb0ca04537c754496c3cd4ef3c00cc53bb329c3e56d1833d19b8b7a75792",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-multiscript.lua"
+    },
+    {
+      "name": "51/luaotfload-names.lua",
+      "bytes": 3406791,
+      "sha256": "197995236dd4409d1fc8d62052a0e3469431d36474328f674175f0cb7530e0de",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-names.lua"
+    },
+    {
+      "name": "51/luaotfload-notdef.lua",
+      "bytes": 12258,
+      "sha256": "357b38767fd2a00bf7105b04ae1019c12662643eaa4cef1098556c7bd98df462",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-notdef.lua"
+    },
+    {
+      "name": "51/luaotfload-parsers.lua",
+      "bytes": 30438,
+      "sha256": "d20a610d1e7c0b55e5cf1a2cae9c468971b94346a6b578ff83fd17accb65f0c0",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-parsers.lua"
+    },
+    {
+      "name": "51/luaotfload-realpath.lua",
+      "bytes": 4692,
+      "sha256": "720e7e8ff2c8ffbc8d980f718038a07679e39df176d410f8b86bc0da1e78d559",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-realpath.lua"
+    },
+    {
+      "name": "51/luaotfload-resolvers.lua",
+      "bytes": 11210,
+      "sha256": "24e3d5289b3de153358c51a7787a5be45495c2bb3d38d8c7c97685bad682ae57",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-resolvers.lua"
+    },
+    {
+      "name": "51/luaotfload-scripts.lua",
+      "bytes": 2506,
+      "sha256": "0dd54d6c16f4760348fdb69481a7dff14e8c9c9866ceba75109ec90ada8d1c62",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-scripts.lua"
+    },
+    {
+      "name": "51/luaotfload-status.lua",
+      "bytes": 6041,
+      "sha256": "7ab746ef65ad8292b5fd2bf603cfaa5239a317e6afb8d1f7caac89dde36f54b6",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-status.lua"
+    },
+    {
+      "name": "51/luaotfload-suppress.lua",
+      "bytes": 2582,
+      "sha256": "b2cce5bc790c5666595b09112f3eac7c597e017b20609bbaeeb09c2fce697d27",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-suppress.lua"
+    },
+    {
+      "name": "51/luaotfload-szss.lua",
+      "bytes": 6309,
+      "sha256": "357d81680d2d58f687c9bc25539382dcc962d21642056108f6232e2b6b5faf55",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-szss.lua"
+    },
+    {
+      "name": "51/luaotfload-tounicode.lua",
+      "bytes": 7529,
+      "sha256": "2ef62facf487caf703e12e0a8884dff599c1d055731ae5cbcdf37157764c8ea7",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-tounicode.lua"
+    },
+    {
+      "name": "51/luaotfload-unicode.lua",
+      "bytes": 7918,
+      "sha256": "53f2e6f79279364a8749fc64b2d542f6d831ae3eae1ad800899bcf9b87f3d4a5",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload-unicode.lua"
+    },
+    {
+      "name": "51/luaotfload.lua",
+      "bytes": 13566,
+      "sha256": "33adcff01fe3c655eb7acb476fcb91171e4f6bf394bda3eecac68682634d6128",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/luaotfload.lua"
+    },
+    {
+      "name": "51/microtype.lua",
+      "bytes": 6658,
+      "sha256": "9b8649bc77892b89d5f20ffd7e0393101b36e1a0191c94255709bae2b6a3de69",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/microtype.lua"
+    },
+    {
+      "name": "51/pdftexcmds.lua",
+      "bytes": 9447,
+      "sha256": "872a8889c423ec55c119f78055c7b92768af2fc8d480d44d04899581e347a363",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/51/pdftexcmds.lua"
+    }
+  ]
+}
