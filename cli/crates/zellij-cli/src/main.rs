@@ -39,6 +39,7 @@ mod railway;
 mod rich_build;
 mod s3;
 mod site_authoring;
+mod source_package;
 mod templates;
 mod user_home;
 mod validation;

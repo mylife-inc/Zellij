@@ -555,7 +555,7 @@ pub(crate) enum Command {
     /// Upgrade this executable from the stable Zellij GitHub release channel.
     Upgrade(UpgradeArgs),
 
-    /// Extract an editable wrapper and bundled engine from a container image.
+    /// Create an editable wrapper from cached sources, or an explicitly selected image.
     Eject(EjectArgs),
 
     /// Select portable or hosted rendering features.
@@ -1134,9 +1134,12 @@ pub(crate) struct NewAppArgs {
     /// Filled from the global selector after command/shortcut normalization.
     #[arg(skip)]
     pub(crate) site_root: Option<SiteInput>,
-    /// Built local @shebka/zellij package; defaults to ./engine/packages/zellij.
+    /// Built local engine override; otherwise download/cache the matching editable package.
     #[arg(long)]
     pub(crate) engine: Option<String>,
+    /// Use only an already verified source cache (local --engine also works offline).
+    #[arg(long)]
+    pub(crate) offline: bool,
     /// Display name for the app/starter; the npm name is normalized separately.
     #[arg(long)]
     pub(crate) name: Option<String>,
@@ -1156,12 +1159,15 @@ pub(crate) struct EjectArgs {
     /// New or empty destination for the editable wrapper and vendor/zellij engine.
     #[arg(long)]
     pub(crate) out: String,
-    /// Keep the image's starter content at docs/zellij/content.
+    /// Keep the distribution's starter content at docs/zellij/content.
     #[arg(long)]
     pub(crate) with_docs: bool,
-    /// Selected distribution; overrides ZELLIJ_IMAGE.
+    /// Extract from this stopped container image instead of downloading sources; overrides ZELLIJ_IMAGE.
     #[arg(long)]
     pub(crate) image: Option<String>,
+    /// Use only the verified source cache; incompatible with explicit image extraction.
+    #[arg(long, conflicts_with = "image")]
+    pub(crate) offline: bool,
 }
 
 #[derive(clap::Args, Debug, PartialEq, Eq)]

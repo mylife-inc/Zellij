@@ -319,6 +319,11 @@ publication uses the container runtime. Static Netlify, Cloudflare Pages,
 Vercel, GitHub Pages and S3 deployment uses native uploads after either a native
 portable build or a cached rich build.
 
+Upcoming rc.19 also generates default `eject` and `new app` wrappers from a
+separate [editable-source cache](/cli/eject#cached-sources-and-offline-use), with
+no container or Node/npm needed for generation. Explicit image ejection retains
+its selected-container behavior; running an editable Next app needs Node/npm.
+
 Container-dependent operations stop with exit code 4 and setup guidance if no
 usable runtime is available. Docker, Podman and nerdctl are supported discovery
 candidates. No software is installed and no renderer is changed automatically.

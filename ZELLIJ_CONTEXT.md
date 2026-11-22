@@ -5,8 +5,29 @@ tests only. Keep third-party project identities, local case studies and delivery
 details out of tracked files, pull requests, release notes, logs and artifacts.
 External test projects are not Zellij deliverables or product backlog.
 
-Last refreshed: **2026-11-21**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-22**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
+
+**2026-11-22: cached editable sources — candidate rc.19 in progress**
+
+Default `eject` and `new app` now use a separate verified, version-matched
+source archive under `$ZELLIJ_HOME/cache/sources/<version>/`. Generation needs
+no Docker, Node/npm or Python; the resulting editable Next app still needs
+its development tools. Outputs receive independent vendored engine copies.
+Explicit `eject --image` / `ZELLIJ_IMAGE` and `new app --engine` retain their
+selected-image/local-engine semantics. `--offline` and the wizard's `cached`
+engine answer are documented. Generated CI introductory comments now describe
+the existing web-only cache behavior accurately. Public rc.18 stays unchanged.
+
+Local empty-PATH cold/offline generation, integrity/failure/cancellation and a
+real installed wrapper's strict validation, typecheck, production build and
+HTTP/search checks pass. Four cache unit tests and 12 local-engine/wizard
+regressions pass. Normal preflight, six-platform and public-package gates are
+still in progress; this is not yet a publication receipt. Initial fixture,
+compile and lint findings are retained in the
+[implementation record](specs/zellij-cached-editable-sources-2026-11-22.md).
+Optional PDF/Next development packages and historical browser timing findings
+remain open; no provider/catalog acceptance or retirement is included.
 
 **2026-11-21: rc.18 — cached HTTP rendering and static validation released**
 

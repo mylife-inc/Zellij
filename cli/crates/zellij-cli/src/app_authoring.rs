@@ -45,8 +45,11 @@ pub(crate) fn plan(options: &NewAppArgs) -> Result<NewAppArgs> {
     if options.engine.is_none() {
         loop {
             let answer = prompt
-                .ask("Built engine package", Some("engine/packages/zellij"))?
-                .unwrap_or_else(|| "engine/packages/zellij".into());
+                .ask("Built engine package (or cached)", Some("cached"))?
+                .unwrap_or_else(|| "cached".into());
+            if answer == "cached" {
+                break;
+            }
             match app::resolve_engine(&answer, &out) {
                 Ok(engine) => {
                     planned.engine = Some(engine.into_string());
