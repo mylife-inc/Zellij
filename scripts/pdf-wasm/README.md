@@ -27,7 +27,8 @@ node scripts/pdf-wasm/check.mjs
 
 `check.mjs` uses only repository-owned manuscripts: all three book editions,
 equations, statements, bibliography, glossary/index, Arabic RTL, and French,
-German and Spanish. It writes PDFs, typesetter logs and experimental receipts
+German and Spanish, plus a 100-chapter book across two parts. It writes PDFs,
+typesetter logs and experimental receipts
 under `test-results/pdf-wasm`. It refuses to overwrite outputs. Remove or move
 only those generated test outputs before intentionally repeating the check.
 

@@ -10,6 +10,18 @@ Last refreshed: **2026-11-22**. Initial review baseline: local `main` at
 
 **2026-11-22: optional cached PDF groundwork — not released**
 
+The hardened probe at `7ef0da7` passes all six targets in `45083051248`:
+96 manuscript cases / 288 passes and ten regressions per target, all on private
+runtime version Node 24.22.3. Linux again compares 145 identical page rasters.
+PR #242 merges as `d738c6f`, with an identical tree to tested `7ef0da7`;
+all 37 required source jobs pass in `45083051154`.
+A subsequent 100-chapter stress test exposed a shared contents-column overflow
+in both the native renderer and prototype. The installed rc.19 CLI reproduces
+it; source fix `6923a14` measures the column in the selected print font. The
+compact 110-page regression passes both backends locally. See the
+[long-book record](specs/zellij-long-book-contents-2026-11-22.md) for scope and
+current verification. This does not complete the cached PDF backend.
+
 The next cache migration is PDF. A reproducible offline LuaHBTeX WebAssembly
 probe preserves the observed classic/Arabic layout using a separate optional
 resource inventory; it is not connected to `zel pdf`. Published rc.19 still

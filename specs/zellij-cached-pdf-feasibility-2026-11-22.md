@@ -99,6 +99,28 @@ or uploaded as CI artifacts.
   here. It contains source/build records; this check does not replace a clean
   rebuild or the separate TeX-resource/font licensing review.
 
+## Hardened follow-up and large-book finding
+
+Probe run `45083051248` at `7ef0da7` passes all six targets with Node 24.22.3:
+96 manuscript cases, 288 typesetting passes and all ten regressions per target.
+Linux's 145 page rasters remain identical to native output.
+All 37 required source jobs pass in `45083051154`. PR #242 merges as
+`d738c6f`, identical in tree to tested `7ef0da7`. The conditional WinGet binary
+job is skipped, not counted as a pass. No new CLI candidate is released.
+
+The full three-pass version of the original 100-chapter stress test does not
+publish: chapter number 100 overflows the fixed-width contents column. All
+passes remain within the heap bound, but both the native backend and prototype
+correctly fail strict layout validation. The earlier one-pass result remains
+only a size probe. Source fix `6923a14` and a compact 110-page real-typesetting
+regression are documented in the [long-book record](zellij-long-book-contents-2026-11-22.md).
+
+All 195 locked TeX/font resources match the immutable mirror's provenance
+manifest (`4ea93f54f4a12530ecf1565b03f6d223ce3434a28c4e3e5c705930e957ff9451`):
+193 package files from 58 packages and two generated font-metadata files.
+This checks byte identity and the available upstream package mapping; the
+complete component notices and redistribution review remain unfinished.
+
 ## Remaining before release
 
 Complete resource coverage and component/font licensing, verify/provide exact
