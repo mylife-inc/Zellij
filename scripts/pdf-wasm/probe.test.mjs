@@ -66,13 +66,30 @@ test('virtual file growth is bounded before a large sparse allocation', { timeou
   await assert.rejects(runPass(bundle, tex(`\\directlua{
     local f = assert(io.open('large.bin', 'w'))
     f:seek('set', 536870912); f:write('x'); f:close()
-  }`)), /virtual filesystem budget exceeded/);
+  }After the sparse write.`)), /virtual filesystem budget exceeded/);
+});
+
+test('first writes to many new files share the filesystem budget', { timeout: 60_000 }, async () => {
+  await assert.rejects(runPass(bundle, tex(`\\directlua{
+    local chunk = string.rep('x', 8388608)
+    for i = 1, 40 do
+      local f = assert(io.open('newfile' .. i, 'w'))
+      f:setvbuf('no'); f:write(chunk); f:close()
+    end
+  }After the first writes.`)), /virtual filesystem budget exceeded/);
 });
 
 test('console growth is bounded', { timeout: 60_000 }, async () => {
   await assert.rejects(runPass(bundle, tex(`\\directlua{
     for i = 1, 1100 do texio.write_nl('term', string.rep('x', 8192)) end
   }`), 30_000, 32 * 1024), /log budget exceeded/);
+});
+
+test('an unterminated console line is bounded before buffering it', { timeout: 60_000 }, async () => {
+  await assert.rejects(runPass(bundle, tex(`\\directlua{
+    io.stdout:setvbuf('no')
+    io.stdout:write(string.rep('x', 65536)); io.stdout:flush()
+  }After console output.`), 30_000, 32 * 1024), /log budget exceeded \(raw console\)/);
 });
 
 test('guest heap exhaustion fails instead of growing without limit', { timeout: 60_000 }, async () => {

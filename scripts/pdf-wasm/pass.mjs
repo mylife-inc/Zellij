@@ -85,18 +85,42 @@ function setup() {
   // Count capacity rather than used length; unlinking does not reset the budget.
   const capacities = new Map();
   let total = 0;
+  function reserve(node, size) {
+    const old = capacities.get(node) || 0;
+    // Emscripten expands geometrically. Reserve twice the requested storage.
+    const reserved = Math.max(old, size * 2);
+    if (!Number.isSafeInteger(size) || size < 0 || size > fileLimit || total + reserved - old > fsLimit) {
+      throw violation('PDF probe virtual filesystem budget exceeded');
+    }
+    total += reserved - old;
+    capacities.set(node, reserved);
+  }
   for (const name of ['expandFileStorage', 'resizeFileStorage']) {
     const original = context.MEMFS[name];
     context.MEMFS[name] = (node, size) => {
-      const old = capacities.get(node) || 0;
-      // Emscripten expands geometrically. Reserve twice the requested storage.
-      const reserved = Math.max(old, size * 2);
-      if (!Number.isSafeInteger(size) || size < 0 || size > fileLimit || total + reserved - old > fsLimit) {
-        throw violation('PDF probe virtual filesystem budget exceeded');
-      }
-      total += reserved - old;
-      capacities.set(node, reserved);
+      reserve(node, size);
       return original(node, size);
+    };
+  }
+  // MEMFS can copy an entire first write without calling either growth helper.
+  // Existing file nodes share the cached operation table created by staticInit.
+  const write = context.MEMFS.stream_ops.write;
+  const boundedWrite = (stream, buffer, offset, length, position, canOwn) => {
+    reserve(stream.node, Math.max(stream.node.usedBytes, position + length));
+    return write(stream, buffer, offset, length, position, canOwn);
+  };
+  context.MEMFS.stream_ops.write = boundedWrite;
+  context.MEMFS.ops_table.file.stream.write = boundedWrite;
+  // Count terminal bytes before Emscripten buffers an unterminated line. The
+  // print callback alone cannot bound that buffer until it sees a newline.
+  let consoleBytes = 0;
+  for (const ops of [context.TTY.default_tty_ops, context.TTY.default_tty1_ops]) {
+    const putChar = ops.put_char;
+    ops.put_char = (tty, byte) => {
+      if (byte !== null && byte !== undefined && byte !== 0 && ++consoleBytes > logLimit) {
+        throw violation('PDF probe log budget exceeded (raw console)');
+      }
+      return putChar(tty, byte);
     };
   }
   context.FS.mkdir('/work');

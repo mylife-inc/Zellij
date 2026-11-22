@@ -27,7 +27,7 @@ jobs:
           workspaces: cli
       - uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version: 24.22.3
       - run: cargo build --locked -p zellij-cli
         working-directory: cli
       - run: cargo build --locked -p zellij-docs --example pdf_probe_inputs
