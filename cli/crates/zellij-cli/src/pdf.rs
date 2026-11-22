@@ -177,9 +177,17 @@ fn typeset(
     }
     let runtime=zellij_engine::runtime::detect().map_err(|e| Error::NoEngine { reason: format!("PDF requires a running Docker, Podman or nerdctl Linux runtime. {e}\nUse `zel build --no-pdf` for a native web-only build. No runtime was installed or started.") })?;
     let rootless = runtime.rootless()?;
+    // VM-backed runtimes may share the output folder but not the OS temporary
+    // directory (for example macOS /var/folders with Colima). Stage only the
+    // generated print inputs beside the output so both mounts use that share.
     let temp = tempfile::Builder::new()
         .prefix("zel-pdf-input-")
-        .tempdir()?;
+        .tempdir_in(
+            prepared
+                .destination
+                .parent()
+                .ok_or_else(|| failed("PDF output has no parent directory"))?,
+        )?;
     let input =
         Utf8Path::from_path(temp.path()).ok_or_else(|| failed("temporary path is not UTF-8"))?;
     files::write_files(

@@ -210,6 +210,43 @@ fn container_contract_receipt_cleanup_and_failure_preservation() {
 }
 
 #[cfg(unix)]
+#[test]
+fn pdf_inputs_share_the_output_filesystem_and_are_removed_after_execution() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    site(root);
+    runtime(root);
+    let shared = root.join("shared");
+    let unshared = root.join("unshared-system-temp");
+    fs::create_dir(&shared).unwrap();
+    fs::create_dir(&unshared).unwrap();
+    for exit in ["0", "1"] {
+        let result = command(root)
+            .env_remove("CONTAINER_HOST")
+            .env("TMPDIR", &unshared)
+            .env("PDF_EXIT", exit)
+            .args(["pdf", "--out", "shared/pdf"])
+            .output()
+            .unwrap();
+        assert_eq!(result.status.success(), exit == "0", "{result:?}");
+        let argv = fs::read_to_string(root.join("arguments")).unwrap();
+        let input = Path::new(
+            argv.lines()
+                .find_map(|line| line.strip_suffix(":/input:ro"))
+                .expect("read-only generated inputs"),
+        );
+        assert!(
+            input.starts_with(shared.canonicalize().unwrap()),
+            "PDF inputs must use the output's shared filesystem: {}",
+            input.display()
+        );
+        assert!(!input.exists(), "generated inputs retained after execution");
+        assert_eq!(fs::read_dir(&shared).unwrap().count(), 1);
+        assert!(shared.join("pdf/book.pdf").is_file());
+    }
+}
+
+#[cfg(unix)]
 fn runtime(root: &Path) {
     use std::os::unix::fs::PermissionsExt;
     fs::create_dir(root.join("bin")).unwrap();
