@@ -68,14 +68,14 @@ jobs:
         if: inputs.version == ''
       - run: npx playwright install --with-deps chromium
         if: inputs.version == '' || steps.capability.outputs.available == 'true'
-      - name: Build the matching website engine
+      - name: Prepare the matching cached website renderer
         if: inputs.version == ''
-        run: docker build -f docker/base.Dockerfile -t zellij-websites-ci .
+        run: |
+          node scripts/build-standalone-engine.mjs
+          node scripts/prepare-standalone-test-cache.mjs "$RUNNER_TEMP/current-renderer"
+          printf 'ZEL_ENGINE_CACHE=%s\n' "$RUNNER_TEMP/current-renderer" >> "$GITHUB_ENV"
       - name: Build and inspect website templates and navigation
         if: inputs.version == ''
-        env:
-          DOCKER_CONTEXT: default
-          ZELLIJ_IMAGE: zellij-websites-ci
         run: node scripts/check-website-release.mjs
       - name: Verify public CLI and website templates
         if: inputs.version != '' && steps.capability.outputs.available == 'true'

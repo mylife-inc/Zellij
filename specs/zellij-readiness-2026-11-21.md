@@ -1,5 +1,10 @@
 # Zellij readiness — 21 November 2026
 
+Unreleased source update: cached HTTP build/preview and static deployment build
+stages are implemented and undergoing final package/hosted acceptance; see the
+[HTTP migration record](zellij-cached-http-export-2026-11-21.md). Public rc.17
+is unchanged.
+
 This is the current checkpoint for the older completion and expansion records.
 Their rc.6–rc.11 statements are dated history, including statements that
 production documentation or later print/composer features were still pending.

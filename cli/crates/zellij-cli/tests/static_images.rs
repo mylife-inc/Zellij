@@ -1,6 +1,8 @@
 //! Build-context and failure tests without a daemon. Actual image HTTP behavior
 //! is tested by scripts/check-static-images.mjs in container acceptance.
 #![cfg(unix)]
+#[path = "support/cached_renderer.rs"]
+mod cached_renderer;
 use std::{fs, os::unix::fs::PermissionsExt, path::Path, process::Command};
 
 fn command(root: &Path) -> Command {
@@ -463,7 +465,7 @@ fn hosted_dockerfiles_apply_features_without_a_runtime_and_portable_static_rejec
 }
 
 #[test]
-fn hosted_folder_build_selects_features_before_install_and_preserves_previous_export_on_failure() {
+fn cached_http_build_selects_features_and_preserves_previous_export_on_failure() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();
     fixture(root);
@@ -473,13 +475,8 @@ fn hosted_folder_build_selects_features_before_install_and_preserves_previous_ex
     )
     .unwrap();
     fs::write(root.join("docs/zellij/content/site.yaml"), "name: Hosted\n").unwrap();
-    let script = fs::read_to_string(root.join("bin/docker"))
-        .unwrap()
-        .replace(
-            "  *) exit 99;;",
-            "  run) printf '%s\\n' \"$@\" > run-args; exit 1;;\n  *) exit 99;;",
-        );
-    fs::write(root.join("bin/docker"), script).unwrap();
+    cached_renderer::install(root);
+    fs::write(root.join("engine-report"), "unused build-failure report").unwrap();
     // Own the previous export with the actual native writer, avoiding a fake marker.
     let export = root.join("owned-output");
     let content = camino::Utf8Path::from_path(&root.join("docs/zellij/content"))
@@ -490,7 +487,10 @@ fn hosted_folder_build_selects_features_before_install_and_preserves_previous_ex
     fs::write(stage.directory.join("index.html"), "previous").unwrap();
     stage.publish().unwrap();
     for features in ["all", "none"] {
-        let out = command(root)
+        let mut cmd = command(root);
+        cached_renderer::configure(&mut cmd, root);
+        let out = cmd
+            .env("FAKE_EXIT", "1")
             .args([
                 "build",
                 "--target",
@@ -503,17 +503,19 @@ fn hosted_folder_build_selects_features_before_install_and_preserves_previous_ex
             .output()
             .unwrap();
         assert_eq!(out.status.code(), Some(3), "{out:?}");
-        let args = fs::read_to_string(root.join("run-args")).unwrap();
-        let selected = if features == "all" {
-            "maths,diagrams"
-        } else {
-            "none"
-        };
-        assert!(
-            args.find(&format!("features \"{selected}\" /app &&"))
-                .unwrap()
-                < args.find("npm install").unwrap()
+        let request: serde_json::Value =
+            serde_json::from_slice(&fs::read(root.join("request")).unwrap()).unwrap();
+        assert_eq!(request["operation"], "build");
+        assert_eq!(request["target"], "static");
+        assert_eq!(
+            request["features"],
+            if features == "all" {
+                serde_json::json!(["maths", "diagrams"])
+            } else {
+                serde_json::json!([])
+            }
         );
+        assert!(!root.join("run-args").exists());
         assert_eq!(
             fs::read_to_string(export.join("index.html")).unwrap(),
             "previous"

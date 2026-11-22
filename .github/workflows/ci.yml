@@ -351,10 +351,12 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run build --workspace @shebka/zellij
-      - run: docker build --progress=plain -f docker/base.Dockerfile -t zellij-ci .
+      - name: Prepare the current cached renderer
+        run: |
+          node scripts/build-standalone-engine.mjs
+          node scripts/prepare-standalone-test-cache.mjs "$RUNNER_TEMP/current-renderer"
+          printf 'ZEL_ENGINE_CACHE=%s\n' "$RUNNER_TEMP/current-renderer" >> "$GITHUB_ENV"
       - name: Export templates and verify pages, palettes, keyboard and no-JavaScript layouts
-        env:
-          ZELLIJ_IMAGE: zellij-ci
         run: node scripts/check-site-templates.mjs cli/target/debug/zel "$RUNNER_TEMP/site-template-exports" --build --browser
       - uses: actions/upload-artifact@v7
         if: always()
@@ -459,7 +461,7 @@ jobs:
           ZELLIJ_IMAGE: zellij-ci
         working-directory: cli
         run: |
-          acceptance_test=netlify::tests::hosted_container_export_upload_preserves_prefix_assets_and_previous_output
+          acceptance_test=netlify::tests::hosted_cached_export_upload_preserves_prefix_assets_and_previous_output
           cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --list | grep -F "$acceptance_test: test"
           cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --nocapture
 

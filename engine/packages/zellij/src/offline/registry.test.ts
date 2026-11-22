@@ -2,10 +2,10 @@ import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { expect, it } from 'vitest';
 import { components } from './registry';
-it('covers every interactive engine component, with explicit HTTP-only omissions', () => {
+it('covers every interactive engine component, with the development-only omission', () => {
   const root = path.resolve('src');
   const names = new Set(Object.keys(components));
-  const omitted = new Set(['Analytics', 'DevelopmentReload']);
+  const omitted = new Set(['DevelopmentReload']);
   for (const file of readdirSync(root, { recursive: true }).map(String).filter(name => name.endsWith('.tsx'))) {
     const text = readFileSync(path.join(root, file), 'utf8');
     if (!/^\s*['"]use client['"]/.test(text)) continue;

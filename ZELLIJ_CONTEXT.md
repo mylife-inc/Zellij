@@ -8,6 +8,19 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-21**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-21: cached HTTP export — source migration in progress**
+
+The renderer now has an explicit HTTP mode. Static build/view and the five
+native static-deployment adapters use the verified cache, preserving HTTP
+links/prefixes, redirects, metadata, analytics and staged-output behavior.
+File mode remains the double-click target. New workflow pins (rc.18+) omit
+Docker for web-only delivery; older pins, image/PDF operations and Next dev
+retain their existing prerequisites. Local Rust/engine, browser-preview and
+synthetic-provider checks pass; package/hosted acceptance remains in progress.
+See the [HTTP implementation record](specs/zellij-cached-http-export-2026-11-21.md).
+Public rc.17 has not been changed. The earlier validation step is commit
+`e82a586` in PR #234; its hosted acceptance is being followed to completion.
+
 **2026-11-21: cached static validation — source migration in progress**
 
 Static `check`/`watch` and optional hosted import validation now use the same

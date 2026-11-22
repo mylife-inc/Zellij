@@ -340,24 +340,7 @@ fn build_and_deploy(
     if site.renderer == Renderer::Portable {
         crate::images::require_native_options(options)?;
     }
-    let engine = match site.renderer {
-        Renderer::Hosted => Some(zellij_engine::ContainerEngine::detect(None)?),
-        Renderer::Portable => None,
-    };
-    let mut temporary_builder = tempfile::Builder::new();
-    temporary_builder.prefix(".zel-deploy-");
-    let temporary = if engine.is_some() {
-        // Keep the bind-mounted export beside the selected content: runtimes
-        // such as Colima may share the user's project but not the OS temp dir.
-        // A sibling also stays outside legacy raw-content roots.
-        temporary_builder.tempdir_in(content.parent().ok_or_else(|| {
-            zellij_core::Error::InvalidArgument(
-                "hosted deployment requires a content folder below the filesystem root".into(),
-            )
-        })?)?
-    } else {
-        temporary_builder.tempdir()?
-    };
+    let temporary = tempfile::Builder::new().prefix("zel-deploy-").tempdir()?;
     let export = Utf8Path::from_path(temporary.path())
         .ok_or_else(|| {
             zellij_core::Error::InvalidArgument("temporary directory is not UTF-8".into())
@@ -365,9 +348,22 @@ fn build_and_deploy(
         .join("site");
     zellij_core::statusln!("Building static site…");
     let build = || -> Result<String> {
-        match engine {
-            Some(engine) => engine.build_for_deployment_with_options(content, &export, options),
-            None => {
+        match site.renderer {
+            Renderer::Hosted => {
+                let prepared = crate::rich_build::prepare(
+                    crate::rich_build::Target::Static,
+                    content,
+                    &export,
+                    options,
+                    false,
+                    None,
+                )?
+                .ok_or(zellij_core::Error::BuildFailed)?;
+                let prefix = prepared.base_path.clone();
+                prepared.publish_for_deployment()?;
+                Ok(prefix)
+            }
+            Renderer::Portable => {
                 let report = crate::pdf::build_to(
                     &site.input,
                     &export,

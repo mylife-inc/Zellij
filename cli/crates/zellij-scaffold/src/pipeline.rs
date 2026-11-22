@@ -65,7 +65,9 @@ pub struct CiOptions {
 
 fn requires_docker(options: &CiOptions) -> bool {
     options.pdf == Some(true)
-        || options.renderer == zellij_core::site::Renderer::Hosted
+        || (options.renderer == zellij_core::site::Renderer::Hosted
+            && !semver::Version::parse(options.version.trim_start_matches('v'))
+                .is_ok_and(|v| v >= semver::Version::parse("0.2.0-rc.18").unwrap()))
         || matches!(
             options.publish,
             Publish::Image { .. }
@@ -742,6 +744,32 @@ mod tests {
     }
     fn parse(options: &CiOptions) -> Value {
         serde_yaml_ng::from_str(&github(options).unwrap()).unwrap()
+    }
+    #[test]
+    fn cached_http_versions_drop_only_the_web_runtime_requirement() {
+        for (version, docker) in [
+            ("0.2.0-rc.17", true),
+            ("0.2.0-rc.18", false),
+            ("0.2.0", false),
+        ] {
+            let mut opts = options(Publish::Netlify { site_id: None });
+            opts.renderer = zellij_core::site::Renderer::Hosted;
+            opts.version = version.into();
+            assert_eq!(requires_docker(&opts), docker);
+            for workflow in [
+                github(&opts).unwrap(),
+                gitlab(&opts).unwrap(),
+                circle(&opts).unwrap(),
+            ] {
+                assert_eq!(workflow.contains("docker info"), docker);
+                assert!(workflow.contains("--target static"));
+            }
+            opts.publish = Publish::Image {
+                kind: ImageKind::Static,
+                tag: "ghcr.io/acme/docs:v1".into(),
+            };
+            assert!(requires_docker(&opts));
+        }
     }
     #[test]
     fn generated_jobs_select_and_preflight_only_required_docker_runtimes() {

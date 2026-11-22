@@ -1,6 +1,5 @@
 //! Native static preview orchestration; build and serve share their normal paths.
 use zellij_core::site::SiteInput;
-mod hosted;
 mod rich;
 use std::{
     io::{self, Write},
@@ -62,9 +61,9 @@ pub fn view(dir: Option<&SiteInput>, options: ViewOptions<'_>) -> Result<()> {
     } else {
         zellij_core::site::Renderer::Hosted
     })?;
-    if options.offline && target != "file" {
+    if options.offline && target == "portable" {
         return Err(zellij_core::Error::InvalidArgument(
-            "--offline applies to standalone rich preview (--target file)".into(),
+            "--offline applies to cached rich preview (--target file or static)".into(),
         ));
     }
     if target != "portable" && !site.configured {
@@ -74,10 +73,10 @@ pub fn view(dir: Option<&SiteInput>, options: ViewOptions<'_>) -> Result<()> {
         site.input = crate::resolve_content(&selected)?.into();
     }
     if target == "file" {
-        return rich::view(site, options);
+        return rich::view(site, options, crate::rich_build::Target::File);
     }
     if target == "static" {
-        return hosted::view(site, options);
+        return rich::view(site, options, crate::rich_build::Target::Static);
     }
     // Reserve before writing output, so a bind failure cannot replace a site.
     let socket = listener_on(options.host, options.port.unwrap_or(site.port))?;

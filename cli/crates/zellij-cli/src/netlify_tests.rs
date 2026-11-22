@@ -560,8 +560,8 @@ fn invalid_exports_fail_before_creating_a_deployment() {
 }
 
 #[test]
-#[ignore = "requires an already running container runtime and the checkout's engine image; CI runs it explicitly"]
-fn hosted_container_export_upload_preserves_prefix_assets_and_previous_output() {
+#[ignore = "requires this checkout's prepared renderer cache; CI runs it explicitly"]
+fn hosted_cached_export_upload_preserves_prefix_assets_and_previous_output() {
     let tmp = tempfile::tempdir().unwrap();
     let root = Utf8Path::from_path(tmp.path()).unwrap();
     write(root, "zel.yaml", "version: 1\nrenderer: hosted\n");
@@ -608,8 +608,8 @@ fn hosted_container_export_upload_preserves_prefix_assets_and_previous_output() 
                 })
                 .count();
             assert_eq!(
-                stages, 1,
-                "hosted export must use the project's shared filesystem"
+                stages, 0,
+                "cached export staging must not require a shared project mount"
             );
             let body: Value = serde_json::from_slice(&request.body).unwrap();
             assert_eq!(body["draft"], true);
@@ -693,9 +693,9 @@ fn hosted_container_export_upload_preserves_prefix_assets_and_previous_output() 
         || path.ends_with("site.yaml")));
     let home = String::from_utf8_lossy(&bytes[&files["/products/.docs/index.html"]]);
     assert!(home.contains("Netlify acceptance"));
-    // Next's exported redirect instruction stores the route without basePath;
-    // its client router applies the prefix. This is not a rendered anchor.
-    assert!(home.contains("NEXT_REDIRECT;replace;/manual;307;"));
+    // HTTP redirects must work without a framework router or JavaScript.
+    assert!(home.contains("http-equiv=\"refresh\" content=\"0;url=/products/.docs/manual"));
+    assert!(home.contains("href=\"/products/.docs/manual\""));
     assert!(home.contains("/products/.docs"));
     // Check actual links/assets in the rendered guide, not the redirect page.
     let manual = String::from_utf8_lossy(&bytes[&files["/products/.docs/manual.html"]]);
@@ -718,7 +718,7 @@ fn hosted_container_export_upload_preserves_prefix_assets_and_previous_output() 
     assert!(
         files
             .keys()
-            .any(|path| path.contains("/_next/") && path.ends_with(".js"))
+            .any(|path| path.ends_with("/_zellij/static/runtime.js"))
     );
     assert!(
         files

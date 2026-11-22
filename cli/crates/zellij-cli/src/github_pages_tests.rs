@@ -783,7 +783,7 @@ fn portable_delivery_preserves_source_and_previous_output_and_preflights_before_
 }
 
 #[test]
-#[ignore = "requires an already running container runtime and the checkout's engine image; CI runs it explicitly"]
+#[ignore = "requires this checkout's prepared renderer cache; CI runs it explicitly"]
 fn hosted_export_uses_pages_mount_and_preserves_assets_source_and_previous_output() {
     let temp = tempfile::tempdir().unwrap();
     let r = root(&temp);
@@ -837,7 +837,7 @@ fn hosted_export_uses_pages_mount_and_preserves_assets_source_and_previous_outpu
     assert!(
         files
             .keys()
-            .any(|p| p.starts_with("_next/") && p.ends_with(".js"))
+            .any(|p| p.as_str() == "_zellij/static/runtime.js")
     );
     assert_eq!(
         std::fs::read_to_string(r.join("site/previous.txt")).unwrap(),

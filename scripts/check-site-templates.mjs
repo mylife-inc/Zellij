@@ -12,7 +12,7 @@ import { checkWebsiteTemplate } from './check-website-templates.mjs';
 const [binary,target,...flags]=process.argv.slice(2);
 assert(binary&&target&&flags.every(f=>['--build','--browser'].includes(f)));
 assert(!flags.includes('--browser')||flags.includes('--build'));
-if(flags.length) assert.equal(process.env.GITHUB_ACTIONS,'true','Container/browser acceptance runs only in hosted CI');
+if(flags.length) assert.equal(process.env.GITHUB_ACTIONS,'true','Renderer/browser acceptance runs only in hosted CI');
 const repo=fileURLToPath(new URL('../',import.meta.url)),zel=path.resolve(binary),root=path.resolve(target);
 await mkdir(root); // Never overwrite existing acceptance artifacts.
 async function run(command,args) {

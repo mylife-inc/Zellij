@@ -1,6 +1,6 @@
 // Exercise the installed, self-contained checker and optionally the actual Rust
-// cached checker. The container export independently verifies accepted routes
-// and anchors until HTTP builds migrate to the cache as well.
+// cached checker. Its HTTP export independently verifies accepted routes
+// and anchors without a container runtime.
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';

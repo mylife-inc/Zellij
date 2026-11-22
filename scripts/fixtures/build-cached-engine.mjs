@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import path from 'node:path';
+const request = JSON.parse(await readFile(process.argv[2], 'utf8'));
+assert.equal(request.target, 'static');
+assert.equal(request.operation, 'build');
+const root = process.env.ZELLIJ_BUILD_FIXTURE;
+await writeFile(path.join(root, 'request'), JSON.stringify(request));
+await writeFile(path.join(root, 'args'), process.env.ZELLIJ_BUILD_OVERRIDES ? `ZELLIJ_BUILD_OVERRIDES=${process.env.ZELLIJ_BUILD_OVERRIDES}\n` : '');
+if (process.env.ZELLIJ_BUILD_FAIL === 'yes') process.exit(1);
+await writeFile(path.join(request.output, 'index.html'), '<!doctype html><title>Built</title>');
+await mkdir(path.join(request.output, '_zellij/static'), { recursive: true });
+await writeFile(path.join(request.output, '_zellij/static/manifest.json'), '{}');
+await writeFile('build-report.json', JSON.stringify({ target: 'static', basePath: '' }));

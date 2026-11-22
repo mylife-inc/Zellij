@@ -23,7 +23,7 @@ try {
   success(run(['--base-path', '/products/manual', '--site-url', 'https://docs.example']));
   const html = await read('manual.html');
   assert(html.includes('href="https://docs.example/products/manual/manual"'));
-  assert(html.includes('/products/manual/_next/'));
+  assert(html.includes('src="/products/manual/_zellij/static/runtime.js"'));
   assert((await read('sitemap.xml')).includes('<loc>https://docs.example/products/manual/manual</loc>'));
   assert((await read('robots.txt')).includes('https://docs.example/products/manual/sitemap.xml'));
   assert.equal(await readFile(siteFile, 'utf8'), source);
@@ -39,7 +39,7 @@ try {
     input: 'ARG BASE\nFROM ${BASE}\nRUN node -e \'const fs=require("fs");const p="/opt/zellij/package.json";const v=JSON.parse(fs.readFileSync(p));delete v.zellij.buildOverridesVersion;fs.writeFileSync(p,JSON.stringify(v));\'\n',
     stdio: ['pipe', 'inherit', 'inherit'], timeout: 120000,
   });
-  const old = run(['--no-check'], { ZELLIJ_IMAGE: oldImage });
+  const old = spawnSync(zel, ['image', 'static', '.', '--tag', 'zel-overrides-incompatible:test', '--base-path', '/old', '--no-check'], { cwd: root, env: { ...process.env, ZELLIJ_IMAGE: oldImage }, encoding: 'utf8', timeout: 120000 });
   assert.notEqual(old.status, 0);
   assert.match(old.stdout + old.stderr, /does not support build overrides/);
   assert.equal(await read('manual.html'), html, 'Incompatible engine preserves the last export');
@@ -47,8 +47,8 @@ try {
   success(run(['--base-path', '/', '--no-check']));
   const atRoot = await read('manual.html');
   assert(atRoot.includes('href="https://authored.example/manual"'));
-  assert(atRoot.includes('src="/_next/'));
-  assert(!atRoot.includes('/authored/_next/'));
+  assert(atRoot.includes('src="/_zellij/static/'));
+  assert(!atRoot.includes('/authored/_zellij/static/'));
   assert.equal(await readFile(siteFile, 'utf8'), source);
   console.log('Real hosted overrides: canonical/sitemap/robots, root reset, no-check validation, old engine and output preservation passed.');
 } finally {

@@ -477,7 +477,7 @@ pub(crate) enum Command {
     View {
         /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
         dir: Option<SiteInput>,
-        /// Override selection: native portable, standalone rich file, or container static.
+        /// Override selection: native portable, or cached rich file/static export.
         #[arg(long, value_parser = ["portable", "file", "static"])]
         target: Option<String>,
         /// Require a cached rich renderer; do not download one.

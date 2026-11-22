@@ -1,8 +1,8 @@
-import { fileHref, fileLocation } from './location';
+import { navigationHref, fileLocation } from './location';
 export function usePathname() { const page = fileLocation(); return page.basePath + page.route; }
 const router = {
-  push: (url: string) => { window.location.assign(fileHref(url)); },
-  replace: (url: string) => { window.location.replace(fileHref(url)); },
+  push: (url: string) => { window.location.assign(navigationHref(url)); },
+  replace: (url: string) => { window.location.replace(navigationHref(url)); },
   back: () => window.history.back(), forward: () => window.history.forward(),
   refresh: () => window.location.reload(), prefetch: () => {},
 };

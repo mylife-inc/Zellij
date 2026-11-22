@@ -5,6 +5,7 @@ import { mkdtemp, mkdir, readFile, writeFile, cp, rm, readdir } from 'node:fs/pr
 import path from 'node:path';
 import os from 'node:os';
 import assert from 'node:assert/strict';
+import YAML from 'yaml';
 import { checkStandaloneAuthoring } from './check-standalone-authoring.mjs';
 const repo = path.resolve(import.meta.dirname, '..');
 const binary = path.resolve(process.argv[2] ?? `cli/target/debug/zel${process.platform === 'win32' ? '.exe' : ''}`);
@@ -78,10 +79,39 @@ try {
   assert.match(await run(['build', 'full', '--offline', '--no-check'], 3), /offline route/);
   assert(!(await readdir(path.join(root, 'full'))).includes('escape'), 'An authored route must not write outside the staged output');
   await writeFile(pageList, authoredPages);
+  await writeFile(pageList, authoredPages.replace('- name: home', '- name: home\n  route: /index'));
+  assert.match(await run(['build', 'full', '--target', 'static', '--offline', '--no-check'], 3), /HTTP output routes collide/);
+  await writeFile(pageList, authoredPages);
   await run(['build', '--offline', '--base-path', '/manual', '--site-url', 'https://docs.example.test', '--out', 'prefix-site']);
   const prefixed = await readFile(path.join(root, 'prefix-site/index.html'), 'utf8');
   assert.match(prefixed, /rel="canonical" href="https:\/\/docs\.example\.test\/manual\/"/);
   assert.match(prefixed, /href="\.\/_zellij\/file\/styles\.css"/);
+  const sitePath = path.join(root, 'content/site.yaml');
+  const sourceSite = await readFile(sitePath, 'utf8');
+  const withAnalytics = YAML.parse(sourceSite);
+  withAnalytics.analytics = { provider: 'plausible', domain: 'docs.example.test' };
+  await writeFile(sitePath, YAML.stringify(withAnalytics));
+  await run(['build', '--target', 'static', '--offline', '--base-path', '/manual', '--site-url', 'https://docs.example.test', '--out', 'http-site']);
+  const httpManifest = JSON.parse(await readFile(path.join(root, 'http-site/_zellij/static/manifest.json')));
+  assert.equal(httpManifest.target, 'static'); assert.equal(httpManifest.pages, manifest.pages);
+  const httpHome = await readFile(path.join(root, 'http-site/index.html'), 'utf8');
+  assert.match(httpHome, /rel="canonical" href="https:\/\/docs\.example\.test\/manual\/"/);
+  assert.match(httpHome, /href="\/manual\/_zellij\/static\/styles\.css"/);
+  assert.match(httpHome, /src="\/manual\/_zellij\/static\/runtime\.js"/);
+  assert.match(httpHome, /name="robots" content="index, follow"/);
+  assert.match(httpHome, /\$Analytics/);
+  assert.doesNotMatch(httpHome, /_next\//);
+  for (const route of httpManifest.routes) {
+    assert((await readFile(path.join(root, 'http-site', route === '/' ? 'index.html' : route.slice(1) + '.html'))).length > 0);
+  }
+  const notFound = await readFile(path.join(root, 'http-site/404.html'), 'utf8');
+  assert.match(notFound, /name="robots" content="noindex"/);
+  assert.match(notFound, /href="\/manual\/"/);
+  assert.match(await readFile(path.join(root, 'http-site/sitemap.xml'), 'utf8'), /<changefreq>weekly<\/changefreq>/);
+  await run(['build', '--offline', '--out', 'file-with-analytics']);
+  assert.doesNotMatch(await readFile(path.join(root, 'file-with-analytics/index.html'), 'utf8'), /\$Analytics/);
+  await writeFile(sitePath, sourceSite);
+  assert.equal(requests.length, publicBase ? 0 : 2, 'HTTP export reuses the same renderer download');
   const content = path.join(root, 'content/site.yaml');const original = await readFile(content);
   await writeFile(content, 'broken: [');await run(['build', '--offline'], 3);
   assert((await readFile(path.join(root, 'site/index.html'))).equals(before));await writeFile(content, original);
@@ -98,5 +128,5 @@ try {
   }
   await checkStandaloneAuthoring(binary, env, root);
   assert.equal((await readdir(root)).some(n => n.startsWith('.zel-build-')), false);
-  console.log(JSON.stringify({ platform, initialDownloads: requests.length, pages: manifest.pages, completeStarterPages: complete.pages, cachedOfflineBuild: true, failedBuildPreservedSite: true, tamperRejected: true, routeTraversalRejected: true, metadataOverrides: true, systemTools: false }));
+  console.log(JSON.stringify({ platform, initialDownloads: requests.length, pages: manifest.pages, completeStarterPages: complete.pages, cachedOfflineBuild: true, cachedHttpBuild: true, failedBuildPreservedSite: true, tamperRejected: true, routeTraversalRejected: true, metadataOverrides: true, systemTools: false }));
 } finally { server.close();await rm(root, { recursive: true, force: true }); }

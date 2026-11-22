@@ -1,10 +1,11 @@
-// Native hosted-preview orchestration on every OS; --real uses the CI engine.
+// Cached hosted-preview orchestration on every OS; --real uses the current compiled renderer.
 import assert from 'node:assert/strict';
 import { spawn, execFileSync, spawnSync } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import net from 'node:net';
+import { installCachedRenderer } from './fixtures/install-cached-renderer.mjs';
 import { setTimeout as delay } from 'node:timers/promises';
 import { chromium, expect } from '@playwright/test';
 const real = process.argv.includes('--real');
@@ -20,17 +21,18 @@ const browserExe = path.join(bin, `browser${windows ? '.exe' : ''}`);
 const record = path.join(root, 'browser.txt');
 const log = path.join(root, 'runtime.log');
 const env = { ...process.env, ZELLIJ_PREVIEW_RECORD: record, ZELLIJ_PREVIEW_ENGINE_LOG: log, ZELLIJ_PREVIEW_EXPECT: '</html>' };
-if (!real) {
+{
   // Windows environment keys are case-insensitive; a cloned `Path` must not
   // survive beside PATH and accidentally select the runner's real runtime.
   const replaced = new Set(['PATH', 'DOCKER_CONTEXT', 'DOCKER_HOST', 'CONTAINER_CONNECTION', 'CONTAINER_HOST', 'CONTAINERD_ADDRESS', 'CONTAINERD_NAMESPACE']);
   for (const key of Object.keys(env)) if (replaced.has(key.toUpperCase())) delete env[key];
   env.PATH = bin;
-  env.CONTAINER_CONNECTION = 'zellij-preview-fixture';
+  env.CONTAINER_CONNECTION = 'must-not-be-used';
+  env.DOCKER_HOST = 'conflicting-unused-endpoint';
 }
 const active = new Set();
 let browser;
-const until = async (predicate, label, limit = real ? 240000 : 15000) => {
+const until = async (predicate, label, limit = real ? 240000 : 60000) => {
   const end = Date.now() + limit;
   while (!await predicate()) { if (Date.now() > end) throw new Error(label); await delay(100); }
 };
@@ -54,7 +56,7 @@ function invocationEnv(args) {
   return { ...env, ZELLIJ_PREVIEW_FEATURES: index < 0 ? '' : args[index + 1] };
 }
 function launch(args = ['view', '--watch', '--browser', browserExe, '--features', 'all']) {
-  args = [...args, '--target', 'static', '--config', path.join(site, 'hosted-preview.yaml')];
+  args = [...args, '--target', 'static', '--offline', '--config', path.join(site, 'hosted-preview.yaml')];
   const child = spawn(windows ? consoleExe : zel, windows ? [zel, ...args] : args, { cwd: root, env: invocationEnv(args), stdio: ['pipe', 'pipe', 'pipe'] });
   const state = { child, stdout: '', stderr: '', exit: undefined };
   child.stdout.on('data', b => state.stdout += b); child.stderr.on('data', b => state.stderr += b);
@@ -74,7 +76,7 @@ async function stop(state) {
   active.delete(state);
 }
 function fails(args, expected) {
-  const result = spawnSync(zel, [...args, '--target', 'static', '--config', path.join(site, 'hosted-preview.yaml')], { cwd: root, env: invocationEnv(args), encoding: 'utf8', timeout: real ? 240000 : 15000 });
+  const result = spawnSync(zel, [...args, '--target', 'static', '--offline', '--config', path.join(site, 'hosted-preview.yaml')], { cwd: root, env: invocationEnv(args), encoding: 'utf8', timeout: real ? 240000 : 60000 });
   assert.notEqual(result.status, 0, result.stdout);
   assert.match(result.stderr, expected); assert(!result.stdout.includes('Serving at '));
 }
@@ -85,7 +87,7 @@ try {
   await writeFile(path.join(content, 'site.yaml'), 'name: Fixture\n');
   if (windows) execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/preview-console.rs', '-o', consoleExe], { stdio: 'pipe' });
   execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/preview-browser.rs', '-o', browserExe], { stdio: 'pipe' });
-  if (!real) execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/preview-engine.rs', '-o', path.join(bin, windows ? 'podman.exe' : 'podman')], { stdio: 'pipe' });
+  if (!real) env.ZEL_ENGINE_CACHE = await installCachedRenderer(zel, root, 'scripts/fixtures/preview-cached-engine.mjs');
   if (real) {
     await writeFile(path.join(content, 'guide/_sidebar.yaml'), 'title: Guide\nnav: [index, next]\n');
     await writeFile(path.join(content, 'guide/next.mdx'), '# Next page\n\n## Nebula\n\n[Home](/guide)\n');
@@ -94,7 +96,7 @@ try {
   }
   await edit('First preview');
   const server = await ready(launch());
-  if (!real) assert((await readFile(log, 'utf8')).includes('First preview'), 'the isolated runtime fixture performed the build');
+  if (!real) assert((await readFile(log, 'utf8')).includes('First preview'), 'the isolated cached renderer fixture performed the build');
   assert(server.url.endsWith('/products/manual/'));
   await until(() => exists(record), 'browser launch');
   assert.equal(await readFile(record, 'utf8'), server.url);
@@ -108,6 +110,19 @@ try {
   page.on('pageerror', error => errors.push(error.message));
   await page.goto(server.url);
   if (real) await expect(page).toHaveURL(`${server.url}guide`);
+  if (real) {
+    const plain = await browser.newContext({ javaScriptEnabled: false });
+    try {
+      const tab = await plain.newPage();
+      await tab.goto(server.url);
+      await expect(tab.getByRole('heading', { name: 'First preview', exact: true })).toBeVisible();
+      await tab.locator('article').getByRole('link', { name: 'Next', exact: true }).click();
+      await expect(tab.getByRole('heading', { name: 'Next page', exact: true })).toBeVisible();
+      const missing = await tab.goto(`${server.url}no-such-page`);
+      assert.equal(missing.status(), 404);
+      await expect(tab.getByRole('link', { name: 'Return home' })).toHaveAttribute('href', '/products/manual/');
+    } finally { await plain.close(); }
+  }
   await expect(page.getByRole('heading', { name: 'First preview', exact: true })).toBeVisible();
   if (real) {
     await expect(page.locator('mjx-container svg')).toBeVisible({ timeout: 30000 });
@@ -167,7 +182,7 @@ try {
       await writeFile(config, valid);
       await until(async () => !(await status()).error, 'restored config');
     }
-    // The source changes while a container is building: never publish that stage.
+    // The source changes while the renderer is building: never publish that stage.
     const stable = await tree(output); version = (await status()).version;
     await edit('Stale input', '/products/manual', 'slow');
     await until(async () => (await readFile(log, 'utf8')).includes('Stale input'), 'slow build started');
@@ -197,7 +212,7 @@ try {
   const saved = await tree(output);
   if (!real) {
     await rm(record);
-    for (const [prefix, mode, message] of [['/bad/../prefix', 'ok', /base-path/], ['/ok', 'missing-index', /index.html/], ['/ok', 'missing-metadata', /error:/], ['/ok', 'empty', /not shared/]]) {
+    for (const [prefix, mode, message] of [['/bad/../prefix', 'ok', /base-path/], ['/ok', 'missing-index', /build failed/], ['/ok', 'missing-metadata', /error:/], ['/ok', 'empty', /build failed/]]) {
       await edit('Bad export', prefix, mode); fails(['view', '--browser', browserExe], message);
       assert.deepEqual(await tree(output), saved); assert.equal(await exists(record), false);
     }

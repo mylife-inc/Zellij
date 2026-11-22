@@ -14,6 +14,7 @@ export async function checkStandaloneAuthoring(binary, environment, parent) {
   const env = { ...environment, ZELLIJ_PREVIEW_RECORD: record, ZELLIJ_PREVIEW_EXPECT: 'Authoring' };
   const active = new Set();
   const browsers = [];
+  let browserEngines = 0;
   const errors = [];
   const put = async (name, body) => {
     const file = path.join(root, name);
@@ -103,14 +104,16 @@ export async function checkStandaloneAuthoring(binary, environment, parent) {
     }
 
     console.log('Standalone file/static validation: JSON, offline cache, nonexecution, strict findings and watch recovery passed.');
-    const preview = start(['view', '--watch', '--offline', '--browser', browser], { persistent: true });
+    for (const target of ['file', 'static']) {
+    await put(page, original);
+    const preview = start(['view', '--target', target, '--watch', '--offline', '--browser', browser], { persistent: true });
     await until(() => preview.output.includes('Serving at '), 'rich preview startup', preview);
     const url = preview.output.match(/Serving at (http:\/\/\S+)/)[1];
     assert.match(url, /\/manual\/$/);
     await until(async () => { try { return (await readFile(record, 'utf8')) === url; } catch { return false; } }, 'browser launch', preview);
-    const pageUrl = `${url}guide/`;
+    const pageUrl = `${url}guide${target === 'file' ? '/' : ''}`;
     assert.match(await (await fetch(pageUrl)).text(), /Original/);
-    const generated = path.join(root, 'site/guide/index.html');
+    const generated = path.join(root, target === 'file' ? 'site/guide/index.html' : 'site/guide.html');
     assert.doesNotMatch(await readFile(generated, 'utf8'), /preview\.js/);
     const status = async () => (await fetch(`${url}_zellij/preview.json`)).json();
     let previous = await status();
@@ -120,6 +123,7 @@ export async function checkStandaloneAuthoring(binary, environment, parent) {
         const session = await engine.launch(engine === chromium && process.platform === 'darwin' ? { channel: 'chrome' } : {});
         const tab = await session.newPage();
         browsers.push({ session, tab });
+        browserEngines++;
         tab.on('pageerror', error => errors.push(error.message));
         await tab.goto(pageUrl);
         await tab.getByRole('heading', { name: 'Original', exact: true }).waitFor();
@@ -144,11 +148,14 @@ export async function checkStandaloneAuthoring(binary, environment, parent) {
     assert.deepEqual(errors, []);
     await stop(preview);
     const beforeCancel = await readFile(generated);
-    const cancelled = start(['view', '--offline', '--no-open'], { persistent: true });
+    const cancelled = start(['view', '--target', target, '--offline', '--no-open'], { persistent: true });
     await until(() => cancelled.output.includes('cached rich renderer'), 'build started', cancelled);
     await stop(cancelled);
     assert((await readFile(generated)).equals(beforeCancel));
     assert(!(await readdir(root)).some(name => name.startsWith('.zel-build-')));
+    for (const { session } of browsers) await session.close();
+    browsers.length = 0;
+    }
     // Legacy `.` discovers content/ once; output and repository files are not inputs.
     await rm(path.join(root, 'zel.yaml'));
     const legacyWatch = start(['watch', '.', '--offline', '--deep', '--strict'], { persistent: true });
@@ -164,7 +171,7 @@ export async function checkStandaloneAuthoring(binary, environment, parent) {
     assert.equal(legacyPreview.output.split('cached rich renderer').length - 1, 1, 'Publishing output must not trigger another build');
     assert.match(await readFile(path.join(root, 'dist/guide/index.html'), 'utf8'), /Recovered/);
     await stop(legacyPreview);
-    console.log(JSON.stringify({ standaloneAuthoring: true, check: true, watch: true, view: true, recovery: true, cancellation: true, prefixPinned: true, legacyDiscovery: true, browserEngines: browsers.length, systemTools: false }));
+    console.log(JSON.stringify({ standaloneAuthoring: true, check: true, watch: true, view: true, recovery: true, cancellation: true, prefixPinned: true, legacyDiscovery: true, browserEngines, systemTools: false }));
   } finally {
     for (const { session } of browsers) await session.close();
     for (const state of active) {
