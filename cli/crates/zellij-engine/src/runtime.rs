@@ -283,7 +283,7 @@ fn select_runtime(
     };
     Err(Error::NoEngine {
         reason: format!(
-            "\n{}{selection}\n{}\nRun the selected client's `info` command for its detailed error.\nPortable build/check/serve/view and Dockerfile generation work without a container runtime. Rich `zel build --target file` uses a downloaded renderer instead of a container.",
+            "\n{}{selection}\n{}\nRun the selected client's `info` command for its detailed error.\nPortable build/check/serve/view and Dockerfile generation work without a container runtime. Rich file/static build, check, watch and view use a downloaded renderer instead of a container.",
             failures.join("\n"),
             setup_guidance(std::env::consts::OS)
         ),

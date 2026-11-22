@@ -3,6 +3,16 @@ title: zel ci
 description: Generate GitHub Actions, GitLab or CircleCI configuration from saved site settings.
 ---
 
+## Upcoming web-only workflows
+
+The source update after rc.17 omits Docker setup/preflight for rich web-only
+workflows pinned to CLI `0.2.0-rc.18` or later. The renderer downloads into the
+resolved `ZELLIJ_HOME` when needed. Generated workflows pinned to older CLI
+versions retain their Docker requirement; image delivery and enabled PDF builds
+also retain it. Generation does not verify that a requested version is published.
+The new candidate and matching renderer have not yet been released.
+
+
 <Callout type="info" title="Compatible published candidate">
 The generator requires **0.2.0 or later, including release candidates**.
 Published candidate `0.2.0-rc.17` supplies its own version as the default pin, so

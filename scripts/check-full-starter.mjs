@@ -1,5 +1,5 @@
 // Validate native --full output with the actual engine. --build is CI-only and
-// additionally exports through the real container; the default needs no runtime.
+// additionally exports through the cached HTTP renderer; the default needs no runtime.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { readFile, readdir } from 'node:fs/promises';

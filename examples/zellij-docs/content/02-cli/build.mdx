@@ -3,6 +3,19 @@ title: zel build
 description: Build a rich double-click website, portable Markdown documentation, a hosted export, or a container image.
 ---
 
+## Upcoming cached HTTP builds
+
+The source update after rc.17 also builds `--target static` with the verified
+renderer under `ZELLIJ_HOME`. It supports `--offline` after the first download
+and needs no separately installed Docker, Node.js, npm or Python. The export
+keeps HTTP routes and deployment prefixes; use `file` for double-click viewing.
+Both exports use the same renderer package. Static builds retain the standard
+HTTP target’s default `--features none`; pass `--features all` for maths and
+diagrams. File builds keep their default enabled features. HTTP analytics remain enabled when
+configured; file exports omit analytics. Image builds keep their runtime
+requirement. This update is not yet included in the published rc.17 CLI.
+
+
 <Callout type="tip" title="Available in candidate 0.2.0-rc.17">
 The portable target runs entirely inside `zel`. It needs no Docker, Node, or
 network connection. The existing `static` and `image` targets use the container

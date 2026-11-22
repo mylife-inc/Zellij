@@ -8,6 +8,47 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-21**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-21: cached HTTP export — source migration in progress**
+
+The renderer now has an explicit HTTP mode. Static build/view and the five
+native static-deployment adapters use the verified cache, preserving HTTP
+links/prefixes, redirects, metadata, analytics and staged-output behavior.
+File mode remains the double-click target. New workflow pins (rc.18+) omit
+Docker for web-only delivery; older pins, image/PDF operations and Next dev
+retain their existing prerequisites. Local Rust/engine, browser-preview and
+synthetic-provider checks pass; package/hosted acceptance remains in progress.
+See the [HTTP implementation record](specs/zellij-cached-http-export-2026-11-21.md).
+Public rc.17 has not been changed. The earlier validation step is commit
+`e82a586` in PR #234. PR #235 now includes both migrations for one combined
+acceptance/release gate. The first validation CI failed an obsolete text-output
+assertion; the corrected fixture checks structured routes and findings. The
+first HTTP package matrix exposed a test-only YAML dependency in the intentionally
+npm-free runner; its fixture edit now uses built-in APIs. Both failures remain
+recorded; neither is counted as a successful gate. Combined acceptance then
+caught a real current-page identity bug: the cached navigation shim included
+the deployment prefix and failed sidebar matching. The fix returns logical
+routes for both rich modes and adds before/after-hydration coverage; original
+conversion assertions remain intact. The final gate is being rerun.
+
+**2026-11-21: cached static validation — source migration in progress**
+
+Static `check`/`watch` and optional hosted import validation now use the same
+CLI-matched verified renderer cache as rich file checks. Static JSON reports
+retain their target; both rich validation targets accept `--offline`. Import
+failures retain their converted sources and recovery message. Container endpoints
+are not inspected. HTTP builds/previews, delivery, editable wrapper extraction,
+PDF and Next development are unchanged. Public rc.17 remains unchanged; guides
+label this source update as upcoming. See the [implementation record](specs/zellij-cached-static-validation-2026-11-21.md)
+and [remaining roadmap](specs/zellij-cached-toolchains-2026-11-21.md).
+
+Local workspace tests pass 829 cases (5 existing ignores), Clippy warnings denied
+and strict/deep docs validation pass. Real current-source cached static watch
+passes recovery, layout/renderer pinning and cancellation without external tools.
+Packaged public-renderer acceptance with the modified CLI passes on Intel Mac,
+including cold static validation, both rich check/watch targets and offline
+reuse with an empty PATH. Hosted acceptance and a matching future candidate
+remain pending.
+
 **2026-11-21: rc.17 released with desktop overflow focus correction**
 
 Immutable `v0.2.0-rc.17` points to `0bd1e8b`, the merge of PR #231 and an

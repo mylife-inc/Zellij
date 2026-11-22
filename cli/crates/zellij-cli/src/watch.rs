@@ -11,7 +11,7 @@ use zellij_core::{
     site::{Renderer, Site},
 };
 use zellij_docs::watch::Snapshot;
-use zellij_engine::{CheckOptions, ContainerEngine, Engine};
+use zellij_engine::CheckOptions;
 
 pub fn run(
     dir: Option<&SiteInput>,
@@ -31,19 +31,16 @@ pub fn run(
     } else {
         Renderer::Hosted
     })?;
-    if offline && target != "file" {
+    if offline && target == "portable" {
         return Err(zellij_core::Error::InvalidArgument(
-            "--offline applies to standalone rich validation".into(),
+            "--offline applies to cached rich validation (--target file or static)".into(),
         ));
     }
     if target != "portable" && !site.configured {
         site.input = crate::resolve_content(&selected)?.into();
     }
     // Missing prerequisites fail once at startup; bad content remains watched.
-    let engine = (target == "static")
-        .then(|| ContainerEngine::detect(None))
-        .transpose()?;
-    if target == "file" {
+    if target != "portable" {
         crate::rich_build::ensure_cached(offline)?;
     }
     let stop = crate::preview::signals()?;
@@ -52,13 +49,7 @@ pub fn run(
     };
     let validate = || {
         zellij_core::statusln!("Checking {}", site.input.root());
-        let result = if let Some(engine) = &engine {
-            crate::resolve_content(&site.input).and_then(|content| {
-                let report = engine.check(&content, options)?;
-                zellij_core::reporting::emit(format_args!("{}", report.output), false);
-                if report.ok { Ok(0) } else { Ok(3) }
-            })
-        } else if target == "file" {
+        let result = if target != "portable" {
             crate::resolve_content(&site.input).and_then(|content| {
                 let Some(report) = crate::rich_build::check(&content, options, true, Some(&stop))?
                 else {

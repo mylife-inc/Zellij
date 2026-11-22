@@ -3,6 +3,18 @@ title: zel deploy
 description: Build and deploy static HTML or containerized documentation to an existing hosting destination.
 ---
 
+## Upcoming cached static deployment builds
+
+The source update after rc.17 builds rich static sites for Netlify, Cloudflare
+Pages, Vercel, GitHub Pages and S3 with the verified cached renderer. Existing
+native provider clients still perform preflight and upload; no Docker, Node.js
+or Python installation is needed for the web build. Deployment still needs
+network access and provider credentials. Prefix mounting, asset URLs and
+last-good local output are preserved. Fly/Railway image delivery and image
+publication keep their builder requirement. Live provider verification remains
+separate from synthetic upload tests. This change is not yet in public rc.17.
+
+
 <div id="the-provider-decides-the-artefact" className="zellij-legacy-anchor" />
 <div id="where-the-content-comes-from" className="zellij-legacy-anchor" />
 

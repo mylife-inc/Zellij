@@ -14,6 +14,7 @@ export async function checkStandaloneAuthoring(binary, environment, parent) {
   const env = { ...environment, ZELLIJ_PREVIEW_RECORD: record, ZELLIJ_PREVIEW_EXPECT: 'Authoring' };
   const active = new Set();
   const browsers = [];
+  let browserEngines = 0;
   const errors = [];
   const put = async (name, body) => {
     const file = path.join(root, name);
@@ -71,45 +72,53 @@ export async function checkStandaloneAuthoring(binary, environment, parent) {
     assert.match(state.output, /Stopped\./);
   }
   try {
-    const result = await run(['check', '--deep', '--strict', '--offline', '--json']);
-    assert.equal(result.stderr, '');
-    const report = JSON.parse(result.output);
-    assert.equal(report.target, 'file'); assert.equal(report.ok, true);
-    assert(report.pages >= 2);
-    assert(!(await readdir(root)).includes('site'));
-    const missing = await run(['check', '--offline', '--json'], 2, { ZELLIJ_HOME: path.join(parent, 'uncached') });
-    assert.equal(missing.stderr, ''); assert.match(JSON.parse(missing.output).diagnostics[0].message, /not cached/);
-    await put(page, original + '\n{(() => { throw new Error("CHECK_MUST_NOT_EXECUTE"); })()}\n');
-    const dynamic = await run(['check', '--deep', '--offline', '--json']);
-    assert.equal(JSON.parse(dynamic.output).ok, true);
-    assert.equal(dynamic.stderr, '');
-    await put(page, original);
-    await put('content/site.yaml', settings + 'unknownOption: true\n');
-    const strict = await run(['check', '--strict', '--offline', '--json'], 3);
-    assert(JSON.parse(strict.output).diagnostics.some(d => d.severity === 'warning'));
-    await put('content/site.yaml', settings);
-    await put('zel.yaml', 'version: [');
-    const invalid = await run(['check', '--offline', '--json'], 2);
-    assert.equal(invalid.stderr, ''); assert.equal(JSON.parse(invalid.output).ok, false);
-    await put('zel.yaml', config);
-    await put(page, '# Original\n\n[Broken](/does-not-exist)\n');
-    const watch = start(['watch', '--deep', '--strict', '--offline'], { persistent: true });
-    await until(() => watch.output.includes('Watching ') && watch.output.includes('Validation failed;'), 'invalid content remains watched', watch);
-    await put(page, original);
-    await until(() => watch.output.includes('Validation passed.'), 'validation recovery', watch);
-    await stop(watch);
-    assert(!(await readdir(root)).includes('site'));
+    for (const target of ['file', 'static']) {
+      const result = await run(['check', '--target', target, '--deep', '--strict', '--offline', '--json']);
+      assert.equal(result.stderr, '');
+      const report = JSON.parse(result.output);
+      assert.equal(report.target, target); assert.equal(report.ok, true);
+      assert(report.pages >= 2);
+      assert(!(await readdir(root)).includes('site'));
+      const missing = await run(['check', '--target', target, '--offline', '--json'], 2, { ZELLIJ_HOME: path.join(parent, 'uncached') });
+      assert.equal(missing.stderr, ''); assert.match(JSON.parse(missing.output).diagnostics[0].message, /not cached/);
+      await put(page, original + '\n{(() => { throw new Error("CHECK_MUST_NOT_EXECUTE"); })()}\n');
+      const dynamic = await run(['check', '--target', target, '--deep', '--offline', '--json']);
+      assert.equal(JSON.parse(dynamic.output).ok, true);
+      assert.equal(dynamic.stderr, '');
+      await put(page, original);
+      await put('content/site.yaml', settings + 'unknownOption: true\n');
+      const strict = await run(['check', '--target', target, '--strict', '--offline', '--json'], 3);
+      assert(JSON.parse(strict.output).diagnostics.some(d => d.severity === 'warning'));
+      await put('content/site.yaml', settings);
+      await put('zel.yaml', 'version: [');
+      const invalid = await run(['check', '--target', target, '--offline', '--json'], 2);
+      assert.equal(invalid.stderr, ''); assert.equal(JSON.parse(invalid.output).ok, false);
+      await put('zel.yaml', config);
+      await put(page, '# Original\n\n[Broken](/does-not-exist)\n');
+      const watch = start(['watch', '--target', target, '--deep', '--strict', '--offline'], { persistent: true });
+      await until(() => watch.output.includes('Watching ') && watch.output.includes('Validation failed;'), 'invalid content remains watched', watch);
+      await put(page, original);
+      await until(() => watch.output.includes('Validation passed.'), 'validation recovery', watch);
+      await stop(watch);
+      assert(!(await readdir(root)).includes('site'));
+    }
 
-    console.log('Standalone validation: JSON, offline cache, nonexecution, strict findings and watch recovery passed.');
-    const preview = start(['view', '--watch', '--offline', '--browser', browser], { persistent: true });
+    console.log('Standalone file/static validation: JSON, offline cache, nonexecution, strict findings and watch recovery passed.');
+    for (const target of ['file', 'static']) {
+    await put(page, original);
+    const preview = start(['view', '--target', target, '--watch', '--offline', '--browser', browser], { persistent: true });
     await until(() => preview.output.includes('Serving at '), 'rich preview startup', preview);
     const url = preview.output.match(/Serving at (http:\/\/\S+)/)[1];
     assert.match(url, /\/manual\/$/);
     await until(async () => { try { return (await readFile(record, 'utf8')) === url; } catch { return false; } }, 'browser launch', preview);
-    const pageUrl = `${url}guide/`;
+    const pageUrl = `${url}guide${target === 'file' ? '/' : ''}`;
     assert.match(await (await fetch(pageUrl)).text(), /Original/);
-    const generated = path.join(root, 'site/guide/index.html');
-    assert.doesNotMatch(await readFile(generated, 'utf8'), /preview\.js/);
+    const generated = path.join(root, target === 'file' ? 'site/guide/index.html' : 'site/guide.html');
+    const initialHtml = await readFile(generated, 'utf8');
+    assert.doesNotMatch(initialHtml, /preview\.js/);
+    const activeLinks = [...initialHtml.matchAll(/<a\b[^>]*aria-current="page"[^>]*>/g)]
+      .filter(([tag]) => tag.includes('zellij-guide-sidebar-link') && tag.includes('data-active="true"'));
+    assert.equal(activeLinks.length, 1, `${target}: prefixed output marks exactly one current sidebar page`);
     const status = async () => (await fetch(`${url}_zellij/preview.json`)).json();
     let previous = await status();
     if (process.env.ZEL_STANDALONE_BROWSER === 'true') {
@@ -118,9 +127,11 @@ export async function checkStandaloneAuthoring(binary, environment, parent) {
         const session = await engine.launch(engine === chromium && process.platform === 'darwin' ? { channel: 'chrome' } : {});
         const tab = await session.newPage();
         browsers.push({ session, tab });
+        browserEngines++;
         tab.on('pageerror', error => errors.push(error.message));
         await tab.goto(pageUrl);
         await tab.getByRole('heading', { name: 'Original', exact: true }).waitFor();
+        await tab.locator('.zellij-guide-sidebar-link[aria-current="page"][data-active="true"]', { hasText: 'Original' }).waitFor();
       }
     }
     await put(page, original.replace('Original', 'Rebuilt'));
@@ -142,11 +153,14 @@ export async function checkStandaloneAuthoring(binary, environment, parent) {
     assert.deepEqual(errors, []);
     await stop(preview);
     const beforeCancel = await readFile(generated);
-    const cancelled = start(['view', '--offline', '--no-open'], { persistent: true });
+    const cancelled = start(['view', '--target', target, '--offline', '--no-open'], { persistent: true });
     await until(() => cancelled.output.includes('cached rich renderer'), 'build started', cancelled);
     await stop(cancelled);
     assert((await readFile(generated)).equals(beforeCancel));
     assert(!(await readdir(root)).some(name => name.startsWith('.zel-build-')));
+    for (const { session } of browsers) await session.close();
+    browsers.length = 0;
+    }
     // Legacy `.` discovers content/ once; output and repository files are not inputs.
     await rm(path.join(root, 'zel.yaml'));
     const legacyWatch = start(['watch', '.', '--offline', '--deep', '--strict'], { persistent: true });
@@ -162,7 +176,7 @@ export async function checkStandaloneAuthoring(binary, environment, parent) {
     assert.equal(legacyPreview.output.split('cached rich renderer').length - 1, 1, 'Publishing output must not trigger another build');
     assert.match(await readFile(path.join(root, 'dist/guide/index.html'), 'utf8'), /Recovered/);
     await stop(legacyPreview);
-    console.log(JSON.stringify({ standaloneAuthoring: true, check: true, watch: true, view: true, recovery: true, cancellation: true, prefixPinned: true, legacyDiscovery: true, browserEngines: browsers.length, systemTools: false }));
+    console.log(JSON.stringify({ standaloneAuthoring: true, check: true, watch: true, view: true, recovery: true, cancellation: true, prefixPinned: true, legacyDiscovery: true, browserEngines, systemTools: false }));
   } finally {
     for (const { session } of browsers) await session.close();
     for (const state of active) {

@@ -188,7 +188,7 @@ fn strict_and_invalid_checks_have_nonzero_exits_and_valid_json() {
 }
 
 #[test]
-fn check_target_selection_matches_build_and_hosted_json_reports_missing_runtime() {
+fn check_target_selection_matches_build_and_hosted_json_reports_missing_cache() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();
     fs::write(root.join("README.md"), "# Home\n").unwrap();
@@ -201,10 +201,19 @@ fn check_target_selection_matches_build_and_hosted_json_reports_missing_runtime(
             .unwrap()
             .contains("not cached")
     );
-    let hosted = report(root, &["check", ".", "--target", "static", "--json"], 4);
+    let hosted = report(
+        root,
+        &["check", ".", "--target", "static", "--json", "--offline"],
+        2,
+    );
     assert_eq!(hosted["target"], "static");
     assert_eq!(hosted["ok"], false);
-    assert_eq!(hosted["diagnostics"][0]["code"], "runtime");
+    assert!(
+        hosted["diagnostics"][0]["message"]
+            .as_str()
+            .unwrap()
+            .contains("not cached")
+    );
     assert!(
         report(root, &["check", ".", "--target", "portable", "--json"], 0)["ok"]
             .as_bool()

@@ -54,6 +54,12 @@ not write configuration, generate output, pull images or start services.
 
 ## Which commands need a runtime?
 
+The table describes released rc.17. A source update now removes the container
+requirement from explicit static `check`/validation `watch`, `migrate` and
+`convert --validate`; they use the CLI-matched renderer cache. Static builds,
+HTTP preview, Next development, images and PDF keep their existing prerequisites.
+The update is not yet published in a CLI candidate.
+
 | Operation | Container runtime required? |
 | --- | --- |
 | Portable web-only `build` / `view`, `check`, `pdf --check` and static-file `serve` | No |

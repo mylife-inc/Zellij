@@ -1,10 +1,11 @@
-export interface FileLocation { route: string; basePath: string; routes: string[] }
+export interface FileLocation { route: string; basePath: string; routes: string[]; target?: 'file' | 'static' }
 let current: FileLocation;
 export function setFileLocation(value: FileLocation) { current = value; }
 export function fileLocation() { if (!current) throw new Error('Offline page location is missing'); return current; }
 
 /** Only local absolute URLs change. External links and fragment links keep their meaning. */
 export function fileHref(href: string, location = fileLocation()): string {
+  if (location.target === 'static') return href;
   if (!href.startsWith('/') || href.startsWith('//')) return href;
   const [, pathname = '', suffix = ''] = href.match(/^([^?#]*)(.*)$/)!;
   let route = pathname;
@@ -24,6 +25,15 @@ export function fileHref(href: string, location = fileLocation()): string {
     ? `${normalized === '/' ? '' : normalized.slice(1) + '/'}index.html`
     : decoded.slice(1);
   return prefix + file.split('/').map(encodeURIComponent).join('/') + suffix;
+}
+
+/** next/link and router navigation apply the deployment prefix; raw asset URLs already carry it. */
+export function navigationHref(href: string, location = fileLocation()): string {
+  if (location.target !== 'static') return fileHref(href, location);
+  const base = location.basePath;
+  if (!base || !href.startsWith('/') || href.startsWith('//') ||
+      href === base || href.startsWith(base + '/') || href.startsWith(base + '?') || href.startsWith(base + '#')) return href;
+  return base + href;
 }
 
 export function assetProps(value: unknown): unknown {

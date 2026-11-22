@@ -13,14 +13,15 @@ import { writeSearchIndex } from '../cli/write-search-index';
 import { check, type JsonCheckReport } from '../cli/check';
 import { exportOffline } from './export';
 import { assetHref } from '../content/asset-href';
-import { validateOfflineRoutes } from './validate-routes';
+import { validateOfflineRoutes, validateHttpRoutes } from './validate-routes';
 
 const escape = (value: unknown) => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 
 async function main() {
   if (process.argv.length !== 3) throw new Error('Expected the renderer request JSON path');
   const request = JSON.parse(await readFile(process.argv[2]!, 'utf8'));
-  const { content, output, features, noCheck, operation = 'build' } = request;
+  const { content, output, features, noCheck, operation = 'build', target = 'file' } = request;
+  if (!['file', 'static'].includes(target)) throw new Error('Unknown renderer target');
   if (!['build', 'check'].includes(operation)) throw new Error('Unknown renderer operation');
   if (typeof content !== 'string' || !path.isAbsolute(content)) throw new Error('Expected absolute content path');
   if (operation === 'build' && (typeof output !== 'string' || !path.isAbsolute(output))) throw new Error('Expected absolute output path');
@@ -46,13 +47,13 @@ async function main() {
   await writeSearchIndex({ appRoot });
   await cp(path.join(appRoot, 'public'), output, { recursive: true });
   const bundled = path.dirname(fileURLToPath(import.meta.url));
-  const resources = path.join(output, '_zellij/file');
+  const resources = path.join(output, '_zellij', target);
   await mkdir(resources, { recursive: true });
   await cp(path.join(bundled, 'styles.css'), path.join(resources, 'styles.css'));
   await cp(path.join(bundled, 'FONT-LICENSES.txt'), path.join(resources, 'FONT-LICENSES.txt'));
   await cp(path.join(bundled, 'files'), path.join(resources, 'files'), { recursive: true });
   const { site } = await loadZellijRuntime({ appRoot });
-  validateOfflineRoutes(site.routes);
+  (target === 'static' ? validateHttpRoutes : validateOfflineRoutes)(site.routes);
   const pages = createZellijPages({ appRoot });
   const shell = await createZellijRootLayout({ appRoot })({ children: null });
   const { children, ...attributes } = shell.props;
@@ -62,11 +63,12 @@ async function main() {
     const metadata = await pages.generateMetadata({ params: Promise.resolve({ slug: route.split('/').filter(Boolean) }) });
     let head = '<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">' +
       `<title>${escape(metadata.title ?? site.config.name)}</title>` +
-      `<link rel="stylesheet" href="${escape(site.config.basePath + '/_zellij/file/styles.css')}">` + theme;
+      `<link rel="stylesheet" href="${escape(site.config.basePath + `/_zellij/${target}/styles.css`)}">` + theme;
     for (const [name, value] of Object.entries({ description: metadata.description, 'twitter:card': 'summary_large_image', 'twitter:title': metadata.title, 'twitter:description': metadata.description })) {
       if (value) head += `<meta name="${name}" content="${escape(value)}">`;
     }
     const canonical = site.config.siteUrl ? site.config.siteUrl.replace(/\/+$/, '') + site.config.basePath + route : undefined;
+    if (metadata.robots) head += '<meta name="robots" content="index, follow">';
     if (canonical) head += `<link rel="canonical" href="${escape(canonical)}">`;
     for (const [property, value] of Object.entries({ 'og:title': metadata.title, 'og:description': metadata.description, 'og:site_name': site.config.name, 'og:type': 'website', 'og:url': canonical })) {
       if (value) head += `<meta property="${property}" content="${escape(value)}">`;
@@ -74,18 +76,20 @@ async function main() {
     if (site.config.ogImage) {
       const asset = assetHref(site.config.ogImage, site.config.basePath);
       const image = site.config.siteUrl ? new URL(asset, site.config.siteUrl).href : asset;
-      head += `<meta property="og:image" content="${escape(image)}"><meta name="twitter:image" content="${escape(image)}">`;
+      head += `<meta property="og:image" content="${escape(image)}"><meta property="og:image:alt" content="${escape(metadata.title ?? site.config.name)}"><meta name="twitter:image" content="${escape(image)}">`;
     }
-    const file = path.join(output, route.slice(1), 'index.html');
+    const file = target === 'static'
+      ? path.join(output, route === '/' ? 'index.html' : route.slice(1) + '.html')
+      : path.join(output, route.slice(1), 'index.html');
     await mkdir(path.dirname(file), { recursive: true });
     await writeFile(file, `<!DOCTYPE html>${htmlStart}<head>${head}</head><body></body></html>`);
   }
   const sitemap = await createZellijSitemap({ appRoot })();
-  if (sitemap.length) await writeFile(path.join(output, 'sitemap.xml'), '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + sitemap.map(item => `<url><loc>${escape(item.url)}</loc></url>`).join('') + '</urlset>');
+  await writeFile(path.join(output, 'sitemap.xml'), '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + sitemap.map(item => `<url><loc>${escape(item.url)}</loc><changefreq>${escape(item.changeFrequency)}</changefreq><priority>${escape(item.priority)}</priority></url>`).join('') + '</urlset>');
   const robots = await createZellijRobots({ appRoot })();
   await writeFile(path.join(output, 'robots.txt'), `User-agent: *\nAllow: /\n${robots.sitemap ? `Sitemap: ${robots.sitemap}\n` : ''}`);
   await writeFile(path.join(output, '404.html'), '<!DOCTYPE html><title>Page not found</title>');
-  await exportOffline(appRoot, output);
-  await writeFile(path.join(appRoot, 'build-report.json'), JSON.stringify({ basePath: site.config.basePath }));
+  await exportOffline(appRoot, output, target);
+  await writeFile(path.join(appRoot, 'build-report.json'), JSON.stringify({ target, basePath: site.config.basePath }));
 }
 main().catch(error => { console.error(`[zellij] ${error instanceof Error ? error.message : String(error)}`); process.exitCode = 1; });

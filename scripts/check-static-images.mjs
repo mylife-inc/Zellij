@@ -185,7 +185,7 @@ try {
     stdio: ['pipe', 'inherit', 'inherit'], timeout: 120_000,
   });
   const previous = await readFile(path.join(root, 'hosted-output/manual.html'), 'utf8');
-  assert.throws(() => execFileSync(zel, ['build', 'hosted', '--target', 'static', '--features', 'none', '--out', 'hosted-output'], {
+  assert.throws(() => execFileSync(zel, ['image', 'static', 'hosted', '--features', 'none', '--tag', `zel-incompatible:${suffix}`], {
     cwd: root, env: { ...process.env, ZELLIJ_IMAGE: incompatibleBase }, encoding: 'utf8', timeout: 120_000,
   }), error => error.status === 3 && error.stderr.includes('does not support explicit feature selection'));
   assert.equal(await readFile(path.join(root, 'hosted-output/manual.html'), 'utf8'), previous);

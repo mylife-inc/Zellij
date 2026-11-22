@@ -3,6 +3,16 @@ title: zel migrate
 description: Detect, convert and check in one step, stopping at the first failure.
 ---
 
+## Upcoming validation without a container
+
+The source update after rc.17 runs migration's final hosted validation through
+the CLI-matched renderer cache. First use downloads that renderer; later checks
+reuse it without installing Docker, Node or Python. Missing prerequisites or
+invalid content leave the converted files available and report their location.
+`--dry-run` still writes nothing and never downloads a renderer. Published rc.17
+retains the container requirement described below.
+
+
 <div id="what-it-is" className="zellij-legacy-anchor" />
 <div id="then-why-does-it-exist" className="zellij-legacy-anchor" />
 

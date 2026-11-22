@@ -351,10 +351,12 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run build --workspace @shebka/zellij
-      - run: docker build --progress=plain -f docker/base.Dockerfile -t zellij-ci .
+      - name: Prepare the current cached renderer
+        run: |
+          node scripts/build-standalone-engine.mjs
+          node scripts/prepare-standalone-test-cache.mjs "$RUNNER_TEMP/current-renderer"
+          printf 'ZEL_ENGINE_CACHE=%s\n' "$RUNNER_TEMP/current-renderer" >> "$GITHUB_ENV"
       - name: Export templates and verify pages, palettes, keyboard and no-JavaScript layouts
-        env:
-          ZELLIJ_IMAGE: zellij-ci
         run: node scripts/check-site-templates.mjs cli/target/debug/zel "$RUNNER_TEMP/site-template-exports" --build --browser
       - uses: actions/upload-artifact@v7
         if: always()
@@ -403,6 +405,11 @@ jobs:
       - run: cargo build --manifest-path cli/Cargo.toml
       - name: Manual release-delivery workflows match the CLI generator
         run: node scripts/prepare-delivery-acceptance.mjs cli/target/debug/zel
+      - name: Prepare this checkout's cached validator for integration tests
+        run: |
+          node scripts/build-standalone-engine.mjs
+          node scripts/prepare-standalone-test-cache.mjs "$RUNNER_TEMP/current-renderer"
+          printf 'ZEL_ENGINE_CACHE=%s\n' "$RUNNER_TEMP/current-renderer" >> "$GITHUB_ENV"
       - name: Build the engine image from this checkout
         run: docker build -f docker/base.Dockerfile -t zellij-ci .
 
@@ -454,7 +461,7 @@ jobs:
           ZELLIJ_IMAGE: zellij-ci
         working-directory: cli
         run: |
-          acceptance_test=netlify::tests::hosted_container_export_upload_preserves_prefix_assets_and_previous_output
+          acceptance_test=netlify::tests::hosted_cached_export_upload_preserves_prefix_assets_and_previous_output
           cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --list | grep -F "$acceptance_test: test"
           cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --nocapture
 
@@ -494,9 +501,7 @@ jobs:
           cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --list | grep -F "$acceptance_test: test"
           cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --nocapture
 
-      - name: Hosted validation watch uses the real engine and recovers after edits
-        env:
-          ZELLIJ_IMAGE: zellij-ci
+      - name: Cached static validation watch recovers without external tools
         run: node scripts/check-validation-watch.mjs --hosted --config
 
       - name: Hosted static preview rebuilds and reloads with the real engine
@@ -556,7 +561,7 @@ jobs:
       - name: Scaffold names, rendered links, and content discovery
         env:
           ZELLIJ_IMAGE: zellij-ci
-        run: node scripts/check-scaffolds.mjs cli/target/debug/zel "$(mktemp -d)/fixtures" --container-check
+        run: node scripts/check-scaffolds.mjs cli/target/debug/zel "$(mktemp -d)/fixtures" --cached-check
 
       - name: Full starter exports every section and its local media
         env:

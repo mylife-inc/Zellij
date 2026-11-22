@@ -1,9 +1,10 @@
 // Native CLI forwarding and rejection acceptance. No daemon or GUI browser.
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { mkdir, mkdtemp, readFile, rm, writeFile, stat } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile, stat, realpath } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { installCachedRenderer } from './fixtures/install-cached-renderer.mjs';
 
 const zel = path.resolve(`cli/target/debug/zel${process.platform === 'win32' ? '.exe' : ''}`);
 const root = await mkdtemp(path.join(tmpdir(), 'zellij-build-options-'));
@@ -16,7 +17,7 @@ const read = name => readFile(path.join(root, name), 'utf8');
 const write = async (name, value) => { const file = path.join(root, name); await mkdir(path.dirname(file), { recursive: true }); await writeFile(file, value); };
 const run = (args, status = 0, extra = {}) => {
   if (['build', 'b'].includes(args[0]) && args[1] === 'hosted' && !args.includes('--target')) args = [...args, '--target', 'static'];
-  const result = spawnSync(zel, args, { cwd: root, env: { ...env, ...extra }, encoding: 'utf8', timeout: 30000 });
+  const result = spawnSync(zel, args, { cwd: root, env: { ...env, ...extra }, encoding: 'utf8', timeout: 90000 });
   assert.equal(result.status, status, `${args.join(' ')}\n${result.stdout}\n${result.stderr}\n${result.error ?? ''}`);
   return result;
 };
@@ -26,6 +27,7 @@ const flags = ['--base-path', settings.basePath + '/', '--site-url', 'https://DO
 const authored = 'name: Hosted\nbasePath: /authored\nsiteUrl: https://old.example\n';
 try {
   await mkdir(bin);
+  env.ZEL_ENGINE_CACHE = await installCachedRenderer(zel, root, 'scripts/fixtures/build-cached-engine.mjs');
   execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/build-engine.rs', '-o', path.join(bin, process.platform === 'win32' ? 'podman.exe' : 'podman')], { stdio: 'pipe' });
   await write('hosted/zel.yaml', 'version: 1\nrenderer: hosted\n');
   await write('hosted/content/site.yaml', authored);
@@ -35,16 +37,16 @@ try {
     run([command, 'hosted', '--out', 'export', '--features', 'none', ...flags]);
     const args = await read('args');
     assert.deepEqual(decode(args), [settings]);
-    assert(args.includes(':/app/content:ro'));
-    assert(args.includes('features "none" /app'));
-    assert(!args.includes(' check /app/content'));
-    assert(args.indexOf('buildOverridesVersion') < args.indexOf('npm install'));
-    assert(args.includes('|| exit 95; '));
+    const request = JSON.parse(await read('request'));
+    assert.deepEqual(request.features, []);
+    assert.equal(request.noCheck, true);
+    assert.equal(await realpath(request.content), await realpath(path.join(root, 'hosted/content')));
   }
   run(['build', 'hosted', '--out', 'export', '--base-path', '/']);
   let args = await read('args');
   assert.deepEqual(decode(args), [{ version: 1, basePath: '', noCheck: false }]);
-  assert(args.includes(' check /app/content'));
+  assert.equal(JSON.parse(await read('request')).noCheck, false);
+  assert.deepEqual(JSON.parse(await read('request')).features, []);
   const previous = await read('export/index.html');
   run(['build', 'hosted', '--out', 'export', ...flags], 3, { ZELLIJ_BUILD_FAIL: 'yes' });
   assert.equal(await read('export/index.html'), previous);
@@ -52,7 +54,8 @@ try {
   args = await read('args');
   assert.deepEqual(decode(args), []);
   assert(!args.includes('buildOverridesVersion'));
-  assert(args.includes(' check /app/content'));
+  assert.equal(JSON.parse(await read('request')).noCheck, false);
+  assert.deepEqual(JSON.parse(await read('request')).features, []);
 
   for (const [command, target, copies] of [
     [['image', 'static'], 'hosted', 1], [['si'], 'hosted', 1],

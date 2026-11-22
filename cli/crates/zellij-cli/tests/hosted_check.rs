@@ -1,53 +1,27 @@
-//! Test native JSON orchestration without a daemon; CI also runs the real engine.
+//! Cached report orchestration; native-package CI also runs the real validator.
 #![cfg(unix)]
 use serde_json::{Value, json};
-use std::{fs, os::unix::fs::PermissionsExt, path::Path, process::Command};
+use std::{fs, path::Path, process::Command};
+#[path = "support/cached_renderer.rs"]
+mod cached_renderer;
 
 fn fixture(root: &Path) {
-    fs::create_dir(root.join("bin")).unwrap();
     fs::create_dir(root.join("docs 日本 \"quoted\"")).unwrap();
     fs::write(
         root.join("docs 日本 \"quoted\"/site.yaml"),
         "name: Hosted\n",
     )
     .unwrap();
-    fs::write(
-        root.join("bin/docker"),
-        r#"#!/bin/sh
-case "$1" in
-  info) exit 0;;
-  --version) echo 'fixture docker'; exit 0;;
-  run)
-    printf '%s\n' "$@" > arguments
-    cat engine-report
-    echo 'internal fixture stderr must not pollute JSON' >&2
-    exit "${FAKE_EXIT:-0}";;
-  *) exit 99;;
-esac
-"#,
-    )
-    .unwrap();
-    fs::set_permissions(root.join("bin/docker"), fs::Permissions::from_mode(0o755)).unwrap();
+    cached_renderer::install(root);
 }
 
 fn command(root: &Path) -> Command {
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_zel"));
     cmd.current_dir(root)
-        .env(
-            "PATH",
-            format!("{}:/usr/bin:/bin", root.join("bin").display()),
-        )
+        .env("PATH", root.join("no-tools"))
         .env("DOCKER_HOST", "unix:///fixture-docker.sock")
-        .env("ZELLIJ_IMAGE", "fixture/engine:test");
-    for key in [
-        "DOCKER_CONTEXT",
-        "CONTAINER_HOST",
-        "CONTAINER_CONNECTION",
-        "CONTAINERD_ADDRESS",
-        "CONTAINERD_NAMESPACE",
-    ] {
-        cmd.env_remove(key);
-    }
+        .env("CONTAINER_HOST", "unix:///fixture-podman.sock");
+    cached_renderer::configure(&mut cmd, root);
     cmd
 }
 
@@ -68,8 +42,9 @@ fn report(mut cmd: Command, exit: i32) -> Value {
     serde_json::from_slice(&output.stdout).expect("exactly one JSON report")
 }
 
-fn engine_report() -> Value {
-    json!({"schema_version": 1, "target": "static", "root": "/content", "deep": true,
+fn engine_report(root: &Path) -> Value {
+    let content = root.join("docs 日本 \"quoted\"").canonicalize().unwrap();
+    json!({"schema_version": 1, "target": "static", "root": content.to_str().unwrap(), "deep": true,
         "strict": true, "ok": true, "pages": 2, "diagnostics": []})
 }
 
@@ -80,7 +55,7 @@ fn forwards_validation_options_and_preserves_success_errors_and_strict_warnings(
     fixture(root);
     let content = root.join("docs 日本 \"quoted\"").canonicalize().unwrap();
     for (severity, exit) in [(None, 0), (Some("error"), 3), (Some("warning"), 3)] {
-        let mut expected = engine_report();
+        let mut expected = engine_report(root);
         if let Some(severity) = severity {
             expected["ok"] = json!(false);
             expected["diagnostics"] = json!([{"severity": severity, "code": "deep", "file": null,
@@ -100,16 +75,19 @@ fn forwards_validation_options_and_preserves_success_errors_and_strict_warnings(
             "--deep",
             "--strict",
             "--json",
+            "--offline",
             "--quiet",
         ])
         .env("FAKE_EXIT", if exit == 0 { "0" } else { "1" });
         let actual = report(cmd, exit);
         expected["root"] = json!(content.to_str().unwrap());
         assert_eq!(actual, expected);
-        let arguments = fs::read_to_string(root.join("arguments")).unwrap();
-        assert!(arguments.contains(":/content:ro\n"));
-        assert!(arguments.contains("fixture/engine:test\n"));
-        assert!(arguments.contains("check /content --deep --strict --json"));
+        let request: Value =
+            serde_json::from_slice(&fs::read(root.join("request")).unwrap()).unwrap();
+        assert_eq!(request["operation"], "check");
+        assert_eq!(request["content"], content.to_str().unwrap());
+        assert_eq!(request["deep"], true);
+        assert_eq!(request["strict"], true);
         assert_eq!(
             fs::read_to_string(content.join("site.yaml")).unwrap(),
             "name: Hosted\n"
@@ -119,13 +97,13 @@ fn forwards_validation_options_and_preserves_success_errors_and_strict_warnings(
 }
 
 #[test]
-fn incompatible_engine_and_runtime_failures_are_not_content_failures() {
+fn incompatible_cached_reports_and_missing_cache_are_not_content_failures() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();
     fixture(root);
     for (body, engine_exit) in [
         ("old engine: check passed".to_string(), "0"),
-        (engine_report().to_string(), "125"),
+        (engine_report(root).to_string(), "125"),
         ("{}".to_string(), "1"),
     ] {
         fs::write(root.join("engine-report"), body).unwrap();
@@ -148,7 +126,7 @@ fn incompatible_engine_and_runtime_failures_are_not_content_failures() {
             actual["diagnostics"][0]["message"]
                 .as_str()
                 .unwrap()
-                .contains("ZELLIJ_IMAGE")
+                .contains("cached renderer")
         );
         assert!(!actual.to_string().contains("internal fixture stderr"));
     }
@@ -159,10 +137,17 @@ fn incompatible_engine_and_runtime_failures_are_not_content_failures() {
         "static",
         "docs 日本 \"quoted\"",
         "--json",
+        "--offline",
     ])
-    .env("PATH", root.join("no-tools"));
-    let missing = report(cmd, 4);
-    assert_eq!(missing["diagnostics"][0]["code"], "runtime");
+    .env("ZELLIJ_HOME", root.join("uncached"));
+    let missing = report(cmd, 2);
+    assert_eq!(missing["target"], "static");
+    assert!(
+        missing["diagnostics"][0]["message"]
+            .as_str()
+            .unwrap()
+            .contains("not cached")
+    );
     assert_eq!(missing["ok"], false);
     fs::write(
         root.join("zel.yaml"),

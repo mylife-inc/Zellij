@@ -351,32 +351,6 @@ fn resolve_content(dir: &SiteInput) -> zellij_core::Result<Utf8PathBuf> {
     Ok(site.content)
 }
 
-fn check(dir: &SiteInput, options: zellij_engine::CheckOptions) -> zellij_core::Result<()> {
-    let content = resolve_content(dir)?;
-    let engine = zellij_engine::ContainerEngine::detect(None)?;
-
-    // The trait has to be in scope for its methods to be callable.
-    use zellij_engine::Engine as _;
-    let report = match engine.check(&content, options) {
-        Ok(report) => report,
-        // Return after the actionable mount report so compositions can report
-        // their completed stages and retained imported files.
-        Err(err @ zellij_core::Error::MountEmpty { .. }) => {
-            report_empty_mount(&err);
-            return Err(err);
-        }
-        Err(err) => return Err(err),
-    };
-
-    zellij_core::reporting::emit(format_args!("{}", report.output), false);
-
-    if !report.ok {
-        return Err(zellij_core::Error::ContentInvalid);
-    }
-
-    Ok(())
-}
-
 /// Shared by every command that mounts content, because every one of them can
 /// meet a runtime that silently shares nothing.
 fn report_empty_mount(err: &zellij_core::Error) {
@@ -455,9 +429,9 @@ fn build_dispatch(request: BuildInvocation<'_>) -> zellij_core::Result<()> {
     if target != "image" {
         hosted_options.require_no_image_args()?;
     }
-    if offline && target != "file" {
+    if offline && !matches!(target, "file" | "static") {
         return Err(zellij_core::Error::InvalidArgument(
-            "--offline applies to rich file builds".into(),
+            "--offline applies to cached rich builds (--target file or static)".into(),
         ));
     }
     match target {
@@ -470,13 +444,22 @@ fn build_dispatch(request: BuildInvocation<'_>) -> zellij_core::Result<()> {
             );
             Ok(())
         }
-        "file" => {
+        "file" | "static" => {
             let content = resolve_content(dir)?;
             let site = zellij_core::site::Site::load(dir)?;
             let output = out.map(Utf8PathBuf::from).unwrap_or(site.output);
-            rich_build::build(&content, &output, hosted_options, offline)
+            rich_build::build(
+                if target == "file" {
+                    rich_build::Target::File
+                } else {
+                    rich_build::Target::Static
+                },
+                &content,
+                &output,
+                hosted_options,
+                offline,
+            )
         }
-        "static" => build(dir, target, out, hosted_options),
         "image" => {
             if out.is_some() {
                 return Err(zellij_core::Error::InvalidArgument(
@@ -488,127 +471,6 @@ fn build_dispatch(request: BuildInvocation<'_>) -> zellij_core::Result<()> {
         _ => Err(zellij_core::Error::InvalidArgument(format!(
             "unknown build target {target:?}; run zel list targets"
         ))),
-    }
-}
-
-fn build(
-    dir: &SiteInput,
-    target: &str,
-    out: Option<&str>,
-    options: &zellij_engine::BuildOptions,
-) -> zellij_core::Result<()> {
-    use zellij_engine::BuildMode;
-
-    let mode = match target {
-        "static" => BuildMode::Static,
-        "file" => BuildMode::File,
-        "image" => BuildMode::Image,
-        other => {
-            zellij_core::diagnosticln!("error: no target called \"{other}\"");
-            zellij_core::diagnosticln!("       zel list targets");
-            std::process::exit(2);
-        }
-    };
-
-    let content = resolve_content(dir)?;
-    let site = zellij_core::site::Site::load(dir)?;
-    let out = out.map(Utf8PathBuf::from).unwrap_or(site.output);
-    let engine = zellij_engine::ContainerEngine::detect(None)?;
-
-    zellij_core::statusln!("  Engine   {}", engine.image());
-    zellij_core::statusln!("  Content  {content}");
-    zellij_core::statusln!("  Target   {target} → {out}");
-    zellij_core::statusln!();
-
-    match engine.build_with_options(&content, &out, mode, options) {
-        Err(err @ zellij_core::Error::MountEmpty { .. }) => {
-            report_empty_mount(&err);
-            std::process::exit(err.exit_code());
-        }
-        Err(err) => Err(err),
-        Ok(()) => {
-            let pages = std::fs::read_dir(&out)
-                .map(|entries| entries.flatten().count())
-                .unwrap_or(0);
-
-            // A build that produced nothing did not succeed, whatever the
-            // container said.
-            //
-            // `MountEmpty` above catches this from the input side — a content
-            // folder the runtime cannot reach mounts as empty. The *output*
-            // side fails the same way and had no such check: the container
-            // writes its pages into its own copy of a path that was never
-            // shared, exits cleanly, and the directory the caller is looking at
-            // stays empty. The count was already being printed, so this
-            // reported "✓ … (0 entries)" — a tick over nothing.
-            //
-            // Found by pointing `--out` at /tmp on a Colima host. It is the
-            // same mistake this binary already explains for the input folder,
-            // in the same message, and it deserved the same answer.
-            if pages == 0 {
-                zellij_core::diagnosticln!();
-                zellij_core::diagnosticln!("error: the build wrote nothing to {out}");
-                zellij_core::diagnosticln!();
-                zellij_core::diagnosticln!(
-                    "  The engine reported success and the output folder is empty, which"
-                );
-                zellij_core::diagnosticln!(
-                    "  happens when the container cannot reach the path you asked for: a"
-                );
-                zellij_core::diagnosticln!(
-                    "  bind mount of an unshared directory succeeds and shares nothing, so"
-                );
-                zellij_core::diagnosticln!(
-                    "  the pages were written inside the container and thrown away with it."
-                );
-                zellij_core::diagnosticln!();
-                zellij_core::diagnosticln!(
-                    "  Colima shares $HOME and not /tmp. Either write somewhere under your"
-                );
-                zellij_core::diagnosticln!("  home directory, or share the path:");
-                zellij_core::diagnosticln!();
-                zellij_core::diagnosticln!("    colima stop && colima start --mount '/tmp:w'");
-                zellij_core::diagnosticln!();
-                zellij_core::diagnosticln!(
-                    "  Docker Desktop: Settings → Resources → File sharing."
-                );
-                std::process::exit(1);
-            }
-
-            zellij_core::statusln!();
-            zellij_core::statusln!("✓ {out}  ({pages} entries)");
-
-            // A sitemap needs absolute URLs, so without `siteUrl` the engine
-            // has nothing to write and produces an empty one. It is valid XML
-            // and useless, and nothing else in the build says so — the site
-            // ships, search engines get an empty index, and nobody finds out
-            // for months.
-            let sitemap = out.join("sitemap.xml");
-            if mode != BuildMode::File
-                && let Ok(body) = std::fs::read_to_string(&sitemap)
-                && !body.contains("<loc>")
-            {
-                zellij_core::statusln!();
-                zellij_core::diagnosticln!("! {sitemap} is empty.");
-                zellij_core::diagnosticln!(
-                    "  A sitemap lists absolute URLs, so it needs the site's origin."
-                );
-                zellij_core::diagnosticln!("  Set siteUrl in site.yaml:");
-                zellij_core::diagnosticln!();
-                zellij_core::diagnosticln!("    siteUrl: https://docs.example.com");
-            }
-
-            zellij_core::statusln!();
-            if mode == BuildMode::File {
-                zellij_core::statusln!(
-                    "  Open {} directly in your browser; no server is required.",
-                    out.join("index.html")
-                );
-            } else {
-                zellij_core::statusln!("  Serve it from any static host.");
-            }
-            Ok(())
-        }
     }
 }
 
@@ -985,7 +847,7 @@ fn list_targets(as_json: bool) -> zellij_core::Result<()> {
     let targets = [
         (
             "static",
-            "A hosted YAML/MDX website. Requires HTTP and the container engine.",
+            "A rich YAML/MDX website for an HTTP host. Uses the verified cached renderer; no Docker, Node.js or Python installation. Cached builds support --offline.",
         ),
         (
             "image",

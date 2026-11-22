@@ -1,4 +1,5 @@
 // Shared component identities: offline output hydrates the same controls as Next.
+import { Analytics } from '../chrome/analytics';
 import { GuideSidebar } from '../guide/sidebar';
 import { TableOfContents } from '../guide/table-of-contents';
 import { Mermaid } from '../mdx/mermaid';
@@ -25,7 +26,7 @@ import { CopyCommand } from '../sections/components/copy-command';
 import { ComposeScrollStage } from '../sections/components/compose-scroll';
 import { ComposeBackdropMedia } from '../sections/components/compose-backdrop';
 import { PanelVideo } from '../sections/components/panel-video';
-export const components = { GuideSidebar, TableOfContents, Mermaid, TabsClient, CodeBlock,
+export const components = { Analytics, GuideSidebar, TableOfContents, Mermaid, TabsClient, CodeBlock,
   GradientReveal, ScrollStage, Parallax, CountUp, Reveal, SearchModal, NavBarClient,
   AnnouncementBar, MobileDrawer, ThemeSwitcher, ThemeToggle, CardCarouselTrack,
   GalleryLightbox, MediaAccordionControl, StoryScroll, VideoPlayer, TestimonialCarousel,

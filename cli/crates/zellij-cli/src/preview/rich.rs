@@ -1,4 +1,4 @@
-//! Preview the same rich export that can be opened directly from disk.
+//! Preview cached rich file or HTTP exports with the native static server.
 use super::{ViewOptions, run, signals};
 use camino::{Utf8Path, Utf8PathBuf};
 use std::sync::{
@@ -19,6 +19,7 @@ fn snapshot(source: &SiteInput, configured: bool) -> Result<Snapshot> {
 }
 
 struct Build<'a> {
+    target: crate::rich_build::Target,
     source: &'a SiteInput,
     output: &'a Utf8Path,
     configured: bool,
@@ -37,6 +38,7 @@ impl Build<'_> {
         }
         let content = crate::resolve_content(self.source)?;
         let Some(build) = crate::rich_build::prepare(
+            self.target,
             &content,
             self.output,
             &zellij_engine::BuildOptions::with_features(self.features),
@@ -66,7 +68,11 @@ impl Build<'_> {
     }
 }
 
-pub(super) fn view(site: Site, options: ViewOptions<'_>) -> Result<()> {
+pub(super) fn view(
+    site: Site,
+    options: ViewOptions<'_>,
+    target: crate::rich_build::Target,
+) -> Result<()> {
     if options.pdf == Some(true) {
         return Err(Error::InvalidArgument(
             "--pdf requires a portable book".into(),
@@ -84,6 +90,7 @@ pub(super) fn view(site: Site, options: ViewOptions<'_>) -> Result<()> {
     let stop = signals()?;
     let features = options.features;
     let build = Build {
+        target,
         source: &source,
         output: &output,
         configured,
@@ -120,6 +127,7 @@ pub(super) fn view(site: Site, options: ViewOptions<'_>) -> Result<()> {
             move || snapshot(&watched, configured),
             move |expected| {
                 let build = Build {
+                    target,
                     source: &source,
                     output: &output,
                     configured,

@@ -12,6 +12,8 @@ fn run(root: &Path, args: &[&str], code: i32) -> Output {
         .current_dir(root)
         .args(args)
         .env("PATH", root.join("no-tools"))
+        .env("ZELLIJ_HOME", root.join("uncached"))
+        .env_remove("ZEL_ENGINE_CACHE")
         .env("DOCKER_HOST", "tcp://unreachable.invalid:2376")
         .output()
         .unwrap();
@@ -184,13 +186,25 @@ fn hosted_roots_route_to_the_engine_and_native_commands_explain_mismatches() {
     assert!(root.join("docs/manual/zel.yaml").is_file());
     let error = run(
         root,
-        &["check", "docs/manual", "--target", "static", "--json"],
-        4,
+        &[
+            "check",
+            "docs/manual",
+            "--target",
+            "static",
+            "--json",
+            "--offline",
+        ],
+        2,
     );
     assert!(error.stderr.is_empty());
     let report: Value = serde_json::from_slice(&error.stdout).unwrap();
     assert_eq!(report["target"], "static");
-    assert_eq!(report["diagnostics"][0]["code"], "runtime");
+    assert!(
+        report["diagnostics"][0]["message"]
+            .as_str()
+            .unwrap()
+            .contains("not cached")
+    );
     run(root, &["image", "dockerfile", "docs/manual"], 0);
     run(root, &["build", "docs/manual", "--target", "portable"], 2);
     run(root, &["view", "docs/manual", "--name", "Portable only"], 2);

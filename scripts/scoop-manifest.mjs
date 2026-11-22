@@ -40,7 +40,7 @@ export function scoopManifest(tag, checksums) {
       'Update with: scoop update zel',
       'Portable Markdown builds need no container runtime.',
       'Rich file builds download their own verified renderer once.',
-      `For explicit static/image builds and hosted development: $env:ZELLIJ_IMAGE = 'ghcr.io/mylife-inc/zellij-base:${version}'`,
+      `For container operations, the matching image is: $env:ZELLIJ_IMAGE = 'ghcr.io/mylife-inc/zellij-base:${version}'`,
     ],
   };
 }

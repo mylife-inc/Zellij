@@ -67,13 +67,12 @@ fn legacy_dot_rich_preview_resolves_content_before_output_preflight() {
 }
 
 #[test]
-fn explicit_static_preview_uses_container_preflight_even_for_raw_markdown() {
+fn explicit_static_preview_reserves_port_before_renderer_preparation() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();
     fs::create_dir(root.join("manual")).unwrap();
     fs::write(root.join("manual/index.md"), "# Manual\n").unwrap();
-    // A wrong portable dispatch fails at this occupied port (2) rather than
-    // hanging in a server, while the selected container path fails first (4).
+    // A binding failure must not prepare the renderer or replace output.
     let socket = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
     let port = socket.local_addr().unwrap().port().to_string();
     let output = command(root)
@@ -88,7 +87,9 @@ fn explicit_static_preview_uses_container_preflight_even_for_raw_markdown() {
         ])
         .output()
         .unwrap();
-    assert_eq!(output.status.code(), Some(4), "{output:?}");
+    assert_eq!(output.status.code(), Some(2), "{output:?}");
+    assert!(String::from_utf8_lossy(&output.stderr).contains("already in use"));
+    assert!(!root.join("engine-cache").exists());
     assert!(!root.join("manual-site").exists());
 }
 
@@ -276,23 +277,9 @@ fn container_commands_fail_with_exit_four_before_touching_content_or_output() {
     fs::create_dir(root.join("site")).unwrap();
     fs::write(root.join("site/index.html"), "previous export").unwrap();
     for args in [
-        vec!["build", "content", "--target", "static", "--out", "site"],
         vec!["build", "content", "--target", "image"],
-        vec!["check", "content", "--target", "static"],
-        vec!["watch", "content", "--target", "static"],
         vec!["dev", "content"],
         vec!["dev", "content", "--features", "all"],
-        vec!["view", "content", "--target", "static", "--no-open"],
-        vec![
-            "view",
-            "content",
-            "--target",
-            "static",
-            "--no-open",
-            "--features",
-            "none",
-        ],
-        vec!["v", "content", "--target", "static", "--watch", "--no-open"],
         vec!["image", "build", "content"],
         vec!["image", "static", "content"],
         vec!["si", "content"],
@@ -300,8 +287,6 @@ fn container_commands_fail_with_exit_four_before_touching_content_or_output() {
         vec!["image", "next", "content"],
         vec!["image", "run", "test:latest"],
         vec!["image", "push", "test:latest"],
-        vec!["b", "content", "--target", "static", "--out", "site"],
-        vec!["c", "content", "--target", "static"],
         vec!["ir", "test:latest"],
         vec!["ip", "test:latest"],
     ] {
@@ -633,4 +618,33 @@ fn an_explicit_runtime_can_respond_after_the_automatic_probe_deadline() {
     assert!(start.elapsed() < std::time::Duration::from_secs(15));
     assert!(String::from_utf8_lossy(&output.stdout).contains("docker slow fixture"));
     assert!(!root.join("podman-calls").exists());
+}
+
+#[test]
+fn rich_commands_require_their_cache_without_inspecting_container_endpoints() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    content(root);
+    for command_name in ["check", "c", "watch", "build", "b", "view", "v"] {
+        for target in ["file", "static"] {
+            let output = command(root)
+                .args([command_name, "content", "--target", target, "--offline"])
+                .env("DOCKER_HOST", "fixture-invalid")
+                .env("CONTAINER_HOST", "fixture-conflict")
+                .output()
+                .unwrap();
+            assert_eq!(output.status.code(), Some(2), "{output:?}");
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            assert!(stderr.contains("not cached"), "{stderr}");
+            assert!(
+                !stderr.contains("ambiguous") && !stderr.contains("docker:"),
+                "{stderr}"
+            );
+            assert!(!root.join("site").exists());
+            assert_eq!(
+                fs::read_to_string(root.join("content/site.yaml")).unwrap(),
+                "name: Test\n"
+            );
+        }
+    }
 }
