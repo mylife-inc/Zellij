@@ -35,3 +35,39 @@ test('no-script capture returns native focus state without needing page timers o
   assert.equal(state.frameTimes.length, 0);
   assert.equal(state.sampledFrames, false);
 });
+
+
+function schedulingPage(overrides = {}) {
+  const context = vm.createContext({
+    performance: { now: () => 1 }, location: { href: 'http://fixture/cli/dev#what-it-is-for' },
+    innerWidth: 1280, innerHeight: 900, scrollX: 0, scrollY: 600,
+    document: { readyState: 'complete', visibilityState: 'visible', hasFocus: () => true,
+      fonts: { status: 'loaded' }, activeElement: null,
+      querySelector: () => null, querySelectorAll: () => [],
+    },
+    // The page responds to synchronous evaluation, but scheduled callbacks stall.
+    setTimeout: () => 1, requestAnimationFrame: () => 1, cancelAnimationFrame: () => {},
+    ...overrides,
+  });
+  return { evaluate: async (fn, args) => {
+    context.args = args;
+    return vm.runInContext(`(${fn.toString()})(args)`, context);
+  } };
+}
+
+test('stalled page scheduling retains the already captured DOM snapshot', { timeout: 5_000 }, async () => {
+  const state = await browserFailureState(schedulingPage());
+  assert.match(state.captureError, /exceeded 1500 ms/);
+  assert.equal(state.before.readyState, 'complete');
+  assert.match(state.before.url, /cli\/dev#what-it-is-for$/);
+  assert.equal(state.after, undefined);
+  assert.equal(state.frameTimes, undefined, 'An unfinished sample must not be reported as zero frames');
+});
+
+test('a frame sampling error retains the immediate DOM snapshot', async () => {
+  const state = await browserFailureState(schedulingPage({
+    requestAnimationFrame: () => { throw new Error('Frame sampling unavailable'); },
+  }));
+  assert.equal(state.before.readyState, 'complete');
+  assert.match(state.captureError, /Frame sampling unavailable/);
+});
