@@ -1,35 +1,31 @@
 # Zellij readiness — 21 November 2026
 
-Unreleased source update: cached HTTP build/preview and static deployment build
-stages are implemented and undergoing final package/hosted acceptance; see the
-[HTTP migration record](zellij-cached-http-export-2026-11-21.md). Public rc.17
-is unchanged.
-
-This is the current checkpoint for the older completion and expansion records.
-Their rc.6–rc.11 statements are dated history, including statements that
-production documentation or later print/composer features were still pending.
-They must not be read as today's backlog.
-
-The released candidate is **v0.2.0-rc.17**, with 37 source CI and 40 release
-jobs passed. Public downloads, local upgrade, channel and documentation status
-are recorded in the [release evidence](evidence/zellij-rc17-release-2026-11-21.json).
+The released candidate is **v0.2.0-rc.18**, source `faaee97`, with all 37
+required source CI and 40 release jobs passed. Public-download, channel and production
+documentation status is recorded in the [release evidence](evidence/zellij-rc18-release-2026-11-21.json).
 This checkpoint does not declare stable 1.0 or absence of undiscovered bugs.
 
-The next [source migration](zellij-cached-static-validation-2026-11-21.md) removes
-container requirements from static validation/watch and optional import checks.
-It is not part of released rc.17; hosted acceptance and release remain pending.
+This is the current checkpoint for older completion and expansion records.
+Their rc.6–rc.17 statements are dated history, including prior pending print,
+composer, documentation and cached-renderer milestones. They must not be read
+as today's backlog. The [validation](zellij-cached-static-validation-2026-11-21.md)
+and [HTTP export](zellij-cached-http-export-2026-11-21.md) cache migrations now ship.
 
 | Area | Current state | Remaining boundary or task |
 | --- | --- | --- |
 | Documented CLI command families | Implemented, with native tests and the recorded release acceptance. | Provider-specific live behavior and external runners require separate acceptance. |
-| Rich double-click website | Standalone build, check, watch and view share the verified cached renderer. First use downloads it; later operations support `--offline`. No user-installed Docker, Node or Python is required for these operations. | Hosted development, explicit static/Next exports, container images and PDF retain their documented prerequisites. |
-| Documentation and publishing | rc.17 instructions and template 0.1.3 guides are published at `zellij.shebka.net` by run 44951019765. Preservation and four live-page hydration checks pass. The current static/Next fixture images also pass fresh-pull HTTP, health and nonroot checks. | Keep release pins and production evidence current when executable behavior changes. Production migration itself is complete. |
+| Rich websites | File and HTTP static build, check, watch and view share the verified cached renderer. First use downloads it; later operations support `--offline`. Native static deployment builds and optional import validation use the same cache. No user-installed Docker, Node or Python is required for these web rendering operations. | Editable wrapper extraction, Next development, container images and PDF retain their documented prerequisites. |
+| Documentation and publishing | rc.18 guides and regenerated consumer workflows pass the seven targeted checks in PR #236. Preservation covers 46 original routes, 13 additions, 282 historical headings and 29 unchanged images. | Production publication and fixture-image refresh are tracked in the current release evidence; the established automatic Netlify publication workflow remains in use. |
 | Branding, menus and themes | Separate company/product branding, centered navigation, full-width desktop panels, mobile drilldown, responsive theme colors and the Kie theme are implemented. | Kie is an inspected design interpretation; blocked live reference access did not establish a 100% pixel-identical clone. |
 | Composer and templates | Responsive nested layouts, supported media/semantic/interactive nodes, bounded scroll effects, eight inline built-in section types, nine editable presets and nine website/book starters are implemented. | Three website starters ship corrected inline guides at template version 0.1.3 in rc.16, while prior 0.1.2 archive bytes remain unchanged. The composer is bounded; arbitrary executable components, arbitrary section embedding and unrestricted animation timelines are not promised. |
 | Books and PDF | Shared publication model, technical/study editions, equations/statements, numeric citations, glossary/index, print styling, Arabic RTL and French/German/Spanish print are implemented. | Arbitrary citation styles/BibTeX, unrestricted font inventories and broader format fidelity are separate expansion requests. Existing PDF generation uses its external toolchain. |
-| Installation | Public rc.17 packages for six native targets pass release acceptance. All eight public Homebrew/Scoop lifecycle and actual rc.16 upgrade cases pass. | rc.17 includes ownership protection and verified public native x64/ARM64 WinGet manifests. Microsoft PR #484934 (rc.15) has a passing CLA, no executable-error label and a request for moderator approval. Installation Validation remains neutral; catalog acceptance and ordinary catalog-ID installation remain pending. |
-| Retention | The 20 November rc.12 retirement is complete and recorded in its dated evidence. No releases or image versions are retired during rc.17 publication. | Preserve rc.11/rc.13 compatibility pins, rc.14 WinGet upgrade fixtures and rc.15 catalog submission and rc.16 channel upgrade tests until their dependencies are deliberately retired. Do not reuse completed deletion plans. |
+| Installation | Public rc.18 packages cover six native targets; independent Mac public-download, installed upgrade and empty-PATH file/static acceptance pass. All eight public Homebrew/Scoop actual rc.17-to-rc.18 upgrade/lifecycle cases pass. | rc.18 retains ownership protection and verified public native x64/ARM64 WinGet manifests. Microsoft PR #484934 (rc.15) has a passing CLA, no executable-error label and a request for moderator approval. Installation Validation remains neutral; catalog acceptance and ordinary catalog-ID installation remain pending. |
+| Retention | The 20 November rc.12 retirement is complete and recorded in its dated evidence. No releases or image versions are retired during rc.18 publication. | Preserve rc.11/rc.13 compatibility pins, rc.14 WinGet upgrade fixtures and rc.15 catalog submission and rc.17 channel upgrade tests until their dependencies are deliberately retired. Do not reuse completed deletion plans. |
 | Live providers and generated runners | Adapters and build/protocol harnesses exist. Earlier live Netlify, Cloudflare, GitHub Pages and Railway checks have their recorded evidence. | Fly, S3 and actual GitLab/CircleCI runner acceptance stay at the end by user instruction. Vercel remains explicitly deferred after payment was required. |
+
+The cached-renderer current-page defect found during this release is corrected
+in `e3bc39a`: prefixed routes now match sidebar items in both rich modes, with
+SSR and hydrated regression coverage. See the HTTP migration record.
 
 A separate desktop overflow focus defect is corrected in source `f80596b`:
 delayed menu restoration now respects a newer focus or pointer choice. The
@@ -48,16 +44,20 @@ findings or repeatedly running unrelated suites. The [20 November follow-up](evi
 reviewed failed/retried CI attempts without identifying new evidence for either
 finding; it makes no runtime change or resolution claim.
 
-Released rc.17 retains registry/file ownership detection before self-upgrade,
+Released rc.18 retains registry/file ownership detection before self-upgrade,
 verified x64/ARM64 portable manifests and native install/upgrade/uninstall
 acceptance. The rc.15 Microsoft catalog submission awaits moderator approval. See the
 [distribution contract](zel-winget-distribution-2026-11-20.md) for validation,
 retention and external acceptance boundaries. The native upgrade fixture uses
 real rc.14 archives; retain them until that dependency is deliberately migrated.
 
-Next implementation opportunity: reuse the cached validator for explicit static
-checks, then extend HTTP export/deployment builds. The [source-backed roadmap](zellij-cached-toolchains-2026-11-21.md) also covers editable wrapper packages, optional typesetting and Next development; none of those migrations ships in rc.17. Investigate any original timing recurrence using retained
-diagnostics. Catalog review and deferred external acceptance remain separate
-from this implementation work.
+Next implementation: a versioned editable wrapper/engine source package for
+default `eject`, followed by optional LuaLaTeX and Next development packages.
+The [source-backed roadmap](zellij-cached-toolchains-2026-11-21.md) records their
+scope and acceptance requirements. Priorities 1–2 (static validation and HTTP
+export/deployment builds) are complete in rc.18. Images still need a builder;
+explicit custom-image extraction must preserve its selected-image behavior.
+Investigate any original timing recurrence using retained diagnostics. Catalog
+review and deferred external acceptance remain separate from this work.
 A supported command may be implementation-complete while one of these acceptance
 or distribution tasks remains open.

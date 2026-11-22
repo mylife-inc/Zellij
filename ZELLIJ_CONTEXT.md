@@ -8,6 +8,44 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-21**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-21: rc.18 — cached HTTP rendering and static validation released**
+
+Immutable `v0.2.0-rc.18` points to `faaee97`, the merge of PR #235 with an
+identical tree to tested `15b6625`. Source CI `44987846589` passes all 37 required
+jobs; browser acceptance passes 552 cases, 169 conditional skips and no observed
+failures/retries. Normal local preflight passes 832 Rust tests (5 existing
+ignores), 546 engine tests, format, Clippy, types and schema checks. Fresh
+production/development dependency audits report no findings.
+
+Static check/watch, optional import validation, HTTP build/view and the five
+native static-deployment build stages now reuse the same verified renderer as
+file output. First use downloads under the resolved `ZELLIJ_HOME`; later local
+operations support `--offline`. HTTP/file routing, prefixes, analytics selection,
+feature defaults and staged output are preserved. The actual prefixed-sidebar
+identity bug found by combined CI is fixed in `e3bc39a` and covered before/after
+hydration. Historical failures remain recorded. Web-only generated workflows
+pinned to rc.18+ omit Docker setup; image/PDF workflows and older pins retain it.
+
+Both public release copies contain 40 matching asset names, sizes and SHA-256
+digests. Independent public Intel Mac acceptance passes both output modes,
+check/watch/view, recovery/cancellation and direct-file Chromium/WebKit browsing
+of all 16 showcase routes without captured browser errors or HTTP requests.
+The installed Mac CLI matches the public binary; an empty-PATH cold build in
+the default resource home, byte-identical offline file rebuild and offline
+HTTP build/strict validation pass. All 40 required public-release jobs pass in `44989656538`; all eight actual rc.17-to-rc.18
+Homebrew/Scoop upgrade/lifecycle cases pass (`44991793568`, `44991794818`).
+Production documentation and fixture-image refresh follow PR #236. Receipts are tracked in the [release evidence](specs/evidence/zellij-rc18-release-2026-11-21.json).
+
+The seven guide/generated-consumer checks for PR #236 pass. Duplicate general
+CI on its unchanged runtime is cancelled, not counted as a pass. Editable
+wrapper downloads, optional LuaLaTeX and Next development packages remain future
+work; image creation still needs a builder. The two historical browser timing
+findings remain unexplained. No live provider/catalog acceptance or retirement
+is included. See [readiness](specs/zellij-readiness-2026-11-21.md) and the
+[remaining roadmap](specs/zellij-cached-toolchains-2026-11-21.md).
+
+**Historical source checkpoints below preceded rc.18 publication.**
+
 **2026-11-21: cached HTTP export — source migration in progress**
 
 The renderer now has an explicit HTTP mode. Static build/view and the five

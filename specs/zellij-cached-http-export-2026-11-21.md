@@ -1,7 +1,10 @@
 # Cached HTTP export — 21 November 2026
 
-Status: implemented in source for rc.18; hosted acceptance is being completed
-before the candidate is published.
+Status: merged in PR #235 and published in rc.18 at immutable `faaee97`.
+Final source CI `44987846589` passes all 37 required jobs. See the
+[release record](evidence/zellij-rc18-release-2026-11-21.json) for final public
+packages, installation channels and documentation publication. Initial
+checkpoint findings below are retained as history.
 
 The downloaded renderer now supports explicit `file` and `static` modes. Both
 use the same precompiled components, private Node runtime, fonts and browser
@@ -28,10 +31,9 @@ Image build/push and Fly/Railway image delivery still need a builder.
 Workflow generation omits container setup/preflight for web-only workflows
 pinned to rc.18 or later. Earlier pins retain their original prerequisite.
 PDF/image workflows retain container setup. Generation does not promise that an
-arbitrary version pin has been published. Public rc.17 remains unchanged; guide
-additions are explicitly labelled upcoming.
+arbitrary version pin has been published. Public rc.17 remains unchanged; rc.18 guides now describe the released behavior.
 
-Local verification currently passes:
+Final local verification passes:
 
 - 832 Rust tests, with 5 explicitly gated renderer integrations; Clippy with
   warnings denied and formatting.
@@ -64,8 +66,9 @@ Chromium and WebKit. Both targets use one renderer download. The source test
 initially retained version rc.17; it did not alter public rc.17 assets. The rc.18
 package passes on Intel Mac with four browser-preview checks and direct-file
 Chromium/WebKit browsing of all 16 showcase routes, with no captured browser
-errors or HTTP requests. The hosted matrix remains in progress. No new release
-or live provider action is claimed by this record.
+errors or HTTP requests. The hosted matrix subsequently passed in the final
+source gate; published-asset acceptance is tracked in the release record. No
+live provider action is claimed by this record.
 
 Initial hosted runs found maintenance-fixture assumptions: the website workflow
 policy still counted a removed Docker build; scaffold discovery expected old
@@ -82,4 +85,8 @@ page. The shim now returns the logical route for both file and HTTP output;
 link generation retains the prefix separately. New regressions fail for both
 targets before the fix. Package acceptance also requires exactly one active
 sidebar link before and after hydration. The conversion export assertion was
-retained unchanged. Original failures are retained; the final gate is rerun.
+retained unchanged. Fix `e3bc39a` is included in the final tested head `15b6625` and identical-tree
+merge `faaee97`. All 37 required jobs passed on that head; the full browser suite
+passed 552 cases with 169 conditional skips and no observed failures/retries.
+Original failures remain in the release evidence. The two historical timing
+findings are still unexplained.

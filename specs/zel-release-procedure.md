@@ -1,5 +1,16 @@
 # Zellij release channels and candidate procedure
 
+**2026-11-21: rc.18 publication.** Immutable source `faaee97` ships cached
+static validation/watch, HTTP build/preview and native provider static-build
+stages. Source CI `44987846589` passes all 37 required jobs; both repositories
+contain 40 matching assets. Independent public Mac, installed upgrade and
+empty-PATH default-home/offline checks pass. Seven guide/consumer checks pass.
+All 40 release jobs pass in `44989656538`; all eight actual rc.17-to-rc.18
+Homebrew/Scoop lifecycle cases pass. Production receipts are recorded in the
+[rc.18 evidence](evidence/zellij-rc18-release-2026-11-21.json). Editable wrapper,
+optional typesetting and Next development packages remain future work. No old
+distributions are retired; retain compatibility and actual-upgrade fixtures.
+
 **2026-11-21: rc.17 publication completed.** Immutable source `0bd1e8b` passes
 37 source and 40 release jobs; both repositories contain 40 matching assets.
 The public renderer includes `f80596b`'s menu focus correction. Public Mac
