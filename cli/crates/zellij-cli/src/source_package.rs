@@ -508,7 +508,11 @@ pub(crate) fn publish(stage: &Utf8Path, out: &Utf8Path, stop: &AtomicBool) -> Re
             }
             if meta.is_file() {
                 entries.push((
-                    utf8(entry.path().strip_prefix(stage).unwrap())?,
+                    Utf8PathBuf::from(
+                        utf8(entry.path().strip_prefix(stage).unwrap())?
+                            .as_str()
+                            .replace('\\', "/"),
+                    ),
                     fs::read(entry.path())?,
                 ));
             } else if !meta.is_dir() {
@@ -629,6 +633,31 @@ mod tests {
                 .is_err()
         );
         assert!(!dir.path().join("cancelled").exists());
+    }
+    #[test]
+    fn staged_app_publishes_nested_paths_and_preserves_git_metadata() {
+        let dir = tempfile::tempdir().unwrap();
+        let stage = utf8(&dir.path().join("stage")).unwrap();
+        let out = utf8(&dir.path().join("app")).unwrap();
+        fs::create_dir_all(stage.join("docs/zellij/content")).unwrap();
+        fs::write(stage.join("docs/zellij/content/index.mdx"), "# Nested").unwrap();
+        fs::create_dir_all(out.join(".git")).unwrap();
+        fs::write(out.join(".git/config"), "metadata").unwrap();
+        publish(&stage, &out, &AtomicBool::new(false)).unwrap();
+        assert_eq!(
+            fs::read_to_string(out.join("docs/zellij/content/index.mdx")).unwrap(),
+            "# Nested"
+        );
+        assert_eq!(
+            fs::read_to_string(out.join(".git/config")).unwrap(),
+            "metadata"
+        );
+        fs::write(stage.join("docs/zellij/content/index.mdx"), "replacement").unwrap();
+        assert!(publish(&stage, &out, &AtomicBool::new(false)).is_err());
+        assert_eq!(
+            fs::read_to_string(out.join("docs/zellij/content/index.mdx")).unwrap(),
+            "# Nested"
+        );
     }
     #[test]
     fn archives_reject_nonportable_paths_links_duplicates_and_truncation() {

@@ -57,3 +57,12 @@ image selection, uses a temporary resource home, checks default offline cache
 failure without writes, and explicitly selects an image for runtime diagnostics.
 The first attempt remains a failure; the corrected Rust suite is rerun without
 the development shell's image override before the next hosted attempt.
+
+
+The second attempt (`45003811871`, `d1ace51`) passed the installed-wrapper checks
+on both Linux and both Mac architectures, then Windows x64 caught a real source
+path defect. The dotfile-preserving publication branch passed Windows path
+separators from `WalkDir` to the shared portable-path validator. That branch now
+normalizes its generated relative paths to `/`, with a nested-file/Git-metadata
+publication and no-clobber regression. The original Windows failure is retained;
+all platform gates must pass on the correction before publication.
