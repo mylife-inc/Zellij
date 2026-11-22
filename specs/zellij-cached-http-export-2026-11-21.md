@@ -35,7 +35,7 @@ Local verification currently passes:
 
 - 832 Rust tests, with 5 explicitly gated renderer integrations; Clippy with
   warnings denied and formatting.
-- All 544 engine tests, engine/showcase/docs type checks and strict/deep docs
+- All 546 engine tests, engine/showcase/docs type checks and strict/deep docs
   validation (59 routes).
 - Cached validation/export integration, including nested routes, anchors,
   encoded assets and diagnostic/JSON behavior.
@@ -75,3 +75,11 @@ The fixtures now check the cache setup, actual route count/findings and use
 built-in APIs for the known analytics fixture. Original failures are retained.
 PR #235 includes validation commit `e82a586` from #234 so both changes share the
 final acceptance and release gate.
+
+Combined CI `44986540048` caught an actual cached-renderer defect: `usePathname`
+included the deployment prefix, so sidebar routes did not match the current
+page. The shim now returns the logical route for both file and HTTP output;
+link generation retains the prefix separately. New regressions fail for both
+targets before the fix. Package acceptance also requires exactly one active
+sidebar link before and after hydration. The conversion export assertion was
+retained unchanged. Original failures are retained; the final gate is rerun.

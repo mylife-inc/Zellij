@@ -114,7 +114,11 @@ export async function checkStandaloneAuthoring(binary, environment, parent) {
     const pageUrl = `${url}guide${target === 'file' ? '/' : ''}`;
     assert.match(await (await fetch(pageUrl)).text(), /Original/);
     const generated = path.join(root, target === 'file' ? 'site/guide/index.html' : 'site/guide.html');
-    assert.doesNotMatch(await readFile(generated, 'utf8'), /preview\.js/);
+    const initialHtml = await readFile(generated, 'utf8');
+    assert.doesNotMatch(initialHtml, /preview\.js/);
+    const activeLinks = [...initialHtml.matchAll(/<a\b[^>]*aria-current="page"[^>]*>/g)]
+      .filter(([tag]) => tag.includes('zellij-guide-sidebar-link') && tag.includes('data-active="true"'));
+    assert.equal(activeLinks.length, 1, `${target}: prefixed output marks exactly one current sidebar page`);
     const status = async () => (await fetch(`${url}_zellij/preview.json`)).json();
     let previous = await status();
     if (process.env.ZEL_STANDALONE_BROWSER === 'true') {
@@ -127,6 +131,7 @@ export async function checkStandaloneAuthoring(binary, environment, parent) {
         tab.on('pageerror', error => errors.push(error.message));
         await tab.goto(pageUrl);
         await tab.getByRole('heading', { name: 'Original', exact: true }).waitFor();
+        await tab.locator('.zellij-guide-sidebar-link[aria-current="page"][data-active="true"]', { hasText: 'Original' }).waitFor();
       }
     }
     await put(page, original.replace('Original', 'Rebuilt'));

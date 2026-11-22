@@ -1,8 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { fileHref, navigationHref, setFileLocation, assetProps } from './location';
 import { jsonForScript } from './decode';
+import { usePathname } from './navigation';
 const location = { route: '/guide/install', basePath: '/product', routes: ['/', '/guide/install', '/café'] };
 describe('file export URLs', () => {
+  it.each(['file', 'static'] as const)('keeps %s current-page identity independent of the deployment prefix', target => {
+    for (const route of ['/', '/guide/install', '/café']) {
+      setFileLocation({ ...location, route, basePath: '/products/manual', target });
+      expect(usePathname()).toBe(route);
+    }
+  });
   it('keeps file links relocatable, encoded and independent of deployment base paths', () => {
     expect(fileHref('/product', location)).toBe('../../index.html');
     expect(fileHref('/product/guide/install?mode=1#step', location)).toBe('../../guide/install/index.html?mode=1#step');

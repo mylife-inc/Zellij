@@ -1,6 +1,6 @@
 // Verify actual CLI output against engine routes, MDX rendering and asset bytes.
-// With --export, use the matching engine image via ZELLIJ_IMAGE
-// to build all imports with matching Next basePath and inspect generated HTML.
+// With --export, use the matching cached HTTP renderer to build all imports
+// with their deployment prefix and inspect generated HTML.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';

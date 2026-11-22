@@ -24,7 +24,11 @@ acceptance/release gate. The first validation CI failed an obsolete text-output
 assertion; the corrected fixture checks structured routes and findings. The
 first HTTP package matrix exposed a test-only YAML dependency in the intentionally
 npm-free runner; its fixture edit now uses built-in APIs. Both failures remain
-recorded; neither is counted as a successful gate.
+recorded; neither is counted as a successful gate. Combined acceptance then
+caught a real current-page identity bug: the cached navigation shim included
+the deployment prefix and failed sidebar matching. The fix returns logical
+routes for both rich modes and adds before/after-hydration coverage; original
+conversion assertions remain intact. The final gate is being rerun.
 
 **2026-11-21: cached static validation — source migration in progress**
 
