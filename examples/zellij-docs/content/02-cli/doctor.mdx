@@ -67,7 +67,8 @@ Candidate rc.18 uses a verified downloaded renderer for both rich web targets.
 | Static Netlify, Cloudflare Pages, Vercel, GitHub Pages and S3 deployment | No for web-only builds; native uploads still require provider credentials/network |
 | `image dockerfile` | No; prints the recipe without building it |
 | Hosted Next `dev`, image builds/run/push, image publication and Fly/Railway delivery | Yes |
-| Default `eject` | Yes; extracts editable sources from a stopped image |
+| Default `eject` | rc.18 requires a stopped image; upcoming rc.19 uses a verified source download/cache |
+| `eject --image` or `ZELLIJ_IMAGE` override | Yes; preserves explicit stopped-image extraction |
 | `ci [site]` / `ci init github\|gitlab\|circle` | Git required; generated web-only jobs pinned to rc.18+ need no container; PDF/image jobs and older rich pins retain one |
 
 A container command that cannot find a usable runtime stops with **exit code

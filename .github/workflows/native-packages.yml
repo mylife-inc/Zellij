@@ -29,10 +29,18 @@ jobs:
         run: |
           npm run build --workspace @shebka/zellij
           node scripts/build-standalone-engine.mjs
+          node scripts/package-editable-sources.mjs
       - uses: actions/upload-artifact@v7
         with:
           name: standalone-engine
           path: dist/standalone-engine/
+          if-no-files-found: error
+          retention-days: 14
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: editable-sources
+          path: dist/source-packages/*
           if-no-files-found: error
           retention-days: 14
 
@@ -104,6 +112,19 @@ jobs:
           binary="cli/target/$TARGET/release/zel"
           case "$TARGET" in *-windows-msvc) binary="$binary.exe" ;; esac
           node scripts/check-standalone-engine.mjs "$binary"
+      - uses: actions/download-artifact@v8
+        with:
+          name: editable-sources
+          path: dist/source-packages
+      - name: Cached editable sources and installed Next wrapper
+        env:
+          TARGET: ${{ matrix.target }}
+          ZEL_SOURCE_BUILD: 'true'
+        shell: bash
+        run: |
+          binary="cli/target/$TARGET/release/zel"
+          case "$TARGET" in *-windows-msvc) binary="$binary.exe" ;; esac
+          node scripts/check-editable-sources.mjs "$binary"
       - uses: actions/upload-artifact@v7
         with:
           name: renderer-${{ matrix.target }}

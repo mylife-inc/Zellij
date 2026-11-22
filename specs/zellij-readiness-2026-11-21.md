@@ -4,6 +4,10 @@ The released candidate is **v0.2.0-rc.18**, source `faaee97`, with all 37
 required source CI and 40 release jobs passed. Public-download, channel and production
 documentation status is recorded in the [release evidence](evidence/zellij-rc18-release-2026-11-21.json).
 This checkpoint does not declare stable 1.0 or absence of undiscovered bugs.
+Source update, 22 November: cached editable sources for default `eject` and
+`new app` are implemented for rc.19 with local generation and installed-wrapper
+acceptance passed. Hosted/public gates remain pending. See the
+[implementation record](zellij-cached-editable-sources-2026-11-22.md).
 
 This is the current checkpoint for older completion and expansion records.
 Their rc.6–rc.17 statements are dated history, including prior pending print,
@@ -15,7 +19,7 @@ and [HTTP export](zellij-cached-http-export-2026-11-21.md) cache migrations now 
 | --- | --- | --- |
 | Documented CLI command families | Implemented, with native tests and the recorded release acceptance. | Provider-specific live behavior and external runners require separate acceptance. |
 | Rich websites | File and HTTP static build, check, watch and view share the verified cached renderer. First use downloads it; later operations support `--offline`. Native static deployment builds and optional import validation use the same cache. No user-installed Docker, Node or Python is required for these web rendering operations. | Editable wrapper extraction, Next development, container images and PDF retain their documented prerequisites. |
-| Documentation and publishing | rc.18 guides, including final prerequisite corrections in PR #237, publish through automatic production run 44993302913. Targeted documentation/consumer checks and eight final live-page hydration checks pass. Refreshed static/Next fixture images pass fresh-pull HTTP, health and nonroot checks. | Update the legacy generated-CI introductory comment with the next CLI candidate; actual web-only jobs already omit Docker correctly. Keep prerequisites and version pins current. |
+| Documentation and publishing | rc.18 guides, including final prerequisite corrections in PR #237, publish through automatic production run 44993302913. Targeted documentation/consumer checks and eight final live-page hydration checks pass. Refreshed static/Next fixture images pass fresh-pull HTTP, health and nonroot checks. | The legacy generated-CI introductory comment is corrected in rc.19 source, pending publication; actual web-only jobs already omit Docker correctly. Keep prerequisites and version pins current. |
 | Branding, menus and themes | Separate company/product branding, centered navigation, full-width desktop panels, mobile drilldown, responsive theme colors and the Kie theme are implemented. | Kie is an inspected design interpretation; blocked live reference access did not establish a 100% pixel-identical clone. |
 | Composer and templates | Responsive nested layouts, supported media/semantic/interactive nodes, bounded scroll effects, eight inline built-in section types, nine editable presets and nine website/book starters are implemented. | Three website starters ship corrected inline guides at template version 0.1.3 in rc.16, while prior 0.1.2 archive bytes remain unchanged. The composer is bounded; arbitrary executable components, arbitrary section embedding and unrestricted animation timelines are not promised. |
 | Books and PDF | Shared publication model, technical/study editions, equations/statements, numeric citations, glossary/index, print styling, Arabic RTL and French/German/Spanish print are implemented. | Arbitrary citation styles/BibTeX, unrestricted font inventories and broader format fidelity are separate expansion requests. Existing PDF generation uses its external toolchain. |
@@ -51,8 +55,9 @@ acceptance. The rc.15 Microsoft catalog submission awaits moderator approval. Se
 retention and external acceptance boundaries. The native upgrade fixture uses
 real rc.14 archives; retain them until that dependency is deliberately migrated.
 
-Next implementation: a versioned editable wrapper/engine source package for
-default `eject`, followed by optional LuaLaTeX and Next development packages.
+Current implementation: a versioned editable wrapper/engine source package for
+default `eject` and `new app`, pending hosted/public acceptance. Optional
+LuaLaTeX and Next development packages follow.
 The [source-backed roadmap](zellij-cached-toolchains-2026-11-21.md) records their
 scope and acceptance requirements. Priorities 1–2 (static validation and HTTP
 export/deployment builds) are complete in rc.18. Images still need a builder;

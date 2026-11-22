@@ -23,6 +23,7 @@ ZELLIJ_HOME/
   cache/
     engines/            # Version/platform rich renderer packages
     templates/          # Downloaded catalogs and template archives
+    sources/            # Version-matched editable sources (upcoming rc.19)
 ```
 
 ```bash
@@ -44,6 +45,14 @@ shim. Keep those locations managed by their package manager. Their `zel` uses
 the same resource home at runtime. Build output remains in the chosen project;
 temporary staging is cleaned up. Docker, Homebrew and Scoop retain their own
 image/package stores.
+
+Starting with candidate rc.19, default `zel eject` and `zel new app` download
+editable sources into `cache/sources/<CLI-version>/`. Their `--offline` option
+requires an already verified cache. Each generated app receives its own
+`vendor/zellij` copy; editing or installing that app does not modify the cache.
+Generation needs no Node/npm or container. Running the editable app still needs
+Node and npm. `ZEL_SOURCE_BASE_URL` can select an HTTPS mirror that supplies the
+matching archive and checksum; it does not change the cache location.
 
 Specific overrides take precedence:
 

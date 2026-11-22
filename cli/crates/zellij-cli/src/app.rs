@@ -1,4 +1,4 @@
-//! Native wrapper scaffolding; no package manager, runtime or network execution.
+//! Native scaffolding with an explicit local engine or verified cached sources.
 use camino::{Utf8Path, Utf8PathBuf};
 use zellij_core::{
     Error, Result, files,
@@ -15,30 +15,17 @@ pub(crate) fn create(options: &crate::args::NewAppArgs) -> Result<()> {
 
 fn create_planned(options: &crate::args::NewAppArgs) -> Result<()> {
     let out = files::absolute_path(Utf8Path::new(&options.dir))?;
-    let engine = resolve_engine(
-        options
-            .engine
-            .as_deref()
-            .unwrap_or("engine/packages/zellij"),
-        &out,
-    )?;
+    // Reject occupied destinations and invalid content before any download.
+    zellij_scaffold::Scaffold::new()
+        .add("package.json", "")
+        .preflight(&out, false)
+        .map_err(destination_error)?;
+    let local_engine = options
+        .engine
+        .as_deref()
+        .map(|path| resolve_engine(path, &out))
+        .transpose()?;
     let features = selected_features(&options.features)?;
-    // npm's file: specifier is a path, not a percent-encoded URL. Encoding it
-    // makes npm look for literal %20/%23 directory names. On Windows strip
-    // canonicalization's extended-length prefix and use portable separators.
-    #[cfg(windows)]
-    let package_path = if let Some(unc) = engine.as_str().strip_prefix(r"\\?\UNC\") {
-        format!("//{}", unc.replace('\\', "/"))
-    } else {
-        engine
-            .as_str()
-            .strip_prefix(r"\\?\")
-            .unwrap_or(engine.as_str())
-            .replace('\\', "/")
-    };
-    #[cfg(not(windows))]
-    let package_path = engine.as_str();
-    let dependency = format!("file:{package_path}");
     let (content, port) = if options.with_docs {
         (
             "docs/zellij/content".to_owned(),
@@ -52,6 +39,10 @@ fn create_planned(options: &crate::args::NewAppArgs) -> Result<()> {
         .name
         .as_deref()
         .unwrap_or_else(|| out.file_name().unwrap_or("Zellij app"));
+    let dependency = local_engine
+        .as_ref()
+        .map(|engine| local_dependency(engine))
+        .unwrap_or_else(|| "file:vendor/zellij".into());
     let scaffold = zellij_scaffold::app::app(&zellij_scaffold::app::AppOptions {
         name,
         engine_dependency: &dependency,
@@ -60,7 +51,43 @@ fn create_planned(options: &crate::args::NewAppArgs) -> Result<()> {
         features: &features,
         with_docs: options.with_docs,
     })?;
-    let files = scaffold.write(&out, false).map_err(destination_error)?;
+    scaffold.preflight(&out, false).map_err(destination_error)?;
+    let files = if local_engine.is_some() {
+        scaffold.write(&out, false).map_err(destination_error)?
+    } else {
+        crate::source_package::check_destination(&out)?;
+        let stop = crate::source_package::stop_handler()?;
+        let package = crate::source_package::obtain(options.offline, &stop)?;
+        let parent = out
+            .parent()
+            .ok_or_else(|| files::unsafe_path(&out, "destination needs a parent"))?;
+        std::fs::create_dir_all(parent)?;
+        let temporary = tempfile::Builder::new()
+            .prefix("zel-app-")
+            .tempdir_in(parent)?;
+        let stage = crate::source_package::utf8(temporary.path())?;
+        let app = stage.join("app");
+        let files = scaffold.write(&app, false).map_err(destination_error)?;
+        package.copy("engine", &app.join("vendor/zellij"), &stop)?;
+        let tsconfig_path = app.join("tsconfig.json");
+        let mut tsconfig: serde_json::Value =
+            serde_json::from_slice(&std::fs::read(&tsconfig_path)?)
+                .map_err(std::io::Error::other)?;
+        let exclude = tsconfig["exclude"].as_array_mut().ok_or_else(|| {
+            Error::InvalidArgument("wrapper template is missing tsconfig exclusions".into())
+        })?;
+        exclude.push(serde_json::json!("vendor/zellij"));
+        std::fs::write(
+            tsconfig_path,
+            format!("{}\n", serde_json::to_string_pretty(&tsconfig).unwrap()),
+        )?;
+        scaffold.preflight(&out, false).map_err(destination_error)?;
+        crate::source_package::publish(&app, &out, &stop)?;
+        files
+    };
+    let engine = local_engine
+        .map(|path| path.into_string())
+        .unwrap_or_else(|| "vendor/zellij (copied from verified source cache)".into());
     zellij_core::statusln!(
         "✓ Created Next.js wrapper at {out} ({} files)\n  Content: {content}\n  Engine:  {engine}\n\nIn the app folder, run `npm install`, then `npm run check` and `npm run dev`.\nScaffolding did not install dependencies or start a server.",
         files.len()
@@ -154,4 +181,23 @@ pub(crate) fn validate_engine(engine: &Utf8Path) -> Result<()> {
         }
     }
     Ok(())
+}
+
+fn local_dependency(engine: &Utf8Path) -> String {
+    // npm's file: specifier is a path, not a percent-encoded URL. Encoding it
+    // makes npm look for literal %20/%23 directory names. On Windows strip
+    // canonicalization's extended-length prefix and use portable separators.
+    #[cfg(windows)]
+    let package_path = if let Some(unc) = engine.as_str().strip_prefix(r"\\?\UNC\") {
+        format!("//{}", unc.replace('\\', "/"))
+    } else {
+        engine
+            .as_str()
+            .strip_prefix(r"\\?\")
+            .unwrap_or(engine.as_str())
+            .replace('\\', "/")
+    };
+    #[cfg(not(windows))]
+    let package_path = engine.as_str();
+    format!("file:{package_path}")
 }

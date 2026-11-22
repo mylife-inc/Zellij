@@ -1,12 +1,9 @@
-//! Copy a stopped distribution container; do not execute image or host scripts.
+//! Materialize editable sources from the verified cache or an explicitly selected image.
 use camino::{Utf8Path, Utf8PathBuf};
 use std::{
     fs,
     process::{Command, Stdio},
-    sync::{
-        Arc,
-        atomic::{AtomicBool, Ordering},
-    },
+    sync::atomic::{AtomicBool, Ordering},
     thread,
     time::{Duration, Instant},
 };
@@ -45,13 +42,27 @@ pub(crate) fn run(options: &crate::args::EjectArgs) -> Result<()> {
         }
         Some(content)
     };
-    let image = zellij_engine::configured_image(options.image.as_deref());
-    crate::maintenance::validate_image(&image)?;
-    let engine = ContainerEngine::detect(Some(&image))?;
-    let stop = Arc::new(AtomicBool::new(false));
-    let signal = stop.clone();
-    ctrlc::set_handler(move || signal.store(true, Ordering::Release))
-        .map_err(std::io::Error::other)?;
+    let image = options.image.clone().or_else(|| {
+        std::env::var("ZELLIJ_IMAGE")
+            .ok()
+            .filter(|value| !value.is_empty())
+    });
+    if options.offline && image.is_some() {
+        return Err(Error::InvalidArgument("eject --offline applies to cached sources; remove --image/ZELLIJ_IMAGE to use that cache".into()));
+    }
+    if let Some(image) = &image {
+        crate::maintenance::validate_image(image)?;
+    }
+    let stop = crate::source_package::stop_handler()?;
+    let package = if image.is_none() {
+        crate::source_package::check_destination(&out)?;
+        Some(crate::source_package::obtain(options.offline, &stop)?)
+    } else {
+        None
+    };
+    let distribution = image
+        .clone()
+        .unwrap_or_else(|| format!("editable source package v{}", env!("CARGO_PKG_VERSION")));
     let parent = out
         .parent()
         .ok_or_else(|| files::unsafe_path(&out, "destination needs a parent"))?;
@@ -65,47 +76,53 @@ pub(crate) fn run(options: &crate::args::EjectArgs) -> Result<()> {
     let vendor = stage.join("engine");
     fs::create_dir(&app)?;
     fs::create_dir(&vendor)?;
-    let mut snapshot = Snapshot {
-        runtime: engine.runtime(),
-        name: stage.file_name().unwrap().to_owned(),
-        active: true,
-    };
-    zellij_core::statusln!(
-        "Extracting wrapper and engine from {image} with {}",
-        engine.runtime().program
-    );
-    let result: Result<()> = (|| {
-        execute(
-            engine.runtime().command().args([
-                "create",
-                "--name",
-                &snapshot.name,
-                "--entrypoint",
-                "node",
-                &image,
-                "--version",
-            ]),
-            &stop,
-            300,
-            false,
-        )?;
-        for (source, dest) in [("/app/.", &app), ("/opt/zellij/.", &vendor)] {
+    if let Some(image) = &image {
+        let engine = ContainerEngine::detect(Some(image))?;
+        let mut snapshot = Snapshot {
+            runtime: engine.runtime(),
+            name: stage.file_name().unwrap().to_owned(),
+            active: true,
+        };
+        zellij_core::statusln!(
+            "Extracting wrapper and engine from {image} with {}",
+            engine.runtime().program
+        );
+        let result: Result<()> = (|| {
             execute(
                 engine.runtime().command().args([
-                    "cp",
-                    &format!("{}:{source}", snapshot.name),
-                    &local_path(dest),
+                    "create",
+                    "--name",
+                    &snapshot.name,
+                    "--entrypoint",
+                    "node",
+                    image,
+                    "--version",
                 ]),
                 &stop,
-                120,
+                300,
                 false,
             )?;
-        }
-        Ok(())
-    })();
-    let cleaned = snapshot.remove();
-    result?;
-    cleaned?;
+            for (source, dest) in [("/app/.", &app), ("/opt/zellij/.", &vendor)] {
+                execute(
+                    engine.runtime().command().args([
+                        "cp",
+                        &format!("{}:{source}", snapshot.name),
+                        &local_path(dest),
+                    ]),
+                    &stop,
+                    120,
+                    false,
+                )?;
+            }
+            Ok(())
+        })();
+        let cleaned = snapshot.remove();
+        result?;
+        cleaned?;
+    } else if let Some(package) = package {
+        package.copy("app", &app, &stop)?;
+        package.copy("engine", &vendor, &stop)?;
+    }
     if stop.load(Ordering::Acquire) {
         return Err(failed("extraction cancelled"));
     }
@@ -122,7 +139,7 @@ pub(crate) fn run(options: &crate::args::EjectArgs) -> Result<()> {
     ] {
         if !app.join(file).is_file() {
             return Err(incompatible(
-                "image does not contain a complete editable wrapper at /app",
+                "distribution does not contain a complete editable wrapper",
             ));
         }
     }
@@ -131,7 +148,7 @@ pub(crate) fn run(options: &crate::args::EjectArgs) -> Result<()> {
         || app.join("zellij.config.yaml").exists()
     {
         return Err(incompatible(
-            "image wrapper already has vendor/, docs/ or zellij.config.yaml; incompatible extraction layout",
+            "distribution wrapper already has vendor/, docs/ or zellij.config.yaml; incompatible extraction layout",
         ));
     }
     let mut manifest: serde_json::Value =
@@ -139,7 +156,7 @@ pub(crate) fn run(options: &crate::args::EjectArgs) -> Result<()> {
             .map_err(|e| incompatible(&format!("invalid wrapper manifest: {e}")))?;
     if manifest["dependencies"]["@shebka/zellij"] != "file:/opt/zellij" {
         return Err(incompatible(
-            "image wrapper must reference file:/opt/zellij",
+            "distribution wrapper must reference file:/opt/zellij",
         ));
     }
     manifest["dependencies"]["@shebka/zellij"] = serde_json::json!("file:vendor/zellij");
@@ -169,7 +186,7 @@ pub(crate) fn run(options: &crate::args::EjectArgs) -> Result<()> {
         local_path(&content)
     } else {
         if !app.join("content/site.yaml").is_file() {
-            return Err(incompatible("image has no hosted starter content"));
+            return Err(incompatible("distribution has no hosted starter content"));
         }
         fs::create_dir_all(app.join("docs/zellij"))?;
         fs::rename(app.join("content"), app.join("docs/zellij/content"))?;
@@ -202,7 +219,7 @@ pub(crate) fn run(options: &crate::args::EjectArgs) -> Result<()> {
                 format!(
                     r#"# Ejected Zellij wrapper
 
-Extracted from `{image}`. The selected distribution's editable wrapper is in
+Extracted from `{distribution}`. The selected distribution's editable wrapper is in
 `src/app/`; its engine is included at `vendor/zellij` as a relative dependency.
 Content is selected in `zellij.config.yaml`. External content is referenced,
 not copied; update that path if you move it. `--with-docs` content moves with
@@ -217,12 +234,13 @@ npm run dev
 ```
 
 `npm run build` builds the Next.js app and `npm start` serves it. This hosted
-wrapper requires HTTP serving. `zel build` remains the native portable option.
+wrapper requires HTTP serving. `zel build` produces a rich double-click site from its selected content;
+`--target portable` selects the native Markdown manual.
 `zel features all` (or maths, diagrams, none) changes rendering and direct feature dependencies.
 Run npm install when enabling features, then rebuild/restart. Disabling a feature
 also stops rendering when its packages remain installed for another dependency.
 
-Extraction did not install dependencies or execute the image's application.
+Extraction did not install dependencies or execute the distribution's application.
 "#
                 ),
             ),
@@ -240,7 +258,7 @@ Extraction did not install dependencies or execute the image's application.
     }
     fs::rename(&app, &out)?;
     zellij_core::statusln!(
-        "✓ Editable wrapper: {out}\n  Content: {content}\n  Engine: vendor/zellij\n\nRun `npm install`, `npm run check` and `npm run dev` in the wrapper.\nNo dependencies were installed. The temporary stopped container was removed."
+        "✓ Editable wrapper: {out}\n  Content: {content}\n  Engine: vendor/zellij\n\nRun `npm install`, `npm run check` and `npm run dev` in the wrapper.\nNo dependencies were installed. Temporary extraction files were removed."
     );
     Ok(())
 }

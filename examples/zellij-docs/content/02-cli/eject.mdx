@@ -1,19 +1,27 @@
 ---
 title: eject
-description: Extract an editable Next.js wrapper and engine from a distribution image.
+description: Create an editable Next.js wrapper from verified source downloads or an explicit distribution image.
 ---
+
+<Callout type="info" title="Upcoming candidate 0.2.0-rc.19">
+The cached-source default described here is implemented for rc.19 and awaits
+release acceptance. Released rc.18 extracts from a container by default.
+</Callout>
 
 ```bash
 zel eject --out my-wrapper
 zel eject docs/manual --out my-wrapper
 zel eject --with-docs --out my-wrapper
+zel eject --with-docs --out another-wrapper --offline
 zel eject --with-docs --out my-wrapper --image ghcr.io/mylife-inc/zellij-base:0.2.0-rc.18
 ```
 
-`eject` obtains the wrapper sources from the selected engine image. It includes
-the engine at `vendor/zellij`, so no Zellij checkout or npm publication is needed.
-[`new app`](/cli/new) instead generates a wrapper from the CLI's embedded template
-and references a built engine package already on disk.
+With no image override, `eject` downloads the matching editable source package
+once. It includes the engine at `vendor/zellij`; only `zel` is required to create
+the wrapper. No Node, npm, Python, Docker or Zellij checkout is needed for this
+step. [`new app`](/cli/new) uses the same cache for its default engine while
+allowing name, port and feature choices. `--engine` keeps its explicit local
+engine behavior.
 
 The destination must be new or empty. Without `--with-docs`, the command selects
 an existing hosted site through the usual `zel.yaml` discovery or the explicit
@@ -21,10 +29,31 @@ site argument. It references that content in `zellij.config.yaml` and leaves the
 source untouched. A portable site is refused; [`image next`](/cli/image) can
 package portable Markdown using its adapter.
 
-`--with-docs` keeps the image's hosted starter at `docs/zellij/content`, beside
+`--with-docs` keeps the distribution's hosted starter at `docs/zellij/content`, beside
 `docs/zellij/zel.yaml`. That starter and the vendored engine move with the wrapper.
 External content references need updating if that content is moved. The selected
-image's wrapper scripts and their ports are retained.
+distribution's wrapper scripts and their ports are retained.
+
+## Cached sources and offline use
+
+Sources live under `$ZELLIJ_HOME/cache/sources/<CLI-version>/`, with the common
+home defaulting to `~/Dev/config/zellij`. This small, platform-independent
+package includes editable sources, built engine helpers, fonts and license
+notices. It does not bundle another Node runtime or installed npm dependencies.
+It is separate from the renderer cache used by `zel build`.
+
+The CLI verifies the archive checksum, version, complete file inventory and
+individual file hashes. Missing, damaged or incompatible packages fail before
+publishing a wrapper. `--offline` requires a previously prepared source cache;
+it never downloads a fallback. Cache failures and cancellation return exit 2.
+Remove the damaged version directory and retry online to replace a corrupt cache.
+`ZEL_SOURCE_BASE_URL` can select an HTTPS archive mirror with matching filenames
+and checksums; loopback HTTP is supported for local acceptance.
+
+Each wrapper receives its own copy of the engine. Editing it or installing npm
+packages cannot mutate the shared cache. Downloads and extraction are staged,
+and Ctrl-C discards unfinished staging. Existing authored destinations and
+outputs overlapping the source cache are refused.
 
 ## Run the extracted app
 
@@ -44,8 +73,11 @@ Extraction installs no dependencies.
 
 ## Runtime and compatibility
 
-Selection is `--image`, then `ZELLIJ_IMAGE`, then the default engine image. Digest
-references are supported. Docker, Podman and nerdctl use the shared runtime
+An explicit `--image` or nonempty `ZELLIJ_IMAGE` selects the existing stopped-image
+extraction path. `--image` takes precedence over the environment. Digest
+references are supported. These overrides are never silently replaced by the
+source cache. Remove both to use cached sources; `--offline` conflicts with
+explicit image selection. Docker, Podman and nerdctl use the shared runtime
 discovery rules; the selected runtime must support `create`, `cp` and `rm`.
 A missing image may be downloaded by `create`. The command uses a stopped
 container and never starts its application. It does not install or start a
@@ -58,8 +90,8 @@ output are refused. Ctrl-C, copy errors and timeouts discard staging and attempt
 to remove the stopped container. If the runtime cannot clean up, the error gives
 the container name for later removal. No wrapper is published on that failure.
 
-Missing runtime exits `4`, invalid arguments/layouts exit `2`, and failed runtime
+For explicit image extraction, missing runtime exits `4`, invalid arguments/layouts exit `2`, and failed runtime
 operations exit `3`. `--json` is not supported. See [`features`](/cli/features) to
 change dependency selection afterward.
 
-Available in candidate `0.2.0-rc.18`; public `zellij-v0.1.3` predates it.
+Image extraction is available in rc.18; cached sources are the upcoming rc.19 addition.

@@ -341,6 +341,11 @@ jobs:
           pattern: renderer-*
           merge-multiple: true
 
+      - uses: actions/download-artifact@v8
+        with:
+          name: editable-sources
+          path: artifacts
+
       # The installer is an artefact too. Publishing it beside the binaries
       # means a pinned version can always be installed the same way the release
       # it belongs to was.

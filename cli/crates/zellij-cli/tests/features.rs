@@ -14,6 +14,8 @@ fn run(root: &Path, args: &[&str], code: i32) -> Output {
         .args(args)
         .env("PATH", root.join("no-tools"))
         .env("DOCKER_HOST", "unavailable")
+        .env_remove("ZELLIJ_IMAGE")
+        .env("ZELLIJ_HOME", root.join("resources"))
         .output()
         .unwrap();
     assert_eq!(output.status.code(), Some(code), "{args:?}: {output:?}");
@@ -104,7 +106,25 @@ fn feature_errors_do_not_modify_files_or_probe_runtimes() {
     write(root, "zel.yaml", "version: 1\nrenderer: portable\n");
     run(root, &["eject", "--out", "out"], 2);
     assert!(!root.join("out").exists());
-    run(root, &["eject", "--out", "out", "--with-docs"], 4);
+    run(
+        root,
+        &["eject", "--out", "out", "--with-docs", "--offline"],
+        2,
+    );
+    assert!(!root.join("out").exists());
+    assert!(!root.join("resources").exists());
+    run(
+        root,
+        &[
+            "eject",
+            "--out",
+            "out",
+            "--with-docs",
+            "--image",
+            "selected:fixture",
+        ],
+        4,
+    );
     assert!(!root.join("out").exists());
     run(
         root,

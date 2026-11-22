@@ -41,9 +41,18 @@ fn engine(root: &Path, path: &str) {
     }
 }
 fn run(root: &Path, args: &[&str], code: i32) -> Output {
+    // These cases exercise explicit local-engine behavior; cached defaults have
+    // their own package/download acceptance, without changing these assertions.
+    let mut args = args.to_vec();
+    if (args.first() == Some(&"na") || args.starts_with(&["new", "app"]))
+        && !args.contains(&"--engine")
+        && root.join("engine/packages/zellij").exists()
+    {
+        args.extend(["--engine", "engine/packages/zellij"]);
+    }
     let result = Command::new(env!("CARGO_BIN_EXE_zel"))
         .current_dir(root)
-        .args(args)
+        .args(&args)
         .env("PATH", root.join("no-tools"))
         .env("DOCKER_HOST", "fixture-unusable")
         .output()
@@ -168,7 +177,12 @@ fn wizard_defaults_match_discovery_and_explicit_none_matches_no_features() {
     let root = temp.path();
     engine(root, "engine/packages/zellij");
     hosted(root);
-    prompt(root, &["na", "website", "-i"], "\n\n\n\n\n\n", 0);
+    prompt(
+        root,
+        &["na", "website", "-i"],
+        "engine/packages/zellij\n\n\n\n\n\n",
+        0,
+    );
     run(root, &["na", "flags", "--name", "website"], 0);
     run(
         root,
@@ -450,7 +464,7 @@ fn explicit_config_and_cwd_skip_source_questions_and_keep_selected_port() {
             "wrapper",
             "-i",
         ],
-        "\n\n\n\n",
+        "engine/packages/zellij\n\n\n\n",
         0,
     );
     let text = String::from_utf8(out.stderr).unwrap();
