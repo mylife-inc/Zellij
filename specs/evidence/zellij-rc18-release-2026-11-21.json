@@ -1,7 +1,7 @@
 {
   "date": "2026-11-21",
   "version": "v0.2.0-rc.18",
-  "status": "rc.18 released, installed and channel-verified; all source/release/managed-upgrade/initial documentation and fixture-image acceptance passed. Final prerequisite prose corrections pass documentation validation/preservation and await their production merge.",
+  "status": "Released and verified: all 37 source and 40 release jobs, six native targets, both 40-asset public copies, installed Mac/default-home/empty-PATH cached file and HTTP acceptance, all eight managed-channel actual upgrades, seven initial guide/consumer checks, corrected prerequisite prose, final production documentation and eight live-page hydration checks, and fresh-pull static/Next fixture images. Optional wrapper/PDF/Next development migrations and historical timing findings remain open.",
   "source": {
     "pr": 235,
     "head": "15b66254e35e9e1c10c7d13a7daf310d894688c1",
@@ -431,7 +431,8 @@
     "zellij-rc18-installed-smoke.log": "90332b4e74246743cb16cdcf47cf9befdc2cf6c3275d70a8e55099e0d467e5f1",
     "zellij-rc18-download.log": "c9d93b2f54e49001e1c35b6bf7e0000b672849b14b125fd0d2d2a88c24335807",
     "zellij-rc18-guide-final.log": "0b1681487b8692c72db76f1b1c9695b142a6b5f6632cec1a87d9aa43a9bdf48b",
-    "zellij-rc18-production-live.log": "5ab912b56260e300f349f468178de11c7ee183cb6407e64f1b57996897480b27"
+    "zellij-rc18-production-live.log": "5ab912b56260e300f349f468178de11c7ee183cb6407e64f1b57996897480b27",
+    "zellij-rc18-final-production-live.log": "b28a25dad86dda57fb346d89aeb609a7d4db355c08739c477d36b90520a2cb71"
   },
   "channels": {
     "previousHomebrew": "82ae0a24f6fbc983dac279c2f3a60a295273e459",
@@ -565,7 +566,8 @@
     "Editable wrapper packages, optional LuaLaTeX and Next development toolchains remain future migrations.",
     "Image creation still needs a builder.",
     "Two historical browser timing findings remain unexplained.",
-    "No live provider or WinGet catalog acceptance performed."
+    "No live provider or WinGet catalog acceptance performed.",
+    "Generated CI introductory comments retain legacy hosted/image wording; executable web-only jobs correctly omit Docker. Banner correction is recorded for the next CLI candidate without rewriting immutable rc.18 assets."
   ],
   "retention": "No old distributions retired in this publication; compatibility/upgrade fixtures remain protected.",
   "priorRuns": [
@@ -1380,7 +1382,93 @@
       "reason": "Final prose scan found old container claims in template README, new-site overview and GitHub Pages paragraph; clarified container-image selection too. No runtime, release asset, route, heading or command-example change.",
       "docsConclusion": "success",
       "afterTestedHead": "Only publication evidence, context, readiness and release-procedure receipts; guides and template prose unchanged.",
-      "duplicateGeneralCIConclusion": "cancelled"
+      "duplicateGeneralCIConclusion": "cancelled",
+      "reviewedHead": "ccbbfd6d33974d1b2c647ca8a77275174a3f7028",
+      "merge": "43894a128311ec798a41fda0d1326daeaba47152",
+      "mergeTreeMatchesReviewedHead": true,
+      "production": {
+        "run": 44993302913,
+        "conclusion": "success",
+        "receipt": {
+          "source": "43894a128311ec798a41fda0d1326daeaba47152",
+          "site_id": "91774174-d4c2-41b5-aa4b-ac61eeadbf51",
+          "domain": "zellij.shebka.net",
+          "deploy_id": "6b028a77ddac92023b36b37f",
+          "previous_deploy_id": "6b02885dd16e909d12d9213b",
+          "preview": "https://6b028a77ddac92023b36b37f--zellij-docs.netlify.app",
+          "state": "verified",
+          "published_at": "2026-11-22T06:24:03.964Z"
+        },
+        "live": {
+          "source": "43894a128311ec798a41fda0d1326daeaba47152",
+          "browser": "installed Chrome on Intel macOS",
+          "pages": [
+            {
+              "url": "https://zellij.shebka.net/cli",
+              "http": 200,
+              "hydrated": true,
+              "version": "0.2.0-rc.18"
+            },
+            {
+              "url": "https://zellij.shebka.net/cli/build",
+              "http": 200,
+              "hydrated": true,
+              "version": "0.2.0-rc.18"
+            },
+            {
+              "url": "https://zellij.shebka.net/cli/check",
+              "http": 200,
+              "hydrated": true,
+              "version": "0.2.0-rc.18"
+            },
+            {
+              "url": "https://zellij.shebka.net/cli/doctor",
+              "http": 200,
+              "hydrated": true,
+              "version": "0.2.0-rc.18"
+            },
+            {
+              "url": "https://zellij.shebka.net/cli/new",
+              "http": 200,
+              "hydrated": true,
+              "version": "0.2.0-rc.18"
+            },
+            {
+              "url": "https://zellij.shebka.net/cli/deploy",
+              "http": 200,
+              "hydrated": true,
+              "version": "0.2.0-rc.18"
+            },
+            {
+              "url": "https://zellij.shebka.net/guide/menu",
+              "http": 200,
+              "hydrated": true,
+              "version": "0.2.0-rc.18"
+            },
+            {
+              "url": "https://zellij.shebka.net/guide/quickstart",
+              "http": 200,
+              "hydrated": true,
+              "version": "0.2.0-rc.18"
+            }
+          ],
+          "errors": []
+        }
+      },
+      "duplicateMainRuns": [
+        {
+          "run": 44993303025,
+          "workflow": "CI",
+          "cancellationRequested": true,
+          "conclusion": "cancelled"
+        },
+        {
+          "run": 44993302917,
+          "workflow": "Base image",
+          "cancellationRequested": true,
+          "conclusion": "cancelled"
+        }
+      ]
     }
   }
 }
