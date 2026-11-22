@@ -18,7 +18,7 @@ jobs:
       matrix:
         runner: [ubuntu-latest, ubuntu-24.04-arm, macos-15-intel, macos-latest, windows-latest, windows-11-arm]
     env:
-      ZEL_PDF_PROBE_BUNDLE: ${{ runner.temp }}/pdf-wasm-probe
+      ZEL_PDF_PROBE_BUNDLE: ${{ github.workspace }}/test-results/pdf-wasm-bundle
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable

@@ -74,6 +74,10 @@ or uploaded as CI artifacts.
   See the [evidence](evidence/zellij-cached-pdf-feasibility-2026-11-22.json).
   The six-platform workflow also compares all cases with native LuaHBTeX on
   Linux x64. Its final status is recorded after running.
+- Initial workflow `45080968117` was rejected before any jobs ran: job-level
+  `env` cannot reference `runner.temp`. Actionlint reproduces that expression
+  error. The bundle now uses `github.workspace`, and actionlint passes. This
+  failed setup run provides no platform acceptance.
 
 ## Remaining before release
 
