@@ -42,7 +42,8 @@ All three have rich double-click output, optional HTTP viewing, light/dark theme
 controls, an editable second landing page and a customization guide. They do not
 configure PDF output. Creation works offline; builds reuse a renderer downloaded
 once and need no separately installed Docker, Node.js, npm or Python. Explicit
-static exports and hosted `zel dev` still use a container. Real signup, purchase and contact services belong
+HTTP static exports share that cache in rc.18; hosted `zel dev` still uses a
+container. Real signup, purchase and contact services belong
 to the author's product. The sample buttons point to functioning local pages.
 Earlier published identities retain their original bytes; README updates use new versions.
 

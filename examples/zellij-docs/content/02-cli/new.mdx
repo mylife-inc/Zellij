@@ -43,10 +43,10 @@ requires Node and npm.
 </CardGrid>
 
 Choose `portable` for ordinary Markdown documentation that also opens directly
-from disk. Choose `docs` for the rich engine's MDX and page sections. In rc.12
-its default build downloads a renderer once and produces a
-rich double-click website without installed build tools. Development previews
-and explicit HTTP exports still use a container. [Build targets](/cli/build) explain
+from disk. Choose `docs` for the rich engine's MDX and page sections. Its default
+build downloads a renderer once and produces a rich double-click website without
+installed build tools. In rc.18, explicit HTTP exports and `view --watch` also
+use that cache. Hosted Next.js `dev` still uses a container. [Build targets](/cli/build) explain
 the output differences; [deployment](/cli/deploy) lists supported providers and
 their account prerequisites.
 
