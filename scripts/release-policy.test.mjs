@@ -338,8 +338,12 @@ test('published website acceptance keeps source builds separate and skips unavai
   assert.equal(published['working-directory'], 'release-source');
   assert.equal(published.if, "inputs.version != '' && steps.capability.outputs.available == 'true'");
   assert.equal(published.env.DOCKER_CONTEXT, 'default');
-  const builds = job.steps.filter(s => /cargo build|docker build|npm run build/.test(s.run || ''));
+  const builds = job.steps.filter(s => /cargo build|build-standalone-engine|npm run build/.test(s.run || ''));
   assert.equal(builds.length, 3);
+  assert(!job.steps.some(s => /docker build/.test(s.run || '')), 'Source web acceptance must use the current cached renderer');
+  const renderer = step(job, 'Prepare the matching cached website renderer');
+  assert.match(renderer.run, /prepare-standalone-test-cache/);
+  assert.match(renderer.run, /ZEL_ENGINE_CACHE=.*GITHUB_ENV/);
   assert(builds.every(s => s.if === "inputs.version == ''"));
   assert(!job.steps.some(s => s.uses?.startsWith('docker/login-action')));
   assert.match(step(job, 'Check released website capability').run, /existsSync\('scripts\/check-website-release\.mjs'\)/);
