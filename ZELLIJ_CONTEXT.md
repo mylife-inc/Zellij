@@ -39,8 +39,12 @@ production `44992644419` verifies deploy `6b02885dd16e909d12d9213b`; six live
 rc.18 pages hydrate without captured errors. Static/Next publication
 `44992647712`/`44992649710` and fresh-pull HTTP/health/nonroot inspection
 `44992842894` pass. A final prose scan found three stale prerequisite statements;
-PR #237 corrects those and clarifies container-image selection. No runtime or
-release assets change. Final follow-up publication receipts are tracked in the [release evidence](specs/evidence/zellij-rc18-release-2026-11-21.json).
+PR #237 corrects those and clarifies container-image selection; it merges as
+`43894a1`, identical to reviewed `ccbbfd6`. Its documentation gate
+`44993009663` passes. Final production `44993302913` verifies deploy
+`6b028a77ddac92023b36b37f`; all eight live page/hydration checks pass with no
+captured browser errors. No runtime or release assets change. Duplicate
+unchanged-runtime/image runs are cancelled, not counted as passes. Receipts are tracked in the [release evidence](specs/evidence/zellij-rc18-release-2026-11-21.json).
 
 The seven guide/generated-consumer checks for PR #236 pass. Duplicate general
 CI on its unchanged runtime is cancelled, not counted as a pass. Editable

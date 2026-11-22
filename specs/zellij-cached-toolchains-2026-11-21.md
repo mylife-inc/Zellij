@@ -38,6 +38,16 @@ rendering dependencies.
 | 5 | Rich Next.js `dev` and editable wrapper workflows | Optional larger Node/Next/dependency package | Preserve actual Next development behavior and custom app support. `view --watch` already offers a lighter native preview. Arbitrary custom dependencies require their own resolution and cannot be inferred from a fixed template bundle. |
 | Retain builder | `image static`, `image next`, image publishing and image-based Fly/Railway delivery | Rendering may reuse caches, but images still need a builder | A downloaded renderer does not build an OCI image or start a daemon. Removing the local builder would be a separate remote-builder or native-image-building feature. |
 
+## Small follow-up in generated workflow comments
+
+The rc.18 generated jobs correctly omit container setup for web-only builds,
+but their introductory comment still says hosted/image builds need an engine
+image. This is stale explanatory text, not an executable dependency. Update
+that banner in `cli/crates/zellij-scaffold/src/pipeline.rs` and
+`pipeline/external.rs` with the next CLI candidate, preserving Docker guidance
+for image/PDF jobs and old pins. Do not replace immutable rc.18 assets to alter
+a comment. Current public command guides describe the actual prerequisites.
+
 ## Implementation boundaries
 
 Keep `zel` small. Download optional capabilities only when requested, pin
