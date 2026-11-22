@@ -4,8 +4,10 @@
 editable sources for default `eject` and `new app`. All 37 source jobs and all
 six tagged installed-wrapper packages pass. Both public repositories have 42
 matching assets, including the 8.2 MB source archive; the public source bytes and
-generated recipes are independently checked. Postpublication/channel acceptance
-and final guides remain in progress. Main CI separately retains the historical
+generated recipes are independently checked. All 40 release jobs and eight actual
+rc.18-to-rc.19 Homebrew/Scoop upgrades pass. Independent public/installed Mac
+acceptance passes. PR #240 and automatic production `45010872211` publish the
+final guides; nine live pages and refreshed fixture-image inspection pass. Main CI separately retains the historical
 documentation timeout recurrence; diagnostic follow-up `bfb450b` improves partial
 state capture without changing the runtime or declaring the timing fixed. See
 [rc.19 evidence](evidence/zellij-rc19-release-2026-11-22.json). No retirement or

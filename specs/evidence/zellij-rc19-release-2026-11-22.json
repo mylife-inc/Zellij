@@ -1,7 +1,7 @@
 {
   "date": "2026-11-22",
   "version": "v0.2.0-rc.19",
-  "status": "rc.19 published; public acceptance, channel upgrade checks and final documentation gates in progress. Main historical browser timing recurrence remains open.",
+  "status": "rc.19 released, verified on all native targets, installed locally and published through both managed channels; production guides verified. Historical browser timing finding remains open.",
   "source": {
     "pr": 239,
     "implementation": "ed5e768f8f2e649dafab37a3b7dab35d5e856181",
@@ -427,7 +427,7 @@
     "run": 45007126682,
     "tag": "v0.2.0-rc.19",
     "commit": "3d3b4260e41be106aac6be3286961d5d979498d0",
-    "status": "publicly published; postpublication acceptance in progress",
+    "status": "completed successfully",
     "editableSourceArtifact": {
       "artifact": "editable-sources",
       "name": "zel-sources-v0.2.0-rc.19.tar.gz",
@@ -980,7 +980,236 @@
         ],
         "publicRecipeAndSourceBytesVerified": true
       }
-    ]
+    ],
+    "independentMac": {
+      "passed": true,
+      "bothPublicRepositories": true,
+      "logSha256": "b07029bbf12ff896b04166ca0abae9a4ab3a4c9e8a1d324afc23947997787175"
+    },
+    "installedMac": {
+      "version": "0.2.0-rc.19",
+      "defaultResourceHome": true,
+      "emptyPath": true,
+      "cachedNewApp": true,
+      "offlineEject": true,
+      "vendoredEngine": true,
+      "starterContent": true,
+      "matchesPublicBinary": true,
+      "binarySha256": "57d1659e0b7c72637aff643969080a9e732e9f0e92ecad9d3ed60474ae705a2b",
+      "binaryBytes": 19544064,
+      "existingPathLinkRetained": true
+    },
+    "requiredJobsPassed": 40,
+    "conditionalJobsSkipped": 1,
+    "jobs": [
+      {
+        "name": "Verify",
+        "job": 137161082440,
+        "conclusion": "success"
+      },
+      {
+        "name": "Documentation site",
+        "job": 137163350409,
+        "conclusion": "success"
+      },
+      {
+        "name": "Image none \u00b7 amd64",
+        "job": 137163350485,
+        "conclusion": "success"
+      },
+      {
+        "name": "Image all \u00b7 amd64",
+        "job": 137163350512,
+        "conclusion": "success"
+      },
+      {
+        "name": "Image none \u00b7 arm64",
+        "job": 137163350525,
+        "conclusion": "success"
+      },
+      {
+        "name": "Image maths \u00b7 arm64",
+        "job": 137163350561,
+        "conclusion": "success"
+      },
+      {
+        "name": "binaries / Compile shared rich renderer",
+        "job": 137163350570,
+        "conclusion": "success"
+      },
+      {
+        "name": "Image maths \u00b7 amd64",
+        "job": 137163350585,
+        "conclusion": "success"
+      },
+      {
+        "name": "Image diagrams \u00b7 arm64",
+        "job": 137163350618,
+        "conclusion": "success"
+      },
+      {
+        "name": "Image all \u00b7 arm64",
+        "job": 137163350629,
+        "conclusion": "success"
+      },
+      {
+        "name": "Image diagrams \u00b7 amd64",
+        "job": 137163350708,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish image all",
+        "job": 137163497160,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish image maths",
+        "job": 137163497175,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish image none",
+        "job": 137163497176,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish image diagrams",
+        "job": 137163497253,
+        "conclusion": "success"
+      },
+      {
+        "name": "binaries / Package and install (aarch64-unknown-linux-gnu)",
+        "job": 137163601020,
+        "conclusion": "success"
+      },
+      {
+        "name": "binaries / Package and install (aarch64-pc-windows-msvc)",
+        "job": 137163601025,
+        "conclusion": "success"
+      },
+      {
+        "name": "binaries / Package and install (x86_64-pc-windows-msvc)",
+        "job": 137163601043,
+        "conclusion": "success"
+      },
+      {
+        "name": "binaries / Package and install (x86_64-unknown-linux-gnu)",
+        "job": 137163601086,
+        "conclusion": "success"
+      },
+      {
+        "name": "binaries / Package and install (aarch64-apple-darwin)",
+        "job": 137163601092,
+        "conclusion": "success"
+      },
+      {
+        "name": "binaries / Package and install (x86_64-apple-darwin)",
+        "job": 137163601190,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "job": 137167872111,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "job": 137167872121,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "job": 137167872148,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "job": 137167872166,
+        "conclusion": "success"
+      },
+      {
+        "name": "winget / WinGet lifecycle (aarch64-pc-windows-msvc)",
+        "job": 137167872443,
+        "conclusion": "success"
+      },
+      {
+        "name": "winget / WinGet lifecycle (x86_64-pc-windows-msvc)",
+        "job": 137167872448,
+        "conclusion": "success"
+      },
+      {
+        "name": "winget / WinGet binary (${{ matrix.target }})",
+        "job": 137167873169,
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Publish the release",
+        "job": 137169124160,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published images (ubuntu-latest)",
+        "job": 137169235833,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published images (ubuntu-24.04-arm)",
+        "job": 137169235889,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published install (x86_64-unknown-linux-gnu)",
+        "job": 137169235892,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published install (x86_64-apple-darwin)",
+        "job": 137169235905,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published install (aarch64-unknown-linux-gnu)",
+        "job": 137169235914,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published install (aarch64-pc-windows-msvc)",
+        "job": 137169235916,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published install (x86_64-pc-windows-msvc)",
+        "job": 137169235932,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published Next PDF / Next PDF (ubuntu-24.04-arm)",
+        "job": 137169235939,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published install (aarch64-apple-darwin)",
+        "job": 137169235960,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published websites / Websites (ubuntu-24.04-arm)",
+        "job": 137169235975,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published Next PDF / Next PDF (ubuntu-latest)",
+        "job": 137169235979,
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify published artifacts / Published websites / Websites (ubuntu-latest)",
+        "job": 137169236015,
+        "conclusion": "success"
+      }
+    ],
+    "notesPinnedToGuides": "9e7c58eb7d6e4d65810ab321c2dfe8744b948f7e",
+    "assetsAndTagsUnchangedAfterNoteUpdate": true
   },
   "documentation": {
     "initialProduction": {
@@ -997,7 +1226,7 @@
         "published_at": "2026-11-22T09:26:45.211Z"
       }
     },
-    "finalGuidesStatus": "prepared; waiting for public-package acceptance",
+    "finalGuidesStatus": "merged and deployed; nine live pages verified",
     "diagnosticImprovement": {
       "commit": "bfb450b2b2e445c268e8acd2cf5aae391683f8b5",
       "productRuntimeChanged": false,
@@ -1011,19 +1240,234 @@
         "capture-browser-final": "b8627c4c6a3f0c297b564ebf009ea7c267570ca11074c36bd800cf0d601eae19"
       },
       "showcaseTypecheck": true
+    },
+    "pr": 240,
+    "testedHead": "9bfbf1c",
+    "docsGateRun": 45010001410,
+    "consumerRuns": [
+      45010001419,
+      45010001407,
+      45010001390,
+      45010001382,
+      45010001392,
+      45010001368
+    ],
+    "sevenTargetedGatesPassed": true,
+    "merge": "9e7c58eb7d6e4d65810ab321c2dfe8744b948f7e",
+    "mergeTreeMatchesTestedHead": true,
+    "engineGate": {
+      "run": 45010001388,
+      "job": 137170016698,
+      "conclusion": "success"
+    },
+    "productionRun": 45010872211,
+    "fixturePublicationRuns": {
+      "static": 45010926037,
+      "next": 45010928505
+    },
+    "productionReceipt": {
+      "source": "9e7c58eb7d6e4d65810ab321c2dfe8744b948f7e",
+      "site_id": "91774174-d4c2-41b5-aa4b-ac61eeadbf51",
+      "domain": "zellij.shebka.net",
+      "deploy_id": "6b02bfdeff9481cdea89e4ab",
+      "previous_deploy_id": "6b02b54bf4deb30d2290e2c4",
+      "preview": "https://6b02bfdeff9481cdea89e4ab--zellij-docs.netlify.app",
+      "state": "verified",
+      "published_at": "2026-11-22T10:11:50.998Z"
+    },
+    "livePages": {
+      "verifiedAt": "2026-11-22T10:14:04.937Z",
+      "browser": "installed Chrome on Intel macOS",
+      "pages": [
+        {
+          "route": "/cli",
+          "status": 200,
+          "hydrated": true,
+          "expectedText": [
+            "0.2.0-rc.19",
+            "editable-source cache"
+          ]
+        },
+        {
+          "route": "/cli/config",
+          "status": 200,
+          "hydrated": true,
+          "expectedText": [
+            "cache/sources",
+            "ZELLIJ_HOME",
+            "~/Dev/config/zellij"
+          ]
+        },
+        {
+          "route": "/cli/eject",
+          "status": 200,
+          "hydrated": true,
+          "expectedText": [
+            "0.2.0-rc.19",
+            "--offline",
+            "ZEL_SOURCE_BASE_URL"
+          ]
+        },
+        {
+          "route": "/cli/new",
+          "status": 200,
+          "hydrated": true,
+          "expectedText": [
+            "0.2.0-rc.19",
+            "vendor/zellij",
+            "cached"
+          ]
+        },
+        {
+          "route": "/cli/doctor",
+          "status": 200,
+          "hydrated": true,
+          "expectedText": [
+            "0.2.0-rc.19",
+            "editable-source package"
+          ]
+        },
+        {
+          "route": "/cli/build",
+          "status": 200,
+          "hydrated": true,
+          "expectedText": [
+            "0.2.0-rc.19",
+            "--offline"
+          ]
+        },
+        {
+          "route": "/guide/containers",
+          "status": 200,
+          "hydrated": true,
+          "expectedText": [
+            "0.2.0-rc.19",
+            "verified editable sources"
+          ]
+        },
+        {
+          "route": "/guide/wrapper",
+          "status": 200,
+          "hydrated": true,
+          "expectedText": [
+            "source download in rc.19",
+            "same verified cache"
+          ]
+        },
+        {
+          "route": "/guide/quickstart",
+          "status": 200,
+          "hydrated": true,
+          "expectedText": [
+            "0.2.0-rc.19"
+          ]
+        }
+      ],
+      "errors": []
+    },
+    "imageInspection": {
+      "run": 45011278526,
+      "conclusion": "success",
+      "passedJobs": 2,
+      "mode": "images only; live providers skipped"
+    },
+    "fixturePublicationConclusions": {
+      "static": "success",
+      "next": "success"
+    },
+    "mainImages": {
+      "run": 45010872236,
+      "conclusion": "success",
+      "jobsPassed": 13
+    },
+    "additionalCI": {
+      "pullRequestRun": 45010001388,
+      "mainRun": 45010872276,
+      "stateAtReceipt": "still running; no manual cancellation; not counted as completed acceptance",
+      "scope": "Product runtime unchanged from the accepted release; required guide/consumer and Engine gates passed."
     }
   },
   "channels": {
     "homebrew": {
       "repository": "mylife-inc/homebrew-tap",
       "commit": "52d2b0c278f131afbdaeff9628d0915f310d600e",
-      "previousCommit": "cfb312c3f097aea4a40cb55ae04856ce03bcac59"
+      "previousCommit": "cfb312c3f097aea4a40cb55ae04856ce03bcac59",
+      "pushRun": 45009836331,
+      "upgradeRun": 45010132864
     },
     "scoop": {
       "repository": "mylife-inc/scoop-bucket",
       "commit": "8742825474475b63e0629a0c8f96b5ef49cc4047",
-      "previousCommit": "b329e3cae96fafadc35e7e15ac453b8781984ab4"
+      "previousCommit": "b329e3cae96fafadc35e7e15ac453b8781984ab4",
+      "pushRun": 45009847117,
+      "upgradeRun": 45010483985
     },
-    "acceptance": "in progress"
+    "acceptance": "all eight actual rc.18-to-rc.19 upgrades and lifecycle cases passed",
+    "upgradeProof": [
+      {
+        "channel": "homebrew",
+        "name": "Install, upgrade and uninstall (ubuntu-latest)",
+        "job": 137170440494,
+        "upgradeFrom": "0.2.0-rc.18",
+        "upgradeTo": "0.2.0-rc.19",
+        "logSha256": "bc7727a07d12e48f9f04b2e4dbec060cac595875b71a3e04ff937f8b657e4042"
+      },
+      {
+        "channel": "homebrew",
+        "name": "Install, upgrade and uninstall (macos-15)",
+        "job": 137170440581,
+        "upgradeFrom": "0.2.0-rc.18",
+        "upgradeTo": "0.2.0-rc.19",
+        "logSha256": "b65c2cafc372dfd1d914dc3979e61acffea6d927e5095537615610f3f296b191"
+      },
+      {
+        "channel": "homebrew",
+        "name": "Install, upgrade and uninstall (macos-15-intel)",
+        "job": 137170440608,
+        "upgradeFrom": "0.2.0-rc.18",
+        "upgradeTo": "0.2.0-rc.19",
+        "logSha256": "09c7ee3def4fb895e1264ca46f4b4358d9f3929d18c42f5387a37e4a47693bf4"
+      },
+      {
+        "channel": "homebrew",
+        "name": "Install, upgrade and uninstall (ubuntu-24.04-arm)",
+        "job": 137170440631,
+        "upgradeFrom": "0.2.0-rc.18",
+        "upgradeTo": "0.2.0-rc.19",
+        "logSha256": "b7ece06307dc3cc43394969d4fcf8f2ec7494b20433b356f90848cc6404c0e53"
+      },
+      {
+        "channel": "scoop",
+        "name": "Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "job": 137171497090,
+        "upgradeFrom": "0.2.0-rc.18",
+        "upgradeTo": "0.2.0-rc.19",
+        "logSha256": "837bda8448908849fe9aa643a9ef2287b3386a7819702c2f775ade425671b5e3"
+      },
+      {
+        "channel": "scoop",
+        "name": "Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "job": 137171497269,
+        "upgradeFrom": "0.2.0-rc.18",
+        "upgradeTo": "0.2.0-rc.19",
+        "logSha256": "dc9ad220981ac3b751f1f2df79a2ba85725c254d1ea788ead2796e1f20596d81"
+      },
+      {
+        "channel": "scoop",
+        "name": "Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "job": 137171497305,
+        "upgradeFrom": "0.2.0-rc.18",
+        "upgradeTo": "0.2.0-rc.19",
+        "logSha256": "27e86805331d5699f9b2fbd003e06f2103326918ca53610869b862e5c6bc573c"
+      },
+      {
+        "channel": "scoop",
+        "name": "Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "job": 137171497335,
+        "upgradeFrom": "0.2.0-rc.18",
+        "upgradeTo": "0.2.0-rc.19",
+        "logSha256": "f465f751988b08c390bec8b78f79116277a02f399c347c9a358b5783a80aa620"
+      }
+    ]
   }
 }

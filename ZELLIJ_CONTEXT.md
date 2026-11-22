@@ -8,7 +8,7 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-22**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-22: rc.19 cached editable sources — published, final gates in progress**
+**2026-11-22: rc.19 cached editable sources — released and verified**
 
 Default `eject` and `new app` use a separate verified, version-matched source
 archive under `$ZELLIJ_HOME/cache/sources/<version>/`. Generation needs no
@@ -22,11 +22,22 @@ required source jobs pass in `45004886385`; browser coverage passes 552 cases,
 passes installed-wrapper generation, integrity/offline/cancellation and real
 install/check/typecheck/build/HTTP/search checks on all six native targets.
 The source artifact is 8,183,144 bytes with 1,439 hashed files; its checksum and
-full inventory are independently verified. Both public release copies contain
-42 matching asset names, sizes and SHA-256 digests; downloaded source bytes and
-Homebrew/Scoop recipes match the tagged artifact/generators. Public acceptance,
-channel upgrade checks and final guide publication remain in progress.
-See the [release evidence](specs/evidence/zellij-rc19-release-2026-11-22.json). See the [implementation record](specs/zellij-cached-editable-sources-2026-11-22.md).
+full inventory are independently verified. Both public releases contain 42
+matching assets, and all 40 required release jobs pass in `45007126682`.
+Independent public Intel Mac checks pass against both repositories. The installed
+Mac binary matches the public bytes; empty-PATH `new app` and offline `eject`
+pass under the default resource home. All eight actual rc.18-to-rc.19
+Homebrew/Scoop upgrades pass (`45010132864`, `45010483985`).
+
+PR #240 merges as `9e7c58e`, identical to tested `9bfbf1c`. Its seven targeted
+documentation/consumer gates and Engine check pass. Automatic production
+`45010872211` verifies deploy `6b02bfdeff9481cdea89e4ab`; nine live guide pages
+hydrate and show the current-version text without captured browser errors.
+Static/Next fixture publications `45010926037`/`45010928505` and fresh-pull
+HTTP/health/nonroot inspection `45011278526` pass. Release-note links are pinned
+to the merged guides; assets and tags are unchanged. See the
+[release evidence](specs/evidence/zellij-rc19-release-2026-11-22.json) and
+[implementation record](specs/zellij-cached-editable-sources-2026-11-22.md).
 
 The obsolete Docker-default fixture is corrected in `d1ace51`; the actual
 Windows path publication defect is fixed in `bedf63e` with a nested-file/Git
