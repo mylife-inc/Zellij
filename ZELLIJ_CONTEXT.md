@@ -17,8 +17,13 @@ requires the pinned container for typesetting. Production isolation,
 package/license completeness, Rust cache integration and public-package
 acceptance remain open. A confirmed Colima input-share defect in the existing
 PDF path is fixed in source by staging generated TeX beside the output. The
-regression fails before the change; ten PDF integration tests and real Colima
-classic/Arabic exports pass afterward. See the
+regression fails before `0619869`; ten PDF integration tests and real Colima
+classic/Arabic exports pass afterward. The initial six-platform probe passes
+96 manuscript cases / 288 typesetting passes; Linux compares 145 pages with
+identical rasters to the native backend. Follow-up `43b8c12` closes prototype
+first-write/console-buffer accounting gaps and has ten local regressions.
+[PR #242](https://github.com/mylife-inc/Zellij/pull/242) tracks current checks and
+merge state. See the
 [feasibility and verification record](specs/zellij-cached-pdf-feasibility-2026-11-22.md).
 The final rc.19 receipt merge `2a3ac72` now has passing main CI `45011754304` and
 base-image run `45011754299`; earlier browser timing findings remain open.

@@ -64,16 +64,18 @@ locked Wasm engine and its audited import functions. No arbitrary JS is accepted
 Further resource/isolation qualification, crash handling, process-level
 cancellation integration and independent review remain necessary for production.
 
-The eight tests exercise hash corruption, input links, host-file/environment/shell
-denial, unavailable Lua socket modules, oversized virtual writes, console and
+The ten tests exercise hash corruption, input links, host-file/environment/shell
+denial, unavailable Lua socket modules, oversized and initial virtual writes, console and
 guest-heap limits, endless-guest
 termination/recovery, nonzero TeX status and output preservation. Socket modules
 are unavailable in this format; this test does not claim to have made a socket
 connection and then observed network filtering.
 
-The console regression lowers the budget to 32 KiB for a quick real-engine
+The console regressions lower the budget to 32 KiB for quick real-engine
 test; the normal cap remains 8 MiB. Budget violations notify the supervisor
 before throwing, because C stdio can catch the stream error and keep running.
+Both initial copies and later growth count toward storage limits. Console bytes
+are counted before buffering a line, including a line with no newline.
 Set `ZEL_PDF_PROBE_BASELINE=1` when Docker and Poppler/qpdf are available to compare
 every case with the current container backend. That optional maintainer mode
 checks PDF structure, page sizes/counts, NFKC-normalized extracted text/layout

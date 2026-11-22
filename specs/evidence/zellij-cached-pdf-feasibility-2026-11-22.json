@@ -388,12 +388,384 @@
       "failed": 0
     },
     "clippy": "passed for zellij-cli/zellij-docs, all targets",
-    "format": "passed"
+    "format": "passed",
+    "hardenedRegressions": {
+      "commit": "43b8c12b8cf7624357f810a79bd5785dce766fd3",
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "node": "v24.22.3, existing private renderer runtime",
+      "logSha256": "4bf6566b9bfe7a8a0003f2c78d633de0323edd7e88a0b150f04cf6ab5aeef3c7"
+    }
   },
-  "status": "maintainer feasibility only; not released; hosted verification pending",
+  "status": "Maintainer feasibility only; initial six-platform acceptance passed at 2228b58. Hardened follow-up 43b8c12 has 10 local regressions; current hosted checks and merge state: https://github.com/mylife-inc/Zellij/pull/242",
   "observedFailures": [
     "Released rc.19 input mount under macOS system temp is not shared by Colima; corrected by 0619869.",
     "Initial resource inventory lacked five optical-size font files; expanded before the complete local run.",
-    "Initial probe let C stdio swallow console budget exceptions; supervisor now receives an immediate failure signal."
-  ]
+    "Initial probe let C stdio swallow console budget exceptions; supervisor now receives an immediate failure signal.",
+    "Initial MEMFS accounting did not cover first-write copies; a 320 MiB many-file regression failed before 43b8c12 and passes after it.",
+    "Initial workflow rejected job-level runner.temp; corrected in 2228b58; actionlint and initial six-platform acceptance pass."
+  ],
+  "hostedInitial": {
+    "run": 45081234139,
+    "head": "2228b58516dd3681933fe6336e7738b12809d729",
+    "conclusion": "success",
+    "regressionsPerPlatform": 8,
+    "platforms": [
+      {
+        "artifact": "pdf-wasm-probe-macos-15-intel",
+        "platform": "darwin",
+        "arch": "x64",
+        "node": "v24.19.0",
+        "cases": 16,
+        "passes": 48,
+        "resourceLockSha256": [
+          "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f"
+        ],
+        "comparedPages": 0,
+        "comparisons": []
+      },
+      {
+        "artifact": "pdf-wasm-probe-macos-latest",
+        "platform": "darwin",
+        "arch": "arm64",
+        "node": "v24.22.3",
+        "cases": 16,
+        "passes": 48,
+        "resourceLockSha256": [
+          "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f"
+        ],
+        "comparedPages": 0,
+        "comparisons": []
+      },
+      {
+        "artifact": "pdf-wasm-probe-ubuntu-24.04-arm",
+        "platform": "linux",
+        "arch": "arm64",
+        "node": "v24.22.3",
+        "cases": 16,
+        "passes": 48,
+        "resourceLockSha256": [
+          "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f"
+        ],
+        "comparedPages": 0,
+        "comparisons": []
+      },
+      {
+        "artifact": "pdf-wasm-probe-ubuntu-latest",
+        "platform": "linux",
+        "arch": "x64",
+        "node": "v24.22.3",
+        "cases": 16,
+        "passes": 48,
+        "resourceLockSha256": [
+          "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f"
+        ],
+        "comparedPages": 145,
+        "comparisons": [
+          {
+            "name": "pdf-book",
+            "pages": 8,
+            "normalizedTextSha256": "fa851ac60e22fa1cc43b7445bd5acf45ab7f595efc9f82f9425923b00b508ac9",
+            "identicalRasterSha256": [
+              "4692807b4d5ce0dcf124c0b64870d7ee99f099824fd4c59b56a2375b75272854",
+              "7f8e94366a0ec0e94ea5e222cdea9392967c14c40ae89b4c65c5bb2ef96b7175",
+              "d1bb82528af8a536bb67b1032dcd55de2089339f0f214ab0682193ec225084f5",
+              "3d2e31b76dc74af81c0d68a11ef9f29dff33cb5a235b4a8c869a6c4ff52a0e29",
+              "a198c38f6a2154fa122262248387e1fab633e40c01afae32063a3e37f70f1e17",
+              "1404e60973c8e1f1f3f4e0f6418b75c4b3697231ee97301c6753d031a183074e",
+              "be97c0e34329ae53e6bcb1715b51a3fae68c9edbbfc4136ba5e9eb03a0060bc9",
+              "356e26d2cb48da5b7e77a6dfe14da5fac5653a13b5ab9cc88cb4c45ba3aab7e6"
+            ]
+          },
+          {
+            "name": "equations",
+            "pages": 6,
+            "normalizedTextSha256": "00e6d1ca5e3b70b846ef3c4fd079c47d12f0d9db9ce369f35bb19630cc46c5c2",
+            "identicalRasterSha256": [
+              "8b2cd7e06eb2f65d4b5c3eca63e458636ea349917a826045cd89e311d3ecc295",
+              "faad3408142c7a3c26c2d0c6cebcd2c24565812e8587999814fca102f1fade55",
+              "0766ba3f85091b528f686b1f45d51b59f42700bb179fcc4fdf80cc00a91bd877",
+              "17cd4c7d504e77c0f891a3a27c93c7f9860b32b1a2c740cbce5a85d930b6ee98",
+              "f7c876223c7ef19f7dcf9816c2d45b4d7f796571dc4be58bbaf1a6c1fae26beb",
+              "9fa1ed677169bea47e700c94bb5a9a50eefece1a41e43312a316e896e4b9b628"
+            ]
+          },
+          {
+            "name": "statements",
+            "pages": 8,
+            "normalizedTextSha256": "80fb3a76debefa49e7f40183db156607c6b84c04d18756ef45910bac6431a307",
+            "identicalRasterSha256": [
+              "f0c477a48aa1cbe5fa49eb75b230cdd361f19a9cbc26b1fc16f7e89c2f631d9e",
+              "1efa1ba389563ea50700eac2ce4239a1c6b5c0cb76550bfd858e3289ab0fa3d6",
+              "73a5bcca50fb46621a09c3e499a78c54904433b77af15fb73acb94e6f7a3ba43",
+              "49fba8137889d90f1e4d9b6b47ab4bfa2b4adaa35fe59d9a9805a6efa4db01a7",
+              "b089008ce970b697655a71ae560145d27aa8634fcf286bc648c9e9cca801aed2",
+              "6109ad0001451f1f70ed8a1bc0f1ce456c0ff19fed6ff761fb086502970fc686",
+              "4658d90775190c683f96857a5792586de51cd3cb2b457491ec930d356e7c40ee",
+              "b0a351f9b94846f77d6d5be89649be441da31f8299f0568010cdf651e7ada136"
+            ]
+          },
+          {
+            "name": "bibliography",
+            "pages": 9,
+            "normalizedTextSha256": "09530a6416ddd864042cc2ec03f5057d51487a885a9bcddd71b4dcd930ca699b",
+            "identicalRasterSha256": [
+              "f0c477a48aa1cbe5fa49eb75b230cdd361f19a9cbc26b1fc16f7e89c2f631d9e",
+              "6ae778ef9346744a8143c144862cae763e2209f712415fac97dc6e7d0392145c",
+              "5fcc8f030970b38faa6542d61403fee9d31e9caf564f8d8e438a7ca2b315fd29",
+              "49fba8137889d90f1e4d9b6b47ab4bfa2b4adaa35fe59d9a9805a6efa4db01a7",
+              "b089008ce970b697655a71ae560145d27aa8634fcf286bc648c9e9cca801aed2",
+              "961c8e72b152b07bb0553c3004d755b045f8a977898a70f208aadd6dac38ca67",
+              "c4b4158249fa43bb7e5955fb6db2ce11b07093fa785c70358d6488882fc58251",
+              "b0a351f9b94846f77d6d5be89649be441da31f8299f0568010cdf651e7ada136",
+              "f31f8c174a18a72a71962c6454f47a831ff4e91def83bf9f16fc45c6e8292b6a"
+            ]
+          },
+          {
+            "name": "terms",
+            "pages": 12,
+            "normalizedTextSha256": "bdb6c4b6fd7529b12a339b192d89115c14f4ceb6ba2b694875b491b8f999dfbb",
+            "identicalRasterSha256": [
+              "f0c477a48aa1cbe5fa49eb75b230cdd361f19a9cbc26b1fc16f7e89c2f631d9e",
+              "edceee005a743236531c9f415899d2105555c913b22ba82a5cc50ff05733dfd9",
+              "6484cd2b2466ea2193a0d0b3d5aa129083ea53754d7d1181b36ab0db4352cde9",
+              "7a068741b917d9a966c95485e9e11366c8676f2c89fc7fbb08a35886b2ebe5c7",
+              "b089008ce970b697655a71ae560145d27aa8634fcf286bc648c9e9cca801aed2",
+              "d0ab7e5ccc143107028231b82efab3d9b3fc57ed5c578d11ba0d195cdc982d05",
+              "2d430cbd1ad611e3b574ea692ca4a9661db65fbfb54f10f483a59db01583d9ee",
+              "7a062e429796f0d6f7f1b53e0039cd3af4aee6e27b44999d26aee8dae66fea66",
+              "301dc2d38c60e43c4d7d39e33bb5fc13716e42919c2842cd5cfa6ad16bc17abf",
+              "cbdb5a499285ca371b9406813ecad7ff9daedf4f94ad2434de69372eefdac8a2",
+              "d5f7a9319ced4694466678fea15c29f7f4099ac040cfcbe0dd12f889d3d18eba",
+              "c624936e55094d95d622d634cddac2c316b74dbd0798611728f4a7b7fb947518"
+            ]
+          },
+          {
+            "name": "book-technical",
+            "pages": 12,
+            "normalizedTextSha256": "0691a3b2bb000e2f314dd0f7c6a5da26a7cb239a036fcea57c8297f54c739c1e",
+            "identicalRasterSha256": [
+              "7ca9a0ea5269efefac728ac5f65ed5b698f2ce77988f2957cc8a9a34e855b20e",
+              "2a32adf8a72951b39309dc13b13508c879ec6875bc7e260067705895cd4640bc",
+              "cc932862b681a871eb713d88c9078e2421e5fdb2b3e8ba509d49b1900a85a54c",
+              "f9aec1a35d043defbecff4818c4157fba94fc366325461bc0d96e45b3eae5bb3",
+              "ed2df64fb3ac0064061b9c64468f6422a3b943d7bbbd51312f967c0d65141a40",
+              "195284c4aba675c941211f998945404caad0f58b4a5e2d35bf3df904f80df5cc",
+              "12a3ab790cc2198875e59a372032892e09aa8ab344de43093f23de29d1f1c397",
+              "72bce239442c6a1070c4953ce95a294ca7a0e577fc96556f198bdbca4e8626db",
+              "fe3436a80c1503b91ee8f24e976b7e4a3b2586adc8dbb309f20639c21b3a008d",
+              "4b829f2f31e17fefa7287a9e25e605e0253008ed8b4feb89aa180cdbaafef156",
+              "40678ed63e7b87796358cdb3bba7870817d8f54366d019546d6822b75dc08c51",
+              "858d73fdc84a8fdcf9125f96646244828b4f9327c4cd0b00c52c94a8e60d7b60"
+            ]
+          },
+          {
+            "name": "book-technical-custom",
+            "pages": 13,
+            "normalizedTextSha256": "cea931cefff2bb3b81ca3fb2694e0b628649f2c78138e6bf08411596f35e6898",
+            "identicalRasterSha256": [
+              "883ef5bd0df7c2e908bba3bec54515e698b2f37c407f74f1f622adac90ebae01",
+              "67dca2b1ae589084d9c14f48c1102ff86150ae3a0bd2be73b5fff113dad539c5",
+              "d45fdb7d5f84a6920f3833ba63eea3697741153893acf65f95622e57d6cd5ee0",
+              "a4f7c00dea88c651ba1880dbdeac4ed0ff463c671cd094dda7f4a90e330c825d",
+              "1a6c6a2c52053481bc2ecfdd68a3c30ad001c1c37eb956a88619ad79bed3c643",
+              "d41206f8d33e0e57f662c9fbf27e85f400ea82417b0e15ed39626c00bbc82273",
+              "f706fe5bbdb513d8974cf0c8c1e972a4eecf8610f1eb403c10b06415fe71ed27",
+              "2f39b49cf03329dbeb450432be481dc77a42f6d0e227c2f333a63d4c44c8cd08",
+              "e4cc23dd60e82aaccab7edd308a8b75bc694dbe86bf44796be4431cbc8f8060f",
+              "fa978723f99ab330ccfd5072475f02284afce69ad371516805ffa1ce2a3aa210",
+              "b6a71119389d5c95a42143ea919b5546083378ac99bd68752f501e7aa08e4d7d",
+              "19caab8ceab30bde3a7e5036621983ea7e4bb81d137fa66c4381b49b9bc1592b",
+              "68ca0879556df4e102427da2cdb01b377b0b869e99c1787bd0f39d39b126feab"
+            ]
+          },
+          {
+            "name": "book-study",
+            "pages": 12,
+            "normalizedTextSha256": "d4d375fecf2ff2ddb759da877decce1afa6df271365c12067d98ce638bce5d34",
+            "identicalRasterSha256": [
+              "e490d21a0977bca744e1a075920d97187f561fa6fa1ac35bc6a98671ac60f123",
+              "f18c10913580f9668f35c03e95ace7080a065a6965f70714c8caaa21b769835e",
+              "5d581b62b99a172befa0b474ff20b42b93d2e3023a1770616e0fcbe5ffb40fe8",
+              "cc87c63d7ff45cfe00cef1af14a55e593d0da10dfd512731f49236dfda95f6f1",
+              "00b9d5807434aedd3be7a6b8fa7bb2c5b3c24946c3d7719af7db29e0cedb6636",
+              "03b50cbb40e3d8a2756c791ca477bc2c6b1cf372365f339f6de931a9e19d4835",
+              "10d1578bd91c23130bcf105ce08412d543c6f868455dc91ee3d392439ae4d99a",
+              "850f6eb85f5f2e942e120daab3d6d5339be3098510c4d4fa1bf23c0212c6fb8a",
+              "621e80305b247d1915c246b4e2bd8c7ef5733babc376260f1562d349ff47ff52",
+              "6bc0c479134ffe622f7ade60e90907b32f09ef007ecfb7f7a680cdf73eaf2628",
+              "710947a7e115d5537656e0d60cf3df87e60df954a5ef9759d754b2c05ccf83e5",
+              "9b4affd2f1ab23f431a434b820fd6135f70858da4939e22bff017069fb7fe3a6"
+            ]
+          },
+          {
+            "name": "book-study-custom",
+            "pages": 12,
+            "normalizedTextSha256": "507fa2d2d516071e16d9b8f7620d9853225c5b1d4623a38d1a6f07ee60f30c35",
+            "identicalRasterSha256": [
+              "3007f609312fe87de4cfc75b3032084cc273f15b4b78a189ff3f64cb36e18d5d",
+              "afb4d517a37aaf150c45fd6fcde720b55c1ecb828afce819cb1f67ad0c441bb7",
+              "ab8bf360458467caf1f117615cb994ba2f9e6725bd0a103ee5c2bf8bb0c30e47",
+              "93d154b081804c268887e10bcd09b3937b083a21f0a4cf083c83eab8ed855bcf",
+              "96725f6ee4391b84e16445a50889d82c001c230d4b7d2336e8ef5aecd6671eb7",
+              "7b00035763ceb807bd27c10bd2a8c249e98c54fcc9a7369d3d2620dd91cb5a3b",
+              "6a062c61230c6ea31906aacd7ccde8bacab0e1c85cefe13a3ddf989d84bdf359",
+              "15814b0569b3efa40403c3a9f503a21194ca97e212c2f86194490432269a7fdd",
+              "3d0ec72c02cbe430ac9ad6228bc5ef5e89dc2420a404c483fe4e78ff8b9d9c7d",
+              "c4958caa4166d815aaa56200c168663d9493a7763a56b8d09a06a97130e82ae3",
+              "b6a91790e93ba52cb1659dfaa55ffaf1d96abe127458251bb83da1013a5be379",
+              "b67bfd2ebf48e65899820ba1c9bed654bfa3f83c62cd495685a9f361f36cc2d6"
+            ]
+          },
+          {
+            "name": "ar-classic",
+            "pages": 7,
+            "normalizedTextSha256": "38314be7a6757cdfc49a029bfcc8992079f3d4f167400ab504a23aa9ed6fa974",
+            "identicalRasterSha256": [
+              "979f5bd75784ccadcfad43e365a22e418cd6889b7ff86ed9f6c47722c620ca11",
+              "11de7d8972e5734b296887ad12fd841427fb6420aacac78dd9e480fafccb8fe4",
+              "260e5edfa22faffdf712cc62f82f4481d9c5ffecfb33c686c79618da0bc35da5",
+              "e0d4f1e0d9463dae61d112217ee08129002eca2d03bed5fbb36f9e95d60d25e5",
+              "2e765d0a8c1343204eb264ebe95d82e88654601c09e1c01c6bff68539818b039",
+              "230485c4058bd19b4775780546cd91739f16ac5f56ec85425548ab6a502bf9d6",
+              "0ab8377b4cf3d53ef9b0acd1cf19a1847f15c58de01e28452b9e2e73e44acd8e"
+            ]
+          },
+          {
+            "name": "ar-technical",
+            "pages": 7,
+            "normalizedTextSha256": "7a93ac4c23c8ab6a6649cdd6d86784fa919d2e2398e5ec934e05c7ec978956aa",
+            "identicalRasterSha256": [
+              "b825e3d6e71769c012da51afe578f9e4ded32af358f2e69462d55d6e51831873",
+              "4a87a6b0ac91c489aa29dd560958faae462656a2c9cbff649b5dbed6328d61e2",
+              "260e5edfa22faffdf712cc62f82f4481d9c5ffecfb33c686c79618da0bc35da5",
+              "c11f4756b6faa145a10fbc88c13a202964553e138ad13486b3ce0b013f7ede4d",
+              "547b6e0d95a215819d164a215535cc77ea3d57371eb248281e0b432eef0f3aab",
+              "fb21d7097470624ae2bb2f8ade830fb99aaf57ebd083fdc10626b517bd505831",
+              "d053edc7c1b7b469d46dffb2b1fbd58327f5d968e579e2e9822019892ddb147e"
+            ]
+          },
+          {
+            "name": "ar-study",
+            "pages": 8,
+            "normalizedTextSha256": "284f8274498683b4832b74240cb15f2e2b21561ae8c72bd539ec43913c4d2168",
+            "identicalRasterSha256": [
+              "f9264e29a10de891cfc8b7154a91ff68baaf0ebd75864be138c981a2ae4affaf",
+              "3ae52711f411d75c8e581ce5b276c3fd64a940dca788060311cf917386f91158",
+              "260e5edfa22faffdf712cc62f82f4481d9c5ffecfb33c686c79618da0bc35da5",
+              "04c24780d4d367d28dfe1eb50531bd6cbe358cc79835fc335b010c8ccfecda7a",
+              "ee585c05d1bb14b6d6541058b72df310e3358df73493f360b071777962d0d63e",
+              "bdb0f11c0d20a207d58c4ce46f49d953a6d20ddbc05694f1afded0b63773cc1a",
+              "910153f06852eb8b39736c794e7696da02550c4d1fbcf087d92f72709135e723",
+              "6bb92c05cac7d47c0ae38dda65fe894e5d1b152d7778200dc1b8d7c3b7fe27bc"
+            ]
+          },
+          {
+            "name": "fr-study",
+            "pages": 8,
+            "normalizedTextSha256": "9910acf40732711f17e1bb7935b564682ce133a1313e89f99206db4a49c57ba7",
+            "identicalRasterSha256": [
+              "570dc66b1b1384a8c028314375293726ae91002e6af2195c6c9849ead4e956eb",
+              "28bb59b2c8465293512b6031db489c9c466a5eba7f129d213709820be3006955",
+              "41513779d8546adc81afdfabe275f561de9d1380ee5b3d9a1e6c25ca3551446d",
+              "3b5c92f8358f27b090313e52b1f47ee18d6f90196ff84b8bd733f49c725652f5",
+              "dfca380ed639dc86284da28e7126e7d4fc0b1b4a4e6b2a429d3f2224e4ab307b",
+              "e22778352a6408acf2c5a11129d39f30bbd7d8ab72fd333ee6fb29efc0dd7b25",
+              "e636df9166905e7ff1e88161314b334aea0165ee6cf37a54fea27b38d9142559",
+              "f3df09de4ffb2f89e1f9bcf2531590fde4e86414929cb15d59ba1bb6c4b2c917"
+            ]
+          },
+          {
+            "name": "de-classic",
+            "pages": 8,
+            "normalizedTextSha256": "d81896fbafd86167497dbdf2556273a898fb236b780a764a7ba34d51372c5349",
+            "identicalRasterSha256": [
+              "de1e5e96f27d21576b3fedf9d79267f410b310d8bf2d01165b44085c6c81c392",
+              "d640c2add8af2a5fd2e37e57398d068cfe23a5eda1072d5847f8154d8076774c",
+              "4c0a1b079aae7c9af0b2562aacfdef086471ab2923b490a64d0da8533e1d29f4",
+              "9db25f162178dfa5c957165a0f78f0cf51a77249ca006daf218365f57b0bdddd",
+              "307e562eb123dfcf4886ba7426b25fec04c661e5b538aeaedcb40fb675b39ebe",
+              "8291e166c1657ab83ee862df6bd9e7cce0c0ed448942ceb54ca1f50678ceaefc",
+              "31c79872a5389fea47d94113d9de941fa48e5cc014dd8c56dad95cfb0f777af3",
+              "8c8e245caf09c994553fed1fb680784e508e1e8cf828885702558eb1c234fb40"
+            ]
+          },
+          {
+            "name": "es-classic",
+            "pages": 8,
+            "normalizedTextSha256": "cfa410cacdbf825d499144ad420179a7a4fb73d42d790983780fccf280695b9d",
+            "identicalRasterSha256": [
+              "2f1cd80e41d5b8b18ae89a6e79c9d93282104b63001ed7ec7f80d9f374137d59",
+              "7ebf772d4045f8945c7ae5bad7cc08143faef7193a8f5ec8da0545f280d28fb6",
+              "02daa5f51d5b4d63fa7dd0bdb2452424eccf0a9d98c0d8a75871c814191ec74c",
+              "f7c0560dce4c874177b7d4764bc8b803513bfc8418ad66255b2b2f5624bc065f",
+              "fd86211c47c5d4ff394a57736127540f5f8668fb04fdeffb074af5d2d541f779",
+              "1b159899ffe56854b4d8d251b81e2cdb648ca7ddd555a6ab6f21368c7540b141",
+              "efb49ecc601135343ffbc8e7da763913e6152886b9c32122dc657c8d978bf109",
+              "2d0dd91645a29818749bb3bf73bf01eeed19b16e391daad235d4f41012e5a485"
+            ]
+          },
+          {
+            "name": "ar-default-fonts",
+            "pages": 7,
+            "normalizedTextSha256": "38314be7a6757cdfc49a029bfcc8992079f3d4f167400ab504a23aa9ed6fa974",
+            "identicalRasterSha256": [
+              "979f5bd75784ccadcfad43e365a22e418cd6889b7ff86ed9f6c47722c620ca11",
+              "11de7d8972e5734b296887ad12fd841427fb6420aacac78dd9e480fafccb8fe4",
+              "260e5edfa22faffdf712cc62f82f4481d9c5ffecfb33c686c79618da0bc35da5",
+              "eebe837640754877b50af49b794bac2fd0300501872e61267d547667e7f3bb77",
+              "2e765d0a8c1343204eb264ebe95d82e88654601c09e1c01c6bff68539818b039",
+              "0192f2de6cc78558cf3ce0ab96c474ed2a6639d07e427099cd2ceb5389eb27c9",
+              "0ab8377b4cf3d53ef9b0acd1cf19a1847f15c58de01e28452b9e2e73e44acd8e"
+            ]
+          }
+        ]
+      },
+      {
+        "artifact": "pdf-wasm-probe-windows-11-arm",
+        "platform": "win32",
+        "arch": "arm64",
+        "node": "v24.22.3",
+        "cases": 16,
+        "passes": 48,
+        "resourceLockSha256": [
+          "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f"
+        ],
+        "comparedPages": 0,
+        "comparisons": []
+      },
+      {
+        "artifact": "pdf-wasm-probe-windows-latest",
+        "platform": "win32",
+        "arch": "x64",
+        "node": "v24.22.3",
+        "cases": 16,
+        "passes": 48,
+        "resourceLockSha256": [
+          "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f"
+        ],
+        "comparedPages": 0,
+        "comparisons": []
+      }
+    ]
+  },
+  "correspondingSource": {
+    "bytes": 154968364,
+    "sha256": "e6a1f9b8ad84c7127368bb521217af381407fcc0d5c5518114345d55b470d637",
+    "embeddedManifestMatches": [
+      "wasmtex-luatex.js",
+      "wasmtex-luatex.wasm",
+      "wasmtex-luatex.fmt.gz"
+    ],
+    "cleanRebuildPerformed": false,
+    "redistributionReviewComplete": false
+  },
+  "singlePassStress": {
+    "kind": "single-pass stress probe; not publication acceptance",
+    "elapsedMs": 11538,
+    "heapBytes": 441319424,
+    "pdfBytes": 323208,
+    "pages": 302
+  }
 }

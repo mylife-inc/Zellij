@@ -52,7 +52,7 @@ or uploaded as CI artifacts.
   1300 pixels on the long edge. Raw extracted text differs in Arabic Unicode
   presentation forms; NFKC-normalized text including whitespace/layout is
   identical. This distinction is retained rather than claiming byte identity.
-- The final offline runner has eight passing regressions: corrupted resources,
+- The hardened offline runner has ten passing regressions: corrupted resources,
   input links, guest host-access restrictions, virtual-file size limits,
   console/heap limits, endless-guest termination/recovery and typesetting/output
   failure handling.
@@ -65,6 +65,12 @@ or uploaded as CI artifacts.
   guest continued until timeout. Budget violations now notify the supervisor
   immediately before throwing. The bounded regression passes in about one
   second with a reduced 32 KiB test limit; normal operation retains 8 MiB.
+- Follow-up review found MEMFS first writes bypass its expansion helpers.
+  A new 320 MiB many-file regression fails on the initial runner (it accepts
+  the write) and passes after `43b8c12`, which counts initial writes as well.
+  The same fix counts terminal bytes before buffering a line, with a separate
+  regression for output without a newline. These are prototype corrections,
+  not defects in a shipped PDF backend.
 - All **16 local cases / 48 passes** finish successfully: the three book editions,
   custom print styles, equations, statements, bibliography, glossary/index,
   Arabic editions/default-font selection and French/German/Spanish. The broad
@@ -72,12 +78,26 @@ or uploaded as CI artifacts.
   pinned inventory before the complete successful run. Peak observed guest heap
   is 496,369,664 bytes; this is not total process-memory measurement.
   See the [evidence](evidence/zellij-cached-pdf-feasibility-2026-11-22.json).
-  The six-platform workflow also compares all cases with native LuaHBTeX on
-  Linux x64. Its final status is recorded after running.
+  Initial six-platform workflow `45081234139` at `2228b58` passes all 16 cases
+  per platform (96 cases / 288 typesetting passes), plus its then-eight
+  regressions on each platform. Linux x64 additionally passes qpdf structure
+  checks, normalized text/layout, page sizes/counts and **145 identical page
+  rasters**. The hardened follow-up pins Node 24.22.3 on all six targets to match
+  the private runtime; the initial Intel Mac runner used its cached 24.19.0.
+  Current follow-up checks and merge state are on
+  [PR #242](https://github.com/mylife-inc/Zellij/pull/242).
 - Initial workflow `45080968117` was rejected before any jobs ran: job-level
   `env` cannot reference `runner.temp`. Actionlint reproduces that expression
   error. The bundle now uses `github.workspace`, and actionlint passes. This
   failed setup run provides no platform acceptance.
+- A separate, original 100-chapter stress manuscript produces 302 pages in
+  one pass (11,538 ms, 441,319,424 guest-heap bytes). This is a single-pass size
+  probe only, not full publication acceptance or a total-memory benchmark.
+- The upstream 154,968,364-byte corresponding-source archive matches SHA-256
+  `e6a1f9b8ad84c7127368bb521217af381407fcc0d5c5518114345d55b470d637`.
+  Its embedded manifest matches the exact core JS, Wasm and format bytes used
+  here. It contains source/build records; this check does not replace a clean
+  rebuild or the separate TeX-resource/font licensing review.
 
 ## Remaining before release
 
