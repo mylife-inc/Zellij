@@ -1,0 +1,1112 @@
+{
+  "error": "Error: Documentation hydration readiness failed at http://127.0.0.1:38585/cli/dev#what-it-is-for",
+  "stack": "Error: Documentation hydration readiness failed at http://127.0.0.1:38585/cli/dev#what-it-is-for\n    at visit (file:///home/runner/work/Zellij/Zellij/scripts/check-docs-preservation.mjs:72:13)\n    at async file:///home/runner/work/Zellij/Zellij/scripts/check-docs-preservation.mjs:106:5",
+  "browserErrors": [],
+  "pendingRequests": [
+    {
+      "url": "http://127.0.0.1:38585/why/__next._tree.txt?_rsc=5CB68i4pnAekjehf",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next._tree.txt?_rsc=5CB68i4pnAekjehf",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/__next._tree.txt?_rsc=5CB68i4pnAekjehf",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next._tree.txt?_rsc=5CB68i4pnAekjehf",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next._tree.txt?_rsc=oV6FGuHM5BNBQfAt",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next._tree.txt?_rsc=oV6FGuHM5BNBQfAt",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next._tree.txt?_rsc=oV6FGuHM5BNBQfAt",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next._tree.txt?_rsc=vVhHQusDlmcPTLpk",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next._tree.txt?_rsc=vVhHQusDlmcPTLpk",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next._tree.txt?_rsc=vVhHQusDlmcPTLpk",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/__next._tree.txt?_rsc=vVhHQusDlmcPTLpk",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next._index.txt?_rsc=rDEXG1gdLxjpDzIW",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next.$oc$slug.__PAGE__.txt?_rsc=Fm2OvbubvTKMbGbV",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next.$oc$slug.__PAGE__.txt?_rsc=Fm2OvbubvTKMbGbV",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next.$oc$slug.__PAGE__.txt?_rsc=Fm2OvbubvTKMbGbV",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next._tree.txt?_rsc=k8zT6ZpV-JC-NF3G",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next._tree.txt?_rsc=k8zT6ZpV-JC-NF3G",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/__next._tree.txt?_rsc=k8zT6ZpV-JC-NF3G",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next._tree.txt?_rsc=k8zT6ZpV-JC-NF3G",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next._index.txt?_rsc=m4fgJqdJ0FDvv275",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next.$oc$slug.__PAGE__.txt?_rsc=XgM5iZpgAyvCq7uV",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next.$oc$slug.__PAGE__.txt?_rsc=XgM5iZpgAyvCq7uV",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next.$oc$slug.__PAGE__.txt?_rsc=XgM5iZpgAyvCq7uV",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next.$oc$slug.__PAGE__.txt?_rsc=2HB0ddsJc75t5hVW",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next.$oc$slug.__PAGE__.txt?_rsc=2HB0ddsJc75t5hVW",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next.$oc$slug.__PAGE__.txt?_rsc=2HB0ddsJc75t5hVW",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/__next.$oc$slug.__PAGE__.txt?_rsc=2HB0ddsJc75t5hVW",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next._index.txt?_rsc=sV7wuNA6hk-PRFXa",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next.$oc$slug.__PAGE__.txt?_rsc=gQqnm0ts-f44hdeF",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next.$oc$slug.__PAGE__.txt?_rsc=gQqnm0ts-f44hdeF",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next.$oc$slug.__PAGE__.txt?_rsc=gQqnm0ts-f44hdeF",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next._tree.txt?_rsc=bq0xreumbVpTudTF",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next._index.txt?_rsc=qIbNhXY4KggNm5f0",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next.$oc$slug.__PAGE__.txt?_rsc=x55hFjMVef7op-Dh",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next.$oc$slug.__PAGE__.txt?_rsc=x55hFjMVef7op-Dh",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/__next.$oc$slug.__PAGE__.txt?_rsc=x55hFjMVef7op-Dh",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next._index.txt?_rsc=0l_8-ki2pIYNPR83",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next.$oc$slug.__PAGE__.txt?_rsc=qB4a_E0krDP_Wt6I",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next.$oc$slug.__PAGE__.txt?_rsc=qB4a_E0krDP_Wt6I",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next.$oc$slug.__PAGE__.txt?_rsc=qB4a_E0krDP_Wt6I",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/__next.$oc$slug.__PAGE__.txt?_rsc=QJRJscXio-T1tQSl",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/quickstart/__next.$oc$slug.__PAGE__.txt?_rsc=QJRJscXio-T1tQSl",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/new/__next.$oc$slug.__PAGE__.txt?_rsc=QJRJscXio-T1tQSl",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/templates/__next.$oc$slug.__PAGE__.txt?_rsc=QJRJscXio-T1tQSl",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next.$oc$slug.__PAGE__.txt?_rsc=pVPw_qUK0X67T5Jd",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/__next.$oc$slug.__PAGE__.txt?_rsc=pVPw_qUK0X67T5Jd",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/quickstart/__next.$oc$slug.__PAGE__.txt?_rsc=pVPw_qUK0X67T5Jd",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/new/__next.$oc$slug.__PAGE__.txt?_rsc=pVPw_qUK0X67T5Jd",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next._tree.txt?_rsc=-bMN3hQsmydNOzSf",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next._tree.txt?_rsc=-bMN3hQsmydNOzSf",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next._tree.txt?_rsc=-bMN3hQsmydNOzSf",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/__next._tree.txt?_rsc=-bMN3hQsmydNOzSf",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next._tree.txt?_rsc=vjB7T3QZGHRlWcnQ",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next._tree.txt?_rsc=vjB7T3QZGHRlWcnQ",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next._tree.txt?_rsc=vjB7T3QZGHRlWcnQ",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/__next._tree.txt?_rsc=vjB7T3QZGHRlWcnQ",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next._tree.txt?_rsc=TJ41YZ02jIPlGSRT",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next._tree.txt?_rsc=TJ41YZ02jIPlGSRT",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next._tree.txt?_rsc=TJ41YZ02jIPlGSRT",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/__next._tree.txt?_rsc=TJ41YZ02jIPlGSRT",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next.$oc$slug.__PAGE__.txt?_rsc=5J30O02ZZ7ciGa7r",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next.$oc$slug.__PAGE__.txt?_rsc=5J30O02ZZ7ciGa7r",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next.$oc$slug.__PAGE__.txt?_rsc=5J30O02ZZ7ciGa7r",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/__next.$oc$slug.__PAGE__.txt?_rsc=5J30O02ZZ7ciGa7r",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next.$oc$slug.__PAGE__.txt?_rsc=CMe1LBeQzmtlQfAQ",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/__next.$oc$slug.__PAGE__.txt?_rsc=CMe1LBeQzmtlQfAQ",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/quickstart/__next.$oc$slug.__PAGE__.txt?_rsc=CMe1LBeQzmtlQfAQ",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/new/__next.$oc$slug.__PAGE__.txt?_rsc=CMe1LBeQzmtlQfAQ",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/__next._tree.txt?_rsc=3TnlboxX9Sb7qnFL",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next._index.txt?_rsc=VWwoawKoniaoneJy",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next.$oc$slug.__PAGE__.txt?_rsc=PaIX4tOVX8rLmA5Y",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next.$oc$slug.__PAGE__.txt?_rsc=PaIX4tOVX8rLmA5Y",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next.$oc$slug.__PAGE__.txt?_rsc=48Xg05pnyvFbX_uR",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next.$oc$slug.__PAGE__.txt?_rsc=48Xg05pnyvFbX_uR",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/__next.$oc$slug.__PAGE__.txt?_rsc=48Xg05pnyvFbX_uR",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/quickstart/__next.$oc$slug.__PAGE__.txt?_rsc=48Xg05pnyvFbX_uR",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next._tree.txt?_rsc=_dzs2E2ssY7T1myK",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next._tree.txt?_rsc=_dzs2E2ssY7T1myK",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next._tree.txt?_rsc=_dzs2E2ssY7T1myK",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/__next._tree.txt?_rsc=_dzs2E2ssY7T1myK",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next._index.txt?_rsc=tqrc-l2OvhMExrIF",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next.$oc$slug.__PAGE__.txt?_rsc=sQGlSAPjQfF3FYF6",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next.$oc$slug.__PAGE__.txt?_rsc=sQGlSAPjQfF3FYF6",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next.$oc$slug.__PAGE__.txt?_rsc=sQGlSAPjQfF3FYF6",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next.$oc$slug.__PAGE__.txt?_rsc=6m8ri0iT9PC1UpAT",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next.$oc$slug.__PAGE__.txt?_rsc=6m8ri0iT9PC1UpAT",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next.$oc$slug.__PAGE__.txt?_rsc=6m8ri0iT9PC1UpAT",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli/__next.$oc$slug.__PAGE__.txt?_rsc=6m8ri0iT9PC1UpAT",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/why/__next._tree.txt?_rsc=9584Y945sh8bVNRP",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide/__next._tree.txt?_rsc=9584Y945sh8bVNRP",
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:38585/__next._tree.txt?_rsc=9584Y945sh8bVNRP",
+      "type": "fetch"
+    }
+  ],
+  "failedRequests": [
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/why",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/guide",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/cli",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:38585/",
+      "type": "fetch",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    }
+  ],
+  "state": {
+    "captureError": "Browser state capture exceeded 1500 ms"
+  }
+}

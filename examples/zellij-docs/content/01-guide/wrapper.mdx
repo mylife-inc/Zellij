@@ -9,8 +9,11 @@ application in your repository. Default rich `zel build`, `zel check` and
 `zel view --watch` use a downloaded, cached renderer without separately installed
 Docker, Node.js or Python. The generated `site/index.html` opens directly.
 
-Hosted `zel dev`, explicit `zel build --target static` and hosted deployment
-commands use the Next.js wrapper in a container.
+Explicit `zel build --target static` and native static deployment builds use
+the same verified cache for HTTP output. Hosted `zel dev` and image builds
+still use a container. Default `zel new app` and `zel eject` create editable
+wrappers from a separate source download in rc.19; running those apps needs
+Node/npm.
 
 This page is for the case where you keep a wrapper app checked in — because you
 host on a platform that builds Next.js itself, or because Zellij pages are part

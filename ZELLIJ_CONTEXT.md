@@ -8,26 +8,42 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-22**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-22: cached editable sources — candidate rc.19 in progress**
+**2026-11-22: rc.19 cached editable sources — published, final gates in progress**
 
-Default `eject` and `new app` now use a separate verified, version-matched
-source archive under `$ZELLIJ_HOME/cache/sources/<version>/`. Generation needs
-no Docker, Node/npm or Python; the resulting editable Next app still needs
-its development tools. Outputs receive independent vendored engine copies.
-Explicit `eject --image` / `ZELLIJ_IMAGE` and `new app --engine` retain their
-selected-image/local-engine semantics. `--offline` and the wizard's `cached`
-engine answer are documented. Generated CI introductory comments now describe
-the existing web-only cache behavior accurately. Public rc.18 stays unchanged.
+Default `eject` and `new app` use a separate verified, version-matched source
+archive under `$ZELLIJ_HOME/cache/sources/<version>/`. Generation needs no
+Docker, Node/npm or Python; running the resulting editable Next app still needs
+Node/npm. Each output gets an independent vendored engine. Explicit image/local
+engine selection retains its semantics. The archive adds no runtime to the CLI.
 
-Local empty-PATH cold/offline generation, integrity/failure/cancellation and a
-real installed wrapper's strict validation, typecheck, production build and
-HTTP/search checks pass. Four cache unit tests and 12 local-engine/wizard
-regressions pass. Normal preflight, six-platform and public-package gates are
-still in progress; this is not yet a publication receipt. Initial fixture,
-compile and lint findings are retained in the
-[implementation record](specs/zellij-cached-editable-sources-2026-11-22.md).
-Optional PDF/Next development packages and historical browser timing findings
-remain open; no provider/catalog acceptance or retirement is included.
+PR #239 merges as `3d3b426`, with an identical tree to tested `bedf63e`. All 37
+required source jobs pass in `45004886385`; browser coverage passes 552 cases,
+169 conditional skips and no reported failures/retries. Release `45007126682`
+passes installed-wrapper generation, integrity/offline/cancellation and real
+install/check/typecheck/build/HTTP/search checks on all six native targets.
+The source artifact is 8,183,144 bytes with 1,439 hashed files; its checksum and
+full inventory are independently verified. Both public release copies contain
+42 matching asset names, sizes and SHA-256 digests; downloaded source bytes and
+Homebrew/Scoop recipes match the tagged artifact/generators. Public acceptance,
+channel upgrade checks and final guide publication remain in progress.
+See the [release evidence](specs/evidence/zellij-rc19-release-2026-11-22.json). See the [implementation record](specs/zellij-cached-editable-sources-2026-11-22.md).
+
+The obsolete Docker-default fixture is corrected in `d1ace51`; the actual
+Windows path publication defect is fixed in `bedf63e` with a nested-file/Git
+metadata/no-clobber regression. Initial failed attempts remain recorded.
+
+Duplicate main CI `45007103274` completes with 36 successful jobs and one Engine
+failure: the historical annotation/readiness timeout recurs at
+`/cli/dev#what-it-is-for`. Its retained diagnostic has no browser errors and a
+state-capture timeout; this does not establish the cause. Follow-up `bfb450b`
+preserves an immediate DOM snapshot if later frame sampling stalls, and records
+request timestamps/observed visits. Two regressions fail on the old capture;
+six capture and six real documentation regressions pass afterward. No product
+runtime, original assertion, deadline or release tag changes; the timing finding
+remains open. See the [investigation](specs/zellij-browser-timing-investigation-2026-11-13.md).
+
+Optional PDF/Next development packages remain future work. No provider/catalog
+acceptance or retirement is included in this increment.
 
 **2026-11-21: rc.18 — cached HTTP rendering and static validation released**
 

@@ -37,6 +37,7 @@ let page;
 const errors = [];
 const pendingRequests = new Map();
 const failedRequests = [];
+let currentVisit;
 try {
   for (const asset of baseline.authored_assets) {
     const bytes = await readFile(path.join(output, asset.path));
@@ -47,10 +48,14 @@ try {
   await context.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
   page = await context.newPage();
   if (process.env.ZELLIJ_BROWSER_DIAGNOSTICS) {
-    page.on('request', request => pendingRequests.set(request, { url: request.url(), type: request.resourceType() }));
+    page.on('request', request => pendingRequests.set(request, {
+      url: request.url(), type: request.resourceType(), observedAt: new Date().toISOString(),
+      observedDuringVisit: currentVisit,
+    }));
     page.on('requestfinished', request => pendingRequests.delete(request));
     page.on('requestfailed', request => {
-      if (failedRequests.length < 100) failedRequests.push({ ...pendingRequests.get(request), failure: request.failure() });
+      if (failedRequests.length === 100) failedRequests.shift();
+      failedRequests.push({ ...pendingRequests.get(request), failedAt: new Date().toISOString(), failure: request.failure() });
       pendingRequests.delete(request);
     });
   }
@@ -62,6 +67,7 @@ try {
   });
   const assertNoErrors = () => assert.deepEqual(errors, [], `Browser runtime errors at ${page.url()}`);
   const visit = async route => {
+    currentVisit = { route, startedAt: new Date().toISOString() };
     assert.equal((await page.goto(origin + route)).status(), 200, route);
     // This docs fixture enables the theme toggle on every route. Its neutral
     // SSR label changes only in useEffect, so load alone is not our readiness
@@ -132,8 +138,8 @@ try {
       const state = await browserFailureState(page);
       await mkdir(directory, { recursive: true });
       await writeFile(path.join(directory, `docs-failure-state-${Date.now()}-${process.pid}.json`), JSON.stringify({
-        error: String(error), stack: error.stack, browserErrors: errors,
-        pendingRequests: [...pendingRequests.values()].slice(0, 100), failedRequests, state,
+        error: String(error), stack: error.stack, browserErrors: errors, currentVisit,
+        pendingRequests: [...pendingRequests.values()].slice(-100), failedRequests, state,
       }, null, 2));
     } catch (captureError) {
       console.error(`Browser diagnostic capture failed: ${captureError}`);

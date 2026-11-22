@@ -1,0 +1,1029 @@
+{
+  "date": "2026-11-22",
+  "version": "v0.2.0-rc.19",
+  "status": "rc.19 published; public acceptance, channel upgrade checks and final documentation gates in progress. Main historical browser timing recurrence remains open.",
+  "source": {
+    "pr": 239,
+    "implementation": "ed5e768f8f2e649dafab37a3b7dab35d5e856181",
+    "testedHead": "bedf63eb865250bc2bce689d01694bb5cdb03792",
+    "ci": 45004886385,
+    "nativePackageProof": [
+      {
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "job": 137154377387,
+        "logSha256": "b490486acef01bb24dbd6f0d50dfc009f168694e49a31b7cddd8c058c659f10d",
+        "receipt": {
+          "editableSources": true,
+          "version": "0.2.0-rc.19",
+          "toolFreeGeneration": true,
+          "offlineReuse": true,
+          "copiedEngine": true,
+          "gitMetadataPreserved": true,
+          "cacheIntegrity": true,
+          "failedDownloads": true,
+          "cancellation": true,
+          "installedWrapper": true
+        }
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "job": 137154377399,
+        "logSha256": "87f8309722cc968db8b96f5b10fa8c67b0650221c8319cf3a51aebce680b91de",
+        "receipt": {
+          "editableSources": true,
+          "version": "0.2.0-rc.19",
+          "toolFreeGeneration": true,
+          "offlineReuse": true,
+          "copiedEngine": true,
+          "gitMetadataPreserved": true,
+          "cacheIntegrity": true,
+          "failedDownloads": true,
+          "cancellation": true,
+          "installedWrapper": true
+        }
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "job": 137154377400,
+        "logSha256": "8b6e3e767757e1b0f48d7028a59bc9e3323b6abcb101ecc3e5e60f6d704c1537",
+        "receipt": {
+          "editableSources": true,
+          "version": "0.2.0-rc.19",
+          "toolFreeGeneration": true,
+          "offlineReuse": true,
+          "copiedEngine": true,
+          "gitMetadataPreserved": true,
+          "cacheIntegrity": true,
+          "failedDownloads": true,
+          "cancellation": true,
+          "installedWrapper": true
+        }
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "job": 137154377418,
+        "logSha256": "3bd4c9578fe217c12a25540746a2dbf7da46178a0b272d2874ce2629addb73e3",
+        "receipt": {
+          "editableSources": true,
+          "version": "0.2.0-rc.19",
+          "toolFreeGeneration": true,
+          "offlineReuse": true,
+          "copiedEngine": true,
+          "gitMetadataPreserved": true,
+          "cacheIntegrity": true,
+          "failedDownloads": true,
+          "cancellation": true,
+          "installedWrapper": true
+        }
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "job": 137154377429,
+        "logSha256": "909ad4242be7a3d04b5cac0810b65edfe33ad9f215a92dd0b5623a31569e2ec7",
+        "receipt": {
+          "editableSources": true,
+          "version": "0.2.0-rc.19",
+          "toolFreeGeneration": true,
+          "offlineReuse": true,
+          "copiedEngine": true,
+          "gitMetadataPreserved": true,
+          "cacheIntegrity": true,
+          "failedDownloads": true,
+          "cancellation": true,
+          "installedWrapper": true
+        }
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "job": 137154377438,
+        "logSha256": "72c418b3946c12b1ef59a7d9639422f5a7465f6df4dde10583e4722a3e6c7de4",
+        "receipt": {
+          "editableSources": true,
+          "version": "0.2.0-rc.19",
+          "toolFreeGeneration": true,
+          "offlineReuse": true,
+          "copiedEngine": true,
+          "gitMetadataPreserved": true,
+          "cacheIntegrity": true,
+          "failedDownloads": true,
+          "cancellation": true,
+          "installedWrapper": true
+        }
+      }
+    ],
+    "browser": {
+      "passed": 552,
+      "conditionalSkips": 169,
+      "observedFailures": 0,
+      "observedRetries": 0,
+      "logSha256": "076773523c3693ad3ac30b1819ff1e50f0ec158fccc481b76475f7058eeadb94"
+    },
+    "merge": "3d3b4260e41be106aac6be3286961d5d979498d0",
+    "mergeTreeMatchesTestedHead": true,
+    "requiredJobsPassed": 37,
+    "conditionalJobsSkipped": 1,
+    "jobs": [
+      {
+        "name": "Portable docs (macos-latest)",
+        "id": 137154194125,
+        "conclusion": "success"
+      },
+      {
+        "name": "Showcase end to end",
+        "id": 137154194297,
+        "conclusion": "success"
+      },
+      {
+        "name": "next-pdf / Next PDF (ubuntu-latest)",
+        "id": 137154194316,
+        "conclusion": "success"
+      },
+      {
+        "name": "Portable docs (windows-latest)",
+        "id": 137154194333,
+        "conclusion": "success"
+      },
+      {
+        "name": "Website and book templates",
+        "id": 137154194340,
+        "conclusion": "success"
+      },
+      {
+        "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+        "id": 137154194350,
+        "conclusion": "success"
+      },
+      {
+        "name": "Embedded schema is current",
+        "id": 137154194356,
+        "conclusion": "success"
+      },
+      {
+        "name": "Native images (arm64)",
+        "id": 137154194366,
+        "conclusion": "success"
+      },
+      {
+        "name": "websites / Websites (ubuntu-latest)",
+        "id": 137154194368,
+        "conclusion": "success"
+      },
+      {
+        "name": "Engine",
+        "id": 137154194393,
+        "conclusion": "success"
+      },
+      {
+        "name": "Native images (amd64)",
+        "id": 137154194412,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "id": 137154194427,
+        "conclusion": "success"
+      },
+      {
+        "name": "Portable docs (ubuntu-latest)",
+        "id": 137154194430,
+        "conclusion": "success"
+      },
+      {
+        "name": "Rich website without HTTP",
+        "id": 137154194440,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "id": 137154194451,
+        "conclusion": "success"
+      },
+      {
+        "name": "CLI",
+        "id": 137154194452,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Compile shared rich renderer",
+        "id": 137154194495,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "id": 137154194529,
+        "conclusion": "success"
+      },
+      {
+        "name": "websites / Websites (ubuntu-24.04-arm)",
+        "id": 137154194581,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "id": 137154377387,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "id": 137154377399,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "id": 137154377400,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "id": 137154377418,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "id": 137154377429,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "id": 137154377438,
+        "conclusion": "success"
+      },
+      {
+        "name": "Combined image manifests",
+        "id": 137154899842,
+        "conclusion": "success"
+      },
+      {
+        "name": "Rich standalone file website",
+        "id": 137158867778,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "id": 137158867877,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "id": 137158867908,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "id": 137158867940,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "id": 137158867945,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "id": 137158867949,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "id": 137158867956,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "id": 137158868004,
+        "conclusion": "success"
+      },
+      {
+        "name": "winget / WinGet lifecycle (x86_64-pc-windows-msvc)",
+        "id": 137158868170,
+        "conclusion": "success"
+      },
+      {
+        "name": "winget / WinGet lifecycle (aarch64-pc-windows-msvc)",
+        "id": 137158868176,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (macos-15)",
+        "id": 137158868184,
+        "conclusion": "success"
+      },
+      {
+        "name": "winget / WinGet binary (${{ matrix.target }})",
+        "id": 137158869425,
+        "conclusion": "skipped"
+      }
+    ],
+    "mainRuns": {
+      "ci": 45007103274,
+      "images": 45007103117,
+      "documentation": 45007103195,
+      "note": "Allowed to finish; no manual cancellation was performed."
+    },
+    "mainImages": {
+      "run": 45007103117,
+      "conclusion": "success",
+      "jobsPassed": 13
+    },
+    "mainHydrationRecurrence": {
+      "run": 45007103274,
+      "job": 137161009186,
+      "step": "Guard against hosting HTML mutations",
+      "test": "preservation accepts hosting annotation and CRLF whitespace",
+      "route": "/cli/dev#what-it-is-for",
+      "timeoutMs": 15000,
+      "browserErrors": [],
+      "stateCapture": "Browser state capture exceeded 1500 ms",
+      "pendingRequestsCaptured": 100,
+      "failedRequestsCaptured": 100,
+      "failedRequestErrors": [
+        "net::ERR_ABORTED"
+      ],
+      "diagnosticSha256": "620282b26075e780a542863004e40c1898edd2b2b67558d70ee3b543bb9ca355",
+      "diagnosticFile": "zellij-browser-timing-recurrence-2026-11-22.json",
+      "logSha256": "c0d738af3424b51212b28cc6b8bab1f3663681315b4bb3c0328efce69a991e4f",
+      "conclusion": "Unexplained recurrence. Capped request inventories span prior navigations and do not establish the cause; the bounded browser evaluation also did not return. The timed capture combines immediate state with a timer, so this does not distinguish an unresponsive page from stalled page scheduling. No retry or runtime fix is claimed."
+    },
+    "mainCI": {
+      "run": 45007103274,
+      "conclusion": "failure",
+      "successfulJobs": 36,
+      "failedJobs": [
+        {
+          "name": "Engine",
+          "job": 137161009186
+        }
+      ],
+      "retried": false
+    }
+  },
+  "scope": "Cached editable sources for default eject/new app, offline reuse, explicit image/local-engine preservation and corrected generated CI comments. No live providers or catalog actions.",
+  "local": {
+    "rustPassed": 836,
+    "rustIgnored": 5,
+    "enginePassed": 546,
+    "cleanEnvironmentRustPassed": 836,
+    "clippy": true,
+    "typecheck": true,
+    "format": true,
+    "schemaDrift": false,
+    "dependencyAuditFindings": 0,
+    "releaseHelperTests": 41,
+    "cacheUnitTests": 5,
+    "appRegressions": 12,
+    "emptyPathGeneration": true,
+    "coldOfflineIntegrityFailureCancellation": true,
+    "installedWrapper": [
+      "npm install",
+      "strict/deep check",
+      "typecheck",
+      "production webpack build",
+      "prefixed HTTP pages/404/search"
+    ],
+    "explicitImageProtocol": true,
+    "preparedDocsPreservation": {
+      "originalRoutes": 46,
+      "addedRoutes": 13,
+      "originalHeadingIds": 282,
+      "compatibilityMappings": 82,
+      "unchangedImages": 29,
+      "capturedBrowserErrors": 0
+    },
+    "windowsPathFixProtocol": true,
+    "pretagAuditFindings": 0
+  },
+  "initialFindings": [
+    {
+      "stage": "local",
+      "finding": "Wizard fixture used obsolete implicit local-engine answer; explicit-local fixture corrected, cached wizard covered separately."
+    },
+    {
+      "stage": "local",
+      "finding": "Intermediate Camino/std Path conversion and Clippy style findings corrected."
+    },
+    {
+      "run": 45003586391,
+      "head": "ed5e768f8f2e649dafab37a3b7dab35d5e856181",
+      "finding": "Obsolete features integration assertion expected default eject to require Docker; local development ZELLIJ_IMAGE masked it. Fixture now isolates environment/resource home and tests explicit image plus default offline paths.",
+      "fix": "d1ace51c588b7efb60c3f019007bf2ad68272b92",
+      "notCountedAsSuccessfulGate": true
+    },
+    {
+      "run": 45003811871,
+      "head": "d1ace51c588b7efb60c3f019007bf2ad68272b92",
+      "finding": "Windows nested paths in dotfile-preserving app publication used native separators; the portable validator rejected them. Both Linux and both Mac targets passed before the Windows failure.",
+      "fix": "bedf63e",
+      "regression": "Nested-path publication with Git metadata and no-clobber assertions, plus the unchanged real-package Windows scenario.",
+      "notCountedAsSuccessfulGate": true
+    }
+  ],
+  "remaining": [
+    "Optional PDF and Next development toolchain migrations",
+    "Two historical browser timing findings remain unexplained",
+    "Deferred external provider/catalog acceptance"
+  ],
+  "retirement": "None",
+  "release": {
+    "run": 45007126682,
+    "tag": "v0.2.0-rc.19",
+    "commit": "3d3b4260e41be106aac6be3286961d5d979498d0",
+    "status": "publicly published; postpublication acceptance in progress",
+    "editableSourceArtifact": {
+      "artifact": "editable-sources",
+      "name": "zel-sources-v0.2.0-rc.19.tar.gz",
+      "compressedBytes": 8183144,
+      "sha256": "1dc9bc77836d2c71ceb24b2af1b27de0a444be5888a11f94a34da1d5e8a4451f",
+      "hashedFiles": 1439,
+      "archiveAndFileHashesVerified": true,
+      "versionMatched": true
+    },
+    "nativePackageProof": [
+      {
+        "name": "binaries / Package and install (aarch64-unknown-linux-gnu)",
+        "job": 137163601020,
+        "logSha256": "e891bcb0b081f706176ee90dae973f9779f7268920beac63c96ed122a057603e",
+        "receipt": {
+          "editableSources": true,
+          "version": "0.2.0-rc.19",
+          "toolFreeGeneration": true,
+          "offlineReuse": true,
+          "copiedEngine": true,
+          "gitMetadataPreserved": true,
+          "cacheIntegrity": true,
+          "failedDownloads": true,
+          "cancellation": true,
+          "installedWrapper": true
+        }
+      },
+      {
+        "name": "binaries / Package and install (aarch64-pc-windows-msvc)",
+        "job": 137163601025,
+        "logSha256": "a72c2d54ff07bc1d0dee01cd56488b2f3124bcac879e32f2495a31da336f47f7",
+        "receipt": {
+          "editableSources": true,
+          "version": "0.2.0-rc.19",
+          "toolFreeGeneration": true,
+          "offlineReuse": true,
+          "copiedEngine": true,
+          "gitMetadataPreserved": true,
+          "cacheIntegrity": true,
+          "failedDownloads": true,
+          "cancellation": true,
+          "installedWrapper": true
+        }
+      },
+      {
+        "name": "binaries / Package and install (x86_64-pc-windows-msvc)",
+        "job": 137163601043,
+        "logSha256": "cf9a6e1fcbdf3dd50cb489d6a0930aad0c8c9054162b458b1903271b96874cc2",
+        "receipt": {
+          "editableSources": true,
+          "version": "0.2.0-rc.19",
+          "toolFreeGeneration": true,
+          "offlineReuse": true,
+          "copiedEngine": true,
+          "gitMetadataPreserved": true,
+          "cacheIntegrity": true,
+          "failedDownloads": true,
+          "cancellation": true,
+          "installedWrapper": true
+        }
+      },
+      {
+        "name": "binaries / Package and install (x86_64-unknown-linux-gnu)",
+        "job": 137163601086,
+        "logSha256": "a1153f691aec0662a6784f25f0506bedaf2546a9c390842e9291bf7dd529fbb8",
+        "receipt": {
+          "editableSources": true,
+          "version": "0.2.0-rc.19",
+          "toolFreeGeneration": true,
+          "offlineReuse": true,
+          "copiedEngine": true,
+          "gitMetadataPreserved": true,
+          "cacheIntegrity": true,
+          "failedDownloads": true,
+          "cancellation": true,
+          "installedWrapper": true
+        }
+      },
+      {
+        "name": "binaries / Package and install (aarch64-apple-darwin)",
+        "job": 137163601092,
+        "logSha256": "2413fc62d7b6629a7d85159ffffcde0b0efd6d3c963ea53707ec74ac70d2358a",
+        "receipt": {
+          "editableSources": true,
+          "version": "0.2.0-rc.19",
+          "toolFreeGeneration": true,
+          "offlineReuse": true,
+          "copiedEngine": true,
+          "gitMetadataPreserved": true,
+          "cacheIntegrity": true,
+          "failedDownloads": true,
+          "cancellation": true,
+          "installedWrapper": true
+        }
+      },
+      {
+        "name": "binaries / Package and install (x86_64-apple-darwin)",
+        "job": 137163601190,
+        "logSha256": "c5dfe21eef7ccbb6de9ec7e0cde21325d1c39d306a3564847df10b583f05557b",
+        "receipt": {
+          "editableSources": true,
+          "version": "0.2.0-rc.19",
+          "toolFreeGeneration": true,
+          "offlineReuse": true,
+          "copiedEngine": true,
+          "gitMetadataPreserved": true,
+          "cacheIntegrity": true,
+          "failedDownloads": true,
+          "cancellation": true,
+          "installedWrapper": true
+        }
+      }
+    ],
+    "publicRepositories": [
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.19",
+        "prerelease": true,
+        "assetCount": 42,
+        "assets": [
+          {
+            "name": "install.ps1",
+            "size": 7573,
+            "digest": "sha256:f652f0ac06bf1794be6f48c32a22e8d0a78fece873f6b1d53102ed16069a07a1"
+          },
+          {
+            "name": "install.sh",
+            "size": 13685,
+            "digest": "sha256:fdaea859ada3b454522a2413dc5d7e59908cf6d506e24457e93cd8925a3297a0"
+          },
+          {
+            "name": "SHA256SUMS",
+            "size": 2490,
+            "digest": "sha256:4b03ba0540848f8fa0005e950a87a6b7ffbe48c85adc8a3a23803dc5ac4eb388"
+          },
+          {
+            "name": "template-api-platform-0.1.2.tar.gz",
+            "size": 6135,
+            "digest": "sha256:15121abc9fe6f4c11230d17b9d02bc7f4250b31d1692e975da19b140664c0504"
+          },
+          {
+            "name": "template-book-classic-0.2.0.tar.gz",
+            "size": 4394,
+            "digest": "sha256:70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+          },
+          {
+            "name": "template-book-study-0.1.0.tar.gz",
+            "size": 3845,
+            "digest": "sha256:0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"
+          },
+          {
+            "name": "template-book-technical-0.1.0.tar.gz",
+            "size": 3959,
+            "digest": "sha256:8d350a0072bfb36f44edfb3f10f5961f3edf7d715eeb3641a2bc2bb1e4fbcf26"
+          },
+          {
+            "name": "template-creative-studio-0.1.3.tar.gz",
+            "size": 6191,
+            "digest": "sha256:e54f2905adc90a58ad8a9b725101a78cfdf06ca2b668075d0a242ab27a4ee4dd"
+          },
+          {
+            "name": "template-product-docs-0.1.0.tar.gz",
+            "size": 1297,
+            "digest": "sha256:f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+          },
+          {
+            "name": "template-product-launch-0.1.3.tar.gz",
+            "size": 6396,
+            "digest": "sha256:f7d446e59fb21bb8f5bce71382d666a2c7ee2d982b3027c265de73109b4fce40"
+          },
+          {
+            "name": "template-product-studio-0.1.2.tar.gz",
+            "size": 2792,
+            "digest": "sha256:bad023420061d2f3bc051dcfc732d6aec3120af297544cb58d82631ab12393a1"
+          },
+          {
+            "name": "template-software-platform-0.1.3.tar.gz",
+            "size": 6282,
+            "digest": "sha256:5412e9735419813ee519b68d3e5c8fdd314f0cb49c88472a9de8fdb8ac6a16ba"
+          },
+          {
+            "name": "templates-catalog.json",
+            "size": 9537,
+            "digest": "sha256:51f26f0c0cb6b554049053a32e8f00d9b8f13f74911db14ef3f98f2961549449"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-darwin-arm64.tar.gz",
+            "size": 46744009,
+            "digest": "sha256:2e201e1ba07219eb5991537b03506c39f3153fedc8d18ae5a6d781a0238046c4"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-darwin-arm64.tar.gz.sha256",
+            "size": 112,
+            "digest": "sha256:8f43ae786532041a2548014a0de8a0d28839241809a92872173e31264ab33bcb"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-darwin-x64.tar.gz",
+            "size": 48103279,
+            "digest": "sha256:5d4b325894ff4e0a58607e97db32ee07b0d6fdd2653fe2a6afadcb65208f7777"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-darwin-x64.tar.gz.sha256",
+            "size": 110,
+            "digest": "sha256:6c7eb377258eb648bd2701014eb5eacb768b885606048b5191c7dc2c6c97eb27"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-linux-arm64.tar.gz",
+            "size": 51819174,
+            "digest": "sha256:9d16b44e2818d9208dfd0b535c16bcaeabd21ec0444455738af3a01075e975c2"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-linux-arm64.tar.gz.sha256",
+            "size": 111,
+            "digest": "sha256:a982ae8f973ad21f0b61089eee679c7a3060376518013d43ae55377583e2a0f1"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-linux-x64.tar.gz",
+            "size": 52133065,
+            "digest": "sha256:1513b51eccd771b63b6382d4f63aa6dbacaec5e46e0bf6d35a7b523600984635"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-linux-x64.tar.gz.sha256",
+            "size": 109,
+            "digest": "sha256:35502f3f04de2d57816dc490f973917cb49a238f7e986bcb459103a11c31a17c"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-win-arm64.tar.gz",
+            "size": 38274003,
+            "digest": "sha256:3afc5ec9ac46a0e7b0bf041bb54ddcfbd2cb7ee448bf44bade0f990694ab037c"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-win-arm64.tar.gz.sha256",
+            "size": 109,
+            "digest": "sha256:b762b6db84b271975d85cdbed97e2f038041c5e9767afc35b9513858d4a36da1"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-win-x64.tar.gz",
+            "size": 42326423,
+            "digest": "sha256:082a573c1acc54b3435aa9984a4e4d797e337df7daa3a1c970d900df00fde37e"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-win-x64.tar.gz.sha256",
+            "size": 107,
+            "digest": "sha256:3968ebb30678afa9f7f492e7a6bb7e2d6d9e6982e608bd20337f4213f1574bc2"
+          },
+          {
+            "name": "zel-sources-v0.2.0-rc.19.tar.gz",
+            "size": 8183144,
+            "digest": "sha256:1dc9bc77836d2c71ceb24b2af1b27de0a444be5888a11f94a34da1d5e8a4451f"
+          },
+          {
+            "name": "zel-sources-v0.2.0-rc.19.tar.gz.sha256",
+            "size": 98,
+            "digest": "sha256:da2c1eda5bd3ed61da3be35d6829ecaf40f526d1eddc107833265bbbf5e6cf2c"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-aarch64-apple-darwin.tar.gz",
+            "size": 9961340,
+            "digest": "sha256:2fa4e1220cd33a9bb726457609d9f590dba62f9d813681b0589e52da21498f63"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-aarch64-apple-darwin.tar.gz.sha256",
+            "size": 111,
+            "digest": "sha256:c01c87eb428f06ec014e4e92f1bfda8fa38d39ce1dad51dd5ef400447acfc284"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-aarch64-pc-windows-msvc.zip",
+            "size": 10367058,
+            "digest": "sha256:159e4f7cb35cf1a53ecfe813168c41015a7ca0b0275f9217eefd07b733f2fcaf"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-aarch64-pc-windows-msvc.zip.sha256",
+            "size": 111,
+            "digest": "sha256:a490703c42f33448f6006d1fd218ea54cc541e92700ce892c6384ddff44b64c4"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-aarch64-unknown-linux-gnu.tar.gz",
+            "size": 10204333,
+            "digest": "sha256:33a2da489b1b492c33ded939b975ddd4741741411d688f509115aa24f7f2a582"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-aarch64-unknown-linux-gnu.tar.gz.sha256",
+            "size": 116,
+            "digest": "sha256:90bcbc3e0d14da09cb6630aa4e840cb23f991321279934bfdfe894719fafd507"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-x86_64-apple-darwin.tar.gz",
+            "size": 10053307,
+            "digest": "sha256:999c7c87e19d92d57e2abb6ad52b9a07fc65978f5c3d3724646f75662dffe6f6"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-x86_64-apple-darwin.tar.gz.sha256",
+            "size": 110,
+            "digest": "sha256:0d00c7687ad933650d215d1f92ec9ab2ad6d4f25174e547c7c0bfca944e1ae15"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-x86_64-pc-windows-msvc.zip",
+            "size": 10539410,
+            "digest": "sha256:23c90e4e072ca9592bae03385e29b943add26bee766e93a53d4716aa399366b7"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-x86_64-pc-windows-msvc.zip.sha256",
+            "size": 110,
+            "digest": "sha256:1bab360607435da8379dd54ffaf531eafbb1cba03d5be081699e31b5d52a3d0c"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-x86_64-unknown-linux-gnu.tar.gz",
+            "size": 10345941,
+            "digest": "sha256:4e76597112a09ce7e761b460fd4de76e12e6f8ac489e430cf66529b286c54c5d"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-x86_64-unknown-linux-gnu.tar.gz.sha256",
+            "size": 115,
+            "digest": "sha256:6b50a1a5072913adf01b7d37e0dc8a8f2dacd3f63651a371d14c15dd024885de"
+          },
+          {
+            "name": "zel-winget-v0.2.0-rc.19.zip",
+            "size": 1650,
+            "digest": "sha256:f50d92009c658a078104d412458ee022dbc42c6ed8fa1d16ac462557dcb94aba"
+          },
+          {
+            "name": "zel.json",
+            "size": 1526,
+            "digest": "sha256:74826a116514e3d66bd43c674e0518722d4823d48e51bf6796234fd37d1d2ce1"
+          },
+          {
+            "name": "zel.rb",
+            "size": 2388,
+            "digest": "sha256:15aa0b6da28d1b7a02a347ec2ba66e640a9e415d277d20574b1b9789066fad1c"
+          }
+        ],
+        "publicRecipeAndSourceBytesVerified": true
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.19",
+        "prerelease": true,
+        "assetCount": 42,
+        "assets": [
+          {
+            "name": "install.ps1",
+            "size": 7573,
+            "digest": "sha256:f652f0ac06bf1794be6f48c32a22e8d0a78fece873f6b1d53102ed16069a07a1"
+          },
+          {
+            "name": "install.sh",
+            "size": 13685,
+            "digest": "sha256:fdaea859ada3b454522a2413dc5d7e59908cf6d506e24457e93cd8925a3297a0"
+          },
+          {
+            "name": "SHA256SUMS",
+            "size": 2490,
+            "digest": "sha256:4b03ba0540848f8fa0005e950a87a6b7ffbe48c85adc8a3a23803dc5ac4eb388"
+          },
+          {
+            "name": "template-api-platform-0.1.2.tar.gz",
+            "size": 6135,
+            "digest": "sha256:15121abc9fe6f4c11230d17b9d02bc7f4250b31d1692e975da19b140664c0504"
+          },
+          {
+            "name": "template-book-classic-0.2.0.tar.gz",
+            "size": 4394,
+            "digest": "sha256:70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+          },
+          {
+            "name": "template-book-study-0.1.0.tar.gz",
+            "size": 3845,
+            "digest": "sha256:0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"
+          },
+          {
+            "name": "template-book-technical-0.1.0.tar.gz",
+            "size": 3959,
+            "digest": "sha256:8d350a0072bfb36f44edfb3f10f5961f3edf7d715eeb3641a2bc2bb1e4fbcf26"
+          },
+          {
+            "name": "template-creative-studio-0.1.3.tar.gz",
+            "size": 6191,
+            "digest": "sha256:e54f2905adc90a58ad8a9b725101a78cfdf06ca2b668075d0a242ab27a4ee4dd"
+          },
+          {
+            "name": "template-product-docs-0.1.0.tar.gz",
+            "size": 1297,
+            "digest": "sha256:f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+          },
+          {
+            "name": "template-product-launch-0.1.3.tar.gz",
+            "size": 6396,
+            "digest": "sha256:f7d446e59fb21bb8f5bce71382d666a2c7ee2d982b3027c265de73109b4fce40"
+          },
+          {
+            "name": "template-product-studio-0.1.2.tar.gz",
+            "size": 2792,
+            "digest": "sha256:bad023420061d2f3bc051dcfc732d6aec3120af297544cb58d82631ab12393a1"
+          },
+          {
+            "name": "template-software-platform-0.1.3.tar.gz",
+            "size": 6282,
+            "digest": "sha256:5412e9735419813ee519b68d3e5c8fdd314f0cb49c88472a9de8fdb8ac6a16ba"
+          },
+          {
+            "name": "templates-catalog.json",
+            "size": 9537,
+            "digest": "sha256:51f26f0c0cb6b554049053a32e8f00d9b8f13f74911db14ef3f98f2961549449"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-darwin-arm64.tar.gz",
+            "size": 46744009,
+            "digest": "sha256:2e201e1ba07219eb5991537b03506c39f3153fedc8d18ae5a6d781a0238046c4"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-darwin-arm64.tar.gz.sha256",
+            "size": 112,
+            "digest": "sha256:8f43ae786532041a2548014a0de8a0d28839241809a92872173e31264ab33bcb"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-darwin-x64.tar.gz",
+            "size": 48103279,
+            "digest": "sha256:5d4b325894ff4e0a58607e97db32ee07b0d6fdd2653fe2a6afadcb65208f7777"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-darwin-x64.tar.gz.sha256",
+            "size": 110,
+            "digest": "sha256:6c7eb377258eb648bd2701014eb5eacb768b885606048b5191c7dc2c6c97eb27"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-linux-arm64.tar.gz",
+            "size": 51819174,
+            "digest": "sha256:9d16b44e2818d9208dfd0b535c16bcaeabd21ec0444455738af3a01075e975c2"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-linux-arm64.tar.gz.sha256",
+            "size": 111,
+            "digest": "sha256:a982ae8f973ad21f0b61089eee679c7a3060376518013d43ae55377583e2a0f1"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-linux-x64.tar.gz",
+            "size": 52133065,
+            "digest": "sha256:1513b51eccd771b63b6382d4f63aa6dbacaec5e46e0bf6d35a7b523600984635"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-linux-x64.tar.gz.sha256",
+            "size": 109,
+            "digest": "sha256:35502f3f04de2d57816dc490f973917cb49a238f7e986bcb459103a11c31a17c"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-win-arm64.tar.gz",
+            "size": 38274003,
+            "digest": "sha256:3afc5ec9ac46a0e7b0bf041bb54ddcfbd2cb7ee448bf44bade0f990694ab037c"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-win-arm64.tar.gz.sha256",
+            "size": 109,
+            "digest": "sha256:b762b6db84b271975d85cdbed97e2f038041c5e9767afc35b9513858d4a36da1"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-win-x64.tar.gz",
+            "size": 42326423,
+            "digest": "sha256:082a573c1acc54b3435aa9984a4e4d797e337df7daa3a1c970d900df00fde37e"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.19-win-x64.tar.gz.sha256",
+            "size": 107,
+            "digest": "sha256:3968ebb30678afa9f7f492e7a6bb7e2d6d9e6982e608bd20337f4213f1574bc2"
+          },
+          {
+            "name": "zel-sources-v0.2.0-rc.19.tar.gz",
+            "size": 8183144,
+            "digest": "sha256:1dc9bc77836d2c71ceb24b2af1b27de0a444be5888a11f94a34da1d5e8a4451f"
+          },
+          {
+            "name": "zel-sources-v0.2.0-rc.19.tar.gz.sha256",
+            "size": 98,
+            "digest": "sha256:da2c1eda5bd3ed61da3be35d6829ecaf40f526d1eddc107833265bbbf5e6cf2c"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-aarch64-apple-darwin.tar.gz",
+            "size": 9961340,
+            "digest": "sha256:2fa4e1220cd33a9bb726457609d9f590dba62f9d813681b0589e52da21498f63"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-aarch64-apple-darwin.tar.gz.sha256",
+            "size": 111,
+            "digest": "sha256:c01c87eb428f06ec014e4e92f1bfda8fa38d39ce1dad51dd5ef400447acfc284"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-aarch64-pc-windows-msvc.zip",
+            "size": 10367058,
+            "digest": "sha256:159e4f7cb35cf1a53ecfe813168c41015a7ca0b0275f9217eefd07b733f2fcaf"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-aarch64-pc-windows-msvc.zip.sha256",
+            "size": 111,
+            "digest": "sha256:a490703c42f33448f6006d1fd218ea54cc541e92700ce892c6384ddff44b64c4"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-aarch64-unknown-linux-gnu.tar.gz",
+            "size": 10204333,
+            "digest": "sha256:33a2da489b1b492c33ded939b975ddd4741741411d688f509115aa24f7f2a582"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-aarch64-unknown-linux-gnu.tar.gz.sha256",
+            "size": 116,
+            "digest": "sha256:90bcbc3e0d14da09cb6630aa4e840cb23f991321279934bfdfe894719fafd507"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-x86_64-apple-darwin.tar.gz",
+            "size": 10053307,
+            "digest": "sha256:999c7c87e19d92d57e2abb6ad52b9a07fc65978f5c3d3724646f75662dffe6f6"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-x86_64-apple-darwin.tar.gz.sha256",
+            "size": 110,
+            "digest": "sha256:0d00c7687ad933650d215d1f92ec9ab2ad6d4f25174e547c7c0bfca944e1ae15"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-x86_64-pc-windows-msvc.zip",
+            "size": 10539410,
+            "digest": "sha256:23c90e4e072ca9592bae03385e29b943add26bee766e93a53d4716aa399366b7"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-x86_64-pc-windows-msvc.zip.sha256",
+            "size": 110,
+            "digest": "sha256:1bab360607435da8379dd54ffaf531eafbb1cba03d5be081699e31b5d52a3d0c"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-x86_64-unknown-linux-gnu.tar.gz",
+            "size": 10345941,
+            "digest": "sha256:4e76597112a09ce7e761b460fd4de76e12e6f8ac489e430cf66529b286c54c5d"
+          },
+          {
+            "name": "zel-v0.2.0-rc.19-x86_64-unknown-linux-gnu.tar.gz.sha256",
+            "size": 115,
+            "digest": "sha256:6b50a1a5072913adf01b7d37e0dc8a8f2dacd3f63651a371d14c15dd024885de"
+          },
+          {
+            "name": "zel-winget-v0.2.0-rc.19.zip",
+            "size": 1650,
+            "digest": "sha256:f50d92009c658a078104d412458ee022dbc42c6ed8fa1d16ac462557dcb94aba"
+          },
+          {
+            "name": "zel.json",
+            "size": 1526,
+            "digest": "sha256:74826a116514e3d66bd43c674e0518722d4823d48e51bf6796234fd37d1d2ce1"
+          },
+          {
+            "name": "zel.rb",
+            "size": 2388,
+            "digest": "sha256:15aa0b6da28d1b7a02a347ec2ba66e640a9e415d277d20574b1b9789066fad1c"
+          }
+        ],
+        "publicRecipeAndSourceBytesVerified": true
+      }
+    ]
+  },
+  "documentation": {
+    "initialProduction": {
+      "run": 45007103195,
+      "conclusion": "success",
+      "receipt": {
+        "source": "3d3b4260e41be106aac6be3286961d5d979498d0",
+        "site_id": "91774174-d4c2-41b5-aa4b-ac61eeadbf51",
+        "domain": "zellij.shebka.net",
+        "deploy_id": "6b02b54bf4deb30d2290e2c4",
+        "previous_deploy_id": "6b028a77ddac92023b36b37f",
+        "preview": "https://6b02b54bf4deb30d2290e2c4--zellij-docs.netlify.app",
+        "state": "verified",
+        "published_at": "2026-11-22T09:26:45.211Z"
+      }
+    },
+    "finalGuidesStatus": "prepared; waiting for public-package acceptance",
+    "diagnosticImprovement": {
+      "commit": "bfb450b2b2e445c268e8acd2cf5aae391683f8b5",
+      "productRuntimeChanged": false,
+      "timingFindingResolved": false,
+      "captureTestsPassed": 6,
+      "realPreservationRegressionsPassed": 6,
+      "newRegressionsFailedOnPreviousImplementation": 2,
+      "logs": {
+        "capture-before": "c714e286c2440e5ade26550f78e5530199312b4b42f2b1be530783017aed8da5",
+        "capture-tests": "db7a029a8823b4e04365e3be46be4f88492e1574c7e502d56f94598cf6476a14",
+        "capture-browser-final": "b8627c4c6a3f0c297b564ebf009ea7c267570ca11074c36bd800cf0d601eae19"
+      },
+      "showcaseTypecheck": true
+    }
+  },
+  "channels": {
+    "homebrew": {
+      "repository": "mylife-inc/homebrew-tap",
+      "commit": "52d2b0c278f131afbdaeff9628d0915f310d600e",
+      "previousCommit": "cfb312c3f097aea4a40cb55ae04856ce03bcac59"
+    },
+    "scoop": {
+      "repository": "mylife-inc/scoop-bucket",
+      "commit": "8742825474475b63e0629a0c8f96b5ef49cc4047",
+      "previousCommit": "b329e3cae96fafadc35e7e15ac453b8781984ab4"
+    },
+    "acceptance": "in progress"
+  }
+}

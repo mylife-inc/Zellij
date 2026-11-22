@@ -5,7 +5,7 @@ The [validation record](zellij-cached-static-validation-2026-11-21.md),
 [HTTP record](zellij-cached-http-export-2026-11-21.md) and
 [release evidence](evidence/zellij-rc18-release-2026-11-21.json) distinguish
 source, public-package and publication acceptance. The wrapper source package
-is implemented for rc.19 with acceptance in progress; see the
+is published in rc.19 with final acceptance in progress; see the
 [22 November record](zellij-cached-editable-sources-2026-11-22.md). PDF and Next
 development packages remain proposed work. The original opportunity review used
 `dbdf4fc` plus rc.17 version preparation; rc.17 itself remains unchanged.
@@ -35,12 +35,12 @@ rendering dependencies.
 | 1 — released in rc.18 | Explicit rich `check --target static` and matching validation watch | Existing cached validator | Reuse nonexecuting shared validation while preserving `static` report identity, JSON/error semantics and configured targets. The released path uses the cached validator, including optional import validation; historical rc.17 selects ContainerEngine. |
 | 2 — released in rc.18 | `build --target static`, `view --target static`, build/watch and static-site deployment build steps | Extended cached renderer with a supported HTTP export mode | Preserve actual hosted routing, base paths, metadata, 404 behavior, search, no-JavaScript output and asset URLs. Do not silently replace the Next export contract with file-oriented link rewriting. |
 | 2, downstream — released in rc.18 | Netlify, Cloudflare Pages, GitHub Pages, S3 and supported static Vercel deployments; corresponding generated CI | Same HTTP export plus existing native provider clients | Native HTTPS upload adapters already exist; the shared rich-site build now uses the cache. Test the build/protocol boundary with repository-owned fixtures; live provider acceptance remains separately deferred. |
-| 3 — rc.19 source, acceptance in progress | Default `eject` and engine selection for `new app` | Separate versioned wrapper sources plus built engine package | The source update removes default stopped-container extraction using a separate verified archive while preserving vendoring, features, starter content and staged-path checks. The current compiled renderer archive is not an editable source distribution. Explicit custom `--image` extraction must retain its image semantics; running the extracted Next app still needs its development toolchain. |
+| 3 — published in rc.19, final acceptance in progress | Default `eject` and engine selection for `new app` | Separate versioned wrapper sources plus built engine package | The source update removes default stopped-container extraction using a separate verified archive while preserving vendoring, features, starter content and staged-path checks. The current compiled renderer archive is not an editable source distribution. Explicit custom `--image` extraction must retain its image semantics; running the extracted Next app still needs its development toolchain. |
 | 4 | `pdf`, `build --pdf`, configured PDF preview/book exports | Optional platform-specific LuaLaTeX/typesetting package and supported fonts/packages | Preserve the publication model, index, references, languages and appearance. Match current LuaLaTeX capabilities, failure preservation, cancellation, resource limits and isolation; a different TeX engine is not an automatic drop-in replacement. |
 | 5 | Rich Next.js `dev` and editable wrapper workflows | Optional larger Node/Next/dependency package | Preserve actual Next development behavior and custom app support. `view --watch` already offers a lighter native preview. Arbitrary custom dependencies require their own resolution and cannot be inferred from a fixed template bundle. |
 | Retain builder | `image static`, `image next`, image publishing and image-based Fly/Railway delivery | Rendering may reuse caches, but images still need a builder | A downloaded renderer does not build an OCI image or start a daemon. Removing the local builder would be a separate remote-builder or native-image-building feature. |
 
-## Generated workflow comments — corrected in rc.19 source
+## Generated workflow comments — released in rc.19
 
 The rc.18 generated jobs correctly omit container setup for web-only builds,
 but their introductory comment still says hosted/image builds need an engine
@@ -49,8 +49,8 @@ that banner in `cli/crates/zellij-scaffold/src/pipeline.rs` and
 `pipeline/external.rs` with the next CLI candidate, preserving Docker guidance
 for image/PDF jobs and old pins. Do not replace immutable rc.18 assets to alter
 a comment. Current public command guides describe the actual prerequisites. The next source
-candidate corrects both generators and refreshes fixture comments, retaining
-public rc.18 execution pins until rc.19 publication.
+candidate corrects both generators; current consumer fixtures now use rc.19
+execution pins following publication. Earlier rc.18 assets remain unchanged.
 
 ## Implementation boundaries
 
@@ -73,7 +73,7 @@ Optional typesetting must not enlarge ordinary web downloads or change authored
 content. Keep documented prerequisites accurate until a migrated command is
 released and its artifacts have passed public-download acceptance.
 
-## Next package: editable sources
+## Editable-source package — implemented in rc.19
 
 A maintainer-only `npm pack --dry-run --ignore-scripts --json` at source
 `15b6625` inventories the built engine at 7,560,437 compressed bytes,
@@ -82,8 +82,8 @@ This is a feasibility measurement, not a published optional package.
 A wrapper/source download can therefore remain separate from the ordinary
 renderer and need not include another Node runtime.
 
-The next implementation should package complete engine sources, built CLI
-entry points, fonts/licenses and the matching editable wrapper. Default ejection
+The rc.19 implementation packages engine sources, built CLI entry points,
+fonts/licenses and the matching editable wrapper. Default ejection
 can consume it; explicit custom-image extraction must retain its selected-image
 behavior. Cached sources should be copied into the new wrapper's vendor folder
 so package installation cannot mutate the shared cache. Explicit local
@@ -103,7 +103,9 @@ package milestone below the PDF work in the priority table.
 - `cli/crates/zellij-cli/src/main.rs`: build target dispatch.
 - `cli/crates/zellij-cli/src/preview/rich.rs`: explicit HTTP export/preview.
 - `cli/crates/zellij-cli/src/delivery.rs`: shared static build before native deployment.
-- `cli/crates/zellij-cli/src/eject.rs` and `app.rs`: stopped-image source extraction and local wrapper/engine validation.
+- `cli/crates/zellij-cli/src/eject.rs` and `app.rs`: default cached-source wrappers, explicit stopped-image extraction and local-engine validation.
+- `cli/crates/zellij-cli/src/source_package.rs`: versioned source retrieval, file inventory/integrity, offline reuse and staged publication.
+- `scripts/package-editable-sources.mjs` and `check-editable-sources.mjs`: universal source packaging and six-platform installed-wrapper acceptance.
 - `cli/crates/zellij-cli/src/development.rs`: rich Next development server.
 - `cli/crates/zellij-cli/src/pdf.rs`: isolated LuaLaTeX execution.
 - `engine/packages/zellij/src/offline/standalone.ts`: existing build/check entry point.

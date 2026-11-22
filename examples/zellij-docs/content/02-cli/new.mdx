@@ -45,7 +45,7 @@ requires Node and npm.
 Choose `portable` for ordinary Markdown documentation that also opens directly
 from disk. Choose `docs` for the rich engine's MDX and page sections. Its default
 build downloads a renderer once and produces a rich double-click website without
-installed build tools. In rc.18, explicit HTTP exports and `view --watch` also
+installed build tools. In rc.19, explicit HTTP exports and `view --watch` also
 use that cache. Hosted Next.js `dev` still uses a container. [Build targets](/cli/build) explain
 the output differences; [deployment](/cli/deploy) lists supported providers and
 their account prerequisites.
@@ -119,7 +119,7 @@ generate YAML/MDX and should not be used inside this Markdown starter.
 
 ## Site creation wizard
 
-**Candidate 0.2.0-rc.18**, supports interactive creation:
+**Candidate 0.2.0-rc.19**, supports interactive creation:
 
 ```bash
 zel init -i                  # portable Markdown at docs/zellij
@@ -198,7 +198,7 @@ content/
 
 ### All section examples with `--full`
 
-**Candidate 0.2.0-rc.18**, supports:
+**Candidate 0.2.0-rc.19**, supports:
 
 ```bash
 zel nd --full
@@ -278,15 +278,15 @@ wrote.
 
 ## `zel new app [dir]`
 
-Available in candidate `0.2.0-rc.18`; the public `zellij-v0.1.3` binary predates this
+Available in candidate `0.2.0-rc.19`; the public `zellij-v0.1.3` binary predates this
 command. `zel na` is its shortcut. It creates editable Next.js files without
 running Node, npm, Docker, a server or an installer.
 
-<Callout type="info" title="Upcoming candidate 0.2.0-rc.19">
+<Callout type="info" title="Cached sources in candidate 0.2.0-rc.19">
 Default app creation now downloads a matching editable engine package and copies
 it into `vendor/zellij`. It needs only `zel` for generation and supports
-`--offline` after preparation. Release acceptance is pending. Released rc.18
-requires a built local engine; the explicit `--engine` override remains supported.
+`--offline` after preparation. Older candidates require a built local engine;
+the explicit `--engine` override remains supported.
 </Callout>
 
 To use your own built engine, prepare its checkout with `npm ci` and
@@ -315,7 +315,7 @@ wrapper command. For portable Markdown inside a Next image, use
 
 ### Choose wrapper settings interactively
 
-**Candidate 0.2.0-rc.18**, supports an optional wizard:
+**Candidate 0.2.0-rc.19**, supports an optional wizard:
 
 ```bash
 zel na website -i
@@ -425,7 +425,12 @@ Running the generated app requires Node matching `package.json` and npm.
 `npm install` copies the engine into the app and resolves its dependencies;
 commit the resulting lockfile for reproducible installs. `npm run build` prepares
 assets/search and builds Next.js; `npm start` serves that build. This hosted app
-requires HTTP, while portable `zel build` output still opens directly from disk.
+requires HTTP. Default rich `zel build` on the selected content produces a
+double-clickable site; native portable Markdown builds also open directly.
+
+The source download supplies ready-built engine helpers for wrapper development.
+For changes to the engine build system or CLI helpers, use a full Zellij checkout
+and select its built package with `--engine`.
 
 Keep `vendor/zellij` with a cache-generated wrapper when moving it. If an explicit
 external engine moves, update its `file:` dependency and reinstall. If external
@@ -440,7 +445,7 @@ editable app; `zel image next` packages a Next app with a container builder.
 ## `zel new section [type] [file]`
 
 <Callout type="info" title="Section presets — included in rc.11">
-Candidate rc.18 includes `--preset` (`-p`) and `zel presets`. For example,
+Candidate rc.19 includes `--preset` (`-p`) and `zel presets`. For example,
 `zel ns -p product-hero --out content/sections/intro.yaml` infers the composition
 type and writes editable YAML. The nine offline presets are `product-hero`,
 `split-story`, `feature-cards`, `media-accordion`, `product-selector`,
@@ -467,7 +472,7 @@ An output file is never overwritten, including a dangling symlink. There is no
 
 ### Interactive authoring
 
-**Candidate 0.2.0-rc.18** supports a native section wizard:
+**Candidate 0.2.0-rc.19** supports a native section wizard:
 
 ```bash
 zel ns                         # starts the wizard in a terminal
@@ -546,7 +551,7 @@ counts cannot be changed independently. Conflicting flags fail before writing.
 
 ### Complete lists, objects and optional fields
 
-**Candidate 0.2.0-rc.18**, accepts complete JSON values and
+**Candidate 0.2.0-rc.19**, accepts complete JSON values and
 optional-field removal when creating a section:
 
 ```bash
@@ -626,7 +631,7 @@ Without `--sections` it creates the page with a single hero.
 
 ### Choose a page interactively
 
-**Candidate 0.2.0-rc.18**, supports the short form:
+**Candidate 0.2.0-rc.19**, supports the short form:
 
 ```bash
 zel np -i                         # ask for a name and ordered sections
@@ -744,7 +749,7 @@ exactly what [`zel ci init github --target image`](/cli/ci) writes.
 - [The content model](/guide/content-model) — what these files are, conceptually
 
 The generated project workflow selects the configured `<docs-dir>` root and
-watches both its configuration and content. Candidate `0.2.0-rc.18` pins its
+watches both its configuration and content. Candidate `0.2.0-rc.19` pins its
 own published version and matching engine image. Stable `0.1.3` is incompatible. The starter
 retains its Next-image GHCR publication intent; use saved settings and `zel ci`
 when choosing a static image or Netlify instead.

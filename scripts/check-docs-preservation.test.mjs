@@ -70,6 +70,8 @@ for (const regression of [
     assert.equal(captures.length, 1);
     const capture = JSON.parse(await readFile(path.join(temp, 'diagnostics', captures[0]), 'utf8'));
     assert.match(capture.error, /Browser runtime errors/);
+    assert.equal(capture.currentVisit.route, '/');
+    assert(Number.isFinite(Date.parse(capture.currentVisit.startedAt)));
     assert(capture.browserErrors.some(error => regression.diagnostic.test(error.message)));
     assert.equal(capture.state.before.viewport.width, 1280);
     assert.match(capture.state.before.url, /^http:\/\/127\.0\.0\.1:\d+\//);

@@ -127,3 +127,38 @@ already resized. Fix `f80596b` and its failing-before/passing-after regression
 are recorded in the [overflow follow-up](zellij-overflow-focus-2026-11-21.md).
 The original overflow and hydration timeouts remain unexplained; do not treat
 this separate correction or later passing coverage as their root-cause fix.
+
+
+## Recurrence — 22 November 2026
+
+Main CI [45007103274](https://github.com/mylife-inc/Zellij/actions/runs/45007103274),
+Engine job `137161009186` at `3d3b426`, reproduces the hosting-annotation
+preservation timeout at `/cli/dev#what-it-is-for`. The ordinary source run
+`45004886385` passed all 37 required jobs on an identical tree; that pass does
+not resolve this later failure. No unchanged rerun is counted as a correction.
+
+The [retained diagnostic](evidence/zellij-browser-timing-recurrence-2026-11-22.json)
+records no browser errors, 100 capped pending requests and 100 capped aborted
+requests, and a 1.5-second state-capture timeout after the original 15-second
+readiness timeout. The request inventory spans prior navigations: aborted
+prefetches are not proof of a network defect. The capture combines an immediate
+DOM snapshot with a page timer before returning either; its timeout cannot
+distinguish an unresponsive page from stalled page scheduling. It does not
+establish that React failed to hydrate, that the hosting comment caused the
+delay, or that a particular product component is defective.
+
+The original finding remains open. The follow-up now returns the immediate DOM
+snapshot independently from frame/timer observations, retaining it if scheduling
+stalls or sampling throws. Request records carry timestamps and the visit during
+which they were observed; the capped inventories keep the most recent entries.
+That attribution describes observation time, not proof that a request belongs to
+the current document. The original 15-second assertion and 1.5-second capture
+deadline remain unchanged. No release tag or product runtime is changed.
+
+Two deterministic VM regressions execute the actual capture function with stalled
+callbacks or a failing frame sampler. Both fail against the previous capture
+implementation and pass after the change; all six capture tests pass. The real
+documentation regressions continue to check rejection of browser/hydration errors,
+acceptance of hosting annotations and capture of missing client hydration. These
+are diagnostic improvements, not evidence that the original timing failure is
+fixed.
