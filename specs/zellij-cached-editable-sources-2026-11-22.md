@@ -47,3 +47,13 @@ source cache stays unchanged. Four cache unit tests and all 12 explicit-local
 app/wizard regressions pass. The first Clippy run found four style lints and a
 helper below the test module; those are corrected. Normal preflight, six-platform
 and public release gates remain to be completed. Historical browser timing findings remain open.
+
+
+First hosted attempt, `45003586391` at `ed5e768`, exposed an obsolete integration
+expectation: `features.rs` still expected default ejection to require Docker.
+The local development helper exports `ZELLIJ_IMAGE`, which had masked that
+expectation in the first local preflight. The fixture now removes the inherited
+image selection, uses a temporary resource home, checks default offline cache
+failure without writes, and explicitly selects an image for runtime diagnostics.
+The first attempt remains a failure; the corrected Rust suite is rerun without
+the development shell's image override before the next hosted attempt.
