@@ -61,7 +61,7 @@ released and its artifacts have passed public-download acceptance.
 - `cli/crates/zellij-cli/src/rich_build.rs` and `rich_build/cache.rs`: private runtime, build/check requests and verified cache.
 - `cli/crates/zellij-cli/src/validation.rs` and `watch.rs`: target-specific validation.
 - `cli/crates/zellij-cli/src/main.rs`: build target dispatch.
-- `cli/crates/zellij-cli/src/preview/hosted.rs`: explicit HTTP export/preview.
+- `cli/crates/zellij-cli/src/preview/rich.rs`: explicit HTTP export/preview.
 - `cli/crates/zellij-cli/src/delivery.rs`: shared static build before native deployment.
 - `cli/crates/zellij-cli/src/eject.rs` and `app.rs`: stopped-image source extraction and local wrapper/engine validation.
 - `cli/crates/zellij-cli/src/development.rs`: rich Next development server.
