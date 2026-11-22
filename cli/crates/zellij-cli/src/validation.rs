@@ -14,15 +14,27 @@ pub fn check(
     // diagnostics, preserving --json's one-report/no-stderr contract.
     let automatic = crate::default_target(dir).unwrap_or(if offline { "file" } else { "portable" });
     let selected = target.unwrap_or(automatic);
-    if offline && selected != "file" {
+    if offline && !matches!(selected, "file" | "static") {
         return Err(Error::InvalidArgument(
-            "--offline applies to standalone rich validation (--target file)".into(),
+            "--offline applies to cached rich validation (--target file or static)".into(),
         ));
     }
     match selected {
-        "file" => return hosted_report(dir, options, as_json, true, offline),
-        "static" if as_json => return hosted_report(dir, options, true, false, false),
-        "static" => return crate::check(dir, options),
+        "file" => return hosted_report(dir, options, as_json, "file", offline),
+        "static" if as_json => return hosted_report(dir, options, true, "static", offline),
+        "static" => {
+            let content = crate::resolve_content(dir)?;
+            let report = crate::rich_build::check(&content, options, offline, None)?
+                .ok_or(Error::ContentInvalid)?;
+            emit_hosted(&report);
+            // Composed import commands must retain control to explain that
+            // converted sources survive a failed optional validation.
+            return if report.ok {
+                Ok(())
+            } else {
+                Err(Error::ContentInvalid)
+            };
+        }
         "portable" => {}
         _ => unreachable!("clap validates the check target"),
     }
@@ -40,22 +52,19 @@ fn hosted_report(
     dir: &SiteInput,
     options: zellij_engine::CheckOptions,
     as_json: bool,
-    standalone: bool,
+    target: &str,
     offline: bool,
 ) -> Result<()> {
-    use zellij_engine::{ContainerEngine, HostedCheckReport, HostedDiagnostic, Severity};
+    use zellij_engine::{HostedCheckReport, HostedDiagnostic, Severity};
     let mut root = dir.root().to_string();
     let result = (|| {
         let content = crate::resolve_content(dir)?;
         root = content.to_string();
-        if standalone {
-            crate::rich_build::check(&content, options, offline, None)?.ok_or(Error::ContentInvalid)
-        } else {
-            ContainerEngine::detect(None)?.check_json(&content, options)
-        }
+        crate::rich_build::check(&content, options, offline, None)?.ok_or(Error::ContentInvalid)
     })();
     let (report, exit_code) = match result {
-        Ok(report) => {
+        Ok(mut report) => {
+            report.target = target.into();
             let code = if report.ok { 0 } else { 3 };
             (report, code)
         }
@@ -68,7 +77,7 @@ fn hosted_report(
             (
                 HostedCheckReport {
                     schema_version: 1,
-                    target: if standalone { "file" } else { "static" }.into(),
+                    target: target.into(),
                     root,
                     deep: options.deep,
                     strict: options.strict,
@@ -119,7 +128,7 @@ pub(crate) fn emit_hosted(report: &zellij_engine::HostedCheckReport) {
             .iter()
             .all(|d| d.severity == zellij_engine::Severity::Warning)
     {
-        zellij_core::diagnosticln!("error: warnings are rejected by --strict");
+        zellij_core::diagnosticln!("error: Strict check failed; warnings are rejected by --strict");
     }
 }
 

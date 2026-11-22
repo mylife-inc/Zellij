@@ -49,8 +49,8 @@ try {
     assert.equal((await readdir(engineCache)).length, 0);
     downloads.set(archive + '.sha256', checksum); requests.length = 0;
   }
-  const coldCheck = JSON.parse(await run(['check', '--json']));
-  assert.equal(coldCheck.target, 'file'); assert.equal(coldCheck.ok, true);
+  const coldCheck = JSON.parse(await run(['check', '--target', 'static', '--json']));
+  assert.equal(coldCheck.target, 'static'); assert.equal(coldCheck.ok, true);
   await run(['build']);assert.equal(requests.length, publicBase ? 0 : 2);
   const before = await readFile(path.join(root, 'site/index.html'));
   const manifest = JSON.parse(await readFile(path.join(root, 'site/_zellij/file/manifest.json')));

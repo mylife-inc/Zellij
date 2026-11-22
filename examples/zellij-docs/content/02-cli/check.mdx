@@ -3,6 +3,18 @@ title: zel check
 description: Check portable Markdown without writing files, or validate hosted content with the engine.
 ---
 
+## Upcoming cached static validation
+
+The source update after rc.17 also runs `zel check --target static` through the
+verified renderer cache. It preserves `target: "static"` in JSON, deep/strict
+findings and exit 3 for invalid content. `--offline` works for both rich targets;
+a missing or damaged cache returns exit 2 without probing container endpoints.
+Validation uses the renderer matching the CLI, rather than `ZELLIJ_IMAGE`.
+No user-installed Docker, Node or Python is needed. Published rc.17 still uses
+the container path for explicit static checks; the behavior described below
+remains the rc.17 reference until this update is released.
+
+
 <Callout type="tip" title="Available">
 Portable Markdown checks run natively without Node, Docker, or network access.
 Candidate `0.2.0-rc.17` rich YAML/MDX checks use the

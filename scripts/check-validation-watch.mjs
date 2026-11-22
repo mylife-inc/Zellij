@@ -1,5 +1,6 @@
 // Actual native validation loops, recovery and Ctrl-C on every supported OS.
-// --hosted uses the CI-built engine image; normal mode has no tools on PATH.
+// --hosted uses the prepared current-source renderer cache. Neither mode has
+// external tools on PATH; native-package acceptance covers actual downloads.
 import assert from 'node:assert/strict';
 import { spawn, execFileSync } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, rm, writeFile, stat, utimes } from 'node:fs/promises';
@@ -39,9 +40,9 @@ try {
     await put('docs/zellij/content/site.yaml', 'name: Watch\nhome: manual\n');
     await put('docs/zellij/content/manual/_sidebar.yaml', 'nav: [index]\n');
   }
-  const env = hosted ? process.env : { ...process.env, PATH: path.join(root, 'no-tools'), DOCKER_HOST: 'fixture-invalid' };
+  const env = { ...process.env, PATH: path.join(root, 'no-tools'), DOCKER_HOST: 'fixture-invalid', CONTAINER_HOST: 'fixture-conflict' };
   if (explicitConfig) await put('docs/zellij/zel.yaml', 'invalid default: [');
-  const args = ['watch', '--deep', '--strict', ...(hosted ? ['--target', 'static'] : []), ...(explicitConfig ? ['--config', configRelative] : [])];
+  const args = ['watch', '--deep', '--strict', ...(hosted ? ['--target', 'static', '--offline'] : []), ...(explicitConfig ? ['--config', configRelative] : [])];
   child = spawn(windows ? consoleRunner : zel, windows ? [zel, ...args] : args, { cwd: root, env, stdio: ['pipe', 'pipe', 'pipe'] });
   child.stdout.on('data', data => stdout += data);
   child.stderr.on('data', data => stderr += data);

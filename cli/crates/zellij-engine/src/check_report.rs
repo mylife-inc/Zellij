@@ -33,19 +33,19 @@ pub struct HostedCheckReport {
 }
 
 impl HostedCheckReport {
-    /// Standalone uses the same content-check protocol, with host paths already
-    /// resolved. The public target identifies the selected standalone route.
-    pub fn decode_file(
+    /// Cached validation uses the same static content-check protocol with host
+    /// paths already resolved. The CLI labels its public report with the target
+    /// the user selected, independently of the validation transport.
+    pub fn decode_cached(
         stdout: &[u8],
         status: Option<i32>,
         content: &Utf8Path,
         options: CheckOptions,
     ) -> Result<Self> {
-        let mut report = Self::decode(stdout, status, content.as_str(), content, options)
+        let report = Self::decode(stdout, status, content.as_str(), content, options)
             .map_err(|_| Error::CheckFailed(format!(
                 "the cached renderer did not return a compatible validation report (exit {status:?}); verify the matching renderer cache with `zel doctor`"
             )))?;
-        report.target = "file".into();
         Ok(report)
     }
 
@@ -186,7 +186,7 @@ mod tests {
             let mut value = fixture();
             value["root"] = json!(root);
             let decode = |value: &Value, status| {
-                HostedCheckReport::decode_file(
+                HostedCheckReport::decode_cached(
                     &serde_json::to_vec(value).unwrap(),
                     status,
                     Utf8Path::new(root),
@@ -198,7 +198,7 @@ mod tests {
             };
             let report = decode(&value, Some(0)).unwrap();
             assert_eq!(report.root, root);
-            assert_eq!(report.target, "file");
+            assert_eq!(report.target, "static");
             assert!(decode(&value, Some(1)).is_err());
             value["root"] = json!("/other");
             let error = decode(&value, Some(0)).unwrap_err().to_string();

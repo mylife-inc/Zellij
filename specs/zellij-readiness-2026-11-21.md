@@ -10,6 +10,10 @@ jobs passed. Public downloads, local upgrade, channel and documentation status
 are recorded in the [release evidence](evidence/zellij-rc17-release-2026-11-21.json).
 This checkpoint does not declare stable 1.0 or absence of undiscovered bugs.
 
+The next [source migration](zellij-cached-static-validation-2026-11-21.md) removes
+container requirements from static validation/watch and optional import checks.
+It is not part of released rc.17; hosted acceptance and release remain pending.
+
 | Area | Current state | Remaining boundary or task |
 | --- | --- | --- |
 | Documented CLI command families | Implemented, with native tests and the recorded release acceptance. | Provider-specific live behavior and external runners require separate acceptance. |

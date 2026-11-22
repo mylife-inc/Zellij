@@ -319,7 +319,7 @@ pub(crate) enum Command {
     Check {
         /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
         dir: Option<SiteInput>,
-        /// Override selection: native portable, standalone rich file, or container static.
+        /// Override selection: native portable, or cached rich file/static validation.
         #[arg(long, value_parser = ["portable", "file", "static"])]
         target: Option<String>,
         /// Require a cached rich renderer; do not download one.
@@ -522,7 +522,7 @@ pub(crate) enum Command {
     /// Validate initially and after edits, without building or serving.
     Watch {
         dir: Option<SiteInput>,
-        /// Override selection: native portable, standalone rich file, or container static.
+        /// Override selection: native portable, or cached rich file/static validation.
         #[arg(long, value_parser = ["portable", "file", "static"])]
         target: Option<String>,
         /// Require a cached rich renderer; do not download one.

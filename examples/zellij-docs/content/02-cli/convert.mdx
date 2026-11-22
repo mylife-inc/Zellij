@@ -3,6 +3,15 @@ title: zel convert
 description: Read a MkDocs, Docusaurus, VitePress, Jekyll, Hugo or Sphinx tree and write the Zellij equivalent beside it.
 ---
 
+## Upcoming cached validation
+
+After rc.17, the source implementation of `--validate` uses the CLI-matched
+renderer cache instead of a container. A missing renderer is downloaded on
+first use; converted files remain available if validation or cache preparation
+fails. Conversion without `--validate`, and every `--dry-run`, remain native
+and do not download a renderer. The released rc.17 behavior is described below.
+
+
 <Callout type="tip" title="Available">
 Works today.
 </Callout>

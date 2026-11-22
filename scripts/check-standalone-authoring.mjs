@@ -71,36 +71,38 @@ export async function checkStandaloneAuthoring(binary, environment, parent) {
     assert.match(state.output, /Stopped\./);
   }
   try {
-    const result = await run(['check', '--deep', '--strict', '--offline', '--json']);
-    assert.equal(result.stderr, '');
-    const report = JSON.parse(result.output);
-    assert.equal(report.target, 'file'); assert.equal(report.ok, true);
-    assert(report.pages >= 2);
-    assert(!(await readdir(root)).includes('site'));
-    const missing = await run(['check', '--offline', '--json'], 2, { ZELLIJ_HOME: path.join(parent, 'uncached') });
-    assert.equal(missing.stderr, ''); assert.match(JSON.parse(missing.output).diagnostics[0].message, /not cached/);
-    await put(page, original + '\n{(() => { throw new Error("CHECK_MUST_NOT_EXECUTE"); })()}\n');
-    const dynamic = await run(['check', '--deep', '--offline', '--json']);
-    assert.equal(JSON.parse(dynamic.output).ok, true);
-    assert.equal(dynamic.stderr, '');
-    await put(page, original);
-    await put('content/site.yaml', settings + 'unknownOption: true\n');
-    const strict = await run(['check', '--strict', '--offline', '--json'], 3);
-    assert(JSON.parse(strict.output).diagnostics.some(d => d.severity === 'warning'));
-    await put('content/site.yaml', settings);
-    await put('zel.yaml', 'version: [');
-    const invalid = await run(['check', '--offline', '--json'], 2);
-    assert.equal(invalid.stderr, ''); assert.equal(JSON.parse(invalid.output).ok, false);
-    await put('zel.yaml', config);
-    await put(page, '# Original\n\n[Broken](/does-not-exist)\n');
-    const watch = start(['watch', '--deep', '--strict', '--offline'], { persistent: true });
-    await until(() => watch.output.includes('Watching ') && watch.output.includes('Validation failed;'), 'invalid content remains watched', watch);
-    await put(page, original);
-    await until(() => watch.output.includes('Validation passed.'), 'validation recovery', watch);
-    await stop(watch);
-    assert(!(await readdir(root)).includes('site'));
+    for (const target of ['file', 'static']) {
+      const result = await run(['check', '--target', target, '--deep', '--strict', '--offline', '--json']);
+      assert.equal(result.stderr, '');
+      const report = JSON.parse(result.output);
+      assert.equal(report.target, target); assert.equal(report.ok, true);
+      assert(report.pages >= 2);
+      assert(!(await readdir(root)).includes('site'));
+      const missing = await run(['check', '--target', target, '--offline', '--json'], 2, { ZELLIJ_HOME: path.join(parent, 'uncached') });
+      assert.equal(missing.stderr, ''); assert.match(JSON.parse(missing.output).diagnostics[0].message, /not cached/);
+      await put(page, original + '\n{(() => { throw new Error("CHECK_MUST_NOT_EXECUTE"); })()}\n');
+      const dynamic = await run(['check', '--target', target, '--deep', '--offline', '--json']);
+      assert.equal(JSON.parse(dynamic.output).ok, true);
+      assert.equal(dynamic.stderr, '');
+      await put(page, original);
+      await put('content/site.yaml', settings + 'unknownOption: true\n');
+      const strict = await run(['check', '--target', target, '--strict', '--offline', '--json'], 3);
+      assert(JSON.parse(strict.output).diagnostics.some(d => d.severity === 'warning'));
+      await put('content/site.yaml', settings);
+      await put('zel.yaml', 'version: [');
+      const invalid = await run(['check', '--target', target, '--offline', '--json'], 2);
+      assert.equal(invalid.stderr, ''); assert.equal(JSON.parse(invalid.output).ok, false);
+      await put('zel.yaml', config);
+      await put(page, '# Original\n\n[Broken](/does-not-exist)\n');
+      const watch = start(['watch', '--target', target, '--deep', '--strict', '--offline'], { persistent: true });
+      await until(() => watch.output.includes('Watching ') && watch.output.includes('Validation failed;'), 'invalid content remains watched', watch);
+      await put(page, original);
+      await until(() => watch.output.includes('Validation passed.'), 'validation recovery', watch);
+      await stop(watch);
+      assert(!(await readdir(root)).includes('site'));
+    }
 
-    console.log('Standalone validation: JSON, offline cache, nonexecution, strict findings and watch recovery passed.');
+    console.log('Standalone file/static validation: JSON, offline cache, nonexecution, strict findings and watch recovery passed.');
     const preview = start(['view', '--watch', '--offline', '--browser', browser], { persistent: true });
     await until(() => preview.output.includes('Serving at '), 'rich preview startup', preview);
     const url = preview.output.match(/Serving at (http:\/\/\S+)/)[1];

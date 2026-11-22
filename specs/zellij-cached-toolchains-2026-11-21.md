@@ -1,6 +1,7 @@
 # Cached toolchain opportunities — 21 November 2026
 
-Status: source review and proposed ordering, not newly implemented capabilities.
+Status: the first validation migration is implemented in source after rc.17;
+acceptance and release tracking are in the [validation record](zellij-cached-static-validation-2026-11-21.md). The remaining rows are proposed work.
 Reviewed source: `dbdf4fc` plus the version-only rc.17 preparation. The rc.17
 candidate ships the accepted overflow-focus correction, not the migrations below.
 
@@ -26,7 +27,7 @@ rendering dependencies.
 
 | Priority | Commands or path | Reusable artifact | Work required |
 | --- | --- | --- | --- |
-| 1 | Explicit rich `check --target static` and matching validation watch | Existing cached validator | Reuse nonexecuting shared validation while preserving `static` report identity, JSON/error semantics and configured targets. Today the explicit static path selects ContainerEngine. |
+| 1 — implemented in source | Explicit rich `check --target static` and matching validation watch | Existing cached validator | Reuse nonexecuting shared validation while preserving `static` report identity, JSON/error semantics and configured targets. The source path now uses the cached validator, including optional import validation; released rc.17 still selects ContainerEngine. |
 | 2 | `build --target static`, `view --target static`, build/watch and static-site deployment build steps | Extended cached renderer with a supported HTTP export mode | Preserve actual hosted routing, base paths, metadata, 404 behavior, search, no-JavaScript output and asset URLs. Do not silently replace the Next export contract with file-oriented link rewriting. |
 | 2, downstream | Netlify, Cloudflare Pages, GitHub Pages, S3 and supported static Vercel deployments; corresponding generated CI | Same HTTP export plus existing native provider clients | Native HTTPS upload adapters already exist; the shared rich-site build is the remaining container dependency. Test the build/protocol boundary with repository-owned fixtures; live provider acceptance remains separately deferred. |
 | 3 | Default `eject` and engine selection for `new app` | Separate versioned wrapper sources plus built engine package | Default ejection currently copies sources from a stopped container. A complete editable package could remove that extraction dependency while preserving vendoring, features, starter content and staged-path checks. The current compiled renderer archive is not an editable source distribution. Explicit custom `--image` extraction must retain its image semantics; running the extracted Next app still needs its development toolchain. |

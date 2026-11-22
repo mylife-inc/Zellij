@@ -351,32 +351,6 @@ fn resolve_content(dir: &SiteInput) -> zellij_core::Result<Utf8PathBuf> {
     Ok(site.content)
 }
 
-fn check(dir: &SiteInput, options: zellij_engine::CheckOptions) -> zellij_core::Result<()> {
-    let content = resolve_content(dir)?;
-    let engine = zellij_engine::ContainerEngine::detect(None)?;
-
-    // The trait has to be in scope for its methods to be callable.
-    use zellij_engine::Engine as _;
-    let report = match engine.check(&content, options) {
-        Ok(report) => report,
-        // Return after the actionable mount report so compositions can report
-        // their completed stages and retained imported files.
-        Err(err @ zellij_core::Error::MountEmpty { .. }) => {
-            report_empty_mount(&err);
-            return Err(err);
-        }
-        Err(err) => return Err(err),
-    };
-
-    zellij_core::reporting::emit(format_args!("{}", report.output), false);
-
-    if !report.ok {
-        return Err(zellij_core::Error::ContentInvalid);
-    }
-
-    Ok(())
-}
-
 /// Shared by every command that mounts content, because every one of them can
 /// meet a runtime that silently shares nothing.
 fn report_empty_mount(err: &zellij_core::Error) {

@@ -403,6 +403,11 @@ jobs:
       - run: cargo build --manifest-path cli/Cargo.toml
       - name: Manual release-delivery workflows match the CLI generator
         run: node scripts/prepare-delivery-acceptance.mjs cli/target/debug/zel
+      - name: Prepare this checkout's cached validator for integration tests
+        run: |
+          node scripts/build-standalone-engine.mjs
+          node scripts/prepare-standalone-test-cache.mjs "$RUNNER_TEMP/current-renderer"
+          printf 'ZEL_ENGINE_CACHE=%s\n' "$RUNNER_TEMP/current-renderer" >> "$GITHUB_ENV"
       - name: Build the engine image from this checkout
         run: docker build -f docker/base.Dockerfile -t zellij-ci .
 
@@ -494,9 +499,7 @@ jobs:
           cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --list | grep -F "$acceptance_test: test"
           cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --nocapture
 
-      - name: Hosted validation watch uses the real engine and recovers after edits
-        env:
-          ZELLIJ_IMAGE: zellij-ci
+      - name: Cached static validation watch recovers without external tools
         run: node scripts/check-validation-watch.mjs --hosted --config
 
       - name: Hosted static preview rebuilds and reloads with the real engine

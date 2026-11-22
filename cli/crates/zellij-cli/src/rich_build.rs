@@ -117,7 +117,7 @@ pub(crate) fn check(
     let report = read_report(work.path(), "check-report.json").map_err(|_| Error::CheckFailed(
         format!("cached renderer did not produce a validation report (exit {:?}); verify its cache with zel doctor", status.code())
     ))?;
-    HostedCheckReport::decode_file(&report, status.code(), &content, options).map(Some)
+    HostedCheckReport::decode_cached(&report, status.code(), &content, options).map(Some)
 }
 
 pub(crate) struct PreparedRich {

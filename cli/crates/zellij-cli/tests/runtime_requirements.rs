@@ -278,8 +278,6 @@ fn container_commands_fail_with_exit_four_before_touching_content_or_output() {
     for args in [
         vec!["build", "content", "--target", "static", "--out", "site"],
         vec!["build", "content", "--target", "image"],
-        vec!["check", "content", "--target", "static"],
-        vec!["watch", "content", "--target", "static"],
         vec!["dev", "content"],
         vec!["dev", "content", "--features", "all"],
         vec!["view", "content", "--target", "static", "--no-open"],
@@ -301,7 +299,6 @@ fn container_commands_fail_with_exit_four_before_touching_content_or_output() {
         vec!["image", "run", "test:latest"],
         vec!["image", "push", "test:latest"],
         vec!["b", "content", "--target", "static", "--out", "site"],
-        vec!["c", "content", "--target", "static"],
         vec!["ir", "test:latest"],
         vec!["ip", "test:latest"],
     ] {
@@ -633,4 +630,33 @@ fn an_explicit_runtime_can_respond_after_the_automatic_probe_deadline() {
     assert!(start.elapsed() < std::time::Duration::from_secs(15));
     assert!(String::from_utf8_lossy(&output.stdout).contains("docker slow fixture"));
     assert!(!root.join("podman-calls").exists());
+}
+
+#[test]
+fn rich_validation_requires_its_cache_without_inspecting_container_endpoints() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    content(root);
+    for command_name in ["check", "c", "watch"] {
+        for target in ["file", "static"] {
+            let output = command(root)
+                .args([command_name, "content", "--target", target, "--offline"])
+                .env("DOCKER_HOST", "fixture-invalid")
+                .env("CONTAINER_HOST", "fixture-conflict")
+                .output()
+                .unwrap();
+            assert_eq!(output.status.code(), Some(2), "{output:?}");
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            assert!(stderr.contains("not cached"), "{stderr}");
+            assert!(
+                !stderr.contains("ambiguous") && !stderr.contains("docker:"),
+                "{stderr}"
+            );
+            assert!(!root.join("site").exists());
+            assert_eq!(
+                fs::read_to_string(root.join("content/site.yaml")).unwrap(),
+                "name: Test\n"
+            );
+        }
+    }
 }

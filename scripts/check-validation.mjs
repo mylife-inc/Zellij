@@ -1,5 +1,6 @@
 // Exercise the installed, self-contained checker and optionally the actual Rust
-// command/container. Generated HTML verifies the accepted routes and anchors.
+// cached checker. The container export independently verifies accepted routes
+// and anchors until HTTP builds migrate to the cache as well.
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
@@ -117,7 +118,7 @@ try {
   await writeFile(path.join(content, 'site.yaml'), site);
   check(['--deep', '--strict'], true);
   checkJson(['--deep', '--strict'], true);
-  console.log(`Deep/strict validation passed through the isolated package${binary ? ', Rust container command and actual export' : ''}.`);
+  console.log(`Deep/strict validation passed through the isolated package${binary ? ', Rust cached checker and actual export' : ''}.`);
 } finally {
   await rm(root, { recursive: true, force: true });
 }

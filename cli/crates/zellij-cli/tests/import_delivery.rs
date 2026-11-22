@@ -5,6 +5,10 @@ use std::{
     path::{Path, PathBuf},
     process::{Command, Output},
 };
+#[cfg(unix)]
+#[path = "support/cached_renderer.rs"]
+mod cached_renderer;
+
 fn write(root: &Path, path: &str, body: impl AsRef<[u8]>) {
     let path = root.join(path);
     fs::create_dir_all(path.parent().unwrap()).unwrap();
@@ -141,6 +145,9 @@ fn command(root: &Path) -> Command {
     let mut command = Command::new(executable);
     command
         .current_dir(root)
+        .env("ZELLIJ_HOME", root.join("resources"))
+        .env_remove("ZEL_ENGINE_CACHE")
+        .env("ZEL_ENGINE_BASE_URL", "unavailable://renderer")
         .env_remove("RAILWAY_TOKEN")
         .env_remove("RAILWAY_PROJECT_ID")
         .env_remove("RAILWAY_ENVIRONMENT_ID")
@@ -338,7 +345,7 @@ fn import_controls_reject_unknown_asset_policies_and_unsafe_skipped_assets_befor
 }
 
 #[test]
-fn validation_requests_are_inert_in_dry_runs_and_retain_imports_when_runtime_is_missing() {
+fn validation_requests_are_inert_in_dry_runs_and_retain_imports_when_cache_is_unavailable() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();
     fixture(root, "mkdocs");
@@ -362,7 +369,7 @@ fn validation_requests_are_inert_in_dry_runs_and_retain_imports_when_runtime_is_
             let output = run(root, &dry, 0);
             assert!(String::from_utf8_lossy(&output.stdout).contains("Plan only"));
             assert!(!root.join(&destination).exists());
-            let result = run(root, &args, 4);
+            let result = run(root, &args, 2);
             assert!(String::from_utf8_lossy(&result.stderr).contains("Import completed"));
             let content =
                 root.join(&destination)
@@ -401,28 +408,10 @@ fn validation_requests_are_inert_in_dry_runs_and_retain_imports_when_runtime_is_
 #[cfg(unix)]
 #[test]
 fn optional_validation_checks_the_written_layout_once_and_preserves_failures() {
-    use std::os::unix::fs::PermissionsExt;
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();
     fixture(root, "mkdocs");
-    write(
-        root,
-        "bin/docker",
-        r#"#!/bin/sh
-printf '%s\n' "$1" >> "$FIXTURE_ROOT/calls"
-case "$1" in
-  info) exit 0;;
-  --version) echo fixture;;
-  run)
-    printf '%s\n' "$@" > "$FIXTURE_ROOT/arguments"
-    test -f "$EXPECTED_CONTENT/site.yaml" || exit 99
-    test -f "$EXPECTED_CONTENT/01-guide/index.mdx" || exit 99
-    exit "$CHECK_EXIT";;
-  *) exit 99;;
-esac
-"#,
-    );
-    fs::set_permissions(root.join("bin/docker"), fs::Permissions::from_mode(0o755)).unwrap();
+    cached_renderer::install(root);
     run(root, &["cv", "source", "--out", "unchecked"], 0);
     run(
         root,
@@ -437,7 +426,26 @@ esac
                 root.join(&destination)
                     .join(if layout == "site" { "content" } else { "" });
             let _ = fs::remove_file(root.join("calls"));
-            let output = command(root)
+            let diagnostics = if code == 0 {
+                serde_json::json!([])
+            } else {
+                serde_json::json!([{"severity":"error","code":"content","file":null,"message":"invalid content"}])
+            };
+            let mut report_content = root.canonicalize().unwrap().join(&destination);
+            if layout == "site" {
+                report_content.push("content");
+            }
+            write(
+                root,
+                "engine-report",
+                serde_json::json!({"schema_version":1,"target":"static",
+                "root":report_content,
+                "deep":false,"strict":false,"ok":code==0,"pages":2,"diagnostics":diagnostics})
+                .to_string(),
+            );
+            let mut cmd = command(root);
+            cached_renderer::configure(&mut cmd, root);
+            let output = cmd
                 .args([
                     "cv",
                     "source",
@@ -451,24 +459,22 @@ esac
                 .env("ZELLIJ_IMAGE", "fixture/engine:test")
                 .env("FIXTURE_ROOT", root)
                 .env("EXPECTED_CONTENT", &content)
-                .env("CHECK_EXIT", engine_exit)
+                .env("FAKE_EXIT", engine_exit)
                 .output()
                 .unwrap();
             assert_eq!(output.status.code(), Some(code), "{output:?}");
             let calls = fs::read_to_string(root.join("calls")).unwrap();
             assert_eq!(
-                calls.lines().filter(|line| *line == "run").count(),
+                calls.lines().filter(|line| *line == "check").count(),
                 1,
                 "{calls}"
             );
-            let arguments = fs::read_to_string(root.join("arguments")).unwrap();
-            let mount = format!(
-                "{}:/content:ro\n",
-                content.canonicalize().unwrap().display()
-            );
-            assert!(
-                arguments.contains(&mount) && arguments.contains("check /content"),
-                "{arguments}"
+            let request: serde_json::Value =
+                serde_json::from_slice(&fs::read(root.join("request")).unwrap()).unwrap();
+            assert_eq!(request["operation"], "check");
+            assert_eq!(
+                request["content"],
+                content.canonicalize().unwrap().to_str().unwrap()
             );
             assert!(
                 content
@@ -709,7 +715,7 @@ fn ship_plans_are_inert_and_failures_retain_configured_imports_for_review() {
         let result = run(
             root,
             &[name, "source", "--out", name, "--layout", "site"],
-            4,
+            2,
         );
         assert!(String::from_utf8_lossy(&result.stderr).contains("Import completed"));
         assert!(root.join(name).join("content/site.yaml").is_file());
@@ -1554,7 +1560,7 @@ fn linked_assets_reject_symlinks_without_reading_regular_asset_bytes() {
 }
 
 #[test]
-fn linked_ship_and_migration_retain_external_urls_if_runtime_is_missing() {
+fn linked_ship_and_migration_retain_external_urls_if_prerequisites_are_missing() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();
     fixture(root, "mkdocs");
@@ -1574,7 +1580,7 @@ fn linked_ship_and_migration_retain_external_urls_if_runtime_is_missing() {
         } else {
             args.extend(["--layout", "site"]);
         }
-        let result = run(root, &args, 4);
+        let result = run(root, &args, if command == "ship" { 4 } else { 2 });
         assert!(String::from_utf8_lossy(&result.stderr).contains("Import completed"));
         let content = root.join(command).join("content");
         assert!(!content.join("assets").exists());
