@@ -1,7 +1,8 @@
 # Cached editable sources — 22 November 2026
 
 Status: source acceptance completed for candidate rc.19 at `3d3b426` (PR #239).
-The candidate is published; postpublication and channel acceptance are in progress. Immutable rc.18 assets
+The candidate is published; all 40 release and eight managed-channel upgrade
+checks pass, together with independent public/installed Mac acceptance. Immutable rc.18 assets
 remain unchanged.
 
 Default `eject` and `new app` now share a version-matched source archive under
@@ -35,7 +36,8 @@ finish before a download. Cancellation while answering writes/downloads nothing.
 
 The previously recorded CI preamble wording is corrected in both GitHub and
 external generators. Generated jobs and their version-conditioned prerequisites
-are unchanged; existing acceptance fixture pins remain rc.18 until rc.19 is public.
+are unchanged. During initial source acceptance, fixture execution pins stayed
+at rc.18; PR #240 moves them to rc.19 after publication.
 
 Initial findings: an existing wizard test relied on the old implicit local-engine
 answer; explicit-local regression cases now select that path and keep their
@@ -48,8 +50,9 @@ The actual npm install, strict/deep check, typecheck, production build and
 HTTP base-path/search checks pass outside the repository on Intel Mac. The
 source cache stays unchanged. Four cache unit tests and all 12 explicit-local
 app/wizard regressions pass. The first Clippy run found four style lints and a
-helper below the test module; those are corrected. Normal preflight, six-platform
-and public release gates remain to be completed. Historical browser timing findings remain open.
+helper below the test module; those are corrected. At that initial checkpoint,
+normal preflight, six-platform and public release gates were pending; their
+completed outcomes are recorded below. Historical browser timing findings remain open.
 
 
 First hosted attempt, `45003586391` at `ed5e768`, exposed an obsolete integration
@@ -100,3 +103,22 @@ acceptance into a timing-fix claim.
 
 The [release evidence](evidence/zellij-rc19-release-2026-11-22.json) records publication,
 public downloads, managed installation channels and final guide gates separately.
+
+
+## Completed distribution and guides
+
+Release `45007126682` passes all 40 required jobs. Both public repositories
+contain 42 matching assets; source archive bytes match the tagged artifact.
+Independent Mac verification exercises both public copies. The installed CLI
+matches the public binary, and empty-PATH generation plus offline reuse pass in
+the default resource home. All eight actual Homebrew/Scoop rc.18-to-rc.19
+upgrade/lifecycle checks pass.
+
+PR #240 merges the refreshed guides and diagnostic improvement as `9e7c58e`.
+Seven targeted documentation/consumer checks and the Engine gate pass. Automatic
+production `45010872211` verifies the deployment; nine live pages hydrate and
+contain rc.19 guidance without captured browser errors. Both generated fixture
+images publish and pass fresh-pull HTTP, health and nonroot-user checks. The
+release-note guide links are pinned to that commit; no assets or tags are reused.
+The original timing recurrence stays open, separate from the corrected loss of
+partial diagnostic state in `bfb450b`.

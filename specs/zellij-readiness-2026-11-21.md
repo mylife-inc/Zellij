@@ -1,11 +1,11 @@
 # Zellij readiness — 21 November 2026
 
 Updated 22 November: the published candidate is **v0.2.0-rc.19**, source
-`3d3b426`, with all 37 required source jobs and all six tagged native-package
-checks passed. Both public repositories contain 42 matching assets; the source
-archive and managed recipes are independently verified. Final public/channel
-acceptance and guide publication remain in progress in the
-[release evidence](evidence/zellij-rc19-release-2026-11-22.json).
+`3d3b426`. All 37 required source jobs, 40 release jobs and eight actual
+Homebrew/Scoop rc.18-to-rc.19 upgrades pass. Both public repositories have 42
+matching assets; independent public Mac checks and the installed empty-PATH
+source-cache checks pass. The final guides are published and nine live pages
+are verified. See the [release evidence](evidence/zellij-rc19-release-2026-11-22.json).
 The separate main CI has 36 passes and the retained historical documentation
 timeout recurrence; this checkpoint does not declare stable 1.0 or zero bugs.
 
@@ -19,15 +19,15 @@ and [HTTP export](zellij-cached-http-export-2026-11-21.md) cache migrations now 
 | --- | --- | --- |
 | Documented CLI command families | Implemented, with native tests and the recorded release acceptance. | Provider-specific live behavior and external runners require separate acceptance. |
 | Rich websites | File and HTTP static build, check, watch and view share the verified cached renderer. First use downloads it; later operations support `--offline`. Native static deployment builds and optional import validation use the same cache. No user-installed Docker, Node or Python is required for these web rendering operations. | Default editable wrapper generation now also uses a verified source cache. Running Next apps, explicit image extraction, container images and PDF retain their documented prerequisites. |
-| Documentation and publishing | rc.19 guides and generated consumers are refreshed; final hosted gates and production publication are in progress. The release corrects the stale generated-CI introduction while preserving executable web-only jobs. | Verify final production hydration and current-version text after the automatic deployment. Keep prerequisites and version pins current. |
+| Documentation and publishing | rc.19 guides and generated consumers pass their seven targeted gates; the diagnostic follow-up also passes Engine. PR #240 merges as `9e7c58e`; automatic production `45010872211` and nine live-page hydration/content checks pass. Refreshed fixture images pass fresh-pull HTTP/health/nonroot inspection. | Keep prerequisites and version pins current. The retained browser timing finding remains unresolved despite these passing gates. |
 | Branding, menus and themes | Separate company/product branding, centered navigation, full-width desktop panels, mobile drilldown, responsive theme colors and the Kie theme are implemented. | Kie is an inspected design interpretation; blocked live reference access did not establish a 100% pixel-identical clone. |
 | Composer and templates | Responsive nested layouts, supported media/semantic/interactive nodes, bounded scroll effects, eight inline built-in section types, nine editable presets and nine website/book starters are implemented. | Three website starters ship corrected inline guides at template version 0.1.3 in rc.16, while prior 0.1.2 archive bytes remain unchanged. The composer is bounded; arbitrary executable components, arbitrary section embedding and unrestricted animation timelines are not promised. |
 | Books and PDF | Shared publication model, technical/study editions, equations/statements, numeric citations, glossary/index, print styling, Arabic RTL and French/German/Spanish print are implemented. | Arbitrary citation styles/BibTeX, unrestricted font inventories and broader format fidelity are separate expansion requests. Existing PDF generation uses its external toolchain. |
-| Installation | Public rc.19 packages cover six native targets; postpublication and actual rc.18-to-rc.19 Homebrew/Scoop acceptance are in progress. Tagged source packages pass real installed-wrapper builds on every native target. | rc.19 retains ownership protection and verified public native x64/ARM64 WinGet manifests. Microsoft PR #484934 (rc.15) has a passing CLA, no executable-error label and a request for moderator approval. Installation Validation remains neutral; catalog acceptance and ordinary catalog-ID installation remain pending. |
-| Retention | The 20 November rc.12 retirement is complete and recorded in its dated evidence. No releases or image versions are retired during rc.19 publication. | Preserve rc.11/rc.13 compatibility pins, rc.14 WinGet upgrade fixtures and rc.15 catalog submission and rc.17 channel upgrade tests until their dependencies are deliberately retired. Do not reuse completed deletion plans. |
+| Installation | Public rc.19 packages cover six native targets. Tagged source packages pass real installed-wrapper builds on every target; independent public Mac and installed empty-PATH source-cache acceptance pass. All eight actual rc.18-to-rc.19 Homebrew/Scoop upgrades pass. | rc.19 retains ownership protection and native x64/ARM64 WinGet manifests. The last recorded Microsoft PR #484934 checkpoint has a passing CLA and requests moderator approval; catalog acceptance remains separate. |
+| Retention | The 20 November rc.12 retirement is complete and recorded in its dated evidence. No releases or image versions are retired during rc.19 publication. | Preserve rc.11/rc.13 compatibility pins, rc.14 WinGet upgrade fixtures and rc.15 catalog submission and rc.18 channel upgrade tests until their dependencies are deliberately retired. Do not reuse completed deletion plans. |
 | Live providers and generated runners | Adapters and build/protocol harnesses exist. Earlier live Netlify, Cloudflare, GitHub Pages and Railway checks have their recorded evidence. | Fly, S3 and actual GitLab/CircleCI runner acceptance stay at the end by user instruction. Vercel remains explicitly deferred after payment was required. |
 
-The cached-renderer current-page defect found during this release is corrected
+The cached-renderer current-page defect found during rc.18 is corrected
 in `e3bc39a`: prefixed routes now match sidebar items in both rich modes, with
 SSR and hydrated regression coverage. See the HTTP migration record.
 
@@ -54,17 +54,19 @@ Its regressions pass; the original timing finding remains unresolved.
 
 Released rc.19 retains registry/file ownership detection before self-upgrade,
 verified x64/ARM64 portable manifests and native install/upgrade/uninstall
-acceptance. The rc.15 Microsoft catalog submission awaits moderator approval. See the
+acceptance. The last recorded rc.15 Microsoft catalog checkpoint awaits moderator
+approval. See the
 [distribution contract](zel-winget-distribution-2026-11-20.md) for validation,
 retention and external acceptance boundaries. The native upgrade fixture uses
 real rc.14 archives; retain them until that dependency is deliberately migrated.
 
 The versioned editable wrapper/engine source package for default `eject` and
-`new app` is published in rc.19; final public/channel acceptance is in progress.
+`new app` is published and verified in rc.19.
 Optional LuaLaTeX and Next development packages follow.
 The [source-backed roadmap](zellij-cached-toolchains-2026-11-21.md) records their
 scope and acceptance requirements. Priorities 1–2 (static validation and HTTP
-export/deployment builds) are complete in rc.18. Images still need a builder;
+export/deployment builds) are complete in rc.18; priority 3 (editable sources)
+is complete in rc.19. Images still need a builder;
 explicit custom-image extraction must preserve its selected-image behavior.
 Investigate any original timing recurrence using retained diagnostics. Catalog
 review and deferred external acceptance remain separate from this work.
