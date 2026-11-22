@@ -337,9 +337,10 @@ choice and credentials are never saved in this publication block. An explicit
 provider change does not reuse another provider's destination.
 
 Repository, Pages configuration and branch access are checked before building.
-Portable web-only output needs no Node.js or container runtime. Opt-in book PDFs require the LaTeX runtime. Hosted output retains
-its container requirement. Both build once into temporary output and preserve
-source files and previous local output.
+Portable web-only output needs no Node.js or container runtime. Rich HTTP output
+uses the verified renderer cache; no separately installed Node.js or container
+is required. Opt-in book PDFs still require the LaTeX runtime. Both renderers
+build once into temporary output and preserve source files and previous local output.
 
 For hosted output, the existing Pages URL determines the build's default
 `basePath` and site origin. A project at `https://acme.github.io/manual/` builds

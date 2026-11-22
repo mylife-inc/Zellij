@@ -6,7 +6,9 @@ stages. Source CI `44987846589` passes all 37 required jobs; both repositories
 contain 40 matching assets. Independent public Mac, installed upgrade and
 empty-PATH default-home/offline checks pass. Seven guide/consumer checks pass.
 All 40 release jobs pass in `44989656538`; all eight actual rc.17-to-rc.18
-Homebrew/Scoop lifecycle cases pass. Production receipts are recorded in the
+Homebrew/Scoop lifecycle cases pass. Initial production `44992644419`, six live
+pages and fresh-pull image inspection `44992842894` pass. Final prerequisite
+prose corrections and publication receipts are recorded in the
 [rc.18 evidence](evidence/zellij-rc18-release-2026-11-21.json). Editable wrapper,
 optional typesetting and Next development packages remain future work. No old
 distributions are retired; retain compatibility and actual-upgrade fixtures.

@@ -148,8 +148,8 @@ page's pinned instructions: they download the installer attached to that release
 and select its asset directory. Unpinned stable installation does not select a
 candidate. Standalone rc.4+ installations can discover the newest candidate with
 `zel upgrade --preview`; `--check` reports it without replacing the executable.
-The default hosted/container engine now matches the CLI version. To explicitly
-select an engine for this session:
+The default container image matches the CLI version. To explicitly select an
+image for this session's container operations:
 
 ```bash
 export ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base:0.2.0-rc.18
@@ -157,6 +157,8 @@ export ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base:0.2.0-rc.18
 
 In PowerShell, use `$env:ZELLIJ_IMAGE = 'ghcr.io/mylife-inc/zellij-base:0.2.0-rc.18'`.
 Image tags omit the version's leading `v`; candidates do not update `latest`.
+Rich file/static build, check and preview use their verified renderer cache,
+independently of `ZELLIJ_IMAGE`.
 
 ## What it does
 
