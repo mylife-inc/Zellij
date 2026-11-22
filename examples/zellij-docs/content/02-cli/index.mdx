@@ -12,8 +12,8 @@ describe the content model read a schema compiled into the binary. The commands
 that scaffold, check, build and preview portable Markdown run natively too.
 Rich YAML/MDX `zel build` downloads a verified
 renderer once, then generates a double-click website without separately installed
-Docker, Node.js, npm or Python. The renderer is cached outside the CLI. Hosted
-development and explicit `--target static`/image builds still use a container.
+Docker, Node.js, npm or Python. The renderer is cached outside the CLI. HTTP `--target static` builds share that cache. Hosted
+Next development and image builds still use a container.
 `zel new app` can also create an editable local wrapper; running that wrapper
 requires Node and npm. Use `zel new portable` for a Markdown
 starter that opens directly from disk after building.
@@ -25,15 +25,15 @@ There is a well-known terminal multiplexer called Zellij whose binary is
 
 ## Installing
 
-[Candidate 0.2.0-rc.17](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.17)
+[Candidate 0.2.0-rc.18](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.18)
 targets GNU/Linux, macOS and Windows on x64 and ARM64. Check the release page
 for publication status, pinned installers, package checksums and release notes.
-This reference covers candidate `0.2.0-rc.17`, including separate company branding,
+This reference covers candidate `0.2.0-rc.18`, including separate company branding,
 preview upgrades, versioned templates and matching default engine versions. Pre-1.0 installation uses
 explicit candidates; obsolete distributions are retired after their replacements
 are verified.
 
-Candidate rc.17 fixes desktop menu resize restoration so it respects a newer
+Candidate rc.18 fixes desktop menu resize restoration so it respects a newer
 keyboard-focus or pointer choice. It includes composition presets, book publication, optional PDF
 build/preview/delivery and book-classic 0.2.0, plus shared equation/statement
 references, numeric citations, glossary and index. Multilingual print, print
@@ -62,7 +62,7 @@ The tap README identifies its currently published version. Until 1.0, the formul
 clearly labels development previews. It installs Bash, Zsh and Fish completions
 and verifies archive checksums. No Node or container runtime is installed for
 portable web-only documentation. Rich builds download a private renderer on
-first use. Explicit static/image builds, hosted development and optional PDF
+first use. Image builds, hosted Next development and optional PDF
 typesetting require a supported container runtime.
 Use Homebrew to update a Homebrew installation; `zel upgrade` detects its
 ownership marker and prints the correct command without changing any files.
@@ -79,7 +79,7 @@ scoop update
 scoop update zel
 ```
 
-The bucket publishes candidate `0.2.0-rc.17` for native x64 and ARM64, with
+The bucket publishes candidate `0.2.0-rc.18` for native x64 and ARM64, with
 checksum-pinned archives. It uses Scoop's command shim and does not install
 Node, a container runtime or a shell profile. Portable web-only builds need
 none of those dependencies. Remove the package with `scoop uninstall zel`.
@@ -92,8 +92,8 @@ for the tested Windows versions, shells and update boundaries.
 
 ### WinGet status
 
-Candidate rc.17 includes verified native x64/ARM64 WinGet manifests in
-`zel-winget-v0.2.0-rc.17.zip` on the release page. It preserves WinGet ownership
+Candidate rc.18 includes verified native x64/ARM64 WinGet manifests in
+`zel-winget-v0.2.0-rc.18.zip` on the release page. It preserves WinGet ownership
 during updates. Publishing the manifest bundle is separate from acceptance
 into Microsoft's community catalog. The rc.15 [catalog submission](https://github.com/microsoft/winget-pkgs/pull/484934) is under review;
 `winget install --id Shebka.Zel --exact` is not yet an available installation
@@ -101,7 +101,7 @@ method. Use Scoop or the pinned standalone installer below.
 
 ### Native archives and installers
 
-Candidate rc.17 implements every registered command family. Imports cover
+Candidate rc.18 implements every registered command family. Imports cover
 MkDocs, Docusaurus, VitePress, Jekyll, Hugo and Sphinx within their documented
 declarative subsets. Deployment supports Netlify, Cloudflare Pages, Vercel,
 GitHub Pages, S3, existing Fly web apps, Railway image services and image
@@ -117,15 +117,15 @@ for current evidence. Command availability does not promise full source-tool
 plugin/theme compatibility or support for an unlisted provider.
 
 ```bash title="terminal"
-curl -fsSL https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.17/install.sh -o install.sh
-ZEL_VERSION=v0.2.0-rc.17 ZEL_RELEASE_BASE_URL=https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.17 sh ./install.sh
+curl -fsSL https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.18/install.sh -o install.sh
+ZEL_VERSION=v0.2.0-rc.18 ZEL_RELEASE_BASE_URL=https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.18 sh ./install.sh
 ```
 
 Or download the archive for your platform, verify it against its `.sha256`, and
 put `zel` on your PATH. See [the Quickstart](/guide/quickstart) for the detail.
 
 For Windows, use the candidate release page's pinned PowerShell instructions.
-They download its attached `install.ps1` and select version `v0.2.0-rc.17` and
+They download its attached `install.ps1` and select version `v0.2.0-rc.18` and
 that release's asset directory. The installer supports
 Windows PowerShell 5.1 and PowerShell 7, selects x64 or ARM64, verifies the
 checksum and executable version, and installs into
@@ -152,10 +152,10 @@ The default hosted/container engine now matches the CLI version. To explicitly
 select an engine for this session:
 
 ```bash
-export ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base:0.2.0-rc.17
+export ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base:0.2.0-rc.18
 ```
 
-In PowerShell, use `$env:ZELLIJ_IMAGE = 'ghcr.io/mylife-inc/zellij-base:0.2.0-rc.17'`.
+In PowerShell, use `$env:ZELLIJ_IMAGE = 'ghcr.io/mylife-inc/zellij-base:0.2.0-rc.18'`.
 Image tags omit the version's leading `v`; candidates do not update `latest`.
 
 ## What it does
@@ -177,7 +177,7 @@ Image tags omit the version's leading `v`; candidates do not update `latest`.
   </Card>
 </CardGrid>
 
-Candidate rc.17 includes template browsing and `zel create`. See
+Candidate rc.18 includes template browsing and `zel create`. See
 [templates](/cli/templates) for offline starters, exact revisions and local catalogs.
 
 ## The whole surface
@@ -215,7 +215,7 @@ Candidate rc.17 includes template browsing and `zel create`. See
 | [`zel completions`](/cli/completions) | Generate shell completion scripts; shortcut `comp` | **Available** |
 
 <Callout type="info" title="Source and release versions">
-Rows marked **Available** are included in candidate `0.2.0-rc.17`. A command's page records its
+Rows marked **Available** are included in candidate `0.2.0-rc.18`. A command's page records its
 supported renderers, providers and options; availability does not imply every
 historical proposal is implemented. Stable `0.1.3` does not include the full table.
 </Callout>
@@ -303,18 +303,19 @@ keep their distinct meanings; they are not interchangeable site selectors.
 Commands that only read the content model — `explain`, `list`, `context`,
 `detect`, `convert`, `new`, `fmt` — are pure Rust and need nothing installed.
 
-Hosted `dev` and explicit `build --target static` or `build --target image`
-commands run the Next.js engine in a container from a public image. Rich `build`
-defaults to the downloaded `file` renderer and needs no container.
+Hosted `dev` and `build --target image` run the Next.js engine in a container
+from a public image. Rich `build` defaults to the downloaded `file` renderer;
+explicit `--target static` uses the same cache for HTTP output.
 
-In candidate rc.17, rich `check`, `watch`, `view` and `view --watch` also
+In candidate rc.18, rich `check`, `watch`, `view` and `view --watch` also
 default to that cached renderer. `--offline` requires an existing cache.
-Use `--target static` to select their container paths explicitly.
+Both `--target file` and `--target static` use the verified cache.
 Portable `build`, `check`, `watch`, `dev` and `view` run
 natively and need no external tools. `serve` and `view` use a native local
 HTTP server; `view` can invoke the system browser launcher. Configured image
-publication uses the container runtime. Netlify deployment is native for portable
-content and uses a container export for hosted content.
+publication uses the container runtime. Static Netlify, Cloudflare Pages,
+Vercel, GitHub Pages and S3 deployment uses native uploads after either a native
+portable build or a cached rich build.
 
 Container-dependent operations stop with exit code 4 and setup guidance if no
 usable runtime is available. Docker, Podman and nerdctl are supported discovery

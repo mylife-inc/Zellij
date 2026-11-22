@@ -3,21 +3,9 @@ title: zel check
 description: Check portable Markdown without writing files, or validate hosted content with the engine.
 ---
 
-## Upcoming cached static validation
-
-The source update after rc.17 also runs `zel check --target static` through the
-verified renderer cache. It preserves `target: "static"` in JSON, deep/strict
-findings and exit 3 for invalid content. `--offline` works for both rich targets;
-a missing or damaged cache returns exit 2 without probing container endpoints.
-Validation uses the renderer matching the CLI, rather than `ZELLIJ_IMAGE`.
-No user-installed Docker, Node or Python is needed. Published rc.17 still uses
-the container path for explicit static checks; the behavior described below
-remains the rc.17 reference until this update is released.
-
-
 <Callout type="tip" title="Available">
 Portable Markdown checks run natively without Node, Docker, or network access.
-Candidate `0.2.0-rc.17` rich YAML/MDX checks use the
+Candidate `0.2.0-rc.18` rich YAML/MDX checks use the
 cached renderer by default. Only `zel` must be installed. The first check can
 download that renderer; `--offline` requires an existing verified cache.
 </Callout>
@@ -39,7 +27,7 @@ directory, it selects `./zel.yaml` or `./docs/zellij/zel.yaml`; no default means
 an actionable error. Explicit legacy folders and flat portable configs work too.
 
 Use `--target portable`, `--target file` (standalone rich), or `--target static`
-(container rich) to choose the checker for raw content.
+(cached rich HTTP) to choose the checker for raw content.
 A versioned site's renderer must match. `image` is not a check target. Malformed
 configuration produces an error. All three targets support `--json`; once a checker
 is selected, validation and runtime failures are reported as JSON too.
@@ -59,7 +47,7 @@ It checks image/download paths, heading and footnote fragments, and portable
 output filename collisions. Hidden paths and `node_modules` cannot supply
 published assets. Configured branding and navigation use the same checks as build.
 
-Candidate rc.17 also validates [book manifests](/cli/books), including
+Candidate rc.18 also validates [book manifests](/cli/books), including
 complete chapter coverage, unique IDs/sources and cover assets. Successful
 compilation adds an optional `book` object to JSON reports.
 
@@ -136,7 +124,7 @@ the first fatal error determines the exit status.
 
 ```bash title="terminal"
 zel check ./content
-zel check ./content --target static  # explicitly use the container engine
+zel check ./content --target static  # use the cached HTTP-target validator
 zel check ./content --deep
 zel check ./content --deep --strict
 zel check ./content --deep --strict --json > check-report.json
@@ -153,23 +141,23 @@ No parent directory is searched. A guide-only site needs no `site.yaml`.
 
 ### Shared engine schemas
 
-Both rich checkers run the engine's own schemas. The default standalone checker
+Both rich checkers run the engine's own schemas. Each
 uses the same version/platform-matched renderer cache as `zel build`, under
 [`ZELLIJ_HOME`](/cli/config#zellij-home). It does not run authored MDX, build HTML,
 copy assets, write search indexes, or modify content and existing exports.
 Private temporary request/report files are removed on completion.
 
-`--target static` instead mounts content read-only into the selected container
-image. This is useful when validating the same image used for deployment.
-`--offline` applies only to the standalone `file` checker; it prevents renderer
-downloads and fails if the matching cache is absent or damaged.
+`--target file` and `--target static` use the same validator and preserve the
+selected target in their report. `--offline` applies to both: it prevents
+renderer downloads and fails if the matching cache is absent or damaged.
+`ZELLIJ_IMAGE` selects container operations, not the static validator.
 A successful check is still followed by preparation and compilation, which can
 detect additional errors.
 
 ### Hosted JSON reports
 
 `--json` emits one report on stdout with the same common fields shown above,
-`target: "file"` (or `"static"` for the explicit container checker), and an
+`target: "file"` (or `"static"` for the HTTP-target checker), and an
 additional `deep` boolean. The report comes from the
 engine's actual validation results. `pages` counts loaded routes when site
 loading succeeds, even if deep checks or strict warnings fail; otherwise it is
@@ -179,13 +167,11 @@ Content-model failures use diagnostic code `content`; static MDX/reference
 findings use `deep`; warnings use `warning`. Diagnostic messages retain the
 engine's detail. `file` is source-relative when the engine provides it directly,
 otherwise `null`; locations are not guessed from message text. `root` is the
-selected host content directory. Messages stay verbatim; the container checker
-can mention its `/content` mount. Authored URLs inside messages are never rewritten.
+selected host content directory. Messages stay verbatim. Authored URLs inside messages are never rewritten.
 
 The native CLI exits 0 on success and 3 for invalid content or strict warnings.
-Unavailable runtimes and inaccessible bind mounts produce `runtime` diagnostics
-and exit 4. Configuration conflicts produce `configuration` diagnostics and
-exit 2. An incompatible report or failed engine invocation produces an `engine`
+Missing/damaged renderer caches and configuration conflicts produce
+`configuration` diagnostics and exit 2; no container is probed. An incompatible report or failed engine invocation produces an `engine`
 diagnostic and exit 1. These operational failures have `pages: null` and do not
 claim that the content was checked.
 
@@ -306,32 +292,24 @@ automatically enable it. Native `zel deploy netlify` is implemented; see
 
 <div id="when-the-folder-is-somewhere-the-runtime-cannot-see" className="zellij-legacy-anchor" />
 
-### Container file sharing
+<div id="container-file-sharing" className="zellij-legacy-anchor" />
 
-```
-error: my-docs is not shared with the container runtime
-```
+### Local renderer access
 
-A bind mount of an unreachable path does not fail — it mounts an empty
-directory, and the checker faithfully reports a site with no pages. True of what
-it was shown, and a lie about what you asked.
-
-Colima shares `$HOME` and not `/tmp`:
-
-```bash title="terminal"
-colima stop && colima start --mount '/tmp:w'
-```
+Both rich checks read local content directly through the verified renderer.
+Container file-sharing settings do not apply. See [resource directories](/cli/config#zellij-home)
+for cache locations, offline preparation and permissions.
 
 ## Options
 
 | Option | Portable Markdown | Hosted YAML/MDX |
 | --- | --- | --- |
 | `[dir]` | Configured site or explicit Markdown root | [Content discovery](/cli/#how-a-command-finds-your-content) |
-| `--target` | `portable` | `file` by default; `static` for a container |
-| `--offline` | Not applicable | Require the cached `file` renderer |
+| `--target` | `portable` | `file` by default; `static` for HTTP output |
+| `--offline` | Not applicable | Require the cached `file`/`static` renderer |
 | `--deep` | Accepted; local references are always checked | Adds MDX syntax and static-reference checks |
 | `--strict` | Warnings fail the command | Warnings fail the command |
-| `--json` | Structured report on success and validation failure | Structured report, including engine/runtime failures |
+| `--json` | Structured report on success and validation failure | Structured report, including renderer/preparation failures |
 
 `--strict` is off by default. Hosted strict mode includes unknown top-level
 keys, unused sections and other existing warnings. Use `--deep --strict` to
@@ -340,8 +318,7 @@ these flags too: `npx zellij check ./content --deep --strict --json`.
 The Node command exits 1 on failed validation; native `zel` uses exit 3.
 
 `--quiet` suppresses the native success summary while retaining warnings/errors
-and the complete JSON report. Standalone rich checks also suppress their success summary; explicit container
-checks retain their full engine report.
+and the complete JSON report. Both rich checks also suppress their success summary.
 `--verbose` adds execution details on stderr; `--no-color` removes terminal styling.
 See [shared output controls](/cli/#output-controls). JSON is additionally available
 for `context`, `list`, `explain`, `detect`

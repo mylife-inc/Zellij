@@ -3,16 +3,6 @@ title: zel migrate
 description: Detect, convert and check in one step, stopping at the first failure.
 ---
 
-## Upcoming validation without a container
-
-The source update after rc.17 runs migration's final hosted validation through
-the CLI-matched renderer cache. First use downloads that renderer; later checks
-reuse it without installing Docker, Node or Python. Missing prerequisites or
-invalid content leave the converted files available and report their location.
-`--dry-run` still writes nothing and never downloads a renderer. Published rc.17
-retains the container requirement described below.
-
-
 <div id="what-it-is" className="zellij-legacy-anchor" />
 <div id="then-why-does-it-exist" className="zellij-legacy-anchor" />
 
@@ -24,8 +14,10 @@ zel mig ./old-docs --out ./manual --layout site
 
 This imports into `manual/zel.yaml` and `manual/content/`, then validates the new
 hosted site. The original source is unchanged. All current converters emit
-hosted content, so validation requires a running Docker, Podman or nerdctl
-runtime. Zellij reports missing tools without installing or starting them.
+hosted content. Validation downloads the CLI-matched renderer on first use and
+then reuses its verified cache. It needs no separately installed Docker, Node
+or Python. Preparation or content failures retain the converted sources and
+report their location; `--dry-run` never downloads a renderer.
 
 For compatibility, **omitting `--layout` still writes raw hosted content directly
 under `--out`**. `--layout content` explicitly selects that same legacy behavior.
@@ -41,10 +33,10 @@ zel mig ./old-docs --out ./manual --layout site --dry-run
 ```
 
 Dry run converts in memory and prints proposed files, warnings and unmapped
-features. It writes nothing and skips validation and runtime checks. Use `--from
+features. It writes nothing and skips validation and renderer preparation. Use `--from
 mkdocs` or `--from docusaurus` to select a converter when detection is ambiguous.
 
-Conversion errors stop before writing. If a later validation or runtime check
+Conversion errors stop before writing. If a later validation or renderer preparation
 fails, the converted destination remains available for inspection; fix the issue
 and run `zel check ./manual`. Rerunning migration into the populated folder is
 refused. Destination and source must be disjoint, and the destination must be new
@@ -77,14 +69,14 @@ See [conversion limits](/cli/convert).
 | `--validate` | Accepted for parity with `convert`; migration already validates |
 | `--dry-run` | In-memory conversion only; no writes or validation |
 
-Candidate rc.17 supports `--assets skip` for document-only imports. Asset
+Candidate rc.18 supports `--assets skip` for document-only imports. Asset
 references remain unchanged and may need manual repair; document links still
 convert normally. See [asset policy](/cli/convert#document-links-and-assets).
 To use existing public assets, add `--assets link --asset-base-url
 https://cdn.example.com/manual/`. Migration saves the resulting absolute URLs
 in the converted content and copies no referenced assets. The report lists
 those URLs; validation does not test their remote availability. The asset and
-optional validation flags are available in candidate `0.2.0-rc.17`.
+optional validation flags are available in candidate `0.2.0-rc.18`.
 
 ## See also
 

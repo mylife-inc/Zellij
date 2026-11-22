@@ -1,6 +1,9 @@
 # Cached static validation — 21 November 2026
 
-Status: implemented in source after rc.17; release remains pending.
+Status: merged in PR #235 and published in rc.18. The final source gate passes
+all 37 required jobs; public-package and publication evidence is recorded in the
+[rc.18 release record](evidence/zellij-rc18-release-2026-11-21.json).
+The original implementation checkpoints below are retained as dated history.
 
 `check --target static` (including `c`) and `watch --target static` now use the
 same verified cached validator as rich `file` checks. Both accept `--offline`.
@@ -21,13 +24,14 @@ retained after a failed check. Dry runs do not prepare or execute the renderer.
 
 Validation watch pins renderer/layout and content scope, serializes edits,
 retains invalid content for recovery, and cancels the active renderer on Ctrl-C.
-It does not start an HTTP server or browser. HTTP static builds/previews,
+It does not start an HTTP server or browser. At this initial validation-only
+checkpoint, HTTP static builds/previews,
 deployment builds, image commands, Next development and PDF are unchanged in
-this milestone. The matching CLI/renderer candidate has not yet been published;
+this milestone. At that checkpoint the matching CLI/renderer candidate was not yet published;
 the current public rc.17 behavior is preserved in the guides with a clearly
 labelled upcoming-source section.
 
-Local verification: protocol tests and the full Rust suite pass
+Initial local verification: protocol tests and the full Rust suite pass
 829 tests with 5 existing ignores. Real current-source cached watch acceptance
 passes initial failures, same-size edits, configuration recovery, pinned scope
 and Ctrl-C with no tools on PATH. Native-package acceptance now starts its cold
@@ -47,4 +51,11 @@ Intel macOS: a cold static check downloads into an empty resource home, then
 both rich validation targets, offline builds, watch recovery/cancellation,
 cache-integrity/traversal rejection and all 28 starter pages pass with an empty
 PATH. This verifies the existing renderer protocol; hosted six-platform
-acceptance of the modified CLI remains pending. No release assets were changed.
+acceptance of the modified CLI was pending. No rc.17 release assets were changed.
+
+Both migrations now ship together at immutable `faaee97` in rc.18. The final
+local preflight passes 832 Rust tests (5 existing ignores), 546 engine tests,
+format, Clippy, types and schema checks. The final source CI and packaged
+renderer matrix pass; see the release record for subsequent public-download,
+channel and documentation acceptance. The HTTP migration is documented
+[separately](zellij-cached-http-export-2026-11-21.md).

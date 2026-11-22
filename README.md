@@ -63,7 +63,7 @@ and no browser library. They work offline with JavaScript disabled. Enable
 runtime. Diagram source stays readable without JavaScript; Mermaid grammar errors
 are reported in the browser, while native checks validate input limits.
 
-[Candidate 0.2.0-rc.17](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.17)
+[Candidate 0.2.0-rc.18](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.18)
 provides native x64 and ARM64 downloads for GNU/Linux, macOS and Windows, with
 pinned shell/PowerShell installers and checksums. Homebrew installation is
 `brew install mylife-inc/tap/zel`. Windows users can install through the owned
@@ -77,7 +77,8 @@ scoop install mylife-inc/zel
 Use `scoop update; scoop update zel` for that installation; `zel upgrade` preserves
 package-manager ownership. Rich `zel build` downloads and caches its renderer;
 portable web builds run natively. Neither needs installed build tools. Explicit
-static/image builds and development use the release's matching container images. See the
+image builds and Next development use the release's matching container images.
+Rich HTTP `--target static` builds use the same downloaded renderer as `file`. See the
 [native distribution contract](specs/zel-native-distribution.md) for tested OS
 versions, commands and limits.
 
@@ -117,8 +118,8 @@ creative-studio use version 0.1.3 with corrected inline authoring guides.
 Product-studio and api-platform retain version 0.1.2; previously published
 archives remain unchanged.
 
-The [candidate notes](specs/releases/v0.2.0-rc.17.md) describe the desktop menu focus
-correction. WinGet ownership protection and the x64/ARM64 manifest bundle remain
+The [candidate notes](specs/releases/v0.2.0-rc.18.md) describe cached rich HTTP export, validation, preview and
+static deployment builds without separately installed build tools. WinGet ownership protection and the x64/ARM64 manifest bundle remain
 included. Microsoft catalog acceptance for the rc.15 submission remains
 separate; a public WinGet install is not yet available.
 Standalone rich validation and live preview remain included. Downloaded resources share one home: `ZELLIJ_HOME`,
@@ -211,17 +212,19 @@ deployed.
 
 [`cli/`](cli) is `zel`: one native binary for scaffolding a content folder,
 converting one from another documentation tool, validating it, building it and
-shipping it. Candidate rc.17 builds rich double-click websites with a downloaded,
+shipping it. Candidate rc.18 builds rich double-click websites with a downloaded,
 verified renderer cached separately from the small CLI: no Docker, Node.js, npm
 or Python installation is required. `zel build` selects this for rich sites;
 `zel build --offline` requires the matching cache to be present. Explicit
-`--target static` and image commands retain their container workflow. Commands that describe Zellij's content
+`--target static` shares that cache for HTTP output; image commands retain
+their container workflow. Commands that describe Zellij's content
 model read the schema compiled into the native binary.
 
-Candidate rc.17 also uses the cached renderer for rich `zel check`,
+Candidate rc.18 also uses the cached renderer for rich `zel check`,
 `zel watch`, `zel view` and `zel view --watch`. These commands accept
-`--offline`; `--target static` selects their existing container paths explicitly.
-See [the implementation contract](specs/zellij-standalone-authoring-2026-11-19.md).
+`--offline` for both `file` and `static`. Static deployment builds and optional
+import validation also reuse the cache.
+See [the implementation contract](specs/zellij-cached-http-export-2026-11-21.md).
 The [cached-toolchain review](specs/zellij-cached-toolchains-2026-11-21.md) describes
 which remaining commands could remove external prerequisites in future releases.
 

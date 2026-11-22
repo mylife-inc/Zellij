@@ -62,7 +62,7 @@
   {
     "route": "/cli/check",
     "legacy_id": "when-the-folder-is-somewhere-the-runtime-cannot-see",
-    "destination_heading": "Container file sharing"
+    "destination_heading": "Local renderer access"
   },
   {
     "route": "/cli/check",

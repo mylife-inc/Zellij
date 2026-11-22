@@ -3,17 +3,7 @@ title: zel watch
 description: Validate a site initially and after edits without building or serving it.
 ---
 
-## Upcoming cached static validation
-
-In the source update after rc.17, `zel watch --target static --offline` uses the
-same verified cache as rich file validation. Both targets preserve serial
-checks, invalid-edit recovery and cancellation of the active renderer. Missing
-or damaged caches fail once at startup, without probing Docker. Published rc.17
-still uses a container for explicit static watch; the options below describe
-that released candidate.
-
-
-<Callout type="tip" title="Available in candidate 0.2.0-rc.17">
+<Callout type="tip" title="Available in candidate 0.2.0-rc.18">
 Portable validation runs natively. Rich validation now uses the cached renderer
 with no separately installed tools.
 </Callout>
@@ -23,7 +13,7 @@ zel watch
 zel watch --deep --strict
 zel watch docs/manual --strict
 zel watch --offline --deep
-zel watch --target static --deep  # explicitly use the container engine
+zel watch --target static --deep  # use the cached HTTP-target validator
 ```
 
 `watch` runs the same validation as [`zel check`](/cli/check), then repeats it
@@ -57,8 +47,8 @@ output and unrelated repository files do not trigger validation or rebuilding.
 | Option | Meaning | Default |
 | --- | --- | --- |
 | `[dir]` | Site root or explicit legacy content folder | Configured-site discovery |
-| `--target` | `portable`, standalone rich `file`, or container `static` | Configured renderer; rich defaults to `file` |
-| `--offline` | Require an already cached renderer; `file` only | Downloads a matching renderer if absent |
+| `--target` | `portable`, rich `file`, or HTTP `static` | Configured renderer; rich defaults to `file` |
+| `--offline` | Require an already cached renderer; `file` or `static` | Downloads a matching renderer if absent |
 | `--deep` | Hosted MDX and local-reference checks; portable checking already includes these checks | Off |
 | `--strict` | Treat warnings as validation failures | Off |
 
@@ -72,8 +62,9 @@ for the session.
 Rich validation downloads its matching renderer once if needed, then uses the
 verified cache for every check. `--offline` prevents that initial download. An
 unavailable or damaged cache is a startup error, rather than a repeated content
-failure. Explicit `--target static` requires a container runtime and stops with
-exit **4** if none is usable; an active container check finishes before shutdown.
+failure. Both rich targets use this behavior; missing or damaged caches return
+exit **2** without probing container endpoints. Ctrl-C cancels and reaps the
+active validator before cleanup.
 See [`zel doctor`](/cli/doctor).
 
 ## See also
