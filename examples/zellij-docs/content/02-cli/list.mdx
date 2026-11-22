@@ -33,7 +33,7 @@ binary in your hand may not be it.
 
 ## `zel list sections`
 
-Candidate rc.17 also has `zel list presets` (short form: `zel presets`), listing
+Candidate rc.18 also has `zel list presets` (short form: `zel presets`), listing
 nine offline section compositions. `--json` returns a `presets` array of
 `name`, `sectionType` and `description`. Generate one with `zel ns -p <name>`.
 The five additions in rc.11 are `product-selector`, `feature-explorer`,
@@ -88,13 +88,14 @@ is one you will need the [AI route](/cli/context) for.
 ## `zel list targets`
 
 ```
-static     A hosted YAML/MDX website; build with the container engine.
+static     A rich YAML/MDX website for HTTP; uses the verified renderer cache.
 image      A container running the site on port 3000.
 portable   A Markdown folder rendered natively; open index.html directly.
+file       A rich YAML/MDX website for double-click viewing; uses the same cache.
 ```
 
 What [`zel build`](/cli/build) can produce. Without an explicit target, build
-selects `static` for discovered structured Zellij content and `portable` for
+selects `file` for discovered structured Zellij content and `portable` for
 a plain Markdown folder. `image` must be requested explicitly.
 
 ## Machine-readable
