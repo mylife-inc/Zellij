@@ -3,9 +3,9 @@ title: eject
 description: Create an editable Next.js wrapper from verified source downloads or an explicit distribution image.
 ---
 
-<Callout type="info" title="Upcoming candidate 0.2.0-rc.19">
-The cached-source default described here is implemented for rc.19 and awaits
-release acceptance. Released rc.18 extracts from a container by default.
+<Callout type="info" title="Available in candidate 0.2.0-rc.19">
+Candidate rc.19 introduces cached editable sources. Older candidates extract
+from a container by default. Explicit image selection remains supported.
 </Callout>
 
 ```bash
@@ -13,7 +13,7 @@ zel eject --out my-wrapper
 zel eject docs/manual --out my-wrapper
 zel eject --with-docs --out my-wrapper
 zel eject --with-docs --out another-wrapper --offline
-zel eject --with-docs --out my-wrapper --image ghcr.io/mylife-inc/zellij-base:0.2.0-rc.18
+zel eject --with-docs --out my-wrapper --image ghcr.io/mylife-inc/zellij-base:0.2.0-rc.19
 ```
 
 With no image override, `eject` downloads the matching editable source package
@@ -69,7 +69,9 @@ npm run dev
 requires HTTP serving. To produce a rich double-clickable site from the same
 hosted content, use default [`zel build`](/cli/build) on its Zellij site root;
 the portable Markdown target also supports direct `index.html` viewing.
-Extraction installs no dependencies.
+Extraction installs no dependencies. The source download includes ready-built
+engine helpers for wrapper development. For changes to the engine build system
+or CLI helpers, use a full Zellij checkout with `new app --engine`.
 
 ## Runtime and compatibility
 
@@ -94,4 +96,4 @@ For explicit image extraction, missing runtime exits `4`, invalid arguments/layo
 operations exit `3`. `--json` is not supported. See [`features`](/cli/features) to
 change dependency selection afterward.
 
-Image extraction is available in rc.18; cached sources are the upcoming rc.19 addition.
+Candidate rc.19 supports both cached sources and explicit image extraction.

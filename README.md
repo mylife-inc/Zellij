@@ -63,7 +63,7 @@ and no browser library. They work offline with JavaScript disabled. Enable
 runtime. Diagram source stays readable without JavaScript; Mermaid grammar errors
 are reported in the browser, while native checks validate input limits.
 
-[Candidate 0.2.0-rc.18](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.18)
+[Candidate 0.2.0-rc.19](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.19)
 provides native x64 and ARM64 downloads for GNU/Linux, macOS and Windows, with
 pinned shell/PowerShell installers and checksums. Homebrew installation is
 `brew install mylife-inc/tap/zel`. Windows users can install through the owned
@@ -118,14 +118,15 @@ creative-studio use version 0.1.3 with corrected inline authoring guides.
 Product-studio and api-platform retain version 0.1.2; previously published
 archives remain unchanged.
 
-The [candidate notes](specs/releases/v0.2.0-rc.18.md) describe cached rich HTTP export, validation, preview and
-static deployment builds without separately installed build tools. WinGet ownership protection and the x64/ARM64 manifest bundle remain
+The [candidate notes](specs/releases/v0.2.0-rc.19.md) describe cached editable sources for default `eject` and
+`new app`, alongside cached rich HTTP/file builds, validation and preview.
+Wrapper generation needs only `zel`; running an editable Next app needs Node/npm. WinGet ownership protection and the x64/ARM64 manifest bundle remain
 included. Microsoft catalog acceptance for the rc.15 submission remains
 separate; a public WinGet install is not yet available.
 Standalone rich validation and live preview remain included. Downloaded resources share one home: `ZELLIJ_HOME`,
 default `~/Dev/config/zellij`. Standalone installers use its
-`bin/`; renderer and remote-template downloads use `cache/engines/` and
-`cache/templates/`. Homebrew and Scoop keep their own executable locations.
+`bin/`; renderer, remote-template and editable-source downloads use
+`cache/engines/`, `cache/templates/` and `cache/sources/`. Homebrew and Scoop keep their own executable locations.
 The section composer supports video, layers, semantic content, product selectors, scroll stories
 and eight reusable built-in sections. Nine editable presets are available with
 `zel presets`; generate one with `zel ns -p product-overview --out content/sections/overview.yaml`. See the
@@ -212,7 +213,7 @@ deployed.
 
 [`cli/`](cli) is `zel`: one native binary for scaffolding a content folder,
 converting one from another documentation tool, validating it, building it and
-shipping it. Candidate rc.18 builds rich double-click websites with a downloaded,
+shipping it. Candidate rc.19 builds rich double-click websites with a downloaded,
 verified renderer cached separately from the small CLI: no Docker, Node.js, npm
 or Python installation is required. `zel build` selects this for rich sites;
 `zel build --offline` requires the matching cache to be present. Explicit
@@ -220,7 +221,7 @@ or Python installation is required. `zel build` selects this for rich sites;
 their container workflow. Commands that describe Zellij's content
 model read the schema compiled into the native binary.
 
-Candidate rc.18 also uses the cached renderer for rich `zel check`,
+Candidate rc.19 also uses the cached renderer for rich `zel check`,
 `zel watch`, `zel view` and `zel view --watch`. These commands accept
 `--offline` for both `file` and `static`. Static deployment builds and optional
 import validation also reuse the cache.

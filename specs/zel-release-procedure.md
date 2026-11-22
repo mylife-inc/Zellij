@@ -1,5 +1,18 @@
 # Zellij release channels and candidate procedure
 
+**2026-11-22: rc.19 publication.** Immutable `3d3b426` ships verified cached
+editable sources for default `eject` and `new app`. All 37 source jobs and all
+six tagged installed-wrapper packages pass. Both public repositories have 42
+matching assets, including the 8.2 MB source archive; the public source bytes and
+generated recipes are independently checked. Postpublication/channel acceptance
+and final guides remain in progress. Main CI separately retains the historical
+documentation timeout recurrence; diagnostic follow-up `bfb450b` improves partial
+state capture without changing the runtime or declaring the timing fixed. See
+[rc.19 evidence](evidence/zellij-rc19-release-2026-11-22.json). No retirement or
+external-provider/catalog acceptance is included. Earlier checkpoints below are
+history, not the current candidate version.
+
+
 **2026-11-21: rc.18 publication.** Immutable source `faaee97` ships cached
 static validation/watch, HTTP build/preview and native provider static-build
 stages. Source CI `44987846589` passes all 37 required jobs; both repositories

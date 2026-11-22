@@ -9,7 +9,7 @@ then published.
 **Needs:** `zel`, and a container runtime from step 2 onward. Check with
 `zel doctor`.
 
-<Callout type="info" title="Use candidate 0.2.0-rc.18 or current source">
+<Callout type="info" title="Use candidate 0.2.0-rc.19 or current source">
 The complete loop is implemented: create a site, preview edits, validate, build
 and deploy. This lab's live preview and deployment steps use a container.
 For just a rich double-click website, run `zel build my-docs` after creation;
@@ -77,7 +77,8 @@ If you *do* want it on disk — because you deploy to Vercel, or you want your o
 React pages alongside — `zel eject my-docs --out my-site` extracts a wrapper and
 engine while referencing the existing content. Install its dependencies and run
 `npm run dev` there. [`zel new app`](/cli/new#zel-new-app-dir) is another option
-when you already have a built local engine package to select with `--engine`.
+using the same cached sources by default, or your built local engine with
+`--engine`. Generating either wrapper needs only `zel`; running it needs Node/npm.
 </Callout>
 
 </Step>
