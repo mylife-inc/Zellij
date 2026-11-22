@@ -10,7 +10,7 @@ export function compare(native, wasm) {
   assert.equal(texts[0], texts[1], 'NFKC-normalized extracted text and layout');
   const info = [native, wasm].map(pdf => command('pdfinfo', [pdf], 'utf8'));
   const pages = info.map(text => Number(text.match(/^Pages:\s+(\d+)/m)?.[1]));
-  assert(pages[0] > 0 && pages[0] <= 100);
+  assert(pages[0] > 0 && pages[0] <= 400);
   assert.equal(pages[0], pages[1], 'Page count');
   assert.equal(info[0].match(/^Page size:.+$/m)?.[0], info[1].match(/^Page size:.+$/m)?.[0], 'Page dimensions');
   const pageSha256 = [];

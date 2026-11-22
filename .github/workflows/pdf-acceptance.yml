@@ -46,6 +46,10 @@ jobs:
         env:
           DOCKER_CONTEXT: ${{ matrix.runtime == 'docker' && 'default' || '' }}
         run: node scripts/check-language-pdfs.mjs
+      - name: Keep three-digit chapter numbers inside the contents column
+        env:
+          DOCKER_CONTEXT: ${{ matrix.runtime == 'docker' && 'default' || '' }}
+        run: node scripts/check-long-book-pdf.mjs
       - uses: actions/upload-artifact@v7
         if: always()
         with:

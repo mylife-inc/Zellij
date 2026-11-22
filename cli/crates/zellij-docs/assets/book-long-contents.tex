@@ -1,0 +1,20 @@
+% Large books need room for three or more digits in the contents column.
+% Measure using the selected body font after document/font initialization.
+\usepackage{etoolbox}
+\makeatletter
+\newlength{\zeltocchapterwidth}
+\AtBeginDocument{%
+  \setlength{\zeltocchapterwidth}{1.5em}%
+  \begingroup\normalfont\bfseries
+  \@tempcnta=1
+  \loop
+    \settowidth{\@tempdima}{\number\@tempcnta\enspace}%
+    \ifdim\@tempdima>\zeltocchapterwidth
+      \global\zeltocchapterwidth=\@tempdima
+    \fi
+    \advance\@tempcnta by 1
+    \ifnum\@tempcnta<@CHAPTER_LIMIT@
+  \repeat
+  \endgroup}
+\patchcmd{\l@chapter}{1.5em}{\zeltocchapterwidth}{}{\PackageError{Zellij}{Cannot size chapter numbers in contents}{The print template is incompatible with this LaTeX class.}}
+\makeatother

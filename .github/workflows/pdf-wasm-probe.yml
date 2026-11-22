@@ -6,6 +6,9 @@ on:
       - .github/workflows/pdf-wasm-probe.yml
       - scripts/pdf-wasm/**
       - cli/crates/zellij-docs/examples/pdf_probe_inputs.rs
+      - cli/crates/zellij-docs/src/pdf.rs
+      - cli/crates/zellij-docs/assets/book*.tex
+      - scripts/fixtures/long-book.mjs
 permissions:
   contents: read
 jobs:

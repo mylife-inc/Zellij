@@ -613,6 +613,13 @@ pub(crate) fn compose(
         .and_then(|s| s.title_font)
         .map_or("", |f| f.latex());
     out = out.replace("@TITLE_FONT@", title_font);
+    let chapters = book.entries.iter().filter(|e| e.kind == "chapter").count();
+    if chapters >= 100 {
+        out.push_str(
+            &include_str!("../assets/book-long-contents.tex")
+                .replace("@CHAPTER_LIMIT@", &(chapters + 1).to_string()),
+        );
+    }
     if language.rtl {
         // LuaTeX's RTL paragraphs interpret raggedright relative to their
         // reading direction. Replacing it with raggedleft would align left.

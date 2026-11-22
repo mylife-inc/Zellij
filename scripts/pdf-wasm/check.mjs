@@ -7,6 +7,7 @@ import { compile } from './probe.mjs';
 import { writeLanguageBook } from '../fixtures/book-languages.mjs';
 import { printStyles, withPrintStyle } from '../fixtures/print-styles.mjs';
 import { compare } from './compare.mjs';
+import { writeLongBook } from '../fixtures/long-book.mjs';
 
 const bundle = process.env.ZEL_PDF_PROBE_BUNDLE;
 if (!bundle) throw new Error('Set ZEL_PDF_PROBE_BUNDLE');
@@ -57,4 +58,7 @@ try {
   delete config.pdf.style;
   writeFileSync(path.join(defaultFonts, 'zel.yaml'), JSON.stringify(config, null, 2));
   await check('ar-default-fonts', defaultFonts);
+  const longBook = path.join(root, 'long-book');
+  writeLongBook(longBook);
+  await check('long-book', longBook);
 } finally { rmSync(root, { recursive: true, force: true }); }
