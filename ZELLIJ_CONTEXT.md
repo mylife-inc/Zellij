@@ -19,7 +19,12 @@ retain their existing prerequisites. Local Rust/engine, browser-preview and
 synthetic-provider checks pass; package/hosted acceptance remains in progress.
 See the [HTTP implementation record](specs/zellij-cached-http-export-2026-11-21.md).
 Public rc.17 has not been changed. The earlier validation step is commit
-`e82a586` in PR #234; its hosted acceptance is being followed to completion.
+`e82a586` in PR #234. PR #235 now includes both migrations for one combined
+acceptance/release gate. The first validation CI failed an obsolete text-output
+assertion; the corrected fixture checks structured routes and findings. The
+first HTTP package matrix exposed a test-only YAML dependency in the intentionally
+npm-free runner; its fixture edit now uses built-in APIs. Both failures remain
+recorded; neither is counted as a successful gate.
 
 **2026-11-21: cached static validation — source migration in progress**
 

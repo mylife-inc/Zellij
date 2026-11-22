@@ -561,7 +561,7 @@ jobs:
       - name: Scaffold names, rendered links, and content discovery
         env:
           ZELLIJ_IMAGE: zellij-ci
-        run: node scripts/check-scaffolds.mjs cli/target/debug/zel "$(mktemp -d)/fixtures" --container-check
+        run: node scripts/check-scaffolds.mjs cli/target/debug/zel "$(mktemp -d)/fixtures" --cached-check
 
       - name: Full starter exports every section and its local media
         env:

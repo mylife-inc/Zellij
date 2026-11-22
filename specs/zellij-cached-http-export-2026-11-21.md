@@ -62,5 +62,16 @@ export targets, offline reuse, all 28 starter pages, route-collision rejection,
 metadata and analytics-mode checks, cache integrity, and file/static preview in
 Chromium and WebKit. Both targets use one renderer download. The source test
 initially retained version rc.17; it did not alter public rc.17 assets. The rc.18
-version bump and final hosted matrix are being checked next. No new release or live provider action is
-claimed by this record.
+package passes on Intel Mac with four browser-preview checks and direct-file
+Chromium/WebKit browsing of all 16 showcase routes, with no captured browser
+errors or HTTP requests. The hosted matrix remains in progress. No new release
+or live provider action is claimed by this record.
+
+Initial hosted runs found maintenance-fixture assumptions: the website workflow
+policy still counted a removed Docker build; scaffold discovery expected old
+container log text instead of the structured route report; and the package
+acceptance runner imported YAML despite intentionally having no npm installation.
+The fixtures now check the cache setup, actual route count/findings and use
+built-in APIs for the known analytics fixture. Original failures are retained.
+PR #235 includes validation commit `e82a586` from #234 so both changes share the
+final acceptance and release gate.

@@ -1,5 +1,5 @@
 // Check real Rust/Node scaffolds with engine schemas and the rendered Hero.
-// --container-check also exercises default CLI discovery against the CI image.
+// --cached-check also exercises default CLI discovery against the cached renderer.
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
@@ -90,21 +90,25 @@ for (const [index, name] of names.entries()) {
 }
 console.log('40 Rust starters, 10 Node starters and 10 guide titles: exact metadata and rendered links verified.');
 
-if (mode === '--container-check') {
+if (mode === '--cached-check') {
   for (const location of ['', 'content', 'docs', 'documentation']) {
     const cwd = path.join(root, `discover-${location || 'root'}`);
     const content = path.join(cwd, location);
     execFileSync(zel, ['new', 'guide', 'manual', '--dir', content, '--title', 'Guide: "Start"']);
-    const output = execFileSync(zel, ['check', '.', '--target', 'static'], { cwd, encoding: 'utf8' });
-    assert.match(output, /guides\s+1/);
-    console.log(`CLI discovery + container check: ${location || 'root'} guide-only site passed.`);
+    const output = execFileSync(zel, ['check', '.', '--target', 'static', '--json', '--offline'], { cwd, encoding: 'utf8' });
+    const report = JSON.parse(output);
+    assert.equal(report.target, 'static');
+    assert.equal(report.ok, true);
+    assert.equal(report.pages, 2); // The guide landing and its first page.
+    assert.deepEqual(report.diagnostics, []);
+    console.log(`CLI discovery + cached check: ${location || 'root'} guide-only site passed.`);
   }
   const menuOnly = path.join(root, 'menu-only');
   await mkdir(menuOnly);
   await writeFile(path.join(menuOnly, 'menu.yaml'), '[]\n');
   await load(menuOnly, true);
-  const output = spawnSync(zel, ['check', '.', '--target', 'static'], { cwd: menuOnly, encoding: 'utf8' });
+  const output = spawnSync(zel, ['check', '.', '--target', 'static', '--offline'], { cwd: menuOnly, encoding: 'utf8' });
   assert.equal(output.status, 0, output.stderr);
   assert.match(output.stdout + output.stderr, /no front page/); // Valid, but deliberately has nothing to render.
-  console.log('CLI discovery + container check: menu-only root accepted with the expected empty-site warning.');
+  console.log('CLI discovery + cached check: menu-only root accepted with the expected empty-site warning.');
 }

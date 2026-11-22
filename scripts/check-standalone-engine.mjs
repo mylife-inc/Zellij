@@ -5,7 +5,6 @@ import { mkdtemp, mkdir, readFile, writeFile, cp, rm, readdir } from 'node:fs/pr
 import path from 'node:path';
 import os from 'node:os';
 import assert from 'node:assert/strict';
-import YAML from 'yaml';
 import { checkStandaloneAuthoring } from './check-standalone-authoring.mjs';
 const repo = path.resolve(import.meta.dirname, '..');
 const binary = path.resolve(process.argv[2] ?? `cli/target/debug/zel${process.platform === 'win32' ? '.exe' : ''}`);
@@ -88,9 +87,12 @@ try {
   assert.match(prefixed, /href="\.\/_zellij\/file\/styles\.css"/);
   const sitePath = path.join(root, 'content/site.yaml');
   const sourceSite = await readFile(sitePath, 'utf8');
-  const withAnalytics = YAML.parse(sourceSite);
-  withAnalytics.analytics = { provider: 'plausible', domain: 'docs.example.test' };
-  await writeFile(sitePath, YAML.stringify(withAnalytics));
+  // This acceptance runner intentionally has no npm dependencies. Change the
+  // known showcase fixture only; fail visibly if its analytics block changes.
+  const analyticsBlock = /^analytics:\r?\n  provider: none\s*$/m;
+  assert.match(sourceSite, analyticsBlock);
+  await writeFile(sitePath, sourceSite.replace(analyticsBlock,
+    'analytics:\n  provider: plausible\n  domain: docs.example.test\n'));
   await run(['build', '--target', 'static', '--offline', '--base-path', '/manual', '--site-url', 'https://docs.example.test', '--out', 'http-site']);
   const httpManifest = JSON.parse(await readFile(path.join(root, 'http-site/_zellij/static/manifest.json')));
   assert.equal(httpManifest.target, 'static'); assert.equal(httpManifest.pages, manifest.pages);
