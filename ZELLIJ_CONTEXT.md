@@ -34,7 +34,13 @@ The installed Mac CLI matches the public binary; an empty-PATH cold build in
 the default resource home, byte-identical offline file rebuild and offline
 HTTP build/strict validation pass. All 40 required public-release jobs pass in `44989656538`; all eight actual rc.17-to-rc.18
 Homebrew/Scoop upgrade/lifecycle cases pass (`44991793568`, `44991794818`).
-Production documentation and fixture-image refresh follow PR #236. Receipts are tracked in the [release evidence](specs/evidence/zellij-rc18-release-2026-11-21.json).
+PR #236 merges as `604bab2`, identical to reviewed `41dfda8`. Automatic
+production `44992644419` verifies deploy `6b02885dd16e909d12d9213b`; six live
+rc.18 pages hydrate without captured errors. Static/Next publication
+`44992647712`/`44992649710` and fresh-pull HTTP/health/nonroot inspection
+`44992842894` pass. A final prose scan found three stale prerequisite statements;
+PR #237 corrects those and clarifies container-image selection. No runtime or
+release assets change. Final follow-up publication receipts are tracked in the [release evidence](specs/evidence/zellij-rc18-release-2026-11-21.json).
 
 The seven guide/generated-consumer checks for PR #236 pass. Duplicate general
 CI on its unchanged runtime is cancelled, not counted as a pass. Editable

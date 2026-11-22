@@ -1,7 +1,7 @@
 {
   "date": "2026-11-21",
   "version": "v0.2.0-rc.18",
-  "status": "Released and verified: all 37 source and 40 release jobs, both 40-asset public copies, installed Mac and empty-PATH cached file/static acceptance, all eight managed-channel actual upgrades and seven guide/consumer checks. Production documentation and fixture-image refresh await the guide merge.",
+  "status": "rc.18 released, installed and channel-verified; all source/release/managed-upgrade/initial documentation and fixture-image acceptance passed. Final prerequisite prose corrections pass documentation validation/preservation and await their production merge.",
   "source": {
     "pr": 235,
     "head": "15b66254e35e9e1c10c7d13a7daf310d894688c1",
@@ -430,7 +430,8 @@
     "zellij-rc18-installed-upgrade.log": "78d35d65d928bbfb3d65536ee6ebff3f60724a3fec057cae359d19c2dc2e8d5e",
     "zellij-rc18-installed-smoke.log": "90332b4e74246743cb16cdcf47cf9befdc2cf6c3275d70a8e55099e0d467e5f1",
     "zellij-rc18-download.log": "c9d93b2f54e49001e1c35b6bf7e0000b672849b14b125fd0d2d2a88c24335807",
-    "zellij-rc18-guide-final.log": "0b1681487b8692c72db76f1b1c9695b142a6b5f6632cec1a87d9aa43a9bdf48b"
+    "zellij-rc18-guide-final.log": "0b1681487b8692c72db76f1b1c9695b142a6b5f6632cec1a87d9aa43a9bdf48b",
+    "zellij-rc18-production-live.log": "5ab912b56260e300f349f468178de11c7ee183cb6407e64f1b57996897480b27"
   },
   "channels": {
     "previousHomebrew": "82ae0a24f6fbc983dac279c2f3a60a295273e459",
@@ -1236,6 +1237,150 @@
       "conclusion": "cancelled",
       "reason": "Runtime identical to the released and fully source-tested tree; targeted guide/consumer checks retained."
     },
-    "production": "pending"
+    "production": {
+      "run": 44992644419,
+      "conclusion": "success",
+      "receipt": {
+        "source": "604bab2b24eee2595beecf1fb795c280efb26b01",
+        "site_id": "91774174-d4c2-41b5-aa4b-ac61eeadbf51",
+        "domain": "zellij.shebka.net",
+        "deploy_id": "6b02885dd16e909d12d9213b",
+        "previous_deploy_id": "6b020bc93cfac026c3fa39d4",
+        "preview": "https://6b02885dd16e909d12d9213b--zellij-docs.netlify.app",
+        "state": "verified",
+        "published_at": "2026-11-22T06:15:03.386Z"
+      },
+      "live": {
+        "source": "604bab2b24eee2595beecf1fb795c280efb26b01",
+        "browser": "installed Chrome on Intel macOS",
+        "pages": [
+          {
+            "url": "https://zellij.shebka.net/cli",
+            "http": 200,
+            "hydrated": true,
+            "version": "0.2.0-rc.18"
+          },
+          {
+            "url": "https://zellij.shebka.net/cli/build",
+            "http": 200,
+            "hydrated": true,
+            "version": "0.2.0-rc.18"
+          },
+          {
+            "url": "https://zellij.shebka.net/cli/check",
+            "http": 200,
+            "hydrated": true,
+            "version": "0.2.0-rc.18"
+          },
+          {
+            "url": "https://zellij.shebka.net/cli/doctor",
+            "http": 200,
+            "hydrated": true,
+            "version": "0.2.0-rc.18"
+          },
+          {
+            "url": "https://zellij.shebka.net/guide/menu",
+            "http": 200,
+            "hydrated": true,
+            "version": "0.2.0-rc.18"
+          },
+          {
+            "url": "https://zellij.shebka.net/guide/quickstart",
+            "http": 200,
+            "hydrated": true,
+            "version": "0.2.0-rc.18"
+          }
+        ],
+        "errors": []
+      }
+    },
+    "head": "41dfda87e63980f41d817d6774be0dddc49319f8",
+    "merge": "604bab2b24eee2595beecf1fb795c280efb26b01",
+    "mergeTreeMatchesReviewedHead": true,
+    "duplicateMainRuns": [
+      {
+        "run": 44992644513,
+        "workflow": "CI",
+        "cancellationRequested": true,
+        "conclusion": "cancelled"
+      },
+      {
+        "run": 44992644432,
+        "workflow": "Base image",
+        "cancellationRequested": true,
+        "conclusion": "cancelled"
+      }
+    ],
+    "fixturePublication": {
+      "static": {
+        "run": 44992647712,
+        "conclusion": "success",
+        "jobs": [
+          {
+            "id": 137116864023,
+            "name": "publish",
+            "conclusion": "success"
+          },
+          {
+            "id": 137116865584,
+            "name": "verify",
+            "conclusion": "skipped"
+          }
+        ]
+      },
+      "next": {
+        "run": 44992649710,
+        "conclusion": "success",
+        "jobs": [
+          {
+            "id": 137116869317,
+            "name": "publish",
+            "conclusion": "success"
+          },
+          {
+            "id": 137116870128,
+            "name": "verify",
+            "conclusion": "skipped"
+          }
+        ]
+      }
+    },
+    "fixtureInspection": {
+      "run": 44992842894,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 137117480785,
+          "name": "inspect (static)",
+          "conclusion": "success",
+          "logSha256": "3d885b66fd0fac4c87074ce4c1207cdee5fd0ea1adb0657ba20aceb461fdfd7e",
+          "receipt": "ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.18: fresh pull and HTTP acceptance passed (ghcr.io/mylife-inc/zellij/acceptance-static@sha256:2f091dea2895a47f7e97f0d75377c3466b8b53f9de77180418f7384ce2570ff0)"
+        },
+        {
+          "id": 137117481000,
+          "name": "inspect (next)",
+          "conclusion": "success",
+          "logSha256": "06c8ce16871186a0a3c2db5bbf311876a17fdf3f733ad80e937b7ccae117a079",
+          "receipt": "ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.18: fresh pull and HTTP acceptance passed (ghcr.io/mylife-inc/zellij/acceptance-next@sha256:3244389531ef9db8c8a5e92fd94f01c1fa828f8dbbf17bd00a4af088d47a1541)"
+        }
+      ],
+      "assertions": [
+        "fresh registry pull",
+        "HTTP acceptance",
+        "health check",
+        "nonroot user",
+        "published digest"
+      ]
+    },
+    "prerequisiteFollowup": {
+      "pr": 237,
+      "head": "dcf5adc309471847005078c7bed5ec97a30c7fcf",
+      "docsRun": 44993009663,
+      "duplicateGeneralCI": 44993009740,
+      "reason": "Final prose scan found old container claims in template README, new-site overview and GitHub Pages paragraph; clarified container-image selection too. No runtime, release asset, route, heading or command-example change.",
+      "docsConclusion": "success",
+      "afterTestedHead": "Only publication evidence, context, readiness and release-procedure receipts; guides and template prose unchanged.",
+      "duplicateGeneralCIConclusion": "cancelled"
+    }
   }
 }
