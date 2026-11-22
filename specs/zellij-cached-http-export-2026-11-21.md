@@ -8,7 +8,9 @@ use the same precompiled components, private Node runtime, fonts and browser
 bundle. File mode retains relative double-click navigation. Static mode emits
 flat HTTP pages, prefixed navigation/assets, metadata, sitemap/robots, a 404 and
 redirects that work without JavaScript. Configured analytics are included only
-in HTTP mode. No user-installed Node, npm, Python or container runtime is used.
+in HTTP mode. No user-installed Node, npm, Python or container runtime is used. Static
+exports retain the standard HTTP target’s default disabled optional features;
+`--features all` enables maths/diagrams. File defaults remain enabled.
 
 `build --target static`, its aliases and `view --target static` now use this
 cache; both support `--offline`. Preview shares the existing native HTTP server,

@@ -9,7 +9,9 @@ The source update after rc.17 also builds `--target static` with the verified
 renderer under `ZELLIJ_HOME`. It supports `--offline` after the first download
 and needs no separately installed Docker, Node.js, npm or Python. The export
 keeps HTTP routes and deployment prefixes; use `file` for double-click viewing.
-Both exports use the same renderer package. HTTP analytics remain enabled when
+Both exports use the same renderer package. Static builds retain the standard
+HTTP target’s default `--features none`; pass `--features all` for maths and
+diagrams. File builds keep their default enabled features. HTTP analytics remain enabled when
 configured; file exports omit analytics. Image builds keep their runtime
 requirement. This update is not yet included in the published rc.17 CLI.
 

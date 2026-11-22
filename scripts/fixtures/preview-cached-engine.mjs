@@ -7,7 +7,7 @@ const request = JSON.parse(await readFile(process.argv[2], 'utf8'));
 assert.equal(request.operation, 'build');
 assert.equal(request.target, 'static');
 const expected = process.env.ZELLIJ_PREVIEW_FEATURES;
-assert.deepEqual(request.features, expected === 'none' ? [] : ['maths', 'diagrams']);
+assert.deepEqual(request.features, expected === 'all' ? ['maths', 'diagrams'] : []);
 assert(!request.content.startsWith('\\\\?\\'), 'Renderer requests use ordinary Windows paths');
 const [title, prefix, mode] = (await readFile(path.join(request.content, 'preview.txt'), 'utf8')).split('\n');
 await appendFile(process.env.ZELLIJ_PREVIEW_ENGINE_LOG, title + '\n');

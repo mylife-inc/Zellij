@@ -46,6 +46,7 @@ try {
   let args = await read('args');
   assert.deepEqual(decode(args), [{ version: 1, basePath: '', noCheck: false }]);
   assert.equal(JSON.parse(await read('request')).noCheck, false);
+  assert.deepEqual(JSON.parse(await read('request')).features, []);
   const previous = await read('export/index.html');
   run(['build', 'hosted', '--out', 'export', ...flags], 3, { ZELLIJ_BUILD_FAIL: 'yes' });
   assert.equal(await read('export/index.html'), previous);
@@ -54,6 +55,7 @@ try {
   assert.deepEqual(decode(args), []);
   assert(!args.includes('buildOverridesVersion'));
   assert.equal(JSON.parse(await read('request')).noCheck, false);
+  assert.deepEqual(JSON.parse(await read('request')).features, []);
 
   for (const [command, target, copies] of [
     [['image', 'static'], 'hosted', 1], [['si'], 'hosted', 1],

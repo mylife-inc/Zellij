@@ -177,9 +177,11 @@ pub(crate) fn prepare(
     // Refuse unsafe output before downloading or starting a renderer.
     let output = StaticOutput::prepare(&content, out)?;
     let work = tempfile::Builder::new().prefix("zel-render-").tempdir()?;
+    // Preserve each target's published defaults. The file builder enables
+    // rich features; the standard HTTP image previously selected none.
     let features = options.features.unwrap_or(zellij_core::features::Features {
-        maths: true,
-        diagrams: true,
+        maths: target == Target::File,
+        diagrams: target == Target::File,
     });
     let selected: Vec<_> = [("maths", features.maths), ("diagrams", features.diagrams)]
         .into_iter()
