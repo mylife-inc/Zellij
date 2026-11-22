@@ -63,6 +63,11 @@ real rc.14 archives; retain them until that dependency is deliberately migrated.
 The versioned editable wrapper/engine source package for default `eject` and
 `new app` is published and verified in rc.19.
 Optional LuaLaTeX and Next development packages follow.
+The [22 November PDF feasibility work](zellij-cached-pdf-feasibility-2026-11-22.md)
+adds an offline Wasm probe and fixes a Colima generated-input share defect in
+source (`0619869`). Sixteen local manuscripts and eight probe regressions pass;
+this does not change the released PDF prerequisite. Optional package/license
+completeness, isolation qualification and CLI integration remain open.
 The [source-backed roadmap](zellij-cached-toolchains-2026-11-21.md) records their
 scope and acceptance requirements. Priorities 1–2 (static validation and HTTP
 export/deployment builds) are complete in rc.18; priority 3 (editable sources)

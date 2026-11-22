@@ -8,6 +8,21 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-22**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-22: optional cached PDF groundwork — not released**
+
+The next cache migration is PDF. A reproducible offline LuaHBTeX WebAssembly
+probe preserves the observed classic/Arabic layout using a separate optional
+resource inventory; it is not connected to `zel pdf`. Published rc.19 still
+requires the pinned container for typesetting. Production isolation,
+package/license completeness, Rust cache integration and public-package
+acceptance remain open. A confirmed Colima input-share defect in the existing
+PDF path is fixed in source by staging generated TeX beside the output. The
+regression fails before the change; ten PDF integration tests and real Colima
+classic/Arabic exports pass afterward. See the
+[feasibility and verification record](specs/zellij-cached-pdf-feasibility-2026-11-22.md).
+The final rc.19 receipt merge `2a3ac72` now has passing main CI `45011754304` and
+base-image run `45011754299`; earlier browser timing findings remain open.
+
 **2026-11-22: rc.19 cached editable sources — released and verified**
 
 Default `eject` and `new app` use a separate verified, version-matched source

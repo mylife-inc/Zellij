@@ -1,0 +1,399 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-22",
+  "sourceBase": "2a3ac72ce34308fd6e614303ebee64a8ba2913b5",
+  "containerInputFix": "0619869811e2ed9fd7c3d44026eb35c1ed6c93ee",
+  "local": {
+    "platform": "darwin",
+    "arch": "x64",
+    "node": "v24.22.1",
+    "cases": [
+      {
+        "name": "pdf-book",
+        "engineRelease": "2026-f5d94438a7c75a23",
+        "resourceLockSha256": "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f",
+        "pdfSha256": "ea00be293854baca8a5a1f4750b2471ed4d42a8bfb1d81c0f0f97b0ae3f28ab9",
+        "passes": [
+          {
+            "pass": 1,
+            "heapBytes": 373948416,
+            "pdfBytes": 50501
+          },
+          {
+            "pass": 2,
+            "heapBytes": 373948416,
+            "pdfBytes": 51205
+          },
+          {
+            "pass": 3,
+            "heapBytes": 408027136,
+            "pdfBytes": 51205
+          }
+        ]
+      },
+      {
+        "name": "equations",
+        "engineRelease": "2026-f5d94438a7c75a23",
+        "resourceLockSha256": "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f",
+        "pdfSha256": "b5751bb8ca91b6915e3ebaa9f1503bbc47f57cd5be2d09c82cd8324be1c6a8bc",
+        "passes": [
+          {
+            "pass": 1,
+            "heapBytes": 357105664,
+            "pdfBytes": 32053
+          },
+          {
+            "pass": 2,
+            "heapBytes": 390791168,
+            "pdfBytes": 36103
+          },
+          {
+            "pass": 3,
+            "heapBytes": 373948416,
+            "pdfBytes": 36103
+          }
+        ]
+      },
+      {
+        "name": "statements",
+        "engineRelease": "2026-f5d94438a7c75a23",
+        "resourceLockSha256": "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f",
+        "pdfSha256": "c9bf2278a1438792819b2ee0a118559b887a01f88fb9be3252ac5204b0e389c9",
+        "passes": [
+          {
+            "pass": 1,
+            "heapBytes": 390922240,
+            "pdfBytes": 51422
+          },
+          {
+            "pass": 2,
+            "heapBytes": 373948416,
+            "pdfBytes": 53402
+          },
+          {
+            "pass": 3,
+            "heapBytes": 373948416,
+            "pdfBytes": 53402
+          }
+        ]
+      },
+      {
+        "name": "bibliography",
+        "engineRelease": "2026-f5d94438a7c75a23",
+        "resourceLockSha256": "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f",
+        "pdfSha256": "7768fdef6f84324d7a6d371b6199be1c6cbfec5e7b24eae096cceb5d595ea2ec",
+        "passes": [
+          {
+            "pass": 1,
+            "heapBytes": 357105664,
+            "pdfBytes": 56920
+          },
+          {
+            "pass": 2,
+            "heapBytes": 357105664,
+            "pdfBytes": 59126
+          },
+          {
+            "pass": 3,
+            "heapBytes": 374013952,
+            "pdfBytes": 59126
+          }
+        ]
+      },
+      {
+        "name": "terms",
+        "engineRelease": "2026-f5d94438a7c75a23",
+        "resourceLockSha256": "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f",
+        "pdfSha256": "d79042eac7eea92e98253e9fac0ce7cf9a25f9f1227fb48605c20174dafbaff2",
+        "passes": [
+          {
+            "pass": 1,
+            "heapBytes": 374013952,
+            "pdfBytes": 64022
+          },
+          {
+            "pass": 2,
+            "heapBytes": 373948416,
+            "pdfBytes": 65829
+          },
+          {
+            "pass": 3,
+            "heapBytes": 374079488,
+            "pdfBytes": 65829
+          }
+        ]
+      },
+      {
+        "name": "book-technical",
+        "engineRelease": "2026-f5d94438a7c75a23",
+        "resourceLockSha256": "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f",
+        "pdfSha256": "66cc3992400f9a967a7fb36f279dddd6ae55728df67fc3a377cd1802fcc1875b",
+        "passes": [
+          {
+            "pass": 1,
+            "heapBytes": 408551424,
+            "pdfBytes": 59458
+          },
+          {
+            "pass": 2,
+            "heapBytes": 373948416,
+            "pdfBytes": 63256
+          },
+          {
+            "pass": 3,
+            "heapBytes": 373948416,
+            "pdfBytes": 63256
+          }
+        ]
+      },
+      {
+        "name": "book-technical-custom",
+        "engineRelease": "2026-f5d94438a7c75a23",
+        "resourceLockSha256": "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f",
+        "pdfSha256": "5055e96852e5b593e2d659314dba304baf694ea1db6910c04bf3a5428a641e6c",
+        "passes": [
+          {
+            "pass": 1,
+            "heapBytes": 424476672,
+            "pdfBytes": 63956
+          },
+          {
+            "pass": 2,
+            "heapBytes": 373948416,
+            "pdfBytes": 67972
+          },
+          {
+            "pass": 3,
+            "heapBytes": 390856704,
+            "pdfBytes": 67972
+          }
+        ]
+      },
+      {
+        "name": "book-study",
+        "engineRelease": "2026-f5d94438a7c75a23",
+        "resourceLockSha256": "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f",
+        "pdfSha256": "fd1fea4d3fb509544e244057c5601bb90ad78c360e804edd1673bdeb09a1e49f",
+        "passes": [
+          {
+            "pass": 1,
+            "heapBytes": 374145024,
+            "pdfBytes": 55710
+          },
+          {
+            "pass": 2,
+            "heapBytes": 390791168,
+            "pdfBytes": 59363
+          },
+          {
+            "pass": 3,
+            "heapBytes": 374013952,
+            "pdfBytes": 59363
+          }
+        ]
+      },
+      {
+        "name": "book-study-custom",
+        "engineRelease": "2026-f5d94438a7c75a23",
+        "resourceLockSha256": "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f",
+        "pdfSha256": "a04fc82707e827fdb67a600a9e002627dca5b306484a9d42fc10ccb4c3c03f12",
+        "passes": [
+          {
+            "pass": 1,
+            "heapBytes": 357105664,
+            "pdfBytes": 44209
+          },
+          {
+            "pass": 2,
+            "heapBytes": 390791168,
+            "pdfBytes": 45933
+          },
+          {
+            "pass": 3,
+            "heapBytes": 391184384,
+            "pdfBytes": 45933
+          }
+        ]
+      },
+      {
+        "name": "ar-classic",
+        "engineRelease": "2026-f5d94438a7c75a23",
+        "resourceLockSha256": "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f",
+        "pdfSha256": "5e4d3e0149a69b0d92adb93e9632846d06641c5e106e333e6b048fad04469cfe",
+        "passes": [
+          {
+            "pass": 1,
+            "heapBytes": 458555392,
+            "pdfBytes": 55474
+          },
+          {
+            "pass": 2,
+            "heapBytes": 442105856,
+            "pdfBytes": 56780
+          },
+          {
+            "pass": 3,
+            "heapBytes": 425132032,
+            "pdfBytes": 56780
+          }
+        ]
+      },
+      {
+        "name": "ar-technical",
+        "engineRelease": "2026-f5d94438a7c75a23",
+        "resourceLockSha256": "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f",
+        "pdfSha256": "bf829a2041a3c6cad4b3f6b81cd33f9dc21643e3ac0aec7adb4a498689863adf",
+        "passes": [
+          {
+            "pass": 1,
+            "heapBytes": 425721856,
+            "pdfBytes": 57101
+          },
+          {
+            "pass": 2,
+            "heapBytes": 459014144,
+            "pdfBytes": 57931
+          },
+          {
+            "pass": 3,
+            "heapBytes": 425721856,
+            "pdfBytes": 57931
+          }
+        ]
+      },
+      {
+        "name": "ar-study",
+        "engineRelease": "2026-f5d94438a7c75a23",
+        "resourceLockSha256": "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f",
+        "pdfSha256": "721759e38b28d425fe0a1597e892f920173516472b167a761fcf89dd76b1c0ac",
+        "passes": [
+          {
+            "pass": 1,
+            "heapBytes": 441974784,
+            "pdfBytes": 55989
+          },
+          {
+            "pass": 2,
+            "heapBytes": 475987968,
+            "pdfBytes": 59500
+          },
+          {
+            "pass": 3,
+            "heapBytes": 441450496,
+            "pdfBytes": 59500
+          }
+        ]
+      },
+      {
+        "name": "fr-study",
+        "engineRelease": "2026-f5d94438a7c75a23",
+        "resourceLockSha256": "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f",
+        "pdfSha256": "d8fc9fcd0729d9a0570b1c79f0bcac2127d93ce66d831db1d9cab4720bf39205",
+        "passes": [
+          {
+            "pass": 1,
+            "heapBytes": 478347264,
+            "pdfBytes": 36315
+          },
+          {
+            "pass": 2,
+            "heapBytes": 443482112,
+            "pdfBytes": 38483
+          },
+          {
+            "pass": 3,
+            "heapBytes": 496369664,
+            "pdfBytes": 38483
+          }
+        ]
+      },
+      {
+        "name": "de-classic",
+        "engineRelease": "2026-f5d94438a7c75a23",
+        "resourceLockSha256": "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f",
+        "pdfSha256": "9145703588314aa063af3cf4b43dfe566b622d49f76115ddd6e14f9343ad7e37",
+        "passes": [
+          {
+            "pass": 1,
+            "heapBytes": 374079488,
+            "pdfBytes": 50067
+          },
+          {
+            "pass": 2,
+            "heapBytes": 374079488,
+            "pdfBytes": 52290
+          },
+          {
+            "pass": 3,
+            "heapBytes": 408354816,
+            "pdfBytes": 52290
+          }
+        ]
+      },
+      {
+        "name": "es-classic",
+        "engineRelease": "2026-f5d94438a7c75a23",
+        "resourceLockSha256": "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f",
+        "pdfSha256": "0d64616a12ff0f594ee3849cc2ae1a578b4afa250bdce65f9d4522bb96e0012f",
+        "passes": [
+          {
+            "pass": 1,
+            "heapBytes": 408092672,
+            "pdfBytes": 47791
+          },
+          {
+            "pass": 2,
+            "heapBytes": 374079488,
+            "pdfBytes": 49957
+          },
+          {
+            "pass": 3,
+            "heapBytes": 391118848,
+            "pdfBytes": 49957
+          }
+        ]
+      },
+      {
+        "name": "ar-default-fonts",
+        "engineRelease": "2026-f5d94438a7c75a23",
+        "resourceLockSha256": "2149b1d74cded8ec4543b1cba726ccfa38bb2c96c56b51747b9c81c24893556f",
+        "pdfSha256": "bd0bbdc36920a2d61903b9067ea3ce97f0dca4a9e919d748b19243904f6a82e1",
+        "passes": [
+          {
+            "pass": 1,
+            "heapBytes": 441450496,
+            "pdfBytes": 55486
+          },
+          {
+            "pass": 2,
+            "heapBytes": 425525248,
+            "pdfBytes": 56791
+          },
+          {
+            "pass": 3,
+            "heapBytes": 425394176,
+            "pdfBytes": 56791
+          }
+        ]
+      }
+    ],
+    "regressions": {
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "logSha256": "4ce8caa64895adc5ba706515c8c72f1a6ac06cebd2202225adbe411e14e1e55a"
+    },
+    "containerPdfTests": {
+      "passed": 10,
+      "failed": 0
+    },
+    "clippy": "passed for zellij-cli/zellij-docs, all targets",
+    "format": "passed"
+  },
+  "status": "maintainer feasibility only; not released; hosted verification pending",
+  "observedFailures": [
+    "Released rc.19 input mount under macOS system temp is not shared by Colima; corrected by 0619869.",
+    "Initial resource inventory lacked five optical-size font files; expanded before the complete local run.",
+    "Initial probe let C stdio swallow console budget exceptions; supervisor now receives an immediate failure signal."
+  ]
+}
