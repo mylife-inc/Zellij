@@ -66,7 +66,13 @@ missing checksums, archive links/duplicate members, cache links, metadata pins,
 engine/format receipt mismatches and incomplete download recovery.
 The hosted workflow runs the source verifier independently from the six-platform
 runtime probe and uploads only its JSON receipt. Current hosted results will be
-recorded after completion.
+recorded after completion. Initial source job `137510810815` in run
+`45119828519` passes the 13 tests but fails downloading mirror metadata with HTTP
+403. A local read-only comparison reproduces 403 for Python's default user agent
+and 200 for the explicitly identified `Zellij-PDF-source-verifier/1` client on
+both metadata URLs. The downloader now identifies itself and names a failing
+input. URLs, hashes and validation requirements are unchanged. The failed setup
+run provides no hosted source acceptance.
 
 A clean engine rebuild is being investigated separately from the source-inventory
 check. No byte-reproducibility or complete-source/relink claim follows merely

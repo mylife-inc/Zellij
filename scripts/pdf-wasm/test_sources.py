@@ -190,8 +190,9 @@ class SourcesTest(unittest.TestCase):
     def test_incomplete_download_retries_without_publishing_partial_cache(self):
         data = b"complete pinned source"
         entry = {"name": "download.tar.xz", "url": "https://example.invalid/source", "bytes": len(data), "sha256": s.digest(data)}
-        with patch.object(s.urllib.request, "urlopen", side_effect=[io.BytesIO(b"partial"), io.BytesIO(data)]), patch.object(s.time, "sleep"):
+        with patch.object(s.urllib.request, "urlopen", side_effect=[io.BytesIO(b"partial"), io.BytesIO(data)]) as request, patch.object(s.time, "sleep"):
             s.fetch_one(self.root, entry)
+            self.assertEqual(request.call_args.args[0].get_header("User-agent"), "Zellij-PDF-source-verifier/1")
         self.assertEqual((self.root / entry["name"]).read_bytes(), data)
         self.assertEqual(list(self.root.glob(".source-download-*")), [])
         (self.root / entry["name"]).write_bytes(b"corrupt")

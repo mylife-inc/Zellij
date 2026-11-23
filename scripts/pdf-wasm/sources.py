@@ -268,7 +268,8 @@ def download_one(cache, entry):
     require(entry["url"].startswith("https://"), "Source downloads require HTTPS")
     fd, temporary = tempfile.mkstemp(prefix=".source-download-", dir=cache)
     try:
-        with os.fdopen(fd, "wb") as output, urllib.request.urlopen(entry["url"], timeout=120) as response:
+        request = urllib.request.Request(entry["url"], headers={"User-Agent": "Zellij-PDF-source-verifier/1"})
+        with os.fdopen(fd, "wb") as output, urllib.request.urlopen(request, timeout=120) as response:
             size = 0
             while chunk := response.read(1024 * 1024):
                 size += len(chunk)
@@ -291,9 +292,9 @@ def fetch_one(cache, entry):
     for attempt in range(3):
         try:
             return download_one(cache, entry)
-        except (OSError, ValueError):
+        except (OSError, ValueError) as error:
             if attempt == 2:
-                raise
+                raise RuntimeError(f"Source download failed for {entry['name']}: {error}") from error
             time.sleep(attempt + 1)
 
 
