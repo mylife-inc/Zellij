@@ -142,6 +142,7 @@ def build_inventory(runtime, provenance, tlpdb, policy, artifacts):
                            "archive": {"name": filename, "bytes": int(package["doccontainersize"]), "sha512": checksum,
                                        "url": policy["repository"] + "archive/" + filename}})
     return {"schemaVersion": 1, "purpose": "maintainer-source-verification", "redistributionReviewComplete": False,
+            **({"resolvedItems": policy["resolvedItems"]} if "resolvedItems" in policy else {}),
             "runtimeLockSha256": digest(encoded(runtime)), "policySha256": digest(encoded(policy)),
             "metadata": [policy["provenance"], policy["tlpdb"], policy["generatedManifest"]],
             "engineSource": {"name": "corresponding-source.tar.xz", **runtime["correspondingSource"]},

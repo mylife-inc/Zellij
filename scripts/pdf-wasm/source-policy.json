@@ -32,8 +32,6 @@
     "51/luaotfload-names.lua"
   ],
   "openItems": [
-    "Complete engine rebuild and relink qualification against receipt-bound outputs.",
-    "Complete the precompiled format input inventory and generated font-metadata source closure.",
     "Resolve url.sty's historical LPPL version wording against authoritative distribution terms.",
     "Preserve the complete EC font distribution required by copyrite.txt in any eventual redistribution.",
     "Complete the final component/font redistribution review and supply matching source with any release."
@@ -51,6 +49,16 @@
       "paths": [
         "texmf-dist/doc/context/sources/general/manuals/readme/mreadme.tex"
       ]
+    }
+  ],
+  "resolvedItems": [
+    {
+      "item": "Complete engine rebuild and relink qualification against receipt-bound outputs.",
+      "evidence": "PR #244: clean engine rebuild matches the locked JS/Wasm outputs; PR #245: independent format rebuild on all six targets."
+    },
+    {
+      "item": "Complete the precompiled format input inventory and generated font-metadata source closure.",
+      "evidence": "PR #245 (aff7d36) and PR #246 (1364bb3): exact original inventories, two identical generated format/font builds and six-platform manuscript acceptance."
     }
   ]
 }

@@ -8,6 +8,28 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-23**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-23: PDF source and notice packaging — qualification in progress**
+
+PR #246 merged as `7f25082`, identical in tree to tested `1364bb3`. All 37 normal
+and seven PDF jobs pass (`45155144409`, `45155144329`), followed by main CI
+`45159553137` and base image `45159552912`. Six platforms produce identical
+compact archives and pass 114 manuscripts / 342 passes, with all 269 Linux pages
+matching the native renderer. PR #246 also records matching embedded fonts,
+named destinations and URL annotations from the hosted PDFs.
+
+The next increment prepares separate source and notice archives from 65 original
+packages. It preserves 114 notice records, verifies all 121 EC manifest files,
+and includes the complete original source archives, provenance and build recipes
+for offline replay. The notice archive is about 428 KB; the approximately 430 MB
+source collection is separate from ordinary runtime downloads. The source policy
+records the completed engine/format/font work without erasing its history.
+See the [source distribution record](specs/zellij-pdf-source-distribution-2026-11-23.md).
+
+These remain private qualification artifacts. The historical URL license wording,
+final component/source delivery review, production isolation, Rust cache/dispatch,
+user docs and installed/public acceptance remain. Rc.19 still uses a container
+for PDF. No toolchain archive or new CLI candidate is published here.
+
 **2026-11-23: compact PDF metadata and resource archive — qualification in progress**
 
 PR #245 merged as `e7c1d36`, with an identical tree to tested `aff7d36`.

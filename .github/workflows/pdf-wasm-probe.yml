@@ -112,10 +112,30 @@ jobs:
         run: python scripts/pdf-wasm/sources.py fetch "${{ runner.temp }}/pdf-source-cache"
       - name: Verify original package bytes and collect notices
         run: python scripts/pdf-wasm/sources.py verify "${{ runner.temp }}/pdf-source-cache" test-results/pdf-source-verification
+      - name: Complete the original format and font source cache
+        run: |
+          python scripts/pdf-wasm/format_sources.py fetch "${{ runner.temp }}/pdf-source-cache"
+          python scripts/pdf-wasm/font_sources.py fetch "${{ runner.temp }}/pdf-source-cache"
+      - name: Package original notices and self-contained sources (private qualification only)
+        run: python scripts/pdf-wasm/distribution.py "${{ runner.temp }}/pdf-source-cache" test-results/pdf-source-distribution
+      - name: Replay source checks using only the packaged programs and upstream files
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          root="$PWD/test-results/pdf-source-distribution/sources"
+          python "$root/scripts/pdf-wasm/sources.py" verify "$root/upstream" test-results/pdf-distribution-replay/runtime
+          python "$root/scripts/pdf-wasm/format_sources.py" prepare "$root/upstream" test-results/pdf-distribution-replay/format-inputs
+          python "$root/scripts/pdf-wasm/font_sources.py" prepare "$root/upstream" test-results/pdf-distribution-replay/font-inputs
       - uses: actions/upload-artifact@v7
         with:
           name: pdf-source-correspondence
           path: test-results/pdf-source-verification/verification.json
+          if-no-files-found: error
+          retention-days: 14
+      - uses: actions/upload-artifact@v7
+        with:
+          name: pdf-distribution-receipt
+          path: test-results/pdf-source-distribution/verification.json
           if-no-files-found: error
           retention-days: 14
       # Keep source archives, notices and engine/data binaries out of artifacts.

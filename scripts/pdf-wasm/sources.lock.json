@@ -2,8 +2,18 @@
   "schemaVersion": 1,
   "purpose": "maintainer-source-verification",
   "redistributionReviewComplete": false,
+  "resolvedItems": [
+    {
+      "item": "Complete engine rebuild and relink qualification against receipt-bound outputs.",
+      "evidence": "PR #244: clean engine rebuild matches the locked JS/Wasm outputs; PR #245: independent format rebuild on all six targets."
+    },
+    {
+      "item": "Complete the precompiled format input inventory and generated font-metadata source closure.",
+      "evidence": "PR #245 (aff7d36) and PR #246 (1364bb3): exact original inventories, two identical generated format/font builds and six-platform manuscript acceptance."
+    }
+  ],
   "runtimeLockSha256": "9efe37b612cb97491aef4c0872a7bef02a5dcfd2e7da8f616062bc9296fcd658",
-  "policySha256": "ff31fd41cac1f62caf11b21c09e9848b7795786ad8ea08302ccec7a1d4fb77a5",
+  "policySha256": "df0ace5e734c64ce4238e690138e79109b1ed26267950662749c11c8d3efa430",
   "metadata": [
     {
       "name": "texlive-provenance.json",
@@ -4265,8 +4275,6 @@
     }
   ],
   "openItems": [
-    "Complete engine rebuild and relink qualification against receipt-bound outputs.",
-    "Complete the precompiled format input inventory and generated font-metadata source closure.",
     "Resolve url.sty's historical LPPL version wording against authoritative distribution terms.",
     "Preserve the complete EC font distribution required by copyrite.txt in any eventual redistribution.",
     "Complete the final component/font redistribution review and supply matching source with any release."
