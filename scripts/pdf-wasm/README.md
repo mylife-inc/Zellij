@@ -5,7 +5,7 @@ This is a maintainer experiment for the optional cached PDF toolchain. It is
 production isolation contract is complete. Released rc.19 still uses its pinned
 container for PDF. Ordinary rich web builds already use the cached renderer.
 
-The probe downloads 200 hash-pinned resources (31,989,582 bytes before packaging)
+The probe downloads 287 hash-pinned resources (33,610,991 bytes before packaging)
 from the upstream engine release and an immutable TeX mirror. It then compiles
 generated Zellij print inputs without a network resolver, container, system TeX,
 curl, Python or npm packages. The maintainer invokes Node 24 explicitly here; a
@@ -123,7 +123,7 @@ compiler or package installer runs inside `zel`.
 
 The fetch is deliberately separate from verification. Verification works offline,
 regenerates the checked-in inventory from pinned metadata, verifies full archive
-checksums and compares all 193 package-backed runtime files with the original
+checksums and compares all 280 package-backed runtime files with the original
 frozen TeX Live packages. It reads explicit regular tar members without extracting
 paths or following links. Missing, modified or duplicated sources/notices fail the
 check. An existing verification output or corrupt cached input is preserved.
@@ -187,7 +187,7 @@ using real time. Format construction is maintainer work, not an end-user step.
 The compiled format is 6,744,585 bytes before outer archive compression. Its bytes
 are intentionally pinned independently of the upstream precompiled format. The
 six-platform workflow builds it independently, checks failure/recovery boundaries,
-then uses it for all 17 manuscripts; Linux compares the books with the native
+then uses it for all 19 manuscripts; Linux compares the books with the native
 renderer. Only JSON receipts and Zellij-produced PDFs/logs are uploaded, never the
 format binary, input sources or compiler. This does not ship a cached PDF backend.
 

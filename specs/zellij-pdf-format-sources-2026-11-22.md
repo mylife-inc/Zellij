@@ -45,6 +45,27 @@ caches are preserved. Eighteen Python source tests cover these paths. Three new
 real-engine tests cover independent format generation, checksum/output failure
 and the frozen-clock deadline alongside the ten existing runtime guard tests.
 
+## Supported print-size coverage
+
+Extending the probe to the other supported font sizes exposed missing `bk10.clo`
+and `bk12.clo`, followed by missing optical-size Latin Modern font files. The
+10-point and 12-point books both failed before adding those resources. The locked
+inventory now includes the two original class-option files and all Roman/Sans/Mono
+optical variants needed by those named families (15 additional original OTFs).
+The existing math font stays present. Initializing legacy math sizes also needed
+additional Computer Modern metrics; the full 75-file metrics set adds only
+87,752 bytes beyond the five already present. All added files come from the same
+verified LaTeX, Latin Modern and Computer Modern packages; there is no new source
+package or notice policy.
+The source verifier now matches 280 package-backed files across the same 58
+packages. The prototype bundle is 287 files / 33,610,991 uncompressed bytes.
+
+Two additional manuscript cases cover 10-point/A4 and 12-point/Letter alongside
+the existing 11-point/A5 coverage. These use the normal native/PDF comparison
+checks; no warning or missing-resource assertion is weakened. Published rc.19
+uses the complete container distribution and is not changed by this prototype
+resource correction.
+
 ## Source and notice boundary
 
 The 21 collected records include original headers as well as license notices.
@@ -61,7 +82,7 @@ This increment does not change those bytes or claim their review is complete.
 ## Acceptance and remaining work
 
 The six-platform workflow independently rebuilds the pinned format, runs the
-boundary tests and uses the new format for all 17 repository-owned manuscripts.
+boundary tests and uses the new format for all 19 repository-owned manuscripts.
 Linux's optional native comparison checks PDF structure, text, page geometry and
 every page raster. Current hosted results belong to the implementation PR; the
 successful prior-format results above are not substituted for this qualification.

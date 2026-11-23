@@ -45,6 +45,14 @@ try {
     cpSync(`scripts/fixtures/${name}`, manuscript, { recursive: true });
     await check(name, manuscript);
   }
+  for (const [size, paper] of [[10, 'a4'], [12, 'letter']]) {
+    const name = `book-${size}pt-${paper}`;
+    const manuscript = path.join(root, name);
+    cpSync('scripts/fixtures/pdf-book', manuscript, { recursive: true });
+    const config = path.join(manuscript, 'zel.yaml');
+    writeFileSync(config, readFileSync(config, 'utf8') + `\npdf: {enabled: true, font-size: ${size}, paper: ${paper}}\n`);
+    await check(name, manuscript);
+  }
   for (const edition of ['technical', 'study']) {
     const manuscript = path.join(root, 'book-' + edition);
     execFileSync(zel, ['create', manuscript, '-t', 'book-' + edition, '--offline'], { stdio: 'pipe', timeout: 60_000 });

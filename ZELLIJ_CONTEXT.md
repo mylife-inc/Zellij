@@ -17,7 +17,9 @@ its receipt is in [PR #244](https://github.com/mylife-inc/Zellij/pull/244).
 The next increment builds the format from 75 original files with a fixed guest
 clock, independently of the upstream format and generated metadata. It requires
 two identical builds and an exact reviewed hash, then tests the generated format
-on the full manuscript matrix. See the
+on the full manuscript matrix. The print-size sweep also exposes missing
+10-/12-point class and optical font resources; the pinned prototype inventory
+adds their original bytes and two permanent manuscript regressions. See the
 [format source record](specs/zellij-pdf-format-sources-2026-11-22.md) and
 [maintainer instructions](scripts/pdf-wasm/README.md#rebuild-the-format-from-original-sources).
 Font-metadata source closure, final notices/redistribution review and installed

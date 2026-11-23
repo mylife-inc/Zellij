@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "purpose": "maintainer-source-verification",
   "redistributionReviewComplete": false,
-  "runtimeLockSha256": "f352d8e0f43323a7809708a53191d6b3fb2e825b0f6b001361fc5570d906a59c",
+  "runtimeLockSha256": "9efe37b612cb97491aef4c0872a7bef02a5dcfd2e7da8f616062bc9296fcd658",
   "policySha256": "ff31fd41cac1f62caf11b21c09e9848b7795786ad8ea08302ccec7a1d4fb77a5",
   "metadata": [
     {
@@ -2479,11 +2479,25 @@
       "sha256": "af5c7196c69dc9d28225189169b60c9b9039125bc1756c04d54886f0a3e1891e"
     },
     {
+      "resource": "26/bk10.clo",
+      "path": "texmf-dist/tex/latex/base/bk10.clo",
+      "package": "latex",
+      "bytes": 8288,
+      "sha256": "c44ca4b67cc1ffe7d15b3e3d838f568c64bdb8e9d783767c1099653c1eaebbe3"
+    },
+    {
       "resource": "26/bk11.clo",
       "path": "texmf-dist/tex/latex/base/bk11.clo",
       "package": "latex",
       "bytes": 8303,
       "sha256": "671e9553ba09971fe9cbc7864b21072527586e55bf57c197621111513168eb01"
+    },
+    {
+      "resource": "26/bk12.clo",
+      "path": "texmf-dist/tex/latex/base/bk12.clo",
+      "package": "latex",
+      "bytes": 8285,
+      "sha256": "410e8399b4b8a08c5b226849af1846ca379ed38820fb607ec5c5de644563ea53"
     },
     {
       "resource": "26/bkm-luatex.def",
@@ -3032,11 +3046,151 @@
       "sha256": "0280c6a086e4fc115c66589db0c5883a3e2eded2e2e2bfdd73d947a5b8092933"
     },
     {
+      "resource": "3/cmb10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmb10.tfm",
+      "package": "cm",
+      "bytes": 1336,
+      "sha256": "55cbc994b903a1c77150b9e8be4c12d745758aff76ac4f9dd7db5c5e00bc8aca"
+    },
+    {
+      "resource": "3/cmbsy10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmbsy10.tfm",
+      "package": "cm",
+      "bytes": 1116,
+      "sha256": "b5a0bf8a30db124f56f4e48237b510be6b1a78886da1540f2394ddfaf3186c25"
+    },
+    {
+      "resource": "3/cmbx10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmbx10.tfm",
+      "package": "cm",
+      "bytes": 1328,
+      "sha256": "ae296e8e41b2b0f73e9a17fdc42c743b9ddcc58d23c30acaa3411206f7824780"
+    },
+    {
+      "resource": "3/cmbx12",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmbx12.tfm",
+      "package": "cm",
+      "bytes": 1324,
+      "sha256": "0eb2f13840155007c2d3c59b074322a3aa7358b9643aa314f3146468ae7f0806"
+    },
+    {
+      "resource": "3/cmbx5",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmbx5.tfm",
+      "package": "cm",
+      "bytes": 1332,
+      "sha256": "a746151d8e3a521965bbfae2666e1528374a514375daa7d620e9b89ebbbfb0ae"
+    },
+    {
+      "resource": "3/cmbx6",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmbx6.tfm",
+      "package": "cm",
+      "bytes": 1344,
+      "sha256": "38ded79d7cce07fa28921f37f6b88e67bd86951a3e5af709c219d63454786ce1"
+    },
+    {
+      "resource": "3/cmbx7",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmbx7.tfm",
+      "package": "cm",
+      "bytes": 1336,
+      "sha256": "e7b284f0ee98b7773be9b57ca652b4bb14391370509a424b5b62b06b5cae86e4"
+    },
+    {
+      "resource": "3/cmbx8",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmbx8.tfm",
+      "package": "cm",
+      "bytes": 1332,
+      "sha256": "6dab44c885b7cbf567771d9cfa565f3df34d0e8124132b9b6f9fdc496a1c2eda"
+    },
+    {
+      "resource": "3/cmbx9",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmbx9.tfm",
+      "package": "cm",
+      "bytes": 1328,
+      "sha256": "9fb9cbe254c828bc6bdcc0ca66f81b6cb9b713edf0ef1b7fa67e231920112499"
+    },
+    {
+      "resource": "3/cmbxsl10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmbxsl10.tfm",
+      "package": "cm",
+      "bytes": 1532,
+      "sha256": "4a2dbf075487bcdb3b081926f8e5a03520b16a2e1af643e1e0fc36d7f344fb1e"
+    },
+    {
+      "resource": "3/cmbxti10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmbxti10.tfm",
+      "package": "cm",
+      "bytes": 1532,
+      "sha256": "2ba218c04e402c9d013cf5e36ffffe6ae420c1f2192291606405ef9f3f86df70"
+    },
+    {
+      "resource": "3/cmcsc10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmcsc10.tfm",
+      "package": "cm",
+      "bytes": 1300,
+      "sha256": "0d691f70f365e55b83096764fe0c65338842d704bd5b979ed0c6882f9e17ce0d"
+    },
+    {
+      "resource": "3/cmdunh10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmdunh10.tfm",
+      "package": "cm",
+      "bytes": 1296,
+      "sha256": "a94093bba5082a6e63fc95dd9bf4d10a8152a2a5f9e3913ab04dd6f60974d843"
+    },
+    {
+      "resource": "3/cmex10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmex10.tfm",
+      "package": "cm",
+      "bytes": 992,
+      "sha256": "0890bccea1dd4d27f001ac30e86c63af35bc803e0557c35aafb1903c8d208e92"
+    },
+    {
+      "resource": "3/cmff10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmff10.tfm",
+      "package": "cm",
+      "bytes": 1324,
+      "sha256": "d7c17659aa5ddd781518ea67ba3e569be634fd2c156e76899d5c196bbf3e0e5f"
+    },
+    {
+      "resource": "3/cmfi10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmfi10.tfm",
+      "package": "cm",
+      "bytes": 1424,
+      "sha256": "ffd5979983f29ec2c5d5bdcdb3d2cc2f956f7e2cd891a4a3b36269c2c52ab063"
+    },
+    {
+      "resource": "3/cmfib8",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmfib8.tfm",
+      "package": "cm",
+      "bytes": 1280,
+      "sha256": "49253478733658d6926b0d755ef24c1c66f382fe95862c9466fc249c014896ed"
+    },
+    {
+      "resource": "3/cminch",
+      "path": "texmf-dist/fonts/tfm/public/cm/cminch.tfm",
+      "package": "cm",
+      "bytes": 492,
+      "sha256": "5d7afb37cd4737e2a88a5c50ed820fa3949df058087cd07e5bf4812011d07f7d"
+    },
+    {
+      "resource": "3/cmitt10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmitt10.tfm",
+      "package": "cm",
+      "bytes": 768,
+      "sha256": "bef521b29b7f2cd162767471db15078e30fd2df5a4bb1e1293a1a4c081ed3f6a"
+    },
+    {
       "resource": "3/cmmi10",
       "path": "texmf-dist/fonts/tfm/public/cm/cmmi10.tfm",
       "package": "cm",
       "bytes": 1528,
       "sha256": "e442c5487f84df70218ff37f775c87060856f5b6e04c011b6cadbbadfcf46645"
+    },
+    {
+      "resource": "3/cmmi12",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmmi12.tfm",
+      "package": "cm",
+      "bytes": 1524,
+      "sha256": "79563547084d85388e6909888f9fa7f5cad33bdda44ca6b25b362e1d301db539"
     },
     {
       "resource": "3/cmmi5",
@@ -3060,11 +3214,361 @@
       "sha256": "ce55681703aae565f17286d800ea9780223132589bdbaeda1751b869aba26a38"
     },
     {
+      "resource": "3/cmmi8",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmmi8.tfm",
+      "package": "cm",
+      "bytes": 1520,
+      "sha256": "65af8c1e162a952cab8e93c834fcf43ce09b508e6c16e512ebb673cd850b0d41"
+    },
+    {
       "resource": "3/cmmi9",
       "path": "texmf-dist/fonts/tfm/public/cm/cmmi9.tfm",
       "package": "cm",
       "bytes": 1524,
       "sha256": "20672649a2f07eef8fe07ccb42eeb731023e48f2e0797ecef57c0887da46c032"
+    },
+    {
+      "resource": "3/cmmib10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmmib10.tfm",
+      "package": "cm",
+      "bytes": 1524,
+      "sha256": "4465d20955917959c68d0254647e5caba1f38c4516a1fd212eab2da9b8645874"
+    },
+    {
+      "resource": "3/cmr10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmr10.tfm",
+      "package": "cm",
+      "bytes": 1296,
+      "sha256": "87f2d8981927644cbecaf3d639e96e348ea4e7be49d8804468bd8ba9ff3f5244"
+    },
+    {
+      "resource": "3/cmr12",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmr12.tfm",
+      "package": "cm",
+      "bytes": 1288,
+      "sha256": "1ce8af37ed38e93940829d3540e494eaaddc5201758d036b9074467e70a738dc"
+    },
+    {
+      "resource": "3/cmr17",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmr17.tfm",
+      "package": "cm",
+      "bytes": 1292,
+      "sha256": "86b6e8a52aae6ad1655e32099e12bd2904b158aba4c8afb74143266d2d9cd18f"
+    },
+    {
+      "resource": "3/cmr5",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmr5.tfm",
+      "package": "cm",
+      "bytes": 1220,
+      "sha256": "581be818f67bd11a1792d05e129abe3ea30c5cbdfce3bed8da7c5fb50f5ba95b"
+    },
+    {
+      "resource": "3/cmr6",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmr6.tfm",
+      "package": "cm",
+      "bytes": 1300,
+      "sha256": "106afa9172f0c00e58b9f5cbc72b302a18aaeeaddf50caca145af9cc0b81afd2"
+    },
+    {
+      "resource": "3/cmr7",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmr7.tfm",
+      "package": "cm",
+      "bytes": 1300,
+      "sha256": "28f9f4d237bdae4babef4a59d90f17686a09d6f9df0b2c3c23b2ba15f20eee82"
+    },
+    {
+      "resource": "3/cmr8",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmr8.tfm",
+      "package": "cm",
+      "bytes": 1292,
+      "sha256": "4c5ae243ac0aa254e7ec7f0602cc2a4351e5011ff0cb6dc150a5f6de19585de6"
+    },
+    {
+      "resource": "3/cmr9",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmr9.tfm",
+      "package": "cm",
+      "bytes": 1292,
+      "sha256": "2ffa73e8446c1d46c3509a0f65ff97d4d09de46f48e1ce578a1004498b67dba9"
+    },
+    {
+      "resource": "3/cmsl10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmsl10.tfm",
+      "package": "cm",
+      "bytes": 1508,
+      "sha256": "dcbfc25c5aac16dc2b820e089a00aedef20a1af6d8d3c2efa54f6f17a985d33f"
+    },
+    {
+      "resource": "3/cmsl12",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmsl12.tfm",
+      "package": "cm",
+      "bytes": 1504,
+      "sha256": "0bfef4919b1be6619d3e6892ea75066f4aa372b82d6164ebd06ef6c5b6281278"
+    },
+    {
+      "resource": "3/cmsl8",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmsl8.tfm",
+      "package": "cm",
+      "bytes": 1504,
+      "sha256": "581080f4ebd96f58b4b6f774ea2882f5e83fef7c932647a7c957f7e8db1f7823"
+    },
+    {
+      "resource": "3/cmsl9",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmsl9.tfm",
+      "package": "cm",
+      "bytes": 1504,
+      "sha256": "bb0f9deb6852caed902cb04bfc8e8333345a37946bd0b6bd56d11848e729d3ca"
+    },
+    {
+      "resource": "3/cmsltt10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmsltt10.tfm",
+      "package": "cm",
+      "bytes": 772,
+      "sha256": "c093023e8958e30678808a843f4f4248f5ab609f8994182fded845590fe19cc3"
+    },
+    {
+      "resource": "3/cmss10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmss10.tfm",
+      "package": "cm",
+      "bytes": 1316,
+      "sha256": "431472f34665b6243a32936215f2e17d1f124cdf8513e86e2bedc4c3de3f980b"
+    },
+    {
+      "resource": "3/cmss12",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmss12.tfm",
+      "package": "cm",
+      "bytes": 1324,
+      "sha256": "38ba636afc0e32d07c340b9ad747c33c6d4a4256ccb9e42ae9f7d3df11b3fe1a"
+    },
+    {
+      "resource": "3/cmss17",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmss17.tfm",
+      "package": "cm",
+      "bytes": 1320,
+      "sha256": "a88f81798171b3582557826302ad7233e676949e17182d3dc84ea65bdf58e631"
+    },
+    {
+      "resource": "3/cmss8",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmss8.tfm",
+      "package": "cm",
+      "bytes": 1296,
+      "sha256": "25650d37e11bee41e03dc4757a1b6f1a64f27a53c664aa618d1a8ded54d96ed5"
+    },
+    {
+      "resource": "3/cmss9",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmss9.tfm",
+      "package": "cm",
+      "bytes": 1320,
+      "sha256": "904af036b1e2e1d1375cf763959ef9517a2fc3e24ac94dbb6290574cfafc0b50"
+    },
+    {
+      "resource": "3/cmssbx10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmssbx10.tfm",
+      "package": "cm",
+      "bytes": 1272,
+      "sha256": "59fcefaa9436cb00b1579a549b4a16b38606bb1b6138743d05ea35a74f168f54"
+    },
+    {
+      "resource": "3/cmssdc10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmssdc10.tfm",
+      "package": "cm",
+      "bytes": 1328,
+      "sha256": "1a0a6b7410c4c9fcc683cedcb9282428c98bd6aa54902e84ef6e71913f8aaaa2"
+    },
+    {
+      "resource": "3/cmssi10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmssi10.tfm",
+      "package": "cm",
+      "bytes": 1520,
+      "sha256": "9faee1d46e86de1eb7a8f7a53522d15fa8f06e75d292d8e6989dfcd252b322c7"
+    },
+    {
+      "resource": "3/cmssi12",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmssi12.tfm",
+      "package": "cm",
+      "bytes": 1532,
+      "sha256": "e8ea523bf347a1e932fa15a7d67af8bbc3720f4f59566ef9bf4270b9c26518da"
+    },
+    {
+      "resource": "3/cmssi17",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmssi17.tfm",
+      "package": "cm",
+      "bytes": 1528,
+      "sha256": "469b3e0bba8808729745f6221efb2bd1057814d24ecccc79ba67fdfad4ec2cd7"
+    },
+    {
+      "resource": "3/cmssi8",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmssi8.tfm",
+      "package": "cm",
+      "bytes": 1500,
+      "sha256": "79ce614e9edf079e9656dd8103402fc2dc745c77846a6c0a921342b8ad6c33e3"
+    },
+    {
+      "resource": "3/cmssi9",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmssi9.tfm",
+      "package": "cm",
+      "bytes": 1524,
+      "sha256": "c7e5764b1d1f637e733efdff121f7c88957a71844a3c4f5d4563f2b8c5d6bab2"
+    },
+    {
+      "resource": "3/cmssq8",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmssq8.tfm",
+      "package": "cm",
+      "bytes": 1304,
+      "sha256": "a813de9f318949969010f4a363b2c3076e5cefa4436e779404453b2c34435504"
+    },
+    {
+      "resource": "3/cmssqi8",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmssqi8.tfm",
+      "package": "cm",
+      "bytes": 1496,
+      "sha256": "78673efe5657b8a293e160c0ac88834778cf9a5ed1922a0bfcca3f5562c17f88"
+    },
+    {
+      "resource": "3/cmsy10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmsy10.tfm",
+      "package": "cm",
+      "bytes": 1124,
+      "sha256": "0ca13d421ac7133271aed7c935099ecf3d1d08ac9e15f81acb34a16564ab8a46"
+    },
+    {
+      "resource": "3/cmsy5",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmsy5.tfm",
+      "package": "cm",
+      "bytes": 1112,
+      "sha256": "6b7dc18cba9ca8996d7b146f1ed78d9227577b26248083310fec227692198ca5"
+    },
+    {
+      "resource": "3/cmsy6",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmsy6.tfm",
+      "package": "cm",
+      "bytes": 1116,
+      "sha256": "137eb9f38f661c66309614066a7b5d63d8969d33aba0c9efee9f844a4ce65b50"
+    },
+    {
+      "resource": "3/cmsy7",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmsy7.tfm",
+      "package": "cm",
+      "bytes": 1120,
+      "sha256": "4f59bbf683e947c807158641621982dc83f55fec042fea7963d8ce9f9da98256"
+    },
+    {
+      "resource": "3/cmsy8",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmsy8.tfm",
+      "package": "cm",
+      "bytes": 1120,
+      "sha256": "84c37f07ca360c41ad0a0fba7387d279d72457c69bdae03653208c683d8de6bc"
+    },
+    {
+      "resource": "3/cmsy9",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmsy9.tfm",
+      "package": "cm",
+      "bytes": 1116,
+      "sha256": "b57c5c42a7991a004ee1b40b340d7bd12cc75ab0a6f7daf7a207827504f91712"
+    },
+    {
+      "resource": "3/cmtcsc10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmtcsc10.tfm",
+      "package": "cm",
+      "bytes": 776,
+      "sha256": "15d384d3e1b9edbe61fa59f7778fa52328507cfed3b84ef1133971eb23534a8f"
+    },
+    {
+      "resource": "3/cmtex10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmtex10.tfm",
+      "package": "cm",
+      "bytes": 768,
+      "sha256": "b3cf3073fc0365ed335305b04579068059b8de860875bee514509764243f28d9"
+    },
+    {
+      "resource": "3/cmtex8",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmtex8.tfm",
+      "package": "cm",
+      "bytes": 768,
+      "sha256": "fe5347dbbdc0e43b6f6a4b746abbda5f40e504916f14cd98d5572df9c8dd9f3c"
+    },
+    {
+      "resource": "3/cmtex9",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmtex9.tfm",
+      "package": "cm",
+      "bytes": 764,
+      "sha256": "c7cd0eee8b1087c3afae677d6f9ce5483bdfa26ec571b706e999fdde0677ac3b"
+    },
+    {
+      "resource": "3/cmti10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmti10.tfm",
+      "package": "cm",
+      "bytes": 1480,
+      "sha256": "46a66e937f809c4fbe317947b583a14b408aca41ecb835eca3be46391190432a"
+    },
+    {
+      "resource": "3/cmti12",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmti12.tfm",
+      "package": "cm",
+      "bytes": 1484,
+      "sha256": "92d92985d932893a426546c1e59b69107423785857f6f29aa866be0aa8970883"
+    },
+    {
+      "resource": "3/cmti7",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmti7.tfm",
+      "package": "cm",
+      "bytes": 1492,
+      "sha256": "78921699d46fd39b25e2e3ea08b96d9c3ad9c858a6ad2cc1aa60204a36ce88f0"
+    },
+    {
+      "resource": "3/cmti8",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmti8.tfm",
+      "package": "cm",
+      "bytes": 1504,
+      "sha256": "7a212edaa5bbb6898b6196e32a5753811dc3295a18b9bcd9c727c23ce0c21a4e"
+    },
+    {
+      "resource": "3/cmti9",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmti9.tfm",
+      "package": "cm",
+      "bytes": 1476,
+      "sha256": "bae91797b96e40fbeb97e2ea3184070e7cf707b72422c7c107edf1d1d5a10abb"
+    },
+    {
+      "resource": "3/cmtt10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmtt10.tfm",
+      "package": "cm",
+      "bytes": 768,
+      "sha256": "11f3331c958b696fd484fe45c28285622617a2593d7a34511a1d6b279e1578a2"
+    },
+    {
+      "resource": "3/cmtt12",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmtt12.tfm",
+      "package": "cm",
+      "bytes": 772,
+      "sha256": "156417e26b9a51c7e052d5fdb3db7b25f10d4fa0d094180ae7834894189a0a0b"
+    },
+    {
+      "resource": "3/cmtt8",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmtt8.tfm",
+      "package": "cm",
+      "bytes": 768,
+      "sha256": "62f6142387fe8d4be3ba2d46034e76fd6c3fc1d22ab44663a4eaa3f42b97039e"
+    },
+    {
+      "resource": "3/cmtt9",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmtt9.tfm",
+      "package": "cm",
+      "bytes": 764,
+      "sha256": "2989dbdeed1533cdeba5dcd0edee59c4509b5c934b3db8847de78d8c94a9966d"
+    },
+    {
+      "resource": "3/cmu10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmu10.tfm",
+      "package": "cm",
+      "bytes": 1276,
+      "sha256": "7896645187499d599c330a8cbebc4ba1e21fa88b4ad46a86ef3db53cfa39b6f7"
+    },
+    {
+      "resource": "3/cmvtt10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmvtt10.tfm",
+      "package": "cm",
+      "bytes": 1248,
+      "sha256": "1ef141c7fcac180ec4293f4f43c34089bb09f4d794663bf122f8f9a089fd23b1"
     },
     {
       "resource": "3/ectt1000",
@@ -3093,6 +3597,27 @@
       "package": "lm",
       "bytes": 64684,
       "sha256": "22deb6d3be3ffcb40b33f0e010afb256c677d97c2a2bdee1f5740cdc97751558"
+    },
+    {
+      "resource": "47/lmmono12-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmmono12-regular.otf",
+      "package": "lm",
+      "bytes": 63012,
+      "sha256": "b826e490fa671f254840abe88afea0975b606f57fb4a8b93f53787c26d8ac319"
+    },
+    {
+      "resource": "47/lmmono8-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmmono8-regular.otf",
+      "package": "lm",
+      "bytes": 66268,
+      "sha256": "17319490d20f24e192bd7e7999484b95111a4654ac2620e7aa215591142ae997"
+    },
+    {
+      "resource": "47/lmmono9-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmmono9-regular.otf",
+      "package": "lm",
+      "bytes": 63076,
+      "sha256": "cdd53c7dc01a1d25f21eaf7cae44bfb8a9665e4cbd60e5f8da14287aca819bb9"
     },
     {
       "resource": "47/lmroman10-bold.otf",
@@ -3151,11 +3676,53 @@
       "sha256": "ed048c80fb4b67663b80899b89fe5fba17d7442e1286d61fd08fe5689c6b7c3c"
     },
     {
+      "resource": "47/lmroman5-bold.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman5-bold.otf",
+      "package": "lm",
+      "bytes": 109564,
+      "sha256": "6326fb955d07bedcc8f73684e6b6bfa76706d38f3a85bd89c0659504ace366a1"
+    },
+    {
+      "resource": "47/lmroman5-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman5-regular.otf",
+      "package": "lm",
+      "bytes": 111872,
+      "sha256": "954bd9c376597c7043e7b616430163e0158155edf7434fd70082cf8460c08533"
+    },
+    {
+      "resource": "47/lmroman6-bold.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman6-bold.otf",
+      "package": "lm",
+      "bytes": 112452,
+      "sha256": "f1ebd52916182bfc2e3f9d4b5ba847ad6acc6c7761354c0dc052fb01ec14f73c"
+    },
+    {
       "resource": "47/lmroman6-regular.otf",
       "path": "texmf-dist/fonts/opentype/public/lm/lmroman6-regular.otf",
       "package": "lm",
       "bytes": 112212,
       "sha256": "501396c437f76c260b8724265b8495f318a640ee5a4674852ecbb20daf256696"
+    },
+    {
+      "resource": "47/lmroman7-bold.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman7-bold.otf",
+      "package": "lm",
+      "bytes": 110212,
+      "sha256": "063ea9e378b4fca4fd59771cf522faa21eb7c8516c89464745c79725b384fb9a"
+    },
+    {
+      "resource": "47/lmroman7-italic.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman7-italic.otf",
+      "package": "lm",
+      "bytes": 117960,
+      "sha256": "19d20f2bb00fbffe5d3d66e9b6a54f0108289068029e9d88649d981d53613ddf"
+    },
+    {
+      "resource": "47/lmroman7-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman7-regular.otf",
+      "package": "lm",
+      "bytes": 110792,
+      "sha256": "48c4b46ab255eec96588fb992fba1ed6102e53d051da480738a61cc6cdb328c3"
     },
     {
       "resource": "47/lmroman8-bold.otf",
@@ -3165,11 +3732,32 @@
       "sha256": "04d4f633c3da31a169f4c54a7fe8c7e63925b39d030381f8d3eab955f16be7b2"
     },
     {
+      "resource": "47/lmroman8-italic.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman8-italic.otf",
+      "package": "lm",
+      "bytes": 117248,
+      "sha256": "fb0536b5c3eee5b5622cd827ceb410e6514e36512ebdc51d2cf98a96c06d44e8"
+    },
+    {
       "resource": "47/lmroman8-regular.otf",
       "path": "texmf-dist/fonts/opentype/public/lm/lmroman8-regular.otf",
       "package": "lm",
       "bytes": 111948,
       "sha256": "f73015c3827596586faa380c398501caf9b5bcbb6f40b46af6a51277ca97c9fc"
+    },
+    {
+      "resource": "47/lmroman9-bold.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman9-bold.otf",
+      "package": "lm",
+      "bytes": 113040,
+      "sha256": "f72feac9ea12eb858d8093d6c0ee710a6c25f59b61278c88ec41c0a680838415"
+    },
+    {
+      "resource": "47/lmroman9-italic.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman9-italic.otf",
+      "package": "lm",
+      "bytes": 118380,
+      "sha256": "2106cffcdc9f9cb411d7c3441e34d77a168b998a58b40e727ab5b815437d1975"
     },
     {
       "resource": "47/lmroman9-regular.otf",
@@ -3207,6 +3795,13 @@
       "sha256": "d431b786b9b603662718e79cfe9b441f47a8b0b3e854dde89d5acb3ed7cfd682"
     },
     {
+      "resource": "47/lmsans12-oblique.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmsans12-oblique.otf",
+      "package": "lm",
+      "bytes": 102056,
+      "sha256": "1f138e6203f7092f9a01f6193ed97d971b5045b99969f3a62c7e43a7faabc1c0"
+    },
+    {
       "resource": "47/lmsans12-regular.otf",
       "path": "texmf-dist/fonts/opentype/public/lm/lmsans12-regular.otf",
       "package": "lm",
@@ -3228,11 +3823,25 @@
       "sha256": "f6c395a436e4fa7e88bbf1445e64b9c78ce4effba3668b13cc433077fc71a984"
     },
     {
+      "resource": "47/lmsans8-oblique.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmsans8-oblique.otf",
+      "package": "lm",
+      "bytes": 100084,
+      "sha256": "7f4227513bfd47b7077bedd125caa4c0a223a2cdad17a1470145cdea83353c88"
+    },
+    {
       "resource": "47/lmsans8-regular.otf",
       "path": "texmf-dist/fonts/opentype/public/lm/lmsans8-regular.otf",
       "package": "lm",
       "bytes": 94256,
       "sha256": "04f0d25ca474494cb707e752170f6c22cdcb8ae2b5fb80872143e18d5cc463f8"
+    },
+    {
+      "resource": "47/lmsans9-oblique.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmsans9-oblique.otf",
+      "package": "lm",
+      "bytes": 101068,
+      "sha256": "ac0535d7d4a8eb1b531c5faeb9060a4b9bac397d72cf54191ef53eea6f66b617"
     },
     {
       "resource": "47/lmsans9-regular.otf",
