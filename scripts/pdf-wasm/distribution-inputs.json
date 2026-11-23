@@ -28,6 +28,7 @@
     "probe.test.mjs",
     "process.mjs",
     "process.test.mjs",
+    "rust-process.test.mjs",
     "source-policy.json",
     "sources.lock.json",
     "sources.py",

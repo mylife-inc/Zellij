@@ -145,7 +145,7 @@ async function run(args) {
   process.stdin.on('end', abort).on('error', abort).on('data', abort).resume();
   process.on('SIGTERM', abort).on('SIGINT', abort);
   try {
-    event('ready');
+    event('ready', { node: process.version });
     await compile(bundle, input, output, { signal: control.signal, passTimeoutMs, onPass: pass => event('pass', { pass }) });
     event('complete');
   } finally {

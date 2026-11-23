@@ -6,6 +6,10 @@ on:
       - .github/workflows/pdf-wasm-probe.yml
       - scripts/pdf-wasm/**
       - cli/crates/zellij-docs/examples/pdf_probe_inputs.rs
+      - cli/crates/zellij-core/src/process.rs
+      - cli/crates/zellij-core/src/process/**
+      - cli/crates/zellij-engine/src/pdf_runner.rs
+      - cli/crates/zellij-engine/examples/pdf_process.rs
       - cli/crates/zellij-docs/src/pdf.rs
       - cli/crates/zellij-docs/assets/book*.tex
       - scripts/fixtures/long-book.mjs
@@ -36,6 +40,8 @@ jobs:
       - run: cargo build --locked -p zellij-cli
         working-directory: cli
       - run: cargo build --locked -p zellij-docs --example pdf_probe_inputs
+        working-directory: cli
+      - run: cargo build --locked -p zellij-engine --example pdf_process
         working-directory: cli
       - run: node --test scripts/pdf-wasm/download.test.mjs
       - name: Fetch the pinned feasibility inputs (not release assets)
@@ -75,6 +81,10 @@ jobs:
         run: node --test scripts/pdf-wasm/process.test.mjs
         env:
           ZEL_PDF_COMPACT_PACKAGE: test-results/pdf-compact/package
+      - name: Exercise the Rust owner with the real compiler and malformed protocol/artifacts
+        run: node --test scripts/pdf-wasm/rust-process.test.mjs
+        env:
+          ZEL_PDF_COMPACT_PACKAGE: test-results/pdf-compact/package
       - name: Install maintainer PDF comparison tools
         if: matrix.runner == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends poppler-utils qpdf
@@ -82,6 +92,7 @@ jobs:
         env:
           ZEL_PDF_PROBE_BASELINE: ${{ matrix.runner == 'ubuntu-latest' && '1' || '' }}
           ZEL_PDF_PROBE_BUNDLE: ${{ github.workspace }}/test-results/pdf-compact/package
+          ZEL_PDF_RUST_SUPERVISOR: '1'
       - uses: actions/upload-artifact@v7
         if: always()
         with:
