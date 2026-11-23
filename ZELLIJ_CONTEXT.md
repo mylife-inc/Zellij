@@ -8,6 +8,28 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-23**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-23: compact PDF metadata and resource archive — qualification in progress**
+
+PR #245 merged as `e7c1d36`, with an identical tree to tested `aff7d36`.
+All 37 normal and seven PDF jobs pass (`45139281706`, `45139281588`), followed
+by main CI `45142894032` and base image `45142894139`. Six platforms agree on
+format/source hashes, including the Windows receipt correction.
+
+The next increment generates font metadata using the verified Wasm compiler,
+78 original inputs from seven frozen packages, and no old format/database or
+native TeX/container. The selected 39 OTFs produce a normalized 36,179-byte
+database; a 30-byte OpenType-only map replaces the other upstream metadata.
+Two builds must match the reviewed hash and exact input inventory. A reproducible
+experimental resource archive collects the compiler, rebuilt format and compact
+resources; it is about 10.8 MB locally, before final notices and source-distribution
+arrangements. The resource loader rejects changed inventories and corrupt blobs.
+See the [compact PDF record](specs/zellij-pdf-compact-metadata-2026-11-23.md).
+
+This is maintainer qualification, not a released cached PDF backend. Final
+notices/source distribution, production isolation review, Rust cache/dispatch,
+diagnostics/CI/docs and installed/public acceptance remain. Rc.19 still uses a
+container for PDFs. The unrelated historical browser timing findings stay open.
+
 **2026-11-22: reproducible PDF format sources — qualification in progress**
 
 PR #244 merged as `0e2db69` (tree identical to tested `8a24f45`); all 37 normal

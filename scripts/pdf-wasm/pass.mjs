@@ -7,8 +7,11 @@ import path from 'node:path';
 
 const { bundle, files } = workerData;
 const formatEpoch = workerData.formatEpoch;
-const initex = formatEpoch !== undefined;
-if (initex && (!Number.isSafeInteger(formatEpoch) || formatEpoch < 0 || formatEpoch > 2147483647)) {
+const metadata = workerData.fontMetadata === true;
+const generating = formatEpoch !== undefined;
+const initex = generating && !metadata;
+if (metadata && !generating) throw new Error('Font metadata requires a source date');
+if (generating && (!Number.isSafeInteger(formatEpoch) || formatEpoch < 0 || formatEpoch > 2147483647)) {
   throw new Error('Invalid format source date');
 }
 const heapLimit = 512 * 1024 * 1024;
@@ -31,7 +34,7 @@ const context = createContext({
   WebAssembly, TextDecoder, TextEncoder, Uint8Array, ArrayBuffer, performance,
   // INITEX also seeds Lua's hash tables from C time(), independent of TeX's
   // SOURCE_DATE_EPOCH. Freeze its guest clock, not the supervisor's deadline.
-  ...(initex ? { Date: class extends Date {
+  ...(generating ? { Date: class extends Date {
     constructor(...args) { super(...(args.length ? args : [formatEpoch * 1000])); }
     static now() { return formatEpoch * 1000; }
   } } : {}),
@@ -140,20 +143,35 @@ function setup() {
   context.FS.mkdir('/tex');
   context.FS.chdir('/work');
   put('/work/luahbtex', '');
-  if (!initex) put('/work/wasmtex-luatex.fmt', bundle.format);
+  if (!generating) put('/work/wasmtex-luatex.fmt', bundle.format);
   for (const [name, bytes] of files) put('/work/' + name, bytes);
   const search = ['TEXINPUTS', 'LUAINPUTS', 'CLUAINPUTS', 'TEXFORMATS', 'TEXFONTMAPS', 'ENCFONTS',
     'OPENTYPEFONTS', 'TTFONTS', 'T1FONTS', 'TFMFONTS', 'VFFONTS', 'TEXPSHEADERS'];
   put('/work/texmf.cnf', [
     'TEXMFCNF = .;/work', ...search.map(key => `${key} = .;/tex//`),
-    ...(initex ? [`SOURCE_DATE_EPOCH = ${formatEpoch}`] : []),
+    ...(generating ? [`SOURCE_DATE_EPOCH = ${formatEpoch}`] : []),
     'TEXMFVAR = /tex/texmf-var', 'TEXMFCACHE = /tex/texmf-var',
     'main_memory = 12000000', 'font_mem_size = 8000000', 'pool_size = 10000000',
     'buf_size = 5000000', 'hash_extra = 2000000', 'save_size = 200000', 'stack_size = 50000',
     'trie_size = 1500000', 'hyph_size = 32767', 'max_strings = 1000000', 'nest_size = 2000', 'param_size = 20000', '',
   ].join('\n'));
   put('/work/luaotfload.conf', '[db]\nupdate-live = false\n');
-  if (initex) {
+  if (metadata) {
+    put('/work/luatex', '');
+    // Scan only the reviewed fonts, in a stable directory order. Nothing from
+    // the host or the old generated database is visible to the Lua tool.
+    for (const [key, bytes] of [...bundle.resources].sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0)) {
+      if (key.startsWith('47/') && key.endsWith('.otf')) {
+        put('/tex/' + key, bytes);
+        used.add(key);
+      }
+    }
+    const main = '51/luaotfload-tool.lua';
+    put('/work/fontdb.lua', bundle.resources.get(main));
+    used.add(main);
+  }
+
+  if (generating) {
     context.ENV.SOURCE_DATE_EPOCH = String(formatEpoch);
     context.ENV.TZ = 'UTC';
   } else {
@@ -187,7 +205,8 @@ try {
   runInContext(bundle.code, context, { filename: 'verified-luahbtex.js' });
   await initialized;
   const common = ['-no-shell-escape', '-interaction=nonstopmode', '-halt-on-error', '-file-line-error', '-recorder'];
-  context.callMain(initex ? [...common, '-utc', '-ini', 'lualatex.ini'] : [...common, '--fmt=wasmtex-luatex', 'book.tex']);
+  context.callMain(metadata ? ['--luaonly', '/work/fontdb.lua', '--update', '--force']
+    : initex ? [...common, '-utc', '-ini', 'lualatex.ini'] : [...common, '--fmt=wasmtex-luatex', 'book.tex']);
   if (context.EXITSTATUS !== 0) throw new Error(`LuaHBTeX exited ${context.EXITSTATUS}`);
   const read = name => {
     const stat = context.FS.lstat('/work/' + name);
@@ -196,7 +215,13 @@ try {
     }
     return context.FS.readFile('/work/' + name);
   };
-  if (initex) {
+  if (metadata) {
+    const file = '/tex/texmf-var/luatex-cache/generic/names/luaotfload-names.lua.gz';
+    const stat = context.FS.lstat(file);
+    if (!context.FS.isFile(stat.mode) || stat.size > logLimit) throw new Error('Invalid font metadata output');
+    parentPort.postMessage({ database: context.FS.readFile(file), heapBytes: context.HEAPU8.length,
+      used: [...used].sort(), misses: [...misses].sort() });
+  } else if (initex) {
     parentPort.postMessage({ format: read('lualatex.fmt'), log: read('lualatex.log'),
       heapBytes: context.HEAPU8.length, used: [...used].sort(), misses: [...misses].sort() });
   } else {

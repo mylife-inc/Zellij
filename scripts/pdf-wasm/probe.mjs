@@ -4,9 +4,9 @@ import { pathToFileURL } from 'node:url';
 import path from 'node:path';
 import { loadBundle, loadInputs, lock, sha256 } from './bundle.mjs';
 
-async function runWorker(bundle, files, timeout, logBytes, formatEpoch) {
+async function runWorker(bundle, files, timeout, logBytes, formatEpoch, fontMetadata = false) {
   const worker = new Worker(new URL('./pass.mjs', import.meta.url), {
-    workerData: { bundle, files, logBytes, formatEpoch }, resourceLimits: { maxOldGenerationSizeMb: 128 },
+    workerData: { bundle, files, logBytes, formatEpoch, fontMetadata }, resourceLimits: { maxOldGenerationSizeMb: 128 },
   });
   let timer;
   try {
@@ -21,10 +21,10 @@ async function runWorker(bundle, files, timeout, logBytes, formatEpoch) {
 
 export const runPass = (bundle, files, timeout = 120_000, logBytes) => runWorker(bundle, files, timeout, logBytes);
 export const runFormatPass = (bundle, epoch, timeout = 120_000) => runWorker(bundle, new Map(), timeout, undefined, epoch);
+export const runFontMetadataPass = (bundle, epoch, timeout = 120_000) => runWorker(bundle, new Map(), timeout, undefined, epoch, true);
 
-export async function compile(bundleRoot, inputRoot, output, { format } = {}) {
-  const bundle = loadBundle(bundleRoot);
-  if (format !== undefined) bundle.format = format;
+export async function compile(bundleRoot, inputRoot, output, { format, metadata } = {}) {
+  const bundle = loadBundle(bundleRoot, { format, metadata });
   const files = loadInputs(inputRoot);
   const destination = path.resolve(output);
   try { await lstat(destination); throw new Error('Probe output already exists'); }
@@ -54,6 +54,8 @@ export async function compile(bundleRoot, inputRoot, output, { format } = {}) {
     const evidence = { schemaVersion: 1, experimental: true, engineRelease: lock.engineRelease,
       resourceLockSha256: sha256(JSON.stringify(lock)),
       formatSha256: sha256(bundle.format),
+      fontMetadataSha256: sha256(bundle.resources.get('51/luaotfload-names.lua')),
+      fontMapSha256: sha256(bundle.resources.get('11/pdftex.map')),
       pdfSha256: sha256(pdf), passes };
     await writeFile(path.join(stage, 'probe.json'), JSON.stringify(evidence, null, 2) + '\n');
     await rename(stage, destination);

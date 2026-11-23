@@ -23,6 +23,7 @@ jobs:
     env:
       ZEL_PDF_PROBE_BUNDLE: ${{ github.workspace }}/test-results/pdf-wasm-bundle
       ZEL_PDF_FORMAT_INPUTS: ${{ github.workspace }}/test-results/pdf-format-inputs
+      ZEL_PDF_FONT_INPUTS: ${{ github.workspace }}/test-results/pdf-font-inputs
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
@@ -52,13 +53,30 @@ jobs:
         shell: bash
         run: node scripts/pdf-wasm/format.mjs "$ZEL_PDF_PROBE_BUNDLE" "$ZEL_PDF_FORMAT_INPUTS" test-results/pdf-format
       - run: node --test scripts/pdf-wasm/format.test.mjs
+      - name: Prepare the original font generator, Unicode data and selected fonts
+        shell: bash
+        run: |
+          python scripts/pdf-wasm/font_sources.py fetch "$RUNNER_TEMP/pdf-format-sources"
+          python scripts/pdf-wasm/font_sources.py prepare "$RUNNER_TEMP/pdf-format-sources" "$ZEL_PDF_FONT_INPUTS"
+      - name: Build compact font metadata twice using only the verified Wasm engine
+        shell: bash
+        run: node scripts/pdf-wasm/fonts.mjs "$ZEL_PDF_PROBE_BUNDLE" "$ZEL_PDF_FONT_INPUTS" test-results/pdf-font-metadata
+      - run: node --test scripts/pdf-wasm/fonts.test.mjs
+      - name: Assemble the experimental resource archive without upstream generated data
+        shell: bash
+        run: python scripts/pdf-wasm/compact.py "$ZEL_PDF_PROBE_BUNDLE" test-results/pdf-format test-results/pdf-font-metadata test-results/pdf-compact
+      - run: node --test scripts/pdf-wasm/compact.test.mjs
+        env:
+          ZEL_PDF_COMPACT_PACKAGE: test-results/pdf-compact/package
+          ZEL_PDF_REBUILT_FORMAT: test-results/pdf-format/zellij-lualatex.fmt
+          ZEL_PDF_FONT_METADATA: test-results/pdf-font-metadata
       - name: Install maintainer PDF comparison tools
         if: matrix.runner == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends poppler-utils qpdf
       - run: node scripts/pdf-wasm/check.mjs
         env:
           ZEL_PDF_PROBE_BASELINE: ${{ matrix.runner == 'ubuntu-latest' && '1' || '' }}
-          ZEL_PDF_REBUILT_FORMAT: test-results/pdf-format/zellij-lualatex.fmt
+          ZEL_PDF_PROBE_BUNDLE: ${{ github.workspace }}/test-results/pdf-compact/package
       - uses: actions/upload-artifact@v7
         if: always()
         with:
@@ -72,6 +90,9 @@ jobs:
           path: |
             test-results/pdf-format/verification.json
             test-results/pdf-format-inputs/verification.json
+            test-results/pdf-font-inputs/verification.json
+            test-results/pdf-font-metadata/verification.json
+            test-results/pdf-compact/verification.json
           if-no-files-found: error
           retention-days: 14
       # Never upload the engine/resource bundle before redistribution review.
@@ -86,7 +107,7 @@ jobs:
         with:
           python-version: '3.13'
       - name: Check source-verifier failure cases
-        run: python -m unittest discover -s scripts/pdf-wasm -p 'test_*sources.py' -v
+        run: python -m unittest discover -s scripts/pdf-wasm -p 'test_*.py' -v
       - name: Download pinned source inputs (maintainer only)
         run: python scripts/pdf-wasm/sources.py fetch "${{ runner.temp }}/pdf-source-cache"
       - name: Verify original package bytes and collect notices
