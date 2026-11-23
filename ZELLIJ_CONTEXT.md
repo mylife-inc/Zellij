@@ -8,6 +8,21 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-22**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-22: reproducible PDF format sources — qualification in progress**
+
+PR #244 merged as `0e2db69` (tree identical to tested `8a24f45`); all 37 normal
+and seven source/probe jobs pass, as do main CI `45124076067` and base image
+`45124075839`. A separate clean engine build reproduces the pinned JS/Wasm bytes;
+its receipt is in [PR #244](https://github.com/mylife-inc/Zellij/pull/244).
+The next increment builds the format from 75 original files with a fixed guest
+clock, independently of the upstream format and generated metadata. It requires
+two identical builds and an exact reviewed hash, then tests the generated format
+on the full manuscript matrix. See the
+[format source record](specs/zellij-pdf-format-sources-2026-11-22.md) and
+[maintainer instructions](scripts/pdf-wasm/README.md#rebuild-the-format-from-original-sources).
+Font-metadata source closure, final notices/redistribution review and installed
+cache integration remain open. No cached PDF backend or new candidate is released.
+
 **2026-11-22: PDF source correspondence — qualification in progress**
 
 The maintainer-only source verifier independently matches all 193 package-backed

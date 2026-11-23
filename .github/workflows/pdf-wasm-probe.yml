@@ -22,6 +22,7 @@ jobs:
         runner: [ubuntu-latest, ubuntu-24.04-arm, macos-15-intel, macos-latest, windows-latest, windows-11-arm]
     env:
       ZEL_PDF_PROBE_BUNDLE: ${{ github.workspace }}/test-results/pdf-wasm-bundle
+      ZEL_PDF_FORMAT_INPUTS: ${{ github.workspace }}/test-results/pdf-format-inputs
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
@@ -39,18 +40,39 @@ jobs:
         shell: bash
         run: node scripts/pdf-wasm/download.mjs "$ZEL_PDF_PROBE_BUNDLE"
       - run: node --test scripts/pdf-wasm/probe.test.mjs
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - name: Prepare the original format sources and notices
+        shell: bash
+        run: |
+          python scripts/pdf-wasm/format_sources.py fetch "$RUNNER_TEMP/pdf-format-sources"
+          python scripts/pdf-wasm/format_sources.py prepare "$RUNNER_TEMP/pdf-format-sources" "$ZEL_PDF_FORMAT_INPUTS"
+      - name: Rebuild INITEX twice without the old format or generated metadata
+        shell: bash
+        run: node scripts/pdf-wasm/format.mjs "$ZEL_PDF_PROBE_BUNDLE" "$ZEL_PDF_FORMAT_INPUTS" test-results/pdf-format
+      - run: node --test scripts/pdf-wasm/format.test.mjs
       - name: Install maintainer PDF comparison tools
         if: matrix.runner == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends poppler-utils qpdf
       - run: node scripts/pdf-wasm/check.mjs
         env:
           ZEL_PDF_PROBE_BASELINE: ${{ matrix.runner == 'ubuntu-latest' && '1' || '' }}
+          ZEL_PDF_REBUILT_FORMAT: test-results/pdf-format/zellij-lualatex.fmt
       - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: pdf-wasm-probe-${{ matrix.runner }}
           path: test-results/pdf-wasm
           if-no-files-found: warn
+          retention-days: 14
+      - uses: actions/upload-artifact@v7
+        with:
+          name: pdf-format-receipts-${{ matrix.runner }}
+          path: |
+            test-results/pdf-format/verification.json
+            test-results/pdf-format-inputs/verification.json
+          if-no-files-found: error
           retention-days: 14
       # Never upload the engine/resource bundle before redistribution review.
 
@@ -64,7 +86,7 @@ jobs:
         with:
           python-version: '3.13'
       - name: Check source-verifier failure cases
-        run: python -m unittest discover -s scripts/pdf-wasm -p test_sources.py -v
+        run: python -m unittest discover -s scripts/pdf-wasm -p 'test_*sources.py' -v
       - name: Download pinned source inputs (maintainer only)
         run: python scripts/pdf-wasm/sources.py fetch "${{ runner.temp }}/pdf-source-cache"
       - name: Verify original package bytes and collect notices

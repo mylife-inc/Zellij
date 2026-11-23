@@ -23,15 +23,21 @@ export function verifiedBytes(root, entry) {
   return new Uint8Array(bytes);
 }
 
-export function loadBundle(root) {
+export function loadEngine(root) {
   if (!lstatSync(root).isDirectory() || lstatSync(root).isSymbolicLink()) {
     throw new Error('PDF probe bundle must be a real directory');
   }
+  const engine = new Map(lock.engine.filter(entry => /\.(js|wasm)$/.test(entry.name))
+    .map(entry => [entry.name, verifiedBytes(root, entry)]));
+  return { code: new TextDecoder().decode(engine.get('wasmtex-luatex.js')), wasm: engine.get('wasmtex-luatex.wasm') };
+}
+
+export function loadBundle(root) {
+  const core = loadEngine(root);
   const engine = new Map(lock.engine.map(entry => [entry.name, verifiedBytes(root, entry)]));
   const resources = new Map(lock.resources.map(entry => [entry.name, verifiedBytes(root, entry)]));
   return {
-    code: new TextDecoder().decode(engine.get('wasmtex-luatex.js')),
-    wasm: engine.get('wasmtex-luatex.wasm'),
+    ...core,
     format: new Uint8Array(gunzipSync(engine.get('wasmtex-luatex.fmt.gz'), { maxOutputLength: 64 * 1024 * 1024 })),
     resources,
   };

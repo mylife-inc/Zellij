@@ -1,0 +1,1203 @@
+{
+  "schemaVersion": 1,
+  "purpose": "maintainer-format-source-verification",
+  "redistributionReviewComplete": false,
+  "runtimeLockSha256": "0368bbeed9b098009cd24c3e3beb10ff818e4012133cb8b705c8f5450e2b2189",
+  "policySha256": "8fe9f3abd7c4acb2f748a8b3aa9d874cbbd6a503806693b334f6ce11ddf2dd46",
+  "metadata": [
+    {
+      "name": "texlive-provenance.json",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/texlive-provenance.json",
+      "bytes": 136803254,
+      "sha256": "4ea93f54f4a12530ecf1565b03f6d223ce3434a28c4e3e5c705930e957ff9451"
+    },
+    {
+      "name": "texlive.tlpdb",
+      "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/tlpkg/texlive.tlpdb",
+      "sha256": "9d2208c4cafad4572eb27f89112d98ddb9127cafa496568b1ebf3f06a20ec610"
+    },
+    {
+      "name": "snapshot-artifacts.json",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/snapshot-artifacts.json",
+      "bytes": 1171,
+      "sha256": "f96c763d44d5775987f23112d3a08458e2dfb244515b843c6c5b9557429c748a"
+    }
+  ],
+  "engineSource": {
+    "name": "corresponding-source.tar.xz",
+    "url": "https://github.com/corca-ai/wasmtex/releases/download/engine-2026-f5d94438a7c75a23/wasmtex-2026-f5d94438a7c75a23-source.tar.xz",
+    "sha256": "e6a1f9b8ad84c7127368bb521217af381407fcc0d5c5518114345d55b470d637"
+  },
+  "packages": [
+    {
+      "name": "atbegshi",
+      "revision": "79461",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "lppl1.3"
+        ],
+        "references": [
+          "https://ctan.org/license/lppl1.3"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/latex/atbegshi/README.md"
+      ],
+      "archives": [
+        {
+          "name": "atbegshi.tar.xz",
+          "kind": "run",
+          "bytes": 4748,
+          "sha512": "35d16e9d0566ec7bf7928fc443f763a942e9e93499dbed4d83416bfa33cf39dd0a6003dfb3f220cac5b28b950bb3224887ffeeab94ba744098b63d23187fd66b",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/atbegshi.tar.xz"
+        },
+        {
+          "name": "atbegshi.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 400456,
+          "sha512": "5ffa79a26cf09b2ee5655fc296566d9d3064e0be1b8b668a475d6b0b002823d2a73d38e90ee3e73e390f1961ad80c83b6e45fcb185f8aa62f2af405cfffa26dd",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/atbegshi.doc.tar.xz"
+        },
+        {
+          "name": "atbegshi.source.tar.xz",
+          "kind": "src",
+          "bytes": 13352,
+          "sha512": "804e82f181e5d4404696c72c1600815dca7c4f85e157f44b2779a291c365593e71df07c058aabc35d215a9285452f012d192143b046d68fc14a0e90dcd7b2ec9",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/atbegshi.source.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "atveryend",
+      "revision": "79461",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "lppl1.3c"
+        ],
+        "references": [
+          "https://ctan.org/license/lppl1.3c"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/latex/atveryend/README.md"
+      ],
+      "archives": [
+        {
+          "name": "atveryend.tar.xz",
+          "kind": "run",
+          "bytes": 1184,
+          "sha512": "bf4e066a4b8c3a346471234ba1708a9c770d5ec761bfdd04beadff150b6b2be93bfc9f5756b4213059f65f8dc514d395afa021c1581dc786cc4fab5e0415fd15",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/atveryend.tar.xz"
+        },
+        {
+          "name": "atveryend.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 281800,
+          "sha512": "3bb1c18c9f8154f171d9a75fdb323c8051d7608e55ddb12ffc092e4cf872982be1491ed106a828e0e69ff48d28b9cc1edf0acb4d9f93fafcf8b0973ae2f2c486",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/atveryend.doc.tar.xz"
+        },
+        {
+          "name": "atveryend.source.tar.xz",
+          "kind": "src",
+          "bytes": 4272,
+          "sha512": "7855f420d5a99caf4add9e8c7f48b9a576774e160572e3a15b05170d75552a78bdd4fa1368beea8369ec0d8b57254364026f365308cf9efd04df3aead5773628",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/atveryend.source.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "babel",
+      "revision": "80042",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "lppl1.3"
+        ],
+        "references": [
+          "https://ctan.org/license/lppl1.3"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/latex/babel/README.md"
+      ],
+      "archives": [
+        {
+          "name": "babel.tar.xz",
+          "kind": "run",
+          "bytes": 249772,
+          "sha512": "800e8efeeae44de7775e5a8290829a9070923578be1e15469719e2a68b604b37e669bb46f25a3bce7ce1c7f6e5ca607f6f1bf50ae0c4b5181f8cbb69a7ce7600",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/babel.tar.xz"
+        },
+        {
+          "name": "babel.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 1192188,
+          "sha512": "e668ed98b32ed29671eee7afb9ccc1c30965cf8d3386df4b154b6889f12ab78773f4fddec02030740bae5bbfab647634ca4c72ac3f07ce676ba74210c09be03d",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/babel.doc.tar.xz"
+        },
+        {
+          "name": "babel.source.tar.xz",
+          "kind": "src",
+          "bytes": 972308,
+          "sha512": "fe663484d82478d31fe54cc9aa18e06fd08b7a23dc1505e845995cfaad173598a4c310bcf4fde363de802dd55c5ed0eb1f8a0a7aa668928a96dd3f659f6c16a7",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/babel.source.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "cm",
+      "revision": "57963",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "knuth"
+        ],
+        "references": [
+          "https://ctan.org/license/knuth"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/fonts/cm/README",
+        "texmf-dist/doc/fonts/cm/README-cmps.txt"
+      ],
+      "archives": [
+        {
+          "name": "cm.tar.xz",
+          "kind": "run",
+          "bytes": 238064,
+          "sha512": "e65b2096ca183ca21d8ff987489223bc98750fcbaf4f9f9a9996f5153a76c5587d1ad77693234d02f80753b8b8cb86fd957514f82065bd7aab9eb64bad9003a3",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/cm.tar.xz"
+        },
+        {
+          "name": "cm.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 2500,
+          "sha512": "39ccdee82d86f01e11aaeb53844639b4f976677c0baef7675817fafe4263e8e44cfec144f6fce265c9c80d9a9373a2f46ac8a55b7f20923c680eaddd0222a045",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/cm.doc.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "firstaid",
+      "revision": "79234",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "lppl1.3c"
+        ],
+        "references": [
+          "https://ctan.org/license/lppl1.3c"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/latex/firstaid/README.md"
+      ],
+      "archives": [
+        {
+          "name": "firstaid.tar.xz",
+          "kind": "run",
+          "bytes": 4964,
+          "sha512": "64baa443979a09b6c5eb7a27c53ed040cd04f146edb2af7f037d9d4ef7d98eb637cbc85f59eaac149bb5f1d2cc4bbf9426f47c93add55f6aa41a104e669c8af8",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/firstaid.tar.xz"
+        },
+        {
+          "name": "firstaid.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 288040,
+          "sha512": "6bbcde5f3575e388f51237aee91e280a562f41fb7f7b030b4e5512280db0316184f58bace5a5fb9ad5059009aef82c7ddd189114aaebc5f50b8dfe3980c05ac1",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/firstaid.doc.tar.xz"
+        },
+        {
+          "name": "firstaid.source.tar.xz",
+          "kind": "src",
+          "bytes": 11400,
+          "sha512": "fcaf5d6c5d8e24aa28621a8f905fd9e69996087c3baadcc1d4d3b274c9c26eb754d5eb6a001cf8ee81bc3ec6158f4b0ed093eac4bfeb9106296fbd4d1f35b36f",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/firstaid.source.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "hyphen-base",
+      "revision": "78076",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "LicenseRef-Hyph-UTF8-Per-File"
+        ],
+        "references": [
+          "texmf-dist/tex/generic/config/language.dat",
+          "texmf-dist/tex/generic/config/language.us"
+        ],
+        "source": "package-override",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/tex/generic/config/language.dat",
+        "texmf-dist/tex/generic/config/language.us"
+      ],
+      "archives": [
+        {
+          "name": "hyphen-base.tar.xz",
+          "kind": "run",
+          "bytes": 22644,
+          "sha512": "dc110200707c395dd61dcf30ed32b8eb4dd648fbb98eaa897e473ff683fe79af05464028a4b0a4685c9c17ebf61f19c592825f2a778d512ad68e1a57925a033f",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/hyphen-base.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "knuth-lib",
+      "revision": "57963",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "knuth"
+        ],
+        "references": [
+          "https://ctan.org/license/knuth"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/tex/generic/knuth-lib/null.tex"
+      ],
+      "archives": [
+        {
+          "name": "knuth-lib.tar.xz",
+          "kind": "run",
+          "bytes": 30508,
+          "sha512": "47d50b1966dc5a3adf4921c297d9ed5917035e917098154fc08d1c72ebd0ba70ebfa41735c7ae52c5087d62242bcfa9b0b49914c6da4f392e2d4c56a6d72807d",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/knuth-lib.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "l3kernel",
+      "revision": "80015",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "lppl1.3c"
+        ],
+        "references": [
+          "https://ctan.org/license/lppl1.3c"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/latex/l3kernel/README.md"
+      ],
+      "archives": [
+        {
+          "name": "l3kernel.tar.xz",
+          "kind": "run",
+          "bytes": 206032,
+          "sha512": "3c1feab3c6aa5bcc09cd5ca92f613571557f39f250e43c4f7663d216c01d794d38abeff544f5de83151540861b9423adcbffb9ba09758b30ca8ac56c50ae7085",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/l3kernel.tar.xz"
+        },
+        {
+          "name": "l3kernel.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 12205636,
+          "sha512": "d62b1de00f8e135385decda9c0c69ce6e245ea525dada8816f2f432e0c306b9ae2ccc3e0dc0c4757ccfec50ec0f4fb8179e77c4ab18ed863a8a9911272d4149a",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/l3kernel.doc.tar.xz"
+        },
+        {
+          "name": "l3kernel.source.tar.xz",
+          "kind": "src",
+          "bytes": 687200,
+          "sha512": "cfce4491dd0eb44d4e79ea2e47333a22e09ea26c1f427c93d91be883a1ab570426f20085863ce2b514b27c4a97f7a124376146cf4988c74687fbc52835ddf2fc",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/l3kernel.source.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "latex",
+      "revision": "79618",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "lppl1.3c"
+        ],
+        "references": [
+          "https://ctan.org/license/lppl1.3c"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/latex/base/README.md",
+        "texmf-dist/doc/latex/base/lppl.txt"
+      ],
+      "archives": [
+        {
+          "name": "latex.tar.xz",
+          "kind": "run",
+          "bytes": 264336,
+          "sha512": "04d6380ef7c023f63192749080c15e6e47b873aa151e838a946439f5de4455cce1a872e688cf8a366363d09ddcf03cf6b588f3db0573160486afe9cbe0f514e1",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/latex.tar.xz"
+        },
+        {
+          "name": "latex.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 39805068,
+          "sha512": "22d9659d0c69649a93b2b5386f9502e5b4cfedd71042f0b312e04f4757b3849630b3bc92c787a0ca3a0853ea4ca90a1983e9001484ae85ab7e691777eab993f1",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/latex.doc.tar.xz"
+        },
+        {
+          "name": "latex.source.tar.xz",
+          "kind": "src",
+          "bytes": 841876,
+          "sha512": "cde635a3602c5de04292e053c0f375074992ca51cb2e82efd534be6f975f7788599d5cd45091049181ca448a1369d59d5adbc2b8a919f8af690fc630f32efcd2",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/latex.source.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "latex-fonts",
+      "revision": "79618",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "lppl1.2"
+        ],
+        "references": [
+          "https://ctan.org/license/lppl1.2"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/fonts/latex-fonts/README"
+      ],
+      "archives": [
+        {
+          "name": "latex-fonts.tar.xz",
+          "kind": "run",
+          "bytes": 17956,
+          "sha512": "64915845acf0218c69802c9602ceb126412cc02cf856f430dd89e915536c318c61f53801db8a888b2eb1d03ef252eb3cd2563612f4ee26891ff261737ceabd1e",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/latex-fonts.tar.xz"
+        },
+        {
+          "name": "latex-fonts.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 1128,
+          "sha512": "71d9af041af1de0d5907d8bf92a2c611d68a5c7d96b6463f9d4c4c16e92ba42e5978d65f0c59bf323e3adedbb790e4824cc996f9725114a74976d9d2b9c3d785",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/latex-fonts.doc.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "lm",
+      "revision": "77682",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "gfl"
+        ],
+        "references": [
+          "https://ctan.org/license/gfl"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/fonts/lm/GUST-FONT-LICENSE.TXT",
+        "texmf-dist/doc/fonts/lm/README-Latin-Modern.TXT"
+      ],
+      "archives": [
+        {
+          "name": "lm.tar.xz",
+          "kind": "run",
+          "bytes": 11944800,
+          "sha512": "c4fae36dbf06177583c2dd3431176deca7f6fc1919a2aa9d7dbef89b77f26501e7d323dbda3a72fb3c9644074f8c4aec90d0389d72d87ab4dd38efd99b757d5b",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/lm.tar.xz"
+        },
+        {
+          "name": "lm.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 2511620,
+          "sha512": "45fac0159b7e8a29df305902af04835fc339556ee3b791ddc69bab2ba742371be1cd08bd425fdc73d065bce8cb1cff91809b2fa0ce4723e2d30a1c7f8f697782",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/lm.doc.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "lua-uni-algos",
+      "revision": "76195",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "lppl1.3"
+        ],
+        "references": [
+          "https://ctan.org/license/lppl1.3"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/luatex/lua-uni-algos/README.md"
+      ],
+      "archives": [
+        {
+          "name": "lua-uni-algos.tar.xz",
+          "kind": "run",
+          "bytes": 12332,
+          "sha512": "50022083eb3659c994e571d9bd9c9a916b9b47e34c2776e73515afdff0361b49fac8da59c1532a578a5518c70236983be4bbb2412845a30064d421ba3c85bf66",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/lua-uni-algos.tar.xz"
+        },
+        {
+          "name": "lua-uni-algos.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 77452,
+          "sha512": "02a2c56cf312ead2e97ecd5b561a7a4ee326f42915d89b03d6f7450143d9682e01e5dfb5f1cb1b8739ed9beca053c760546f94c47ddd1d612c7f3a00789a1da3",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/lua-uni-algos.doc.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "pdftex",
+      "revision": "79618",
+      "relocated": false,
+      "license": {
+        "ids": [
+          "gpl"
+        ],
+        "references": [
+          "https://ctan.org/license/gpl"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/pdftex/README",
+        "texmf-dist/doc/pdftex/manual/README",
+        "texmf-dist/doc/pdftex/samplepdftex/README"
+      ],
+      "archives": [
+        {
+          "name": "pdftex.tar.xz",
+          "kind": "run",
+          "bytes": 39624,
+          "sha512": "1df1a9eea3632b5ed9ef4ec742b9745a80e0764784affbc872c6a4156f0239945a0c26f9003f1178bff70a09c8cf13735dd42f33c8ab8ebe0cae8e7c91fc5987",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/pdftex.tar.xz"
+        },
+        {
+          "name": "pdftex.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 3406880,
+          "sha512": "a8240fe4eba4e5b23d1cafc51f501099c7d451712b21f678eb2e3bceb194d0405c755888e0a005aa3a99f7e67fcdfc5afb6d993ff89b5cddf677c50d22e1b394",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/pdftex.doc.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "tex-ini-files",
+      "revision": "78524",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "pd"
+        ],
+        "references": [
+          "https://ctan.org/license/pd"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/generic/tex-ini-files/README.md"
+      ],
+      "archives": [
+        {
+          "name": "tex-ini-files.tar.xz",
+          "kind": "run",
+          "bytes": 4628,
+          "sha512": "bb60c588186061ea9489ca7c2778d0cb2ddc9d6628d39433938596b3a5ba6d688cce7fed1840a7fb281ea3379df897303d6e1bd33cc5d2bc46e7395416739627",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/tex-ini-files.tar.xz"
+        },
+        {
+          "name": "tex-ini-files.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 1472,
+          "sha512": "e82eca90c5c9ac70d928a2c67682714b9a3ede07ca0c32dae2d0f05066b287f41c18fce279a188238efaf5dd2671d0efe49a2349c060300730324807a5e3ac04",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/tex-ini-files.doc.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "unicode-data",
+      "revision": "79913",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "lppl1.3c",
+          "other-free"
+        ],
+        "references": [
+          "https://ctan.org/license/lppl1.3c",
+          "https://ctan.org/license/other-free"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/generic/unicode-data/README.md"
+      ],
+      "archives": [
+        {
+          "name": "unicode-data.tar.xz",
+          "kind": "run",
+          "bytes": 316880,
+          "sha512": "9a288afe4b904243e56135c1cd9f799c8f28fcad95592107804de1f19d56279b04cc91cb381e3ff4b2d0775bbf8c0a9f30551173c3fbbe6b82935a725a83446b",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/unicode-data.tar.xz"
+        },
+        {
+          "name": "unicode-data.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 3940,
+          "sha512": "a9bedf80877e52292dd8583d984b1dad19205194145a4de021eb927ec9f0a9ec9bd77fe9c2e2060e54cbf53c653c3fcd938be18e5ecff157b544ec8221adcc3b",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/unicode-data.doc.tar.xz"
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "resource": "26/CaseFolding.txt",
+      "path": "texmf-dist/tex/generic/unicode-data/CaseFolding.txt",
+      "package": "unicode-data",
+      "bytes": 87539,
+      "sha256": "ff8d8fefbf123574205085d6714c36149eb946d717a0c585c27f0f4ef58c4183"
+    },
+    {
+      "resource": "26/GraphemeBreakProperty.txt",
+      "path": "texmf-dist/tex/generic/unicode-data/GraphemeBreakProperty.txt",
+      "package": "unicode-data",
+      "bytes": 99377,
+      "sha256": "d6b51d1d2ae5c33b451b7ed994b48f1f4dc62b2272a5831e7fd418514a6bae89"
+    },
+    {
+      "resource": "26/SpecialCasing.txt",
+      "path": "texmf-dist/tex/generic/unicode-data/SpecialCasing.txt",
+      "package": "unicode-data",
+      "bytes": 17049,
+      "sha256": "efc25faf19de21b92c1194c111c932e03d2a5eaf18194e33f1156e96de4c9588"
+    },
+    {
+      "resource": "26/UnicodeData.txt",
+      "path": "texmf-dist/tex/generic/unicode-data/UnicodeData.txt",
+      "package": "unicode-data",
+      "bytes": 2198209,
+      "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c"
+    },
+    {
+      "resource": "26/WordBreakProperty.txt",
+      "path": "texmf-dist/tex/generic/unicode-data/WordBreakProperty.txt",
+      "package": "unicode-data",
+      "bytes": 114445,
+      "sha256": "72274cac1e6b919507db35655c3e175aa27274668a1ece95c28d2069f2ad9852"
+    },
+    {
+      "resource": "26/atbegshi-ltx.sty",
+      "path": "texmf-dist/tex/latex/base/atbegshi-ltx.sty",
+      "package": "latex",
+      "bytes": 2963,
+      "sha256": "b34349cb0b4912e48cc1dde127063f4cd7f1df1a3b4b317ab8961a33aa72ba70"
+    },
+    {
+      "resource": "26/atbegshi.sty",
+      "path": "texmf-dist/tex/generic/atbegshi/atbegshi.sty",
+      "package": "atbegshi",
+      "bytes": 24708,
+      "sha256": "a73003b4bb2dc8a814533ddbd31600e6626827799c2a465d03ef42e7a33fa71b"
+    },
+    {
+      "resource": "26/atveryend-ltx.sty",
+      "path": "texmf-dist/tex/latex/base/atveryend-ltx.sty",
+      "package": "latex",
+      "bytes": 2378,
+      "sha256": "76b645fd08a4095926fd771d0cd7c2e2d6965320a669254ae8f5a21592ea10ce"
+    },
+    {
+      "resource": "26/atveryend.sty",
+      "path": "texmf-dist/tex/latex/atveryend/atveryend.sty",
+      "package": "atveryend",
+      "bytes": 1695,
+      "sha256": "2e84f857c2b0aa670d1d11588b14740bfed4a9f3dd816997e5da3372874e9eaa"
+    },
+    {
+      "resource": "26/expl3-code.tex",
+      "path": "texmf-dist/tex/latex/l3kernel/expl3-code.tex",
+      "package": "l3kernel",
+      "bytes": 1387070,
+      "sha256": "676688c63d131a03588591bb9db73a34ea4db6d9422e81f8ff2d47769b12e5c8"
+    },
+    {
+      "resource": "26/expl3.ltx",
+      "path": "texmf-dist/tex/latex/l3kernel/expl3.ltx",
+      "package": "l3kernel",
+      "bytes": 5632,
+      "sha256": "db465d2347e483cde608bcf8e7ef2bfdb7352aa404392e4326fddbdc5b899981"
+    },
+    {
+      "resource": "26/fontmath.cfg",
+      "path": "texmf-dist/tex/latex/base/fontmath.cfg",
+      "package": "latex",
+      "bytes": 1978,
+      "sha256": "ae5e9ac1f020ee74fa7825e0d2f428dfe3fa5c98f37b00066b71839ed960a677"
+    },
+    {
+      "resource": "26/fontmath.ltx",
+      "path": "texmf-dist/tex/latex/base/fontmath.ltx",
+      "package": "latex",
+      "bytes": 24944,
+      "sha256": "e5facb872e45c72f3a4d01a5aedc0a399ca5699b2335b2e4ed47f55c513f6af6"
+    },
+    {
+      "resource": "26/fonttext.cfg",
+      "path": "texmf-dist/tex/latex/base/fonttext.cfg",
+      "package": "latex",
+      "bytes": 1978,
+      "sha256": "b4f4f2fb630a20482fdfa94bbfad4df17ad5a7dc492cff64872a80d08aa997c2"
+    },
+    {
+      "resource": "26/fonttext.ltx",
+      "path": "texmf-dist/tex/latex/base/fonttext.ltx",
+      "package": "latex",
+      "bytes": 3317,
+      "sha256": "ad9f46c11dd78ccf9a423e8a23c25cc48af387f8a89be0314b3593e751868b10"
+    },
+    {
+      "resource": "26/glyphtounicode-cmex.tex",
+      "path": "texmf-dist/tex/latex/base/glyphtounicode-cmex.tex",
+      "package": "latex",
+      "bytes": 7858,
+      "sha256": "8a7e3e4be96d5681ad06c2c522eb3492ac961ad74153c2c89169d6d7cac8445c"
+    },
+    {
+      "resource": "26/glyphtounicode.tex",
+      "path": "texmf-dist/tex/generic/pdftex/glyphtounicode.tex",
+      "package": "pdftex",
+      "bytes": 216747,
+      "sha256": "395e568c1f4db5e89013e6aa4aac22a668b543256a20b4349436070356870851"
+    },
+    {
+      "resource": "26/hyphen.cfg",
+      "path": "texmf-dist/tex/generic/babel/hyphen.cfg",
+      "package": "babel",
+      "bytes": 6445,
+      "sha256": "b404a3306fc2063a8ae894c61b238b8823176c369a083b72dd70b20e401242a6"
+    },
+    {
+      "resource": "26/hyphen.tex",
+      "path": "texmf-dist/tex/generic/hyphen/hyphen.tex",
+      "package": "hyphen-base",
+      "bytes": 27860,
+      "sha256": "2c18acdc04c1a066aeb1759905e7ca449f0616c314b5ed6aebe55b9d4a89b8d4"
+    },
+    {
+      "resource": "26/language.dat",
+      "path": "texmf-dist/tex/generic/config/language.dat",
+      "package": "hyphen-base",
+      "bytes": 6881,
+      "sha256": "16f004f6c0683b502062b971af12b248643c83c8fb7aa44d6a2d5be5fb81c414"
+    },
+    {
+      "resource": "26/latex.ltx",
+      "path": "texmf-dist/tex/latex/base/latex.ltx",
+      "package": "latex",
+      "bytes": 776142,
+      "sha256": "19d3b75884681539e1ef7a427af472bfe80d9ff214b84b9ca45e790d3e89c5c4"
+    },
+    {
+      "resource": "26/latex2e-first-aid-for-external-files.ltx",
+      "path": "texmf-dist/tex/latex/firstaid/latex2e-first-aid-for-external-files.ltx",
+      "package": "firstaid",
+      "bytes": 14054,
+      "sha256": "c9cacc935db240c8c2f63efe3d699be5b72c4b54367dfac0c50a7e730dcbbe63"
+    },
+    {
+      "resource": "26/load-unicode-data.tex",
+      "path": "texmf-dist/tex/generic/unicode-data/load-unicode-data.tex",
+      "package": "unicode-data",
+      "bytes": 7429,
+      "sha256": "120236d3d58b0851d49b20523007c44d3bffcc6da017681e4840f3ce2f3587b8"
+    },
+    {
+      "resource": "26/luababel.def",
+      "path": "texmf-dist/tex/generic/babel/luababel.def",
+      "package": "babel",
+      "bytes": 74564,
+      "sha256": "59cc6cc64367aebd1abad88f637ae8dd4b973de05d7d65d3fda36da33a682587"
+    },
+    {
+      "resource": "26/lualatex.ini",
+      "path": "texmf-dist/tex/latex/tex-ini-files/lualatex.ini",
+      "package": "tex-ini-files",
+      "bytes": 697,
+      "sha256": "7091d23266e63c7ff7cb7e30725c2d57345ed9c210d40740954ff322b295bf48"
+    },
+    {
+      "resource": "26/luatexconfig.tex",
+      "path": "texmf-dist/tex/generic/tex-ini-files/luatexconfig.tex",
+      "package": "tex-ini-files",
+      "bytes": 2643,
+      "sha256": "d6e8698f9e7cf47339a64784da799214012207902edbc7fe0d00e8bdf8ad8892"
+    },
+    {
+      "resource": "26/null.tex",
+      "path": "texmf-dist/tex/generic/knuth-lib/null.tex",
+      "package": "knuth-lib",
+      "bytes": 212,
+      "sha256": "f97bbac8e7e0f3ff0cd1b9ac9cb42894ffe58464c6e05d0f566455a94d15d6f0"
+    },
+    {
+      "resource": "26/omlcmm.fd",
+      "path": "texmf-dist/tex/latex/base/omlcmm.fd",
+      "package": "latex",
+      "bytes": 2332,
+      "sha256": "89195f7d6daa891153ca16a48238bb40b5573132a908b460511ce23982c0f59e"
+    },
+    {
+      "resource": "26/omlenc.def",
+      "path": "texmf-dist/tex/latex/base/omlenc.def",
+      "package": "latex",
+      "bytes": 1947,
+      "sha256": "60b5828479c9a3dfaf67841015bd7299fc6699d1537c348bf9d78c63d2dbe9ea"
+    },
+    {
+      "resource": "26/omscmsy.fd",
+      "path": "texmf-dist/tex/latex/base/omscmsy.fd",
+      "package": "latex",
+      "bytes": 2262,
+      "sha256": "e0c713469339828aae6b96ffafb5f7caea083851ed1c80d07197e5d2fda0d190"
+    },
+    {
+      "resource": "26/omsenc.def",
+      "path": "texmf-dist/tex/latex/base/omsenc.def",
+      "package": "latex",
+      "bytes": 2739,
+      "sha256": "5d05fdac1fe96bb13dbb6425efa12160cfb34d0460b30025d8d1b966097059b4"
+    },
+    {
+      "resource": "26/omxcmex.fd",
+      "path": "texmf-dist/tex/latex/base/omxcmex.fd",
+      "package": "latex",
+      "bytes": 2040,
+      "sha256": "4286b589e0ec839404b75a026f2afeba3cbdf747350573551114e5cfc0698ad3"
+    },
+    {
+      "resource": "26/ot1cmr.fd",
+      "path": "texmf-dist/tex/latex/base/ot1cmr.fd",
+      "package": "latex",
+      "bytes": 3705,
+      "sha256": "06c5ce0ed2a9064726a39c73cbc44901c618ff458a69240dc571a8d12283df91"
+    },
+    {
+      "resource": "26/ot1cmss.fd",
+      "path": "texmf-dist/tex/latex/base/ot1cmss.fd",
+      "package": "latex",
+      "bytes": 3152,
+      "sha256": "ea563e4c38ddfb4422ad11c44fe8777a7c51b2d0363551c66854adf3fd629878"
+    },
+    {
+      "resource": "26/ot1cmtt.fd",
+      "path": "texmf-dist/tex/latex/base/ot1cmtt.fd",
+      "package": "latex",
+      "bytes": 2909,
+      "sha256": "74c5baa993b53b2feefeb69daf0e91f58e3b4add566547037b99311cdc996c57"
+    },
+    {
+      "resource": "26/ot1enc.def",
+      "path": "texmf-dist/tex/latex/base/ot1enc.def",
+      "package": "latex",
+      "bytes": 4781,
+      "sha256": "6e87d43eff46b758454c369a4bf3f1840b3f72b5a124d3d9012597bcfd10e583"
+    },
+    {
+      "resource": "26/pdftexconfig.tex",
+      "path": "texmf-dist/tex/generic/tex-ini-files/pdftexconfig.tex",
+      "package": "tex-ini-files",
+      "bytes": 549,
+      "sha256": "4d3b409dd8899980dc75f91cceb5f018f941a8bcbc5ef14b79ff8560b373aa37"
+    },
+    {
+      "resource": "26/preload.cfg",
+      "path": "texmf-dist/tex/latex/base/preload.cfg",
+      "package": "latex",
+      "bytes": 1977,
+      "sha256": "2baa2e90ca6379f852a342f40f46bd99f52c0a03b4594b9842cb3165a82a839f"
+    },
+    {
+      "resource": "26/preload.ltx",
+      "path": "texmf-dist/tex/latex/base/preload.ltx",
+      "package": "latex",
+      "bytes": 2024,
+      "sha256": "8966df9da3e16249fa92432dc9ca92e415f37913c5c42c1d25212e90c77a6eb1"
+    },
+    {
+      "resource": "26/t1cmr.fd",
+      "path": "texmf-dist/tex/latex/base/t1cmr.fd",
+      "package": "latex",
+      "bytes": 2569,
+      "sha256": "2844cb0a86e442203368df7d38596928ab0835f9d86b156df71ea8bcea19dbe8"
+    },
+    {
+      "resource": "26/t1cmss.fd",
+      "path": "texmf-dist/tex/latex/base/t1cmss.fd",
+      "package": "latex",
+      "bytes": 2641,
+      "sha256": "31241cf731311c10605f252f4b8f5dbe0a15f64dbe71b826989610c1eaab72d2"
+    },
+    {
+      "resource": "26/t1cmtt.fd",
+      "path": "texmf-dist/tex/latex/base/t1cmtt.fd",
+      "package": "latex",
+      "bytes": 2443,
+      "sha256": "5c2519efd89dfba68f5f44721fe58a66b30fef487b4f24b2d59e363fb364f6c7"
+    },
+    {
+      "resource": "26/t1enc.def",
+      "path": "texmf-dist/tex/latex/base/t1enc.def",
+      "package": "latex",
+      "bytes": 11012,
+      "sha256": "a59c5df4e74e6076a3cebb4654789ae05f962850c2dfcb5bee642abdf5a34c50"
+    },
+    {
+      "resource": "26/texsys.cfg",
+      "path": "texmf-dist/tex/latex/base/texsys.cfg",
+      "package": "latex",
+      "bytes": 8067,
+      "sha256": "a0986d94c81fd7ce2251695a1affc58060055ccc9430483e64a73f4aa5e53306"
+    },
+    {
+      "resource": "26/ts1cmr.fd",
+      "path": "texmf-dist/tex/latex/base/ts1cmr.fd",
+      "package": "latex",
+      "bytes": 2466,
+      "sha256": "74001f3f1974bafb0fe949f422bb69ac1be8ae75844670e92aed82d140aabe4f"
+    },
+    {
+      "resource": "26/ts1cmss.fd",
+      "path": "texmf-dist/tex/latex/base/ts1cmss.fd",
+      "package": "latex",
+      "bytes": 2411,
+      "sha256": "3f841a8fe835a03aa7c2d374fdb87a96c6d215a70872f1d26296a6453178a597"
+    },
+    {
+      "resource": "26/ts1cmtt.fd",
+      "path": "texmf-dist/tex/latex/base/ts1cmtt.fd",
+      "package": "latex",
+      "bytes": 2324,
+      "sha256": "f482d54f5b8dc66bb51268c88415340a609c1cd319ac4937a33816cd2baa8248"
+    },
+    {
+      "resource": "26/ts1enc.def",
+      "path": "texmf-dist/tex/latex/base/ts1enc.def",
+      "package": "latex",
+      "bytes": 8090,
+      "sha256": "b04bd3e5c6356522c91eb5cef7f6537f8ef78bc9a92be2d7c81688e996594dc7"
+    },
+    {
+      "resource": "26/ts1lmr.fd",
+      "path": "texmf-dist/tex/latex/lm/ts1lmr.fd",
+      "package": "lm",
+      "bytes": 1914,
+      "sha256": "ecda20924242346d91d241e19c89a9a36c7423dc76b1c94e4a3d4d8b51d235d7"
+    },
+    {
+      "resource": "26/tuenc.def",
+      "path": "texmf-dist/tex/latex/base/tuenc.def",
+      "package": "latex",
+      "bytes": 26445,
+      "sha256": "e79ede409feff6b4b2ed981aacbadee32f72887ecfbb2153f613e145ee830c52"
+    },
+    {
+      "resource": "26/tulmr.fd",
+      "path": "texmf-dist/tex/latex/base/tulmr.fd",
+      "package": "latex",
+      "bytes": 4822,
+      "sha256": "a619a22592701d12e7ee7066a32fc746158759586dff839a70a578803b8f1eb9"
+    },
+    {
+      "resource": "26/tulmss.fd",
+      "path": "texmf-dist/tex/latex/base/tulmss.fd",
+      "package": "latex",
+      "bytes": 3663,
+      "sha256": "455948cac22630074a54bbaf0b2ad58c5a3fb6ed7bd2e32fecdf983cac0f0024"
+    },
+    {
+      "resource": "26/tulmtt.fd",
+      "path": "texmf-dist/tex/latex/base/tulmtt.fd",
+      "package": "latex",
+      "bytes": 4574,
+      "sha256": "e89e701da020e3e743e5e3f82b11c516618b50aebd5eb91fa326a90f069267c9"
+    },
+    {
+      "resource": "26/ucmr.fd",
+      "path": "texmf-dist/tex/latex/base/ucmr.fd",
+      "package": "latex",
+      "bytes": 3680,
+      "sha256": "2d1c0d25eab26d93002096f17e77314d0b2c00fdd832bd87e5905b3cb049cac3"
+    },
+    {
+      "resource": "3/cmex10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmex10.tfm",
+      "package": "cm",
+      "bytes": 992,
+      "sha256": "0890bccea1dd4d27f001ac30e86c63af35bc803e0557c35aafb1903c8d208e92"
+    },
+    {
+      "resource": "3/cmmi10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmmi10.tfm",
+      "package": "cm",
+      "bytes": 1528,
+      "sha256": "e442c5487f84df70218ff37f775c87060856f5b6e04c011b6cadbbadfcf46645"
+    },
+    {
+      "resource": "3/cmmi5",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmmi5.tfm",
+      "package": "cm",
+      "bytes": 1508,
+      "sha256": "8839e40838381a0a3c976bdd5becf72afd60bde5a965c3d9b985c3479c6cf75e"
+    },
+    {
+      "resource": "3/cmmi7",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmmi7.tfm",
+      "package": "cm",
+      "bytes": 1528,
+      "sha256": "ce55681703aae565f17286d800ea9780223132589bdbaeda1751b869aba26a38"
+    },
+    {
+      "resource": "3/cmr10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmr10.tfm",
+      "package": "cm",
+      "bytes": 1296,
+      "sha256": "87f2d8981927644cbecaf3d639e96e348ea4e7be49d8804468bd8ba9ff3f5244"
+    },
+    {
+      "resource": "3/cmr5",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmr5.tfm",
+      "package": "cm",
+      "bytes": 1220,
+      "sha256": "581be818f67bd11a1792d05e129abe3ea30c5cbdfce3bed8da7c5fb50f5ba95b"
+    },
+    {
+      "resource": "3/cmr7",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmr7.tfm",
+      "package": "cm",
+      "bytes": 1300,
+      "sha256": "28f9f4d237bdae4babef4a59d90f17686a09d6f9df0b2c3c23b2ba15f20eee82"
+    },
+    {
+      "resource": "3/cmsy10",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmsy10.tfm",
+      "package": "cm",
+      "bytes": 1124,
+      "sha256": "0ca13d421ac7133271aed7c935099ecf3d1d08ac9e15f81acb34a16564ab8a46"
+    },
+    {
+      "resource": "3/cmsy5",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmsy5.tfm",
+      "package": "cm",
+      "bytes": 1112,
+      "sha256": "6b7dc18cba9ca8996d7b146f1ed78d9227577b26248083310fec227692198ca5"
+    },
+    {
+      "resource": "3/cmsy7",
+      "path": "texmf-dist/fonts/tfm/public/cm/cmsy7.tfm",
+      "package": "cm",
+      "bytes": 1120,
+      "sha256": "4f59bbf683e947c807158641621982dc83f55fec042fea7963d8ce9f9da98256"
+    },
+    {
+      "resource": "3/lcircle10",
+      "path": "texmf-dist/fonts/tfm/public/latex-fonts/lcircle10.tfm",
+      "package": "latex-fonts",
+      "bytes": 820,
+      "sha256": "f5aaff47e226ff644ae94765b8d6012e0ffb6d62956993acac2f2dd4ad589929"
+    },
+    {
+      "resource": "3/lcirclew10",
+      "path": "texmf-dist/fonts/tfm/public/latex-fonts/lcirclew10.tfm",
+      "package": "latex-fonts",
+      "bytes": 820,
+      "sha256": "7906e4c5d770db4002740cba4d8194281b06d6fe7edd9d9949b60a291b753646"
+    },
+    {
+      "resource": "3/line10",
+      "path": "texmf-dist/fonts/tfm/public/latex-fonts/line10.tfm",
+      "package": "latex-fonts",
+      "bytes": 748,
+      "sha256": "250200d9efa885fecff118d72e5239adacd0783ccb00c4fb96fa677708ce5217"
+    },
+    {
+      "resource": "3/linew10",
+      "path": "texmf-dist/fonts/tfm/public/latex-fonts/linew10.tfm",
+      "package": "latex-fonts",
+      "bytes": 748,
+      "sha256": "925de632e8afb641692c58bf6c464fb1aa79782212523532590dd6b91b78c40f"
+    },
+    {
+      "resource": "51/expl3.lua",
+      "path": "texmf-dist/tex/latex/l3kernel/expl3.lua",
+      "package": "l3kernel",
+      "bytes": 20671,
+      "sha256": "236915d5c91d3bb2d3b5129e9971591a56b137e671ba34b6b753d22c8604e932"
+    },
+    {
+      "resource": "51/ltluatex.lua",
+      "path": "texmf-dist/tex/latex/base/ltluatex.lua",
+      "package": "latex",
+      "bytes": 24595,
+      "sha256": "eab6abcb337f88697af783d11ce26914d56d4762135acf219e9c5db811466612"
+    },
+    {
+      "resource": "51/lua-uni-data-parser.lua",
+      "path": "texmf-dist/tex/luatex/lua-uni-algos/lua-uni-data-parser.lua",
+      "package": "lua-uni-algos",
+      "bytes": 5679,
+      "sha256": "dec61dfae915c869bab145a93f3609969f89d29c281e970e3f0d3ae4d25384f7"
+    },
+    {
+      "resource": "51/lua-uni-data-preload.lua",
+      "path": "texmf-dist/tex/luatex/lua-uni-algos/lua-uni-data-preload.lua",
+      "package": "lua-uni-algos",
+      "bytes": 2637,
+      "sha256": "92364dd26649e1230354a647b5c34f860630ddfa08d1d3cdcb59300eec6116c6"
+    },
+    {
+      "resource": "51/lua-uni-data.lua",
+      "path": "texmf-dist/tex/luatex/lua-uni-algos/lua-uni-data.lua",
+      "package": "lua-uni-algos",
+      "bytes": 714,
+      "sha256": "b5d3c24ae0df73967e505c5e8dd61e36f1b947e1139091086a8c87d50ef0721c"
+    },
+    {
+      "resource": "51/lua-uni-parse.lua",
+      "path": "texmf-dist/tex/luatex/lua-uni-algos/lua-uni-parse.lua",
+      "package": "lua-uni-algos",
+      "bytes": 2308,
+      "sha256": "2fab16ae6bdfef52b77b5d640f9a7debc075f5c97d251c9dccc24f8974f1db1b"
+    },
+    {
+      "resource": "51/lua-uni-stage-tables.lua",
+      "path": "texmf-dist/tex/luatex/lua-uni-algos/lua-uni-stage-tables.lua",
+      "package": "lua-uni-algos",
+      "bytes": 9371,
+      "sha256": "fec274b96e20bf8300b955f34638d99119bb9a829520c978ef9c8afc24e98725"
+    }
+  ],
+  "generatedResources": [],
+  "supportingNotices": [],
+  "openItems": [
+    "Complete engine rebuild and relink qualification against receipt-bound outputs.",
+    "Complete the precompiled format input inventory and generated font-metadata source closure.",
+    "Resolve url.sty's historical LPPL version wording against authoritative distribution terms.",
+    "Preserve the complete EC font distribution required by copyrite.txt in any eventual redistribution.",
+    "Complete the final component/font redistribution review and supply matching source with any release.",
+    "Retain the Knuth source header and catalogue terms; null.tex contains no license text (https://ctan.org/pkg/knuth-lib, https://ctan.org/license/knuth)."
+  ],
+  "recipe": {
+    "schemaVersion": 1,
+    "sourceDateEpoch": 1787702400,
+    "entrypoint": "lualatex.ini",
+    "resources": [
+      "26/CaseFolding.txt",
+      "26/GraphemeBreakProperty.txt",
+      "26/SpecialCasing.txt",
+      "26/UnicodeData.txt",
+      "26/WordBreakProperty.txt",
+      "26/atbegshi-ltx.sty",
+      "26/atbegshi.sty",
+      "26/atveryend-ltx.sty",
+      "26/atveryend.sty",
+      "26/expl3-code.tex",
+      "26/expl3.ltx",
+      "26/fontmath.cfg",
+      "26/fontmath.ltx",
+      "26/fonttext.cfg",
+      "26/fonttext.ltx",
+      "26/glyphtounicode-cmex.tex",
+      "26/glyphtounicode.tex",
+      "26/hyphen.cfg",
+      "26/hyphen.tex",
+      "26/language.dat",
+      "26/latex.ltx",
+      "26/latex2e-first-aid-for-external-files.ltx",
+      "26/load-unicode-data.tex",
+      "26/luababel.def",
+      "26/lualatex.ini",
+      "26/luatexconfig.tex",
+      "26/null.tex",
+      "26/omlcmm.fd",
+      "26/omlenc.def",
+      "26/omscmsy.fd",
+      "26/omsenc.def",
+      "26/omxcmex.fd",
+      "26/ot1cmr.fd",
+      "26/ot1cmss.fd",
+      "26/ot1cmtt.fd",
+      "26/ot1enc.def",
+      "26/pdftexconfig.tex",
+      "26/preload.cfg",
+      "26/preload.ltx",
+      "26/t1cmr.fd",
+      "26/t1cmss.fd",
+      "26/t1cmtt.fd",
+      "26/t1enc.def",
+      "26/texsys.cfg",
+      "26/ts1cmr.fd",
+      "26/ts1cmss.fd",
+      "26/ts1cmtt.fd",
+      "26/ts1enc.def",
+      "26/ts1lmr.fd",
+      "26/tuenc.def",
+      "26/tulmr.fd",
+      "26/tulmss.fd",
+      "26/tulmtt.fd",
+      "26/ucmr.fd",
+      "3/cmex10",
+      "3/cmmi10",
+      "3/cmmi5",
+      "3/cmmi7",
+      "3/cmr10",
+      "3/cmr5",
+      "3/cmr7",
+      "3/cmsy10",
+      "3/cmsy5",
+      "3/cmsy7",
+      "3/lcircle10",
+      "3/lcirclew10",
+      "3/line10",
+      "3/linew10",
+      "51/expl3.lua",
+      "51/ltluatex.lua",
+      "51/lua-uni-data-parser.lua",
+      "51/lua-uni-data-preload.lua",
+      "51/lua-uni-data.lua",
+      "51/lua-uni-parse.lua",
+      "51/lua-uni-stage-tables.lua"
+    ],
+    "output": {
+      "bytes": 6744585,
+      "sha256": "d94612e32609313f591f7e39d7cae4a94e9cd2a284781db279befcec14a5adfd"
+    }
+  }
+}
