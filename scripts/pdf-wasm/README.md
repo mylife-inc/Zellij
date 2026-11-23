@@ -25,6 +25,13 @@ node --test scripts/pdf-wasm/probe.test.mjs
 node scripts/pdf-wasm/check.mjs
 ```
 
+The maintainer downloader retries only transient connection failures, deadlines
+and selected temporary HTTP statuses, at most three attempts with one-/two-second
+backoff. Each attempt starts with an empty buffer. Permanent HTTP/TLS failures,
+oversized responses and checksum mismatches fail immediately; previous output is
+preserved. Eight loopback/failure regressions run before downloads in CI. This
+does not add network access to the compiler or change installed CLI downloads.
+
 `check.mjs` uses only repository-owned manuscripts: all three book editions,
 equations, statements, bibliography, glossary/index, Arabic RTL, and French,
 German and Spanish, plus a 100-chapter book across two parts. It writes PDFs,
@@ -145,6 +152,8 @@ the compact replacement below has its own complete selected input inventory. `so
 review items, including EC's full-distribution requirement and the historical
 license-version wording in `url.sty`. The additional ConTeXt notice is collected
 from the exact frozen documentation archive, not inferred from a package label.
+The policy now also records the completed engine/format rebuild and font-source
+work with its evidence; those historical findings are not silently discarded.
 
 For an intentional runtime/resource update, download the newly reviewed metadata,
 update `source-policy.json`, and generate a **new** proposed lock for review:
@@ -156,6 +165,46 @@ python3 scripts/pdf-wasm/sources.py inventory /tmp/zellij-pdf-source-cache /tmp/
 Never copy a new inventory over the reviewed lock merely to make a failed
 correspondence check pass. Inspect changed source, notices, resource coverage and
 engine receipts first. This verifier does not package or publish a runtime.
+
+## Package original notices and matching sources
+
+The separate `distribution.py` maintainer tool creates private qualification
+archives. It does not publish them, alter licenses, add a CLI dependency or mark
+the release review complete:
+
+```sh
+python3 scripts/pdf-wasm/sources.py fetch /tmp/zellij-pdf-source-cache
+python3 scripts/pdf-wasm/format_sources.py fetch /tmp/zellij-pdf-source-cache
+python3 scripts/pdf-wasm/font_sources.py fetch /tmp/zellij-pdf-source-cache
+python3 scripts/pdf-wasm/distribution.py /tmp/zellij-pdf-source-cache test-results/pdf-source-distribution
+```
+
+The packager regenerates and checks all three input inventories, combines their
+65 original packages without losing notices, and rejects conflicting package,
+archive or resource records. It verifies 351 distinct original resource files.
+The notices package retains 114 original notice records and every one of the
+121 files listed in EC's original `00files.txt`, with original names and bytes.
+Missing, duplicate, nonregular or incorrectly sized EC files fail qualification.
+
+The notices archive is about **428 KB**. The separate matching-source archive is
+about **430 MB**, including the original compressed source packages, engine
+corresponding source, provenance metadata, exact build programs/recipes and
+notices. It is not part of an ordinary rendering download. The prospective
+runtime package must incorporate the notices and provide the actual matching
+source download when it is released; the resource-only archive does neither.
+
+Both archives use fixed ordering, timestamps and ownership. The packager reads
+each completed archive back to verify all members and hashes. It stages output
+before publication and preserves pre-existing outputs and corrupt inputs.
+`SOURCE-MANIFEST.json` inventories the source package; `NOTICES.json` maps the
+original notices and records review items. CI replays source verification and
+format/font preparation using only the packaged scripts and upstream files.
+Only `verification.json` is uploaded, never either archive or the copied sources.
+
+The exact historical LPPL wording in `url.sty` remains unchanged and unresolved.
+The package preparation is a concrete source/notices layout, not a new permission
+or a completed component redistribution review. The archive's own READMEs explain
+its contents, offline verification and original compiler rebuild instructions.
 
 ## Rebuild the format from original sources
 

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "buildFiles": [
+    "NOTICE",
+    "README.md",
+    "bundle.mjs",
+    "compact.py",
+    "compact.test.mjs",
+    "distribution-inputs.json",
+    "distribution-notices.md",
+    "distribution-sources.md",
+    "distribution.py",
+    "download.mjs",
+    "download.test.mjs",
+    "font-inputs.json",
+    "font-sources.lock.json",
+    "font_sources.py",
+    "fonts.mjs",
+    "fonts.test.mjs",
+    "format-inputs.json",
+    "format-sources.lock.json",
+    "format.mjs",
+    "format.test.mjs",
+    "format_sources.py",
+    "lock.json",
+    "pass.mjs",
+    "probe.mjs",
+    "probe.test.mjs",
+    "source-policy.json",
+    "sources.lock.json",
+    "sources.py",
+    "test_compact.py",
+    "test_distribution.py",
+    "test_font_sources.py",
+    "test_format_sources.py",
+    "test_sources.py"
+  ],
+  "reviewItems": [
+    "Clarify the historical LPPL version wording in url.sty without rewriting its original notice.",
+    "Finish the engine/component distribution review and publish the exact matching source archive alongside any eventual runtime release."
+  ]
+}
