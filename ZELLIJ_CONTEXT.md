@@ -8,6 +8,26 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-23**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-23: Rust PDF supervision — implementation in progress**
+
+PR #248 merged as `83f3608`, identical in tree to tested `bf6445b`. All seven PDF
+jobs pass in `45232766997` (114 manuscripts / 342 passes across six targets), and
+all 37 normal jobs pass in `45232766939` attempt 3 with one conditional skip.
+Targeted retries retain the initial WebKit equation-link timing failure, Showcase
+job timeout and unstarted macOS capacity cancellations; the WebKit cause remains
+unexplained. Post-merge base image `45244541942` passes. Main CI `45244541989`
+has 36 successful jobs and one conditional skip; its original and targeted retry
+both lose the unstarted Apple Silicon Homebrew job to runner-capacity limits.
+
+The next increment implements the Rust side of the compiler boundary: private
+bounded protocol captures, an open parent-liveness pipe, cancellation/kill/reap,
+strict events and independently checked artifacts before new-output publication.
+Real-compiler acceptance covers all presentation modes and failure paths, and
+the six-platform manuscript matrix now selects the Rust supervisor. See the
+[Rust supervision record](specs/zellij-pdf-rust-supervision-2026-11-23.md).
+Cache/download/CLI dispatch and final distribution review remain; no toolchain
+or new CLI candidate is published, and rc.19 still uses its container PDF path.
+
 **2026-11-23: PDF process supervision — qualification in progress**
 
 PR #247 merged as `fa919f8`, with the same tree as tested `80ae68a`. All seven PDF

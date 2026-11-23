@@ -364,3 +364,35 @@ For an intentional source-selection change, propose a new inventory with
 `python3 scripts/pdf-wasm/font_sources.py inventory CACHE NEW_LOCK_FILE`, review
 original source/notices and font coverage, and then qualify the new output.
 Do not repin a hash merely to hide a failed reproducibility or rendering check.
+
+## Qualify the Rust supervisor
+
+The installed `zel pdf` still uses the container backend. The next cache path
+uses `zellij_engine::pdf_runner`, with the shared `ProtocolChild` owner. It
+launches one private Node process directly, retains the empty stdin liveness
+pipe, and checks bounded protocol/artifacts before publishing a new output.
+Quiet/no-color settings cannot replace or expose its protocol captures.
+
+From the repository root, after preparing `test-results/pdf-compact/package`:
+
+```sh
+cargo build --locked --manifest-path cli/Cargo.toml -p zellij-engine --example pdf_process
+node --test scripts/pdf-wasm/rust-process.test.mjs
+ZEL_PDF_PROBE_BUNDLE="$PWD/test-results/pdf-compact/package" ZEL_PDF_RUST_SUPERVISOR=1 node scripts/pdf-wasm/check.mjs
+```
+
+The existing manuscript exporter and `zel` debug binary must also be built for
+`check.mjs`, as described above. Windows uses the equivalent environment
+variables and the automatically selected `.exe` harness. The workflow runs the
+same Rust owner on all six native targets, retaining native Linux comparisons.
+Only the maintainer harness reads `ZEL_PDF_TEST_*`; these are not CLI options or
+installed backend overrides. Its source is in
+`cli/crates/zellij-engine/examples/pdf_process.rs` in the Zellij repository.
+
+The Rust caller must verify the executable, runner and resources before calling
+this API, preserve authored-output/revision checks, and own its working stage.
+A killed caller may leave that stage even though stdin EOF stops the compiler.
+Capture budgets are checked while polling, not OS disk quotas; the heap limits
+are not a hard total RSS cap. No matching-source offer or redistribution
+permission is created by these tests. See
+[the Rust supervision record](../../specs/zellij-pdf-rust-supervision-2026-11-23.md).

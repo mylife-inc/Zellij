@@ -12,6 +12,9 @@ use std::{
 
 const FAILURE_TAIL: u64 = 64 * 1024;
 
+mod protocol;
+pub use protocol::{ProtocolChild, ProtocolOutput};
+
 struct Capture {
     file: File,
     reader: File,

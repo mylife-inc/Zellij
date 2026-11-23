@@ -23,8 +23,9 @@ const metadata = process.env.ZEL_PDF_FONT_METADATA ? loadFontMetadata(process.en
 const extension = process.platform === 'win32' ? '.exe' : '';
 const exporter = path.resolve(`cli/target/debug/examples/pdf_probe_inputs${extension}`);
 const zel = path.resolve(`cli/target/debug/zel${extension}`);
+const rustRunner = path.resolve(`cli/target/debug/examples/pdf_process${extension}`);
 const root = mkdtempSync(path.join(tmpdir(), 'zel-pdf-wasm-'));
-const artifacts = path.resolve('test-results/pdf-wasm');
+const artifacts = path.resolve(process.env.ZEL_PDF_PROBE_OUTPUT || 'test-results/pdf-wasm');
 mkdirSync(artifacts, { recursive: true });
 const results = [];
 async function check(name, manuscript) {
@@ -32,8 +33,16 @@ async function check(name, manuscript) {
   execFileSync(exporter, [manuscript, input], { stdio: 'pipe', timeout: 60_000 });
   // Keep optional legacy in-memory substitutions for maintainer comparisons.
   // The default and compact-package manuscript matrix use a separate process.
-  const run = format || metadata ? compile : compileProcess;
-  const result = await run(bundle, input, path.join(artifacts, name), { format, metadata });
+  const output = path.join(artifacts, name);
+  let result;
+  if (!format && !metadata && process.env.ZEL_PDF_RUST_SUPERVISOR === '1') {
+    execFileSync(rustRunner, [process.execPath, path.resolve('scripts/pdf-wasm/process.mjs'), path.resolve(bundle), input, output], { stdio: 'pipe', timeout: 610_000 });
+    result = JSON.parse(readFileSync(path.join(output, 'probe.json')));
+    if (result.execution?.kind !== 'rust-process') throw new Error('Expected actual Rust supervision');
+  } else {
+    const run = format || metadata ? compile : compileProcess;
+    result = await run(bundle, input, output, { format, metadata });
+  }
   if (process.env.ZEL_PDF_PROBE_BASELINE === '1') {
     const baseline = path.join(artifacts, name + '-native');
     execFileSync(zel, ['pdf', manuscript, '--out', baseline], { stdio: 'pipe', timeout: 600_000 });

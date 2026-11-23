@@ -15,6 +15,7 @@ mod check_report;
 pub mod container;
 pub mod image;
 mod output;
+pub mod pdf_runner;
 pub mod runtime;
 pub mod static_image;
 
