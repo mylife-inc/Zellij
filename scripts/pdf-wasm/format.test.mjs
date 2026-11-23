@@ -23,6 +23,9 @@ test('INITEX reproduces the pinned bytes without a prebuilt format or generated 
     assert.equal(report.repeatedBuilds, 2);
     assert.equal(report.prebuiltFormatRead, false);
     assert.equal(report.generatedFontMetadataRead, false);
+    const sourceReceipt = JSON.parse(readFileSync(path.join(inputs, 'verification.json'), 'utf8'));
+    assert.equal(report.formatSourceLockSha256, sourceReceipt.formatSourceLockSha256,
+      'Source preparation and format generation must identify the same manifest bytes');
     assert.equal(sha256(readFileSync(path.join(root, 'built/zellij-lualatex.fmt'))), recipe.output.sha256);
   } finally { rmSync(root, { recursive: true, force: true }); }
 });

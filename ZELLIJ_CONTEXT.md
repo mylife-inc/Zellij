@@ -5,7 +5,7 @@ tests only. Keep third-party project identities, local case studies and delivery
 details out of tracked files, pull requests, release notes, logs and artifacts.
 External test projects are not Zellij deliverables or product backlog.
 
-Last refreshed: **2026-11-22**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-23**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
 **2026-11-22: reproducible PDF format sources — qualification in progress**
@@ -22,6 +22,12 @@ on the full manuscript matrix. The print-size sweep also exposes missing
 adds their original bytes and two permanent manuscript regressions. See the
 [format source record](specs/zellij-pdf-format-sources-2026-11-22.md) and
 [maintainer instructions](scripts/pdf-wasm/README.md#rebuild-the-format-from-original-sources).
+At `adaf01c`, all 37 regular and seven source/probe jobs pass: six platforms
+produce the identical format and pass 114 manuscripts / 342 typesetting passes,
+including 269 native-matched Linux pages. Receipt review then found Windows
+CRLF checkout bytes made the two source-manifest identifiers disagree. LF
+attributes and a receipt-equality regression correct that reporting defect;
+[PR #245](https://github.com/mylife-inc/Zellij/pull/245) holds final-head results.
 Font-metadata source closure, final notices/redistribution review and installed
 cache integration remain open. No cached PDF backend or new candidate is released.
 

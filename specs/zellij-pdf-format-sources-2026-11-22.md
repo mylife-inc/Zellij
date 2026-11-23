@@ -34,7 +34,7 @@ in the minimal-engine regression directory.
 Two independent builds must match each other, the selected input-usage list and
 the reviewed output: **6,744,585 bytes**, SHA-256
 `d94612e32609313f591f7e39d7cae4a94e9cd2a284781db279befcec14a5adfd`.
-The output is `zellij-lualatex.fmt`; the upstream runtime lock is unchanged.
+The output is `zellij-lualatex.fmt`; the upstream format entry remains unchanged.
 This is a new independently generated format, not a claim to reproduce the old
 upstream format's bytes.
 
@@ -93,3 +93,18 @@ Generated font metadata, final component/font/source distribution, production
 isolation qualification, archive/cache integration and public-package acceptance
 remain open. The historical browser timing findings remain unresolved; no browser
 runtime or assertion change is included here.
+
+### Hosted checkpoint and receipt correction — 23 November
+
+At `adaf01c`, all 37 required regular CI jobs pass in `45135456493`, and all
+seven source/probe jobs pass in `45135456528`. The six platforms produce the
+same format hash and pass 114 manuscript cases / 342 typesetting passes;
+Linux compares 269 identical page rasters with the native backend.
+
+Independent receipt review nevertheless found that Windows Git checkouts
+converted the JSON source manifest to CRLF. Node recorded that byte hash while
+Python recorded the LF serialization, so their source-manifest identifiers
+differed despite identical inputs and format output. The JSON manifests now
+require LF checkout bytes, and the real-engine regression explicitly compares
+both receipt hashes. Fresh final-head checks are required for this correction;
+the earlier successful rendering results do not establish receipt consistency.
