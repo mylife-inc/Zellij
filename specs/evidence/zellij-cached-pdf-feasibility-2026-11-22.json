@@ -767,5 +767,133 @@
     "heapBytes": 441319424,
     "pdfBytes": 323208,
     "pages": 302
+  },
+  "hardenedHosted": {
+    "head": "7ef0da79d658804c4cbe6544bc0e923dacbcc1dc",
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/45083051248",
+    "jobs": [
+      {
+        "name": "Offline LuaHBTeX (ubuntu-latest)",
+        "conclusion": "success",
+        "node": "v24.22.3",
+        "arch": "x64",
+        "cases": 16,
+        "passes": 48,
+        "regressionSummary": [
+          "2026-11-22T23:25:32.5240402Z ℹ tests 10",
+          "2026-11-22T23:25:32.5241136Z ℹ pass 10",
+          "2026-11-22T23:25:32.5241460Z ℹ fail 0"
+        ]
+      },
+      {
+        "name": "Offline LuaHBTeX (windows-11-arm)",
+        "conclusion": "success",
+        "node": "v24.22.3",
+        "arch": "arm64",
+        "cases": 16,
+        "passes": 48,
+        "regressionSummary": [
+          "2026-11-22T23:26:31.2527648Z ℹ tests 10",
+          "2026-11-22T23:26:31.2528304Z ℹ pass 10",
+          "2026-11-22T23:26:31.2528510Z ℹ fail 0"
+        ]
+      },
+      {
+        "name": "Offline LuaHBTeX (ubuntu-24.04-arm)",
+        "conclusion": "success",
+        "node": "v24.22.3",
+        "arch": "arm64",
+        "cases": 16,
+        "passes": 48,
+        "regressionSummary": [
+          "2026-11-22T23:25:13.7380962Z ℹ tests 10",
+          "2026-11-22T23:25:13.7381741Z ℹ pass 10",
+          "2026-11-22T23:25:13.7382099Z ℹ fail 0"
+        ]
+      },
+      {
+        "name": "Offline LuaHBTeX (macos-15-intel)",
+        "conclusion": "success",
+        "node": "v24.22.3",
+        "arch": "x64",
+        "cases": 16,
+        "passes": 48,
+        "regressionSummary": [
+          "2026-11-22T23:27:29.9293300Z ℹ tests 10",
+          "2026-11-22T23:27:29.9296930Z ℹ pass 10",
+          "2026-11-22T23:27:29.9301390Z ℹ fail 0"
+        ]
+      },
+      {
+        "name": "Offline LuaHBTeX (macos-latest)",
+        "conclusion": "success",
+        "node": "v24.22.3",
+        "arch": "arm64",
+        "cases": 16,
+        "passes": 48,
+        "regressionSummary": [
+          "2026-11-22T23:25:39.1572710Z ℹ tests 10",
+          "2026-11-22T23:25:39.1778790Z ℹ pass 10",
+          "2026-11-22T23:25:39.1794230Z ℹ fail 0"
+        ]
+      },
+      {
+        "name": "Offline LuaHBTeX (windows-latest)",
+        "conclusion": "success",
+        "node": "v24.22.3",
+        "arch": "x64",
+        "cases": 16,
+        "passes": 48,
+        "regressionSummary": [
+          "2026-11-22T23:26:27.1061246Z ℹ tests 10",
+          "2026-11-22T23:26:27.1062146Z ℹ pass 10",
+          "2026-11-22T23:26:27.1062480Z ℹ fail 0"
+        ]
+      }
+    ],
+    "identicalNativeRasterPages": 145,
+    "status": "All six jobs passed; prototype only, not released"
+  },
+  "threePassStress": {
+    "status": "diagnostic; publication rejected for overfull hbox",
+    "passes": [
+      {
+        "pass": 1,
+        "heapBytes": 441319424,
+        "pdfBytes": 323208
+      },
+      {
+        "pass": 2,
+        "heapBytes": 441319424,
+        "pdfBytes": 333057
+      },
+      {
+        "pass": 3,
+        "heapBytes": 441319424,
+        "pdfBytes": 333057
+      }
+    ],
+    "nativeAlsoRejects": true,
+    "followUpFix": "6923a148c1b5159051a6895198b7fc1062ef5e02"
+  },
+  "resourceProvenance": {
+    "sha256": "4ea93f54f4a12530ecf1565b03f6d223ce3434a28c4e3e5c705930e957ff9451",
+    "matchedResourceCount": 195,
+    "packageFiles": 193,
+    "packageCount": 58,
+    "supplementalFiles": 2,
+    "redistributionReviewComplete": false
+  },
+  "groundworkMerge": {
+    "pr": 242,
+    "commit": "d738c6f0200a0295c4c583ed1ab4611249b454b7",
+    "testedHead": "7ef0da79d658804c4cbe6544bc0e923dacbcc1dc",
+    "identicalTree": true,
+    "sourceCI": 45083051154,
+    "successfulRequiredJobs": 37,
+    "conditionalSkippedJobs": [
+      "winget / WinGet binary (${{ matrix.target }})"
+    ],
+    "released": false
   }
 }
