@@ -4,9 +4,9 @@ import { pathToFileURL } from 'node:url';
 import path from 'node:path';
 import { loadBundle, loadInputs, lock, sha256 } from './bundle.mjs';
 
-export async function runPass(bundle, files, timeout = 120_000, logBytes) {
+async function runWorker(bundle, files, timeout, logBytes, formatEpoch) {
   const worker = new Worker(new URL('./pass.mjs', import.meta.url), {
-    workerData: { bundle, files, logBytes }, resourceLimits: { maxOldGenerationSizeMb: 128 },
+    workerData: { bundle, files, logBytes, formatEpoch }, resourceLimits: { maxOldGenerationSizeMb: 128 },
   });
   let timer;
   try {
@@ -19,8 +19,12 @@ export async function runPass(bundle, files, timeout = 120_000, logBytes) {
   } finally { clearTimeout(timer); await worker.terminate(); }
 }
 
-export async function compile(bundleRoot, inputRoot, output) {
+export const runPass = (bundle, files, timeout = 120_000, logBytes) => runWorker(bundle, files, timeout, logBytes);
+export const runFormatPass = (bundle, epoch, timeout = 120_000) => runWorker(bundle, new Map(), timeout, undefined, epoch);
+
+export async function compile(bundleRoot, inputRoot, output, { format } = {}) {
   const bundle = loadBundle(bundleRoot);
+  if (format !== undefined) bundle.format = format;
   const files = loadInputs(inputRoot);
   const destination = path.resolve(output);
   try { await lstat(destination); throw new Error('Probe output already exists'); }
@@ -49,6 +53,7 @@ export async function compile(bundleRoot, inputRoot, output) {
     await writeFile(path.join(stage, 'book.log'), result.log);
     const evidence = { schemaVersion: 1, experimental: true, engineRelease: lock.engineRelease,
       resourceLockSha256: sha256(JSON.stringify(lock)),
+      formatSha256: sha256(bundle.format),
       pdfSha256: sha256(pdf), passes };
     await writeFile(path.join(stage, 'probe.json'), JSON.stringify(evidence, null, 2) + '\n');
     await rename(stage, destination);

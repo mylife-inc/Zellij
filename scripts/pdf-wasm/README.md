@@ -5,7 +5,7 @@ This is a maintainer experiment for the optional cached PDF toolchain. It is
 production isolation contract is complete. Released rc.19 still uses its pinned
 container for PDF. Ordinary rich web builds already use the cached renderer.
 
-The probe downloads 200 hash-pinned resources (31,989,582 bytes before packaging)
+The probe downloads 287 hash-pinned resources (33,610,991 bytes before packaging)
 from the upstream engine release and an immutable TeX mirror. It then compiles
 generated Zellij print inputs without a network resolver, container, system TeX,
 curl, Python or npm packages. The maintainer invokes Node 24 explicitly here; a
@@ -123,7 +123,7 @@ compiler or package installer runs inside `zel`.
 
 The fetch is deliberately separate from verification. Verification works offline,
 regenerates the checked-in inventory from pinned metadata, verifies full archive
-checksums and compares all 193 package-backed runtime files with the original
+checksums and compares all 280 package-backed runtime files with the original
 frozen TeX Live packages. It reads explicit regular tar members without extracting
 paths or following links. Missing, modified or duplicated sources/notices fail the
 check. An existing verification output or corrupt cached input is preserved.
@@ -138,8 +138,10 @@ collects package and engine notices into `COLLECTED-NOTICES.txt`. CI uploads onl
 the verification JSON, not third-party binaries, source archives or notices.
 
 This is evidence of source correspondence, not a release approval or a clean
-rebuild claim. The two generated font-metadata files and precompiled format
-require further source-input closure. `source-policy.json` records remaining
+rebuild claim. A separate clean engine rebuild is recorded in
+[PR #244](https://github.com/mylife-inc/Zellij/pull/244): the adapter and Wasm
+compiler match the pinned bytes exactly. The two generated font-metadata files
+still require source-input closure. `source-policy.json` records remaining
 review items, including EC's full-distribution requirement and the historical
 license-version wording in `url.sty`. The additional ConTeXt notice is collected
 from the exact frozen documentation archive, not inferred from a package label.
@@ -154,3 +156,42 @@ python3 scripts/pdf-wasm/sources.py inventory /tmp/zellij-pdf-source-cache /tmp/
 Never copy a new inventory over the reviewed lock merely to make a failed
 correspondence check pass. Inspect changed source, notices, resource coverage and
 engine receipts first. This verifier does not package or publish a runtime.
+
+## Rebuild the format from original sources
+
+`format-inputs.json` selects 75 original files. `format-sources.lock.json` binds
+them to 15 packages and 34 frozen run/doc/source archives. The source preparer
+checks original bytes and collects 21 source headers/notices, including the
+unmodified `null.tex` header. That header contains no license text; the retained
+Knuth catalogue reference is not described as an embedded license notice.
+
+```sh
+python3 -m unittest discover -s scripts/pdf-wasm -p 'test_*sources.py' -v
+python3 scripts/pdf-wasm/format_sources.py fetch /tmp/zellij-pdf-source-cache
+python3 scripts/pdf-wasm/format_sources.py prepare /tmp/zellij-pdf-source-cache test-results/pdf-format-inputs
+export ZEL_PDF_FORMAT_INPUTS="$PWD/test-results/pdf-format-inputs"
+node scripts/pdf-wasm/format.mjs "$ZEL_PDF_PROBE_BUNDLE" "$ZEL_PDF_FORMAT_INPUTS" test-results/pdf-format
+node --test scripts/pdf-wasm/format.test.mjs
+export ZEL_PDF_REBUILT_FORMAT="$PWD/test-results/pdf-format/zellij-lualatex.fmt"
+node scripts/pdf-wasm/check.mjs
+```
+
+Use new output directories; the tools preserve an existing output. Generation
+uses only the verified JS/Wasm compiler and original files prepared from frozen
+archives. It reads neither the old precompiled format nor the two mirror-generated
+font-metadata files. It runs INITEX twice with a fixed UTC guest clock and source
+date, checks both outputs against each other and the reviewed output hash, and
+requires the exact observed input inventory. The supervisor deadline continues
+using real time. Format construction is maintainer work, not an end-user step.
+
+The compiled format is 6,744,585 bytes before outer archive compression. Its bytes
+are intentionally pinned independently of the upstream precompiled format. The
+six-platform workflow builds it independently, checks failure/recovery boundaries,
+then uses it for all 19 manuscripts; Linux compares the books with the native
+renderer. Only JSON receipts and Zellij-produced PDFs/logs are uploaded, never the
+format binary, input sources or compiler. This does not ship a cached PDF backend.
+
+For an intentional format-input update, create and review a new inventory using
+`python3 scripts/pdf-wasm/format_sources.py inventory CACHE NEW_LOCK_FILE`.
+Review changed input bytes, terms and output before updating the expected hash;
+a failed reproducibility check must not be resolved by merely repinning it.

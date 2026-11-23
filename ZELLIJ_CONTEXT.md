@@ -5,8 +5,31 @@ tests only. Keep third-party project identities, local case studies and delivery
 details out of tracked files, pull requests, release notes, logs and artifacts.
 External test projects are not Zellij deliverables or product backlog.
 
-Last refreshed: **2026-11-22**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-23**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
+
+**2026-11-22: reproducible PDF format sources — qualification in progress**
+
+PR #244 merged as `0e2db69` (tree identical to tested `8a24f45`); all 37 normal
+and seven source/probe jobs pass, as do main CI `45124076067` and base image
+`45124075839`. A separate clean engine build reproduces the pinned JS/Wasm bytes;
+its receipt is in [PR #244](https://github.com/mylife-inc/Zellij/pull/244).
+The next increment builds the format from 75 original files with a fixed guest
+clock, independently of the upstream format and generated metadata. It requires
+two identical builds and an exact reviewed hash, then tests the generated format
+on the full manuscript matrix. The print-size sweep also exposes missing
+10-/12-point class and optical font resources; the pinned prototype inventory
+adds their original bytes and two permanent manuscript regressions. See the
+[format source record](specs/zellij-pdf-format-sources-2026-11-22.md) and
+[maintainer instructions](scripts/pdf-wasm/README.md#rebuild-the-format-from-original-sources).
+At `adaf01c`, all 37 regular and seven source/probe jobs pass: six platforms
+produce the identical format and pass 114 manuscripts / 342 typesetting passes,
+including 269 native-matched Linux pages. Receipt review then found Windows
+CRLF checkout bytes made the two source-manifest identifiers disagree. LF
+attributes and a receipt-equality regression correct that reporting defect;
+[PR #245](https://github.com/mylife-inc/Zellij/pull/245) holds final-head results.
+Font-metadata source closure, final notices/redistribution review and installed
+cache integration remain open. No cached PDF backend or new candidate is released.
 
 **2026-11-22: PDF source correspondence — qualification in progress**
 
