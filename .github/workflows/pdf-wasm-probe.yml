@@ -15,7 +15,7 @@ jobs:
   probe:
     name: Offline LuaHBTeX (${{ matrix.runner }})
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 25
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -71,6 +71,10 @@ jobs:
           ZEL_PDF_COMPACT_PACKAGE: test-results/pdf-compact/package
           ZEL_PDF_REBUILT_FORMAT: test-results/pdf-format/zellij-lualatex.fmt
           ZEL_PDF_FONT_METADATA: test-results/pdf-font-metadata
+      - name: Qualify process cancellation, parent shutdown, crashes and preservation
+        run: node --test scripts/pdf-wasm/process.test.mjs
+        env:
+          ZEL_PDF_COMPACT_PACKAGE: test-results/pdf-compact/package
       - name: Install maintainer PDF comparison tools
         if: matrix.runner == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends poppler-utils qpdf

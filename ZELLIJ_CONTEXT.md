@@ -8,6 +8,28 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-23**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-23: PDF process supervision — qualification in progress**
+
+PR #247 merged as `fa919f8`, with the same tree as tested `80ae68a`. All seven PDF
+jobs pass in `45217036115`; all 37 normal jobs pass in `45217035909` attempt 2,
+with one conditional skip. The targeted retry follows an unstarted Apple Silicon
+job that GitHub could not allocate, not a test failure. Source/notices receipts
+match local builds exactly. Post-merge base image `45223943723` passes; main CI
+`45223943954` needs the same runner-capacity retry.
+
+The next increment adds a separate-process PDF runner with a parent-liveness
+pipe, deadlines, cancellation and bounded progress/diagnostics. Its caller owns
+staging, reaps the child before cleanup, and validates output before publication.
+Real-compiler tests cover each pass, forced termination, parent EOF, invalid
+inputs, output preservation and startup-hook isolation. The first hook test
+catches Node's automatic coverage-environment propagation; explicit disabling
+fixes it. The manuscript matrix now runs through the process boundary. See the
+[process supervision record](specs/zellij-pdf-process-supervision-2026-11-23.md).
+
+This remains maintainer qualification. Final isolation/distribution review,
+versioned artifact packaging, Rust cache/dispatch, user documentation and
+installed/public acceptance remain. Rc.19 still uses a container for PDF.
+
 **2026-11-23: PDF source and notice packaging — qualification in progress**
 
 PR #246 merged as `7f25082`, identical in tree to tested `1364bb3`. All 37 normal

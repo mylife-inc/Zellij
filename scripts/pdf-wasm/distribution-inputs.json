@@ -26,6 +26,8 @@
     "pass.mjs",
     "probe.mjs",
     "probe.test.mjs",
+    "process.mjs",
+    "process.test.mjs",
     "source-policy.json",
     "sources.lock.json",
     "sources.py",
