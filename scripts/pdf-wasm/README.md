@@ -38,6 +38,10 @@ German and Spanish, plus a 100-chapter book across two parts. It writes PDFs,
 typesetter logs and experimental receipts
 under `test-results/pdf-wasm`. It refuses to overwrite outputs. Remove or move
 only those generated test outputs before intentionally repeating the check.
+The default matrix now runs each manuscript in a separate Node process with
+three disposable worker passes. Receipts identify that execution mode. Explicit
+legacy format/metadata substitutions retain the in-process comparison path;
+those runs do not qualify the process boundary.
 
 For one generated input folder:
 
@@ -111,6 +115,57 @@ runner; other runners test offline generation and isolation without containers.
 
 The probe workflow uploads Zellij-produced PDFs/logs only. It does not upload or
 redistribute the experimental engine/data bundle.
+
+## Process supervision contract
+
+`process.mjs` supplies a runner entry point for the future Rust cache integration
+and a maintainer acceptance adapter, `compileProcess`. Installed `zel` does not
+invoke it yet. After preparing the compact package, run:
+
+```sh
+ZEL_PDF_COMPACT_PACKAGE="$PWD/test-results/pdf-compact/package" node --test scripts/pdf-wasm/process.test.mjs
+```
+
+The adapter starts the absolute Node executable in a private staging directory,
+with no shell, system PATH, user-home configuration, credentials or Node startup
+hooks. It explicitly disables `NODE_V8_COVERAGE`: Node otherwise propagates that
+setting even into a supplied environment allowlist. A regression sets a preload
+hook and coverage destination and checks neither is used. Each compiler worker
+also has an empty environment and no inherited execution flags.
+
+The internal invocation is `--run BUNDLE INPUT NEW_OUTPUT TOTAL_MS PASS_MS`.
+Launch Node with `--max-old-space-size=128`, matching the worker's old-generation
+budget; Node's process-level V8 flag overrides the worker option.
+The caller must keep stdin open without sending data. EOF, unexpected input or
+a pipe error aborts the worker; SIGINT/SIGTERM do the same where the OS delivers
+those signals cooperatively. Stdout contains bounded JSON-line events (`ready`,
+three ordered `pass` events, `complete`), never guest console output. The total
+deadline is at most 600 seconds, and each pass at most 120 seconds. A caller must
+also enforce its own deadline and kill/reap fallback. The acceptance adapter
+allows one second for cooperative cancellation before forcing termination, and
+checks process exit separately from completion events.
+
+The caller owns the outer staging directory. It waits for the child to close
+before removing that directory, checks the PDF/receipt, and publishes only after
+checking cancellation and destination ownership again. Forced child termination
+therefore leaves no published partial PDF. Forced termination of the caller
+itself can leave its private staging directory, which a later CLI recovery policy
+must handle; the child observes the closed parent pipe and stops. This is not a
+claim of atomic ownership against arbitrary concurrent filesystem mutation.
+
+Twelve regressions cover success without system tools or startup hooks;
+cancellation at each pass and after completion; invalid/deadline inputs; endless
+input and recovery; abrupt child death; unresponsive-child termination; parent
+EOF; corrupt resources and invalid TeX; existing/late destinations; and observer
+failure. The forced-suspension regression uses Unix SIGSTOP and is explicitly
+skipped on Windows; the other eleven run everywhere. All six manuscript jobs
+use the separate-process path and retain the native Linux PDF comparison.
+
+Process/worker heap flags and existing guest budgets do not establish a hard
+total RSS limit. This does not turn `node:vm` or Node's permission model into a
+security sandbox. Final isolation review, Rust ownership/download/cache
+integration, distribution review and installed-package acceptance remain before
+the cached PDF backend can be released.
 
 ## Source correspondence and notices
 

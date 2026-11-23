@@ -4,6 +4,7 @@ import { cpSync, mkdtempSync, rmSync, writeFileSync, readFileSync, mkdirSync } f
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { compile } from './probe.mjs';
+import { compileProcess } from './process.mjs';
 import { writeLanguageBook } from '../fixtures/book-languages.mjs';
 import { printStyles, withPrintStyle } from '../fixtures/print-styles.mjs';
 import { compare } from './compare.mjs';
@@ -29,7 +30,10 @@ const results = [];
 async function check(name, manuscript) {
   const input = path.join(root, name + '-input');
   execFileSync(exporter, [manuscript, input], { stdio: 'pipe', timeout: 60_000 });
-  const result = await compile(bundle, input, path.join(artifacts, name), { format, metadata });
+  // Keep optional legacy in-memory substitutions for maintainer comparisons.
+  // The default and compact-package manuscript matrix use a separate process.
+  const run = format || metadata ? compile : compileProcess;
+  const result = await run(bundle, input, path.join(artifacts, name), { format, metadata });
   if (process.env.ZEL_PDF_PROBE_BASELINE === '1') {
     const baseline = path.join(artifacts, name + '-native');
     execFileSync(zel, ['pdf', manuscript, '--out', baseline], { stdio: 'pipe', timeout: 600_000 });
