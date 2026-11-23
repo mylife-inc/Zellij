@@ -34,7 +34,7 @@ or follows archive links. `verify` has no network operation. Existing verificati
 outputs and corrupt cached files remain intact. Downloads are staged, verified
 and retried at most three times before failure.
 
-Python is a **maintainer/CI prerequisite only**, not a proposed installed `zel`
+Python and curl are **maintainer/CI prerequisites only**, not a proposed installed `zel`
 PDF dependency. The installed backend will reuse the cached private Node runtime.
 
 ## Notice findings retained for packaging
@@ -88,3 +88,12 @@ The current poller already aborts on `pagehide` and catches fetch rejections.
 This observation narrows the scenario, but does not establish a product or
 browser/test-harness cause. No assertion, runtime behavior or timeout is changed
 in this increment, and the later passing run is not treated as its fix.
+
+A second hosted source attempt (`45120142563`, job `137511794657`) reaches the
+archive host but rejects a different TeX database checksum. Local inspection
+shows an HTTP 200 HTML bot-check document for urllib's/default and identified
+clients, while the standard curl client retrieves the expected 20,616,129-byte
+text with the unchanged pinned hash. Source downloads now use curl, bounded by
+HTTPS-only redirects, time/size limits and the same staged checksum verification.
+Neither failed attempt is counted as acceptance. The runtime and all pins stay
+unchanged; this is a maintainer transport correction only.

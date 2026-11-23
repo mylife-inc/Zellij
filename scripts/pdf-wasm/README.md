@@ -108,7 +108,8 @@ redistribute the experimental engine/data bundle.
 ## Source correspondence and notices
 
 Before preparing any distributable toolchain, maintainers can reproduce the
-source checks with Python 3.13 and its standard library:
+source checks with Python 3.13, its standard library and the standard `curl`
+HTTPS client (maintainer/CI tools only):
 
 ```sh
 python3 -m unittest discover -s scripts/pdf-wasm -p test_sources.py -v

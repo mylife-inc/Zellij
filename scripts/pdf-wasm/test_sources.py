@@ -190,13 +190,18 @@ class SourcesTest(unittest.TestCase):
     def test_incomplete_download_retries_without_publishing_partial_cache(self):
         data = b"complete pinned source"
         entry = {"name": "download.tar.xz", "url": "https://example.invalid/source", "bytes": len(data), "sha256": s.digest(data)}
-        with patch.object(s.urllib.request, "urlopen", side_effect=[io.BytesIO(b"partial"), io.BytesIO(data)]) as request, patch.object(s.time, "sleep"):
+        responses = iter([b"partial", data])
+        def download(command, **options):
+            self.assertEqual(command[0], "curl")
+            self.assertTrue(options["check"])
+            self.assertEqual(command[-1], entry["url"])
+            Path(command[command.index("--output") + 1]).write_bytes(next(responses))
+        with patch.object(s.subprocess, "run", side_effect=download), patch.object(s.time, "sleep"):
             s.fetch_one(self.root, entry)
-            self.assertEqual(request.call_args.args[0].get_header("User-agent"), "Zellij-PDF-source-verifier/1")
         self.assertEqual((self.root / entry["name"]).read_bytes(), data)
         self.assertEqual(list(self.root.glob(".source-download-*")), [])
         (self.root / entry["name"]).write_bytes(b"corrupt")
-        with patch.object(s.urllib.request, "urlopen") as download:
+        with patch.object(s.subprocess, "run") as download:
             with self.assertRaisesRegex(ValueError, "size mismatch"):
                 s.fetch_one(self.root, entry)
             download.assert_not_called()

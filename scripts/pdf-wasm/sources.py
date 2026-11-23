@@ -12,10 +12,10 @@ import os
 from pathlib import Path
 import re
 import shutil
+import subprocess
 import tarfile
 import tempfile
 import time
-import urllib.request
 
 HERE = Path(__file__).resolve().parent
 
@@ -267,14 +267,14 @@ def download_one(cache, entry):
         return
     require(entry["url"].startswith("https://"), "Source downloads require HTTPS")
     fd, temporary = tempfile.mkstemp(prefix=".source-download-", dir=cache)
+    os.close(fd)
     try:
-        request = urllib.request.Request(entry["url"], headers={"User-Agent": "Zellij-PDF-source-verifier/1"})
-        with os.fdopen(fd, "wb") as output, urllib.request.urlopen(request, timeout=120) as response:
-            size = 0
-            while chunk := response.read(1024 * 1024):
-                size += len(chunk)
-                require(size <= entry.get("bytes", 256 * 1024 * 1024), "Source download exceeds limit")
-                output.write(chunk)
+        # The frozen archive serves a bot-check HTML page to urllib; use the
+        # standard maintainer curl client, preserving all byte/hash checks.
+        subprocess.run(["curl", "--fail", "--location", "--silent", "--show-error",
+                        "--proto", "=https", "--proto-redir", "=https", "--max-time", "120",
+                        "--max-filesize", str(entry.get("bytes", 256 * 1024 * 1024)),
+                        "--output", temporary, entry["url"]], check=True, capture_output=True, text=True)
         verified(Path(temporary), entry)
         require(not destination.exists(), "Source download destination appeared")
         os.rename(temporary, destination)
@@ -292,7 +292,7 @@ def fetch_one(cache, entry):
     for attempt in range(3):
         try:
             return download_one(cache, entry)
-        except (OSError, ValueError) as error:
+        except (OSError, ValueError, subprocess.SubprocessError) as error:
             if attempt == 2:
                 raise RuntimeError(f"Source download failed for {entry['name']}: {error}") from error
             time.sleep(attempt + 1)
