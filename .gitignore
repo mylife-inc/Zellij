@@ -41,3 +41,6 @@ cli/.cargo-gnu/
 # Local graphify knowledge maps and extraction caches.
 /graphify-out/
 /cli/graphify-out/
+
+# Maintainer Python source-inventory checks.
+__pycache__/

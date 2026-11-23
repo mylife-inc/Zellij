@@ -53,3 +53,26 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
       # Never upload the engine/resource bundle before redistribution review.
+
+  sources:
+    name: PDF source correspondence
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - name: Check source-verifier failure cases
+        run: python -m unittest discover -s scripts/pdf-wasm -p test_sources.py -v
+      - name: Download pinned source inputs (maintainer only)
+        run: python scripts/pdf-wasm/sources.py fetch "${{ runner.temp }}/pdf-source-cache"
+      - name: Verify original package bytes and collect notices
+        run: python scripts/pdf-wasm/sources.py verify "${{ runner.temp }}/pdf-source-cache" test-results/pdf-source-verification
+      - uses: actions/upload-artifact@v7
+        with:
+          name: pdf-source-correspondence
+          path: test-results/pdf-source-verification/verification.json
+          if-no-files-found: error
+          retention-days: 14
+      # Keep source archives, notices and engine/data binaries out of artifacts.

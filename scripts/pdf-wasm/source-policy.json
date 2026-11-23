@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "provenance": {
+    "name": "texlive-provenance.json",
+    "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/texlive-provenance.json",
+    "bytes": 136803254,
+    "sha256": "4ea93f54f4a12530ecf1565b03f6d223ce3434a28c4e3e5c705930e957ff9451"
+  },
+  "tlpdb": {
+    "name": "texlive.tlpdb",
+    "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/tlpkg/texlive.tlpdb",
+    "sha256": "9d2208c4cafad4572eb27f89112d98ddb9127cafa496568b1ebf3f06a20ec610"
+  },
+  "repository": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/",
+  "additionalNotices": {
+    "ec": [
+      "texmf-dist/doc/fonts/ec/copyrite.txt",
+      "texmf-dist/doc/fonts/ec/00readme.txt"
+    ],
+    "url": [
+      "texmf-dist/tex/latex/url/url.sty"
+    ],
+    "mptopdf": [
+      "texmf-dist/tex/context/base/mkii/supp-pdf.mkii"
+    ],
+    "latex": [
+      "texmf-dist/doc/latex/base/lppl.txt"
+    ]
+  },
+  "generatedResources": [
+    "11/pdftex.map",
+    "51/luaotfload-names.lua"
+  ],
+  "openItems": [
+    "Complete engine rebuild and relink qualification against receipt-bound outputs.",
+    "Complete the precompiled format input inventory and generated font-metadata source closure.",
+    "Resolve url.sty's historical LPPL version wording against authoritative distribution terms.",
+    "Preserve the complete EC font distribution required by copyrite.txt in any eventual redistribution.",
+    "Complete the final component/font redistribution review and supply matching source with any release."
+  ],
+  "generatedManifest": {
+    "name": "snapshot-artifacts.json",
+    "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/snapshot-artifacts.json",
+    "bytes": 1171,
+    "sha256": "f96c763d44d5775987f23112d3a08458e2dfb244515b843c6c5b9557429c748a"
+  },
+  "supportingNotices": [
+    {
+      "package": "context",
+      "revision": "80089",
+      "paths": [
+        "texmf-dist/doc/context/sources/general/manuals/readme/mreadme.tex"
+      ]
+    }
+  ]
+}

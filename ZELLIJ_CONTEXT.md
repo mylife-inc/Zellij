@@ -8,6 +8,21 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-22**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-22: PDF source correspondence — qualification in progress**
+
+The maintainer-only source verifier independently matches all 193 package-backed
+runtime files against 58 original TeX Live packages (152 checksum-pinned archives),
+collects the original notices and checks the engine's exact source receipt.
+Generated metadata/format source closure, final redistribution review and a clean
+rebuild remain distinct work. This introduces no installed Python dependency and
+no published PDF artifact. See the [source record](specs/zellij-pdf-source-correspondence-2026-11-22.md).
+PR #243 merged as `d4b0569`, identical in tree to tested `5dfae53`; its 37 source
+jobs and six-platform probe pass (102 cases / 306 passes, 255 native-matched page
+rasters on Linux). Main CI `45088661314` and base image `45088661271` also pass.
+The earlier main-run WebKit preview error remains open; its saved trace places
+it during page navigation, not deliberate server shutdown. No runtime/test
+assertion change follows from that observation alone.
+
 **2026-11-22: optional cached PDF groundwork — not released**
 
 The hardened probe at `7ef0da7` passes all six targets in `45083051248`:

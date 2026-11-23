@@ -104,3 +104,52 @@ runner; other runners test offline generation and isolation without containers.
 
 The probe workflow uploads Zellij-produced PDFs/logs only. It does not upload or
 redistribute the experimental engine/data bundle.
+
+## Source correspondence and notices
+
+Before preparing any distributable toolchain, maintainers can reproduce the
+source checks with Python 3.13 and its standard library:
+
+```sh
+python3 -m unittest discover -s scripts/pdf-wasm -p test_sources.py -v
+python3 scripts/pdf-wasm/sources.py fetch /tmp/zellij-pdf-source-cache
+python3 scripts/pdf-wasm/sources.py verify /tmp/zellij-pdf-source-cache test-results/pdf-source-verification
+```
+
+This Python program is **maintainer tooling only**; the proposed installed PDF
+backend still uses the private Node runtime and WebAssembly. No Python program,
+compiler or package installer runs inside `zel`.
+
+The fetch is deliberately separate from verification. Verification works offline,
+regenerates the checked-in inventory from pinned metadata, verifies full archive
+checksums and compares all 193 package-backed runtime files with the original
+frozen TeX Live packages. It reads explicit regular tar members without extracting
+paths or following links. Missing, modified or duplicated sources/notices fail the
+check. An existing verification output or corrupt cached input is preserved.
+
+`sources.lock.json` pins all 152 run/documentation/source archives for the 58
+runtime packages, one supporting ConTeXt documentation archive, the engine's
+corresponding-source archive and the three metadata inputs. This large maintainer
+cache is **not** the proposed end-user download. The verifier checks that the
+source release manifest matches the exact engine JS, Wasm and format bytes,
+checks the build receipt, preserves both engine and format source revisions, and
+collects package and engine notices into `COLLECTED-NOTICES.txt`. CI uploads only
+the verification JSON, not third-party binaries, source archives or notices.
+
+This is evidence of source correspondence, not a release approval or a clean
+rebuild claim. The two generated font-metadata files and precompiled format
+require further source-input closure. `source-policy.json` records remaining
+review items, including EC's full-distribution requirement and the historical
+license-version wording in `url.sty`. The additional ConTeXt notice is collected
+from the exact frozen documentation archive, not inferred from a package label.
+
+For an intentional runtime/resource update, download the newly reviewed metadata,
+update `source-policy.json`, and generate a **new** proposed lock for review:
+
+```sh
+python3 scripts/pdf-wasm/sources.py inventory /tmp/zellij-pdf-source-cache /tmp/proposed-pdf-sources.lock.json
+```
+
+Never copy a new inventory over the reviewed lock merely to make a failed
+correspondence check pass. Inspect changed source, notices, resource coverage and
+engine receipts first. This verifier does not package or publish a runtime.
