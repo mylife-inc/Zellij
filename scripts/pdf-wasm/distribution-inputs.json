@@ -11,6 +11,7 @@
     "distribution-sources.md",
     "distribution.py",
     "download.mjs",
+    "download.test.mjs",
     "font-inputs.json",
     "font-sources.lock.json",
     "font_sources.py",

@@ -24,6 +24,10 @@ for offline replay. The notice archive is about 428 KB; the approximately 430 MB
 source collection is separate from ordinary runtime downloads. The source policy
 records the completed engine/format/font work without erasing its history.
 See the [source distribution record](specs/zellij-pdf-source-distribution-2026-11-23.md).
+Initial source packaging/replay passes in `45214762953` at `81be418`, while two
+Linux probes stop during downloads with connection resets. The maintainer
+downloader adds bounded transport retries with eight regressions, retaining
+immediate failure for integrity errors. Final-head verification is in PR #247.
 
 These remain private qualification artifacts. The historical URL license wording,
 final component/source delivery review, production isolation, Rust cache/dispatch,

@@ -25,6 +25,13 @@ node --test scripts/pdf-wasm/probe.test.mjs
 node scripts/pdf-wasm/check.mjs
 ```
 
+The maintainer downloader retries only transient connection failures, deadlines
+and selected temporary HTTP statuses, at most three attempts with one-/two-second
+backoff. Each attempt starts with an empty buffer. Permanent HTTP/TLS failures,
+oversized responses and checksum mismatches fail immediately; previous output is
+preserved. Eight loopback/failure regressions run before downloads in CI. This
+does not add network access to the compiler or change installed CLI downloads.
+
 `check.mjs` uses only repository-owned manuscripts: all three book editions,
 equations, statements, bibliography, glossary/index, Arabic RTL, and French,
 German and Spanish, plus a 100-chapter book across two parts. It writes PDFs,

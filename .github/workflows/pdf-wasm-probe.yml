@@ -37,6 +37,7 @@ jobs:
         working-directory: cli
       - run: cargo build --locked -p zellij-docs --example pdf_probe_inputs
         working-directory: cli
+      - run: node --test scripts/pdf-wasm/download.test.mjs
       - name: Fetch the pinned feasibility inputs (not release assets)
         shell: bash
         run: node scripts/pdf-wasm/download.mjs "$ZEL_PDF_PROBE_BUNDLE"

@@ -66,6 +66,17 @@ new source-lock identifiers. Input byte inventories and reviewed generated
 format/font hashes are unchanged; source locks change only to record resolved
 historical findings and their policy hash.
 
+The first hosted attempt at `81be418` passes source packaging and replay, but
+the two Linux probe jobs in `45214762953` fail before tests during pinned-input
+downloads with `ECONNRESET`. Their logs are retained; they are not PDF failures.
+The maintainer downloader now uses at most three attempts for transient transport
+failures/deadlines and selected temporary HTTP responses. Partial buffers are
+discarded; integrity/size failures, permanent HTTP/TLS errors and existing outputs
+still fail immediately. Eight regressions include real loopback resets before
+headers and mid-body, a stalled body, exhausted retries and preservation of output.
+Final-head results belong to the implementation PR; the failed attempt is not
+replaced by an earlier successful run.
+
 ## Remaining work
 
 The source policy preserves completed engine/format/font findings as resolved
