@@ -1,6 +1,7 @@
 // Maintainer feasibility package. Not a released CLI toolchain or download path.
 import { createHash } from 'node:crypto';
 import { readFileSync, lstatSync, readdirSync } from 'node:fs';
+import { isDeepStrictEqual } from 'node:util';
 import path from 'node:path';
 import { gunzipSync } from 'node:zlib';
 
@@ -32,15 +33,51 @@ export function loadEngine(root) {
   return { code: new TextDecoder().decode(engine.get('wasmtex-luatex.js')), wasm: engine.get('wasmtex-luatex.wasm') };
 }
 
-export function loadBundle(root) {
+export function loadBundle(root, { format, metadata } = {}) {
+  let compact = false;
+  try { lstatSync(path.join(root, 'manifest.json')); compact = true; }
+  catch (error) { if (error.code !== 'ENOENT') throw error; }
+  if (compact) {
+    if (format !== undefined || metadata !== undefined) throw new Error('Compact package cannot use outside replacements');
+    return loadCompactBundle(root);
+  }
   const core = loadEngine(root);
-  const engine = new Map(lock.engine.map(entry => [entry.name, verifiedBytes(root, entry)]));
-  const resources = new Map(lock.resources.map(entry => [entry.name, verifiedBytes(root, entry)]));
+  const formatEntry = lock.engine.find(entry => entry.name === 'wasmtex-luatex.fmt.gz');
+  const resources = new Map(lock.resources.map(entry => [entry.name,
+    metadata?.get(entry.name) ?? verifiedBytes(root, entry)]));
   return {
     ...core,
-    format: new Uint8Array(gunzipSync(engine.get('wasmtex-luatex.fmt.gz'), { maxOutputLength: 64 * 1024 * 1024 })),
+    format: format ?? new Uint8Array(gunzipSync(verifiedBytes(root, formatEntry), { maxOutputLength: 64 * 1024 * 1024 })),
     resources,
   };
+}
+
+export function loadCompactBundle(root) {
+  const rootInfo = lstatSync(root);
+  if (!rootInfo.isDirectory() || rootInfo.isSymbolicLink()) throw new Error('Compact bundle must be a real directory');
+  const file = path.join(root, 'manifest.json');
+  const info = lstatSync(file);
+  if (!info.isFile() || info.isSymbolicLink() || info.size > 256 * 1024) throw new Error('Invalid compact manifest');
+  const manifest = JSON.parse(readFileSync(file, 'utf8'));
+  const formatRecipe = JSON.parse(readFileSync(new URL('./format-inputs.json', import.meta.url)));
+  const fontRecipe = JSON.parse(readFileSync(new URL('./font-inputs.json', import.meta.url)));
+  const map = new TextEncoder().encode('% Zellij uses OpenType fonts.\n');
+  const replacements = {
+    '51/luaotfload-names.lua': fontRecipe.output,
+    '11/pdftex.map': { bytes: map.length, sha256: sha256(map) },
+  };
+  const clean = ({ name, bytes, sha256 }) => ({ name, bytes, sha256 });
+  const expected = { schemaVersion: 1, kind: 'experimental-pdf-resources', redistributionReviewComplete: false,
+    engine: lock.engine.filter(e => /\.(js|wasm)$/.test(e.name)).map(clean),
+    format: { name: 'zellij-lualatex.fmt', ...formatRecipe.output },
+    resources: lock.resources.map(e => clean({ ...e, ...replacements[e.name] })) };
+  // Match the known inventory before resolving any supplied hash or resource.
+  // Manifest key formatting/order is irrelevant; every entry and value matters.
+  if (!isDeepStrictEqual(manifest, expected)) throw new Error('Compact manifest differs from reviewed inventory');
+  const engine = new Map(expected.engine.map(e => [e.name, verifiedBytes(root, e)]));
+  return { code: new TextDecoder().decode(engine.get('wasmtex-luatex.js')), wasm: engine.get('wasmtex-luatex.wasm'),
+    format: verifiedBytes(root, expected.format),
+    resources: new Map(expected.resources.map(e => [e.name, verifiedBytes(root, e)])) };
 }
 
 export function loadInputs(root) {

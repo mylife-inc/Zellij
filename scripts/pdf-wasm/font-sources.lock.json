@@ -1,0 +1,937 @@
+{
+  "schemaVersion": 1,
+  "purpose": "maintainer-font-source-verification",
+  "redistributionReviewComplete": false,
+  "runtimeLockSha256": "127aadeb9522b7b92fdeb0e6f14ea17e3a4569615304f1bf1e6580cff5235a47",
+  "policySha256": "1b99617460944cce7090b6de8e5acc92fb8718a18ea294849be050d1bbc6bbe6",
+  "metadata": [
+    {
+      "name": "texlive-provenance.json",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/texlive-provenance.json",
+      "bytes": 136803254,
+      "sha256": "4ea93f54f4a12530ecf1565b03f6d223ce3434a28c4e3e5c705930e957ff9451"
+    },
+    {
+      "name": "texlive.tlpdb",
+      "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/tlpkg/texlive.tlpdb",
+      "sha256": "9d2208c4cafad4572eb27f89112d98ddb9127cafa496568b1ebf3f06a20ec610"
+    },
+    {
+      "name": "snapshot-artifacts.json",
+      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/snapshot-artifacts.json",
+      "bytes": 1171,
+      "sha256": "f96c763d44d5775987f23112d3a08458e2dfb244515b843c6c5b9557429c748a"
+    }
+  ],
+  "engineSource": {
+    "name": "corresponding-source.tar.xz",
+    "url": "https://github.com/corca-ai/wasmtex/releases/download/engine-2026-f5d94438a7c75a23/wasmtex-2026-f5d94438a7c75a23-source.tar.xz",
+    "sha256": "e6a1f9b8ad84c7127368bb521217af381407fcc0d5c5518114345d55b470d637"
+  },
+  "packages": [
+    {
+      "name": "lm",
+      "revision": "77682",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "gfl"
+        ],
+        "references": [
+          "https://ctan.org/license/gfl"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/fonts/lm/GUST-FONT-LICENSE.TXT",
+        "texmf-dist/doc/fonts/lm/README-Latin-Modern.TXT"
+      ],
+      "archives": [
+        {
+          "name": "lm.tar.xz",
+          "kind": "run",
+          "bytes": 11944800,
+          "sha512": "c4fae36dbf06177583c2dd3431176deca7f6fc1919a2aa9d7dbef89b77f26501e7d323dbda3a72fb3c9644074f8c4aec90d0389d72d87ab4dd38efd99b757d5b",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/lm.tar.xz"
+        },
+        {
+          "name": "lm.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 2511620,
+          "sha512": "45fac0159b7e8a29df305902af04835fc339556ee3b791ddc69bab2ba742371be1cd08bd425fdc73d065bce8cb1cff91809b2fa0ce4723e2d30a1c7f8f697782",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/lm.doc.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "lm-math",
+      "revision": "67718",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "gfl"
+        ],
+        "references": [
+          "https://ctan.org/license/gfl"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/fonts/lm-math/GUST-FONT-LICENSE.txt",
+        "texmf-dist/doc/fonts/lm-math/README-Latin-Modern-Math.txt"
+      ],
+      "archives": [
+        {
+          "name": "lm-math.tar.xz",
+          "kind": "run",
+          "bytes": 377796,
+          "sha512": "2fad475b347824d564525de51ed5bd1cc7ab2fc27fd826a00e86ebabd7d85afce2f7a4c85d9620c9b66d14ea0c813a269a13843a0b27eb7d0ca3e294114aad26",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/lm-math.tar.xz"
+        },
+        {
+          "name": "lm-math.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 94656,
+          "sha512": "fb1800349628229dd522d4dffa182ffd2bc9411803f5b349c88f4046d81117d050a3b681e3021a514a6ada5bc49b648b8dda8b553f9294f6d4fc317db0cd5990",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/lm-math.doc.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "lua-alt-getopt",
+      "revision": "78415",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "mit"
+        ],
+        "references": [
+          "https://ctan.org/license/mit"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/support/lua-alt-getopt/README"
+      ],
+      "archives": [
+        {
+          "name": "lua-alt-getopt.tar.xz",
+          "kind": "run",
+          "bytes": 2004,
+          "sha512": "2acee2480197b0cac8cb98f27c1fa37faec6a011ca8159a554bce7c3b72b18d8c708ea63d3553f43ec35181e1da1a9b184e16c3dc7663f574fedcdfab1e9c73b",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/lua-alt-getopt.tar.xz"
+        },
+        {
+          "name": "lua-alt-getopt.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 3320,
+          "sha512": "58fa5c8d9cae0b2177e634e92644ffbe8219fb0a676a9bc1492a3c296b3d70560ad42ab2e90056fde0368ade64408b212bbe2288591d6bfe81323b24d309f9c5",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/lua-alt-getopt.doc.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "lua-uni-algos",
+      "revision": "76195",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "lppl1.3"
+        ],
+        "references": [
+          "https://ctan.org/license/lppl1.3"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/luatex/lua-uni-algos/README.md"
+      ],
+      "archives": [
+        {
+          "name": "lua-uni-algos.tar.xz",
+          "kind": "run",
+          "bytes": 12332,
+          "sha512": "50022083eb3659c994e571d9bd9c9a916b9b47e34c2776e73515afdff0361b49fac8da59c1532a578a5518c70236983be4bbb2412845a30064d421ba3c85bf66",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/lua-uni-algos.tar.xz"
+        },
+        {
+          "name": "lua-uni-algos.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 77452,
+          "sha512": "02a2c56cf312ead2e97ecd5b561a7a4ee326f42915d89b03d6f7450143d9682e01e5dfb5f1cb1b8739ed9beca053c760546f94c47ddd1d612c7f3a00789a1da3",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/lua-uni-algos.doc.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "lualibs",
+      "revision": "78415",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "gpl2"
+        ],
+        "references": [
+          "https://ctan.org/license/gpl2"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/luatex/lualibs/LICENSE",
+        "texmf-dist/doc/luatex/lualibs/README.md"
+      ],
+      "archives": [
+        {
+          "name": "lualibs.tar.xz",
+          "kind": "run",
+          "bytes": 133324,
+          "sha512": "d45648849aba192828036b33c5594c03f7071bb619b522fc5e60032824e4edeaadde5d1abda460d0c09acff2cfd63b4e30c1b1b9139369b4b18d8f62b4e0c410",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/lualibs.tar.xz"
+        },
+        {
+          "name": "lualibs.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 88740,
+          "sha512": "5a9f6939e10e6abef7b0fe5e12bb217ba92ddd70b5a83ffb4cd17c69b3622c7c81aa4131e5e03b3b5895b3bc8cd0eeed8a3e3b721be132eacb13aa90b8971751",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/lualibs.doc.tar.xz"
+        },
+        {
+          "name": "lualibs.source.tar.xz",
+          "kind": "src",
+          "bytes": 8616,
+          "sha512": "4c423a4a6d43d8c03c966d6c6388b0a15564a5f23ecc2ee05e99cc39b331abfe726b8283887a7d49a277c3dc2e82712bde7c65971e19eed6a9d7e693de64e589",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/lualibs.source.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "luaotfload",
+      "revision": "74324",
+      "relocated": false,
+      "license": {
+        "ids": [
+          "gpl2"
+        ],
+        "references": [
+          "https://ctan.org/license/gpl2"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/luatex/luaotfload/COPYING",
+        "texmf-dist/doc/luatex/luaotfload/README.md"
+      ],
+      "archives": [
+        {
+          "name": "luaotfload.tar.xz",
+          "kind": "run",
+          "bytes": 623572,
+          "sha512": "4300e5f4b3fe37babb12cc36cc5a130c1a0f246db6e3b8955813c62f41b698e5a08443eb7b41c8afe4fab08184e508838e1a4210206240e53a50b7b66f736bf6",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/luaotfload.tar.xz"
+        },
+        {
+          "name": "luaotfload.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 641648,
+          "sha512": "3cde1c8ef191cb1f03e52aea5468a5091e4ecdba07e0dacabc1fc05dd3808362ad8cca850aa9397f8f1ca709e1a53b3867434f3655456f57307febb6c1080680",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/luaotfload.doc.tar.xz"
+        },
+        {
+          "name": "luaotfload.source.tar.xz",
+          "kind": "src",
+          "bytes": 7296,
+          "sha512": "f6c1527aa32a519295c8f458526797bee0333915ec043dc64dd9811128b44c234863f7d8d67445b4792752a8657417fa391e13d8edacec56c805643fc7857429",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/luaotfload.source.tar.xz"
+        }
+      ]
+    },
+    {
+      "name": "unicode-data",
+      "revision": "79913",
+      "relocated": true,
+      "license": {
+        "ids": [
+          "lppl1.3c",
+          "other-free"
+        ],
+        "references": [
+          "https://ctan.org/license/lppl1.3c",
+          "https://ctan.org/license/other-free"
+        ],
+        "source": "texlive-tlpdb-catalogue-license",
+        "reviewed": true
+      },
+      "noticePaths": [
+        "texmf-dist/doc/generic/unicode-data/README.md"
+      ],
+      "archives": [
+        {
+          "name": "unicode-data.tar.xz",
+          "kind": "run",
+          "bytes": 316880,
+          "sha512": "9a288afe4b904243e56135c1cd9f799c8f28fcad95592107804de1f19d56279b04cc91cb381e3ff4b2d0775bbf8c0a9f30551173c3fbbe6b82935a725a83446b",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/unicode-data.tar.xz"
+        },
+        {
+          "name": "unicode-data.doc.tar.xz",
+          "kind": "doc",
+          "bytes": 3940,
+          "sha512": "a9bedf80877e52292dd8583d984b1dad19205194145a4de021eb927ec9f0a9ec9bd77fe9c2e2060e54cbf53c653c3fcd938be18e5ecff157b544ec8221adcc3b",
+          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/unicode-data.doc.tar.xz"
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "resource": "26/CaseFolding.txt",
+      "path": "texmf-dist/tex/generic/unicode-data/CaseFolding.txt",
+      "package": "unicode-data",
+      "bytes": 87539,
+      "sha256": "ff8d8fefbf123574205085d6714c36149eb946d717a0c585c27f0f4ef58c4183"
+    },
+    {
+      "resource": "26/PropList.txt",
+      "path": "texmf-dist/tex/generic/unicode-data/PropList.txt",
+      "package": "unicode-data",
+      "bytes": 145465,
+      "sha256": "130dcddcaadaf071008bdfce1e7743e04fdfbc910886f017d9f9ac931d8c64dd"
+    },
+    {
+      "resource": "26/SpecialCasing.txt",
+      "path": "texmf-dist/tex/generic/unicode-data/SpecialCasing.txt",
+      "package": "unicode-data",
+      "bytes": 17049,
+      "sha256": "efc25faf19de21b92c1194c111c932e03d2a5eaf18194e33f1156e96de4c9588"
+    },
+    {
+      "resource": "26/UnicodeData.txt",
+      "path": "texmf-dist/tex/generic/unicode-data/UnicodeData.txt",
+      "package": "unicode-data",
+      "bytes": 2198209,
+      "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c"
+    },
+    {
+      "resource": "26/WordBreakProperty.txt",
+      "path": "texmf-dist/tex/generic/unicode-data/WordBreakProperty.txt",
+      "package": "unicode-data",
+      "bytes": 114445,
+      "sha256": "72274cac1e6b919507db35655c3e175aa27274668a1ece95c28d2069f2ad9852"
+    },
+    {
+      "resource": "47/latinmodern-math.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm-math/latinmodern-math.otf",
+      "package": "lm-math",
+      "bytes": 733736,
+      "sha256": "6075562b771f8b82f0c179e363389684f2dd09de30038269e2628e504bd7be0f"
+    },
+    {
+      "resource": "47/lmmono10-italic.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmmono10-italic.otf",
+      "package": "lm",
+      "bytes": 63584,
+      "sha256": "14e6328a5383d2b927c47051093ce0aff60deea07e6df71b8b99ee8d9c2ff8f2"
+    },
+    {
+      "resource": "47/lmmono10-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmmono10-regular.otf",
+      "package": "lm",
+      "bytes": 64684,
+      "sha256": "22deb6d3be3ffcb40b33f0e010afb256c677d97c2a2bdee1f5740cdc97751558"
+    },
+    {
+      "resource": "47/lmmono12-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmmono12-regular.otf",
+      "package": "lm",
+      "bytes": 63012,
+      "sha256": "b826e490fa671f254840abe88afea0975b606f57fb4a8b93f53787c26d8ac319"
+    },
+    {
+      "resource": "47/lmmono8-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmmono8-regular.otf",
+      "package": "lm",
+      "bytes": 66268,
+      "sha256": "17319490d20f24e192bd7e7999484b95111a4654ac2620e7aa215591142ae997"
+    },
+    {
+      "resource": "47/lmmono9-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmmono9-regular.otf",
+      "package": "lm",
+      "bytes": 63076,
+      "sha256": "cdd53c7dc01a1d25f21eaf7cae44bfb8a9665e4cbd60e5f8da14287aca819bb9"
+    },
+    {
+      "resource": "47/lmroman10-bold.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman10-bold.otf",
+      "package": "lm",
+      "bytes": 111240,
+      "sha256": "102fe06c430a8b681b2bf6876b7cd967ae4d47b4b6b41d915eb7913b726d9fb1"
+    },
+    {
+      "resource": "47/lmroman10-bolditalic.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman10-bolditalic.otf",
+      "package": "lm",
+      "bytes": 118204,
+      "sha256": "c37a28eed7a6e03f792b98b5e5f637b2fcda378bb4855f99284f1a88fe35f124"
+    },
+    {
+      "resource": "47/lmroman10-italic.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman10-italic.otf",
+      "package": "lm",
+      "bytes": 118828,
+      "sha256": "c1fce25075567bb8dbf2151658c3b442690041db17a2d49fc9e55905ea5b7169"
+    },
+    {
+      "resource": "47/lmroman10-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman10-regular.otf",
+      "package": "lm",
+      "bytes": 111536,
+      "sha256": "1aa18cfefa58132c52ce5de70db1fd1154201c19cd2b2cdaffba4906a33e6852"
+    },
+    {
+      "resource": "47/lmroman12-bold.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman12-bold.otf",
+      "package": "lm",
+      "bytes": 110496,
+      "sha256": "28c8782ac2b6486958b5dc7610ada7800c53546ff7f36bc65909a876e1cd338e"
+    },
+    {
+      "resource": "47/lmroman12-italic.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman12-italic.otf",
+      "package": "lm",
+      "bytes": 117732,
+      "sha256": "ada6b3f451238784e5a5ea75d43efa1eb4329cd75ce65bf047ed2f31b7b5e2f3"
+    },
+    {
+      "resource": "47/lmroman12-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman12-regular.otf",
+      "package": "lm",
+      "bytes": 110400,
+      "sha256": "e6be218ae83e61aa8a29990d3cdc401c678c1962188cb9a4a8b6359e4f5e5870"
+    },
+    {
+      "resource": "47/lmroman17-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman17-regular.otf",
+      "package": "lm",
+      "bytes": 110248,
+      "sha256": "ed048c80fb4b67663b80899b89fe5fba17d7442e1286d61fd08fe5689c6b7c3c"
+    },
+    {
+      "resource": "47/lmroman5-bold.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman5-bold.otf",
+      "package": "lm",
+      "bytes": 109564,
+      "sha256": "6326fb955d07bedcc8f73684e6b6bfa76706d38f3a85bd89c0659504ace366a1"
+    },
+    {
+      "resource": "47/lmroman5-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman5-regular.otf",
+      "package": "lm",
+      "bytes": 111872,
+      "sha256": "954bd9c376597c7043e7b616430163e0158155edf7434fd70082cf8460c08533"
+    },
+    {
+      "resource": "47/lmroman6-bold.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman6-bold.otf",
+      "package": "lm",
+      "bytes": 112452,
+      "sha256": "f1ebd52916182bfc2e3f9d4b5ba847ad6acc6c7761354c0dc052fb01ec14f73c"
+    },
+    {
+      "resource": "47/lmroman6-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman6-regular.otf",
+      "package": "lm",
+      "bytes": 112212,
+      "sha256": "501396c437f76c260b8724265b8495f318a640ee5a4674852ecbb20daf256696"
+    },
+    {
+      "resource": "47/lmroman7-bold.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman7-bold.otf",
+      "package": "lm",
+      "bytes": 110212,
+      "sha256": "063ea9e378b4fca4fd59771cf522faa21eb7c8516c89464745c79725b384fb9a"
+    },
+    {
+      "resource": "47/lmroman7-italic.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman7-italic.otf",
+      "package": "lm",
+      "bytes": 117960,
+      "sha256": "19d20f2bb00fbffe5d3d66e9b6a54f0108289068029e9d88649d981d53613ddf"
+    },
+    {
+      "resource": "47/lmroman7-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman7-regular.otf",
+      "package": "lm",
+      "bytes": 110792,
+      "sha256": "48c4b46ab255eec96588fb992fba1ed6102e53d051da480738a61cc6cdb328c3"
+    },
+    {
+      "resource": "47/lmroman8-bold.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman8-bold.otf",
+      "package": "lm",
+      "bytes": 112404,
+      "sha256": "04d4f633c3da31a169f4c54a7fe8c7e63925b39d030381f8d3eab955f16be7b2"
+    },
+    {
+      "resource": "47/lmroman8-italic.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman8-italic.otf",
+      "package": "lm",
+      "bytes": 117248,
+      "sha256": "fb0536b5c3eee5b5622cd827ceb410e6514e36512ebdc51d2cf98a96c06d44e8"
+    },
+    {
+      "resource": "47/lmroman8-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman8-regular.otf",
+      "package": "lm",
+      "bytes": 111948,
+      "sha256": "f73015c3827596586faa380c398501caf9b5bcbb6f40b46af6a51277ca97c9fc"
+    },
+    {
+      "resource": "47/lmroman9-bold.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman9-bold.otf",
+      "package": "lm",
+      "bytes": 113040,
+      "sha256": "f72feac9ea12eb858d8093d6c0ee710a6c25f59b61278c88ec41c0a680838415"
+    },
+    {
+      "resource": "47/lmroman9-italic.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman9-italic.otf",
+      "package": "lm",
+      "bytes": 118380,
+      "sha256": "2106cffcdc9f9cb411d7c3441e34d77a168b998a58b40e727ab5b815437d1975"
+    },
+    {
+      "resource": "47/lmroman9-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmroman9-regular.otf",
+      "package": "lm",
+      "bytes": 112680,
+      "sha256": "8ab7b017fc67ea0e30cbf9e7ebd940010442ea67b40cf65f87d73f3ca11b0e6f"
+    },
+    {
+      "resource": "47/lmsans10-bold.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmsans10-bold.otf",
+      "package": "lm",
+      "bytes": 107448,
+      "sha256": "a597b710326c1a8a2c7238d808e5d38711638a72a32383478db4829d63afd687"
+    },
+    {
+      "resource": "47/lmsans10-boldoblique.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmsans10-boldoblique.otf",
+      "package": "lm",
+      "bytes": 114984,
+      "sha256": "e45673d84754a94f2f053bd4c15950b4b320144fbb622c630a26fd7b68cfabc5"
+    },
+    {
+      "resource": "47/lmsans10-oblique.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmsans10-oblique.otf",
+      "package": "lm",
+      "bytes": 101412,
+      "sha256": "1b38b36efc21f9d3f34edf6a13f9d71f59c41f824e790f5d3ee5ba5b4936f377"
+    },
+    {
+      "resource": "47/lmsans10-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmsans10-regular.otf",
+      "package": "lm",
+      "bytes": 95128,
+      "sha256": "d431b786b9b603662718e79cfe9b441f47a8b0b3e854dde89d5acb3ed7cfd682"
+    },
+    {
+      "resource": "47/lmsans12-oblique.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmsans12-oblique.otf",
+      "package": "lm",
+      "bytes": 102056,
+      "sha256": "1f138e6203f7092f9a01f6193ed97d971b5045b99969f3a62c7e43a7faabc1c0"
+    },
+    {
+      "resource": "47/lmsans12-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmsans12-regular.otf",
+      "package": "lm",
+      "bytes": 95160,
+      "sha256": "f87ebdea035a96e8787e2c663cfcc78ce73205d37800eafe7948278e2cc7666a"
+    },
+    {
+      "resource": "47/lmsans17-oblique.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmsans17-oblique.otf",
+      "package": "lm",
+      "bytes": 100500,
+      "sha256": "0f6a4450c5fc9afd3650f24ad9003684fff3252691bbf2a33be94b383db8a77c"
+    },
+    {
+      "resource": "47/lmsans17-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmsans17-regular.otf",
+      "package": "lm",
+      "bytes": 94828,
+      "sha256": "f6c395a436e4fa7e88bbf1445e64b9c78ce4effba3668b13cc433077fc71a984"
+    },
+    {
+      "resource": "47/lmsans8-oblique.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmsans8-oblique.otf",
+      "package": "lm",
+      "bytes": 100084,
+      "sha256": "7f4227513bfd47b7077bedd125caa4c0a223a2cdad17a1470145cdea83353c88"
+    },
+    {
+      "resource": "47/lmsans8-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmsans8-regular.otf",
+      "package": "lm",
+      "bytes": 94256,
+      "sha256": "04f0d25ca474494cb707e752170f6c22cdcb8ae2b5fb80872143e18d5cc463f8"
+    },
+    {
+      "resource": "47/lmsans9-oblique.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmsans9-oblique.otf",
+      "package": "lm",
+      "bytes": 101068,
+      "sha256": "ac0535d7d4a8eb1b531c5faeb9060a4b9bac397d72cf54191ef53eea6f66b617"
+    },
+    {
+      "resource": "47/lmsans9-regular.otf",
+      "path": "texmf-dist/fonts/opentype/public/lm/lmsans9-regular.otf",
+      "package": "lm",
+      "bytes": 94552,
+      "sha256": "80ef596460b7b402621780f7cd73a348efedc4cd2c6deca37da58f07ee61b85d"
+    },
+    {
+      "resource": "51/alt_getopt.lua",
+      "path": "texmf-dist/scripts/lua-alt-getopt/alt_getopt.lua",
+      "package": "lua-alt-getopt",
+      "bytes": 3973,
+      "sha256": "989890ae2018db411900e84790169925700cc6b11c282eeb67fb5761566ce1e7"
+    },
+    {
+      "resource": "51/fontloader-basics-gen.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/fontloader-basics-gen.lua",
+      "package": "luaotfload",
+      "bytes": 12788,
+      "sha256": "4edd18bc02449161027855499a96f1e044cb029cf1d62cc95ea958216ab7b430"
+    },
+    {
+      "resource": "51/fontloader-data-con.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/fontloader-data-con.lua",
+      "package": "luaotfload",
+      "bytes": 5477,
+      "sha256": "cfa380918b64497a08b7832596297bf69ca7b9a3f03ce97446cc7f8da0ea9323"
+    },
+    {
+      "resource": "51/fontloader-font-cff.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/fontloader-font-cff.lua",
+      "package": "luaotfload",
+      "bytes": 94462,
+      "sha256": "c58d77edc8234321e77805cbc478ce989b4931dea074e3f0f5188d65806df149"
+    },
+    {
+      "resource": "51/fontloader-font-cid.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/fontloader-font-cid.lua",
+      "package": "luaotfload",
+      "bytes": 5502,
+      "sha256": "6454208ed8bffd0c837745e742845f6b9314000e455da135eb7e855e8ccc8f25"
+    },
+    {
+      "resource": "51/fontloader-font-con.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/fontloader-font-con.lua",
+      "package": "luaotfload",
+      "bytes": 63505,
+      "sha256": "d88013043a3e508315e90269c17ee5ecadccede143724d8a328e918d057b5026"
+    },
+    {
+      "resource": "51/fontloader-font-def.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/fontloader-font-def.lua",
+      "package": "luaotfload",
+      "bytes": 19727,
+      "sha256": "09474ff0b7fd89e5d39b0aa85c00d5d23e9179affd06c4ef37a9fba695b8e87a"
+    },
+    {
+      "resource": "51/fontloader-font-dsp.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/fontloader-font-dsp.lua",
+      "package": "luaotfload",
+      "bytes": 156028,
+      "sha256": "a0c1c0e7c5e1ed0cebc239f3cae7c44a425b518cb18735e439e788b42d45a65e"
+    },
+    {
+      "resource": "51/fontloader-font-ini.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/fontloader-font-ini.lua",
+      "package": "luaotfload",
+      "bytes": 1770,
+      "sha256": "fece34361bf7ff1038dc5d69d5322f85b9d10c94ca970602f109d6912223d1fe"
+    },
+    {
+      "resource": "51/fontloader-font-map.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/fontloader-font-map.lua",
+      "package": "luaotfload",
+      "bytes": 19570,
+      "sha256": "249d540fef03da78507f1c4fdbe67321a550524eb11f1e256c883ea4c50dde62"
+    },
+    {
+      "resource": "51/fontloader-font-onr.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/fontloader-font-onr.lua",
+      "package": "luaotfload",
+      "bytes": 18604,
+      "sha256": "22df1e8e0149603c69e4529296e3bd51c1e763eff87ce385d3c5e66b9c1241c0"
+    },
+    {
+      "resource": "51/fontloader-font-oti.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/fontloader-font-oti.lua",
+      "package": "luaotfload",
+      "bytes": 7904,
+      "sha256": "59c24c4de9bcf3ab9ed5ca4d85fa397099ca8c066606c0827f700694b272a70a"
+    },
+    {
+      "resource": "51/fontloader-font-otr.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/fontloader-font-otr.lua",
+      "package": "luaotfload",
+      "bytes": 94857,
+      "sha256": "183f74e26c3358cba72566e74c734be1e1c63a6c58e552fbfe6630b642b98cc9"
+    },
+    {
+      "resource": "51/fontloader-font-ott.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/fontloader-font-ott.lua",
+      "package": "luaotfload",
+      "bytes": 36357,
+      "sha256": "80cd6363fee79574eeeb5255b6a0a6af68197183ff0e30c29ddd63025c69fd36"
+    },
+    {
+      "resource": "51/fontloader-font-oup.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/fontloader-font-oup.lua",
+      "package": "luaotfload",
+      "bytes": 128777,
+      "sha256": "4d895e8f7eef11f18655aff584e293d5e39e6201f0f16098f41fca786d15ee11"
+    },
+    {
+      "resource": "51/fontloader-font-ttf.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/fontloader-font-ttf.lua",
+      "package": "luaotfload",
+      "bytes": 67617,
+      "sha256": "0febb011cec0ea89e53c80709a039bc4a2f438d2a42fc859fd179900dfcc6865"
+    },
+    {
+      "resource": "51/fontloader-fonts-enc.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/fontloader-fonts-enc.lua",
+      "package": "luaotfload",
+      "bytes": 2625,
+      "sha256": "bd0a37c79aea01885268cbda4d0225f1468cfeaee323ac8402ab55b7381fa72b"
+    },
+    {
+      "resource": "51/lua-uni-case.lua",
+      "path": "texmf-dist/tex/luatex/lua-uni-algos/lua-uni-case.lua",
+      "package": "lua-uni-algos",
+      "bytes": 1916,
+      "sha256": "0c55c6f21798aa474070a6117ed45703f30eea7f7514138e5f64e90be09139f8"
+    },
+    {
+      "resource": "51/lua-uni-parse.lua",
+      "path": "texmf-dist/tex/luatex/lua-uni-algos/lua-uni-parse.lua",
+      "package": "lua-uni-algos",
+      "bytes": 2308,
+      "sha256": "2fab16ae6bdfef52b77b5d640f9a7debc075f5c97d251c9dccc24f8974f1db1b"
+    },
+    {
+      "resource": "51/lualibs-basic-merged.lua",
+      "path": "texmf-dist/tex/luatex/lualibs/lualibs-basic-merged.lua",
+      "package": "lualibs",
+      "bytes": 131460,
+      "sha256": "a7970784ab066597d5003ac0e35cecae64784a0e3056aed034ed22397e580c59"
+    },
+    {
+      "resource": "51/lualibs-basic.lua",
+      "path": "texmf-dist/tex/luatex/lualibs/lualibs-basic.lua",
+      "package": "lualibs",
+      "bytes": 2685,
+      "sha256": "937cf2975b322e3b2dd342ddd93e722a6b51c08d196e0af5bbed07b95219510c"
+    },
+    {
+      "resource": "51/lualibs-compat.lua",
+      "path": "texmf-dist/tex/luatex/lualibs/lualibs-compat.lua",
+      "package": "lualibs",
+      "bytes": 603,
+      "sha256": "93c0a38d03278e68fb2aa3f7a1cea090555ddb981225a5771530e678d28301ba"
+    },
+    {
+      "resource": "51/lualibs-extended-merged.lua",
+      "path": "texmf-dist/tex/luatex/lualibs/lualibs-extended-merged.lua",
+      "package": "lualibs",
+      "bytes": 140360,
+      "sha256": "ada22ed59f683cfc3a645830201f77c2a3d4d06aaca2924297cef7192b0a9e13"
+    },
+    {
+      "resource": "51/lualibs-extended.lua",
+      "path": "texmf-dist/tex/luatex/lualibs/lualibs-extended.lua",
+      "package": "lualibs",
+      "bytes": 5000,
+      "sha256": "805bebd2d9063fd3103e98e764b3ed4eb3d3368d22c8fa2e15375a59d3ae07b1"
+    },
+    {
+      "resource": "51/lualibs.lua",
+      "path": "texmf-dist/tex/luatex/lualibs/lualibs.lua",
+      "package": "lualibs",
+      "bytes": 3780,
+      "sha256": "c64ac1bf3b572279d4ff6d44addfa4873c123759c021bbc23edc562c800adc2e"
+    },
+    {
+      "resource": "51/luaotfload-configuration.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-configuration.lua",
+      "package": "luaotfload",
+      "bytes": 34080,
+      "sha256": "fb81488992c9a23c66c5f4e589cd5ab934d7e748ceb955188bf69dded3f4b56d"
+    },
+    {
+      "resource": "51/luaotfload-database.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-database.lua",
+      "package": "luaotfload",
+      "bytes": 135382,
+      "sha256": "9fb4c512243d7886c873785d1126498e7cfcfc395969593660b211d63707561a"
+    },
+    {
+      "resource": "51/luaotfload-log.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-log.lua",
+      "package": "luaotfload",
+      "bytes": 11323,
+      "sha256": "129ec03517e625392724083a602b9023a601749dcd35235e083bcd8873c579b5"
+    },
+    {
+      "resource": "51/luaotfload-parsers.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-parsers.lua",
+      "package": "luaotfload",
+      "bytes": 30438,
+      "sha256": "d20a610d1e7c0b55e5cf1a2cae9c468971b94346a6b578ff83fd17accb65f0c0"
+    },
+    {
+      "resource": "51/luaotfload-realpath.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-realpath.lua",
+      "package": "luaotfload",
+      "bytes": 4692,
+      "sha256": "720e7e8ff2c8ffbc8d980f718038a07679e39df176d410f8b86bc0da1e78d559"
+    },
+    {
+      "resource": "51/luaotfload-resolvers.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-resolvers.lua",
+      "package": "luaotfload",
+      "bytes": 11210,
+      "sha256": "24e3d5289b3de153358c51a7787a5be45495c2bb3d38d8c7c97685bad682ae57"
+    },
+    {
+      "resource": "51/luaotfload-status.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-status.lua",
+      "package": "luaotfload",
+      "bytes": 6041,
+      "sha256": "7ab746ef65ad8292b5fd2bf603cfaa5239a317e6afb8d1f7caac89dde36f54b6"
+    },
+    {
+      "resource": "51/luaotfload-tool.lua",
+      "path": "texmf-dist/scripts/luaotfload/luaotfload-tool.lua",
+      "package": "luaotfload",
+      "bytes": 53823,
+      "sha256": "5b3f7b014bc5401fea7e4bbfe854fe7caf77606d509cbcd9a1bc1af7799e63dd"
+    },
+    {
+      "resource": "51/luaotfload-unicode.lua",
+      "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-unicode.lua",
+      "package": "luaotfload",
+      "bytes": 7918,
+      "sha256": "53f2e6f79279364a8749fc64b2d542f6d831ae3eae1ad800899bcf9b87f3d4a5"
+    }
+  ],
+  "generatedResources": [],
+  "supportingNotices": [],
+  "openItems": [
+    "Complete engine rebuild and relink qualification against receipt-bound outputs.",
+    "Complete the precompiled format input inventory and generated font-metadata source closure.",
+    "Resolve url.sty's historical LPPL version wording against authoritative distribution terms.",
+    "Preserve the complete EC font distribution required by copyrite.txt in any eventual redistribution.",
+    "Complete the final component/font redistribution review and supply matching source with any release."
+  ],
+  "recipe": {
+    "schemaVersion": 1,
+    "entrypoint": "luaotfload-tool.lua",
+    "sourceDateEpoch": 1787702400,
+    "resources": [
+      "26/CaseFolding.txt",
+      "26/PropList.txt",
+      "26/SpecialCasing.txt",
+      "26/UnicodeData.txt",
+      "26/WordBreakProperty.txt",
+      "47/latinmodern-math.otf",
+      "47/lmmono10-italic.otf",
+      "47/lmmono10-regular.otf",
+      "47/lmmono12-regular.otf",
+      "47/lmmono8-regular.otf",
+      "47/lmmono9-regular.otf",
+      "47/lmroman10-bold.otf",
+      "47/lmroman10-bolditalic.otf",
+      "47/lmroman10-italic.otf",
+      "47/lmroman10-regular.otf",
+      "47/lmroman12-bold.otf",
+      "47/lmroman12-italic.otf",
+      "47/lmroman12-regular.otf",
+      "47/lmroman17-regular.otf",
+      "47/lmroman5-bold.otf",
+      "47/lmroman5-regular.otf",
+      "47/lmroman6-bold.otf",
+      "47/lmroman6-regular.otf",
+      "47/lmroman7-bold.otf",
+      "47/lmroman7-italic.otf",
+      "47/lmroman7-regular.otf",
+      "47/lmroman8-bold.otf",
+      "47/lmroman8-italic.otf",
+      "47/lmroman8-regular.otf",
+      "47/lmroman9-bold.otf",
+      "47/lmroman9-italic.otf",
+      "47/lmroman9-regular.otf",
+      "47/lmsans10-bold.otf",
+      "47/lmsans10-boldoblique.otf",
+      "47/lmsans10-oblique.otf",
+      "47/lmsans10-regular.otf",
+      "47/lmsans12-oblique.otf",
+      "47/lmsans12-regular.otf",
+      "47/lmsans17-oblique.otf",
+      "47/lmsans17-regular.otf",
+      "47/lmsans8-oblique.otf",
+      "47/lmsans8-regular.otf",
+      "47/lmsans9-oblique.otf",
+      "47/lmsans9-regular.otf",
+      "51/alt_getopt.lua",
+      "51/fontloader-basics-gen.lua",
+      "51/fontloader-data-con.lua",
+      "51/fontloader-font-cff.lua",
+      "51/fontloader-font-cid.lua",
+      "51/fontloader-font-con.lua",
+      "51/fontloader-font-def.lua",
+      "51/fontloader-font-dsp.lua",
+      "51/fontloader-font-ini.lua",
+      "51/fontloader-font-map.lua",
+      "51/fontloader-font-onr.lua",
+      "51/fontloader-font-oti.lua",
+      "51/fontloader-font-otr.lua",
+      "51/fontloader-font-ott.lua",
+      "51/fontloader-font-oup.lua",
+      "51/fontloader-font-ttf.lua",
+      "51/fontloader-fonts-enc.lua",
+      "51/lua-uni-case.lua",
+      "51/lua-uni-parse.lua",
+      "51/lualibs-basic-merged.lua",
+      "51/lualibs-basic.lua",
+      "51/lualibs-compat.lua",
+      "51/lualibs-extended-merged.lua",
+      "51/lualibs-extended.lua",
+      "51/lualibs.lua",
+      "51/luaotfload-configuration.lua",
+      "51/luaotfload-database.lua",
+      "51/luaotfload-log.lua",
+      "51/luaotfload-parsers.lua",
+      "51/luaotfload-realpath.lua",
+      "51/luaotfload-resolvers.lua",
+      "51/luaotfload-status.lua",
+      "51/luaotfload-tool.lua",
+      "51/luaotfload-unicode.lua"
+    ],
+    "output": {
+      "bytes": 36179,
+      "sha256": "b3461a143b5c86c01a244182d820e58bf3c44301414bb024db3e6cc543677616"
+    }
+  }
+}

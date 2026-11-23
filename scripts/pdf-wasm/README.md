@@ -140,8 +140,8 @@ the verification JSON, not third-party binaries, source archives or notices.
 This is evidence of source correspondence, not a release approval or a clean
 rebuild claim. A separate clean engine rebuild is recorded in
 [PR #244](https://github.com/mylife-inc/Zellij/pull/244): the adapter and Wasm
-compiler match the pinned bytes exactly. The two generated font-metadata files
-still require source-input closure. `source-policy.json` records remaining
+compiler match the pinned bytes exactly. The original mirror-generated metadata remain the legacy comparison inputs;
+the compact replacement below has its own complete selected input inventory. `source-policy.json` records remaining
 review items, including EC's full-distribution requirement and the historical
 license-version wording in `url.sty`. The additional ConTeXt notice is collected
 from the exact frozen documentation archive, not inferred from a package label.
@@ -195,3 +195,68 @@ For an intentional format-input update, create and review a new inventory using
 `python3 scripts/pdf-wasm/format_sources.py inventory CACHE NEW_LOCK_FILE`.
 Review changed input bytes, terms and output before updating the expected hash;
 a failed reproducibility check must not be resolved by merely repinning it.
+
+
+## Build compact font metadata and the experimental resource archive
+
+The font database now has an independent source recipe: 78 verified original
+files (34 Lua scripts, five Unicode data files and 39 OpenType fonts), seven
+packages and 16 frozen run/doc/source archives. The preparer also retains 11
+original source notices. Generation uses the same verified Wasm engine, a fresh
+virtual filesystem, no precompiled format, no old font database and no network
+resolver. Docker, a native TeX installation and host fonts are not involved.
+Python/curl below are maintainer preparation/packaging tools, not installed CLI
+prerequisites.
+
+```sh
+python3 scripts/pdf-wasm/font_sources.py fetch /tmp/zellij-pdf-source-cache
+python3 scripts/pdf-wasm/font_sources.py prepare /tmp/zellij-pdf-source-cache test-results/pdf-font-inputs
+export ZEL_PDF_FONT_INPUTS="$PWD/test-results/pdf-font-inputs"
+node scripts/pdf-wasm/fonts.mjs "$ZEL_PDF_PROBE_BUNDLE" "$ZEL_PDF_FONT_INPUTS" test-results/pdf-font-metadata
+node --test scripts/pdf-wasm/fonts.test.mjs
+python3 scripts/pdf-wasm/compact.py "$ZEL_PDF_PROBE_BUNDLE" test-results/pdf-format test-results/pdf-font-metadata test-results/pdf-compact
+export ZEL_PDF_COMPACT_PACKAGE="$PWD/test-results/pdf-compact/package"
+export ZEL_PDF_FONT_METADATA="$PWD/test-results/pdf-font-metadata"
+node --test scripts/pdf-wasm/compact.test.mjs
+```
+
+These steps follow the format build above. Existing outputs are preserved.
+The font generator runs twice, requires exactly the selected fonts and input
+usage, normalizes only the two date labels and 39 cache timestamps, and checks
+the resulting 36,179 bytes against the reviewed SHA-256. Font bytes and names
+remain unchanged. The 30-byte map declares OpenType use; it contains no bitmap
+or Type 1 font mappings. The two original metadata files total 9,016,198 bytes.
+
+The resource archive uses fixed names/order, modes and timestamps. Its manifest
+binds every compiler/format/resource blob to its size and SHA-256. The loader
+matches the complete manifest against the reviewed inventory before resolving
+any blob, then checks every used byte. It reads neither the old precompiled
+format nor either upstream metadata file. The local archive is 10,845,108 bytes;
+compression-library versions can affect archive bytes, while the uncompressed
+manifest and blob identities must agree. This is **not a release package**: final
+notices, source-distribution arrangements and the installed runtime/CLI entry
+point remain separate work. No private Node runtime is included here.
+
+To test the assembled resource directory, start with a new `test-results/pdf-wasm`
+output (move an existing generated result if it needs preservation):
+
+```sh
+unset ZEL_PDF_REBUILT_FORMAT ZEL_PDF_FONT_METADATA
+ZEL_PDF_PROBE_BUNDLE="$ZEL_PDF_COMPACT_PACKAGE" node scripts/pdf-wasm/check.mjs
+python3 -m unittest discover -s scripts/pdf-wasm -p 'test_*.py' -v
+```
+
+Outside replacements are rejected for a compact package. CI independently
+prepares and generates metadata on every platform, assembles the resource
+archive, and typesets all 19 books from that compact inventory. Linux compares
+all resulting pages with the native backend. Four metadata regressions cover
+independent builds, input/output integrity, incomplete/oversized databases and
+termination; two package-loader regressions cover byte equivalence, manifest
+changes and corrupt/truncated blobs. The combined Python suite has 24 cases.
+Only JSON receipts and Zellij-generated PDFs/logs are uploaded; neither the
+experimental archive nor its compiler/data/source files are published.
+
+For an intentional source-selection change, propose a new inventory with
+`python3 scripts/pdf-wasm/font_sources.py inventory CACHE NEW_LOCK_FILE`, review
+original source/notices and font coverage, and then qualify the new output.
+Do not repin a hash merely to hide a failed reproducibility or rendering check.

@@ -10,6 +10,7 @@ import { compare } from './compare.mjs';
 import { writeLongBook } from '../fixtures/long-book.mjs';
 import { recipe } from './format.mjs';
 import { sha256 } from './bundle.mjs';
+import { loadFontMetadata } from './fonts.mjs';
 
 const bundle = process.env.ZEL_PDF_PROBE_BUNDLE;
 if (!bundle) throw new Error('Set ZEL_PDF_PROBE_BUNDLE');
@@ -17,6 +18,7 @@ const format = process.env.ZEL_PDF_REBUILT_FORMAT ? new Uint8Array(readFileSync(
 if (format && (format.length !== recipe.output.bytes || sha256(format) !== recipe.output.sha256)) {
   throw new Error('Rebuilt format does not match the reviewed recipe output');
 }
+const metadata = process.env.ZEL_PDF_FONT_METADATA ? loadFontMetadata(process.env.ZEL_PDF_FONT_METADATA) : undefined;
 const extension = process.platform === 'win32' ? '.exe' : '';
 const exporter = path.resolve(`cli/target/debug/examples/pdf_probe_inputs${extension}`);
 const zel = path.resolve(`cli/target/debug/zel${extension}`);
@@ -27,7 +29,7 @@ const results = [];
 async function check(name, manuscript) {
   const input = path.join(root, name + '-input');
   execFileSync(exporter, [manuscript, input], { stdio: 'pipe', timeout: 60_000 });
-  const result = await compile(bundle, input, path.join(artifacts, name), { format });
+  const result = await compile(bundle, input, path.join(artifacts, name), { format, metadata });
   if (process.env.ZEL_PDF_PROBE_BASELINE === '1') {
     const baseline = path.join(artifacts, name + '-native');
     execFileSync(zel, ['pdf', manuscript, '--out', baseline], { stdio: 'pipe', timeout: 600_000 });
