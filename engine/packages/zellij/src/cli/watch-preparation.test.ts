@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import { afterEach, expect, it, vi } from 'vitest';
-import { watchPreparation, type PreparationWatch } from './watch-preparation';
+import { snapshot, watchPreparation, type PreparationWatch } from './watch-preparation';
 
 const roots: string[] = [];
 const watchers: PreparationWatch[] = [];
@@ -166,10 +166,31 @@ it('watches a custom legacy config and follows its changed content root', async 
   await expect.poll(f.search).toContain('New root passage');
 });
 
+it('keeps snapshots identical when preparation creates only its output parents', async () => {
+  const f = await fixture(true);
+  const options = { appRoot: f.appRoot, contentDir: f.content };
+  const before = await snapshot(options);
+  await mkdir(f.output, { recursive: true });
+  await writeFile(path.join(f.output, 'dev-revision.json'), '{"revision":"generated"}');
+  await mkdir(path.join(f.appRoot, '.next'), { recursive: true });
+  await writeFile(path.join(f.appRoot, '.next/build'), 'generated');
+  expect(await snapshot(options)).toEqual(before);
+  // The containing public directory may also hold authored content. Excluding
+  // its bookkeeping entry must not hide edits or deletion of those files.
+  const authored = path.join(f.appRoot, 'public/authored.mdx');
+  await writeFile(authored, '# Authored');
+  const added = await snapshot(options);
+  expect(added.search).not.toBe(before.search);
+  expect(added.assets).toBe(before.assets);
+  await rm(authored);
+  expect(await snapshot(options)).toEqual(before);
+  await rm(path.join(f.appRoot, 'public'), { recursive: true });
+  expect(await snapshot(options)).toEqual(before);
+});
+
 it('does not loop on its own output when content is the application root', async () => {
   const f = await fixture(true);
   await f.start();
-  await delay(200); // allow the first public directory creation to settle
   const before = (await stat(path.join(f.output, 'search-index.json'))).mtimeMs;
   const revision = await f.json('dev-revision.json');
   await mkdir(path.join(f.appRoot, '.next'), { recursive: true });

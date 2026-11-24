@@ -60,6 +60,21 @@ truncated archive trailers, cancellation before acquisition and during a read,
 and source transfer status/size/truncation/redirect handling. Unix-only link
 regressions supplement the platform-neutral inventory checks.
 
+The initial PR run `45304356856` at `06e2678` also exposes an independent engine
+watch defect: `watch-preparation.test.ts` observes a changed development revision
+without an authored edit. The watcher snapshots before preparation creates
+`public/_zellij`. It excludes that generated directory but records the newly
+created `public` parent, scheduling one extra preparation/revision. A fixed
+200 ms settling delay in the old test could conceal it on faster runs.
+
+A deterministic snapshot comparison reproduces this without timers. The fix
+omits only the generated parent's directory bookkeeping entry while still
+visiting authored siblings under `public`. The regression checks creation of
+generated files and `.next`, addition/removal of an authored public file, and
+removal of the generated parent. The existing live-watcher test now records its
+revision immediately after startup instead of waiting for the unwanted rebuild.
+This explains this specific revision failure, not the historical WebKit findings.
+
 The existing real-package acceptance now cancels build, JSON check, validation
 watch and static preview during checksum headers, checksum body and archive body
 waits: twelve scenarios per native target. It uses a real private console on

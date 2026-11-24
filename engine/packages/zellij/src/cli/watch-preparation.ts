@@ -22,7 +22,7 @@ export async function prepareContent(
 interface Snapshot { search: string; assets: string }
 
 /** Polling also works across Docker bind mounts where native events get lost. */
-async function snapshot(options: ZellijRuntimeOptions): Promise<Snapshot> {
+export async function snapshot(options: ZellijRuntimeOptions): Promise<Snapshot> {
   const location = resolveContentLocation(options);
   const physical = async (file: string) => realpath(file).catch((error: NodeJS.ErrnoException) => {
     if (error.code !== 'ENOENT') throw error;
@@ -47,7 +47,10 @@ async function snapshot(options: ZellijRuntimeOptions): Promise<Snapshot> {
     if (info.isDirectory()) {
       // Directory mtimes include ignored generated files. Only record their
       // children so an app-root content layout cannot watch its own output.
-      records.push([file, 'directory']);
+      // Preparation itself creates public/_zellij. Its parent must not add a
+      // snapshot entry when content is the app root; still inspect authored
+      // siblings under public so adding/removing them remains observable.
+      if (file !== path.dirname(generated)) records.push([file, 'directory']);
       for (const name of (await readdir(file)).sort()) {
         if (['node_modules', '.next', '.git'].includes(name)) continue;
         await visit(path.join(file, name));

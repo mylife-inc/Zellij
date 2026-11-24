@@ -26,6 +26,12 @@ before acquisition. Validation checks the exact inventory, including unlisted
 files/directories, missing entries, path aliases and links/junctions. See the
 [cache acquisition record](specs/zellij-renderer-cache-acquisition-2026-11-23.md).
 The editable-source cache uses the same network transfer and signal registration.
+Initial PR #250 CI `45304356856` at `06e2678` exposes an independent watch defect:
+the generated `public` parent changes an app-root content snapshot and schedules
+an unnecessary development revision. A timer-free regression reproduces it;
+the fix excludes that directory's bookkeeping while retaining authored public
+siblings. The record preserves the initial failure separately from the still
+unexplained historical WebKit findings.
 PDF packaging/distribution review and CLI dispatch remain; no new candidate or
 PDF runtime archive is published, and released rc.19 still uses container PDFs.
 
