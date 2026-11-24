@@ -26,8 +26,8 @@ impl Target {
     }
 }
 
-pub(crate) fn ensure_cached(offline: bool) -> Result<()> {
-    cache::obtain(offline, true).map(|_| ())
+pub(crate) fn ensure_cached(offline: bool, stop: &AtomicBool) -> Result<()> {
+    cache::obtain(offline, true, stop).map(|_| ())
 }
 
 // Node reports ordinary Windows paths, without Rust's verbatim prefix.
@@ -52,11 +52,25 @@ fn execute(
     silent: bool,
     stop: Option<&AtomicBool>,
 ) -> Result<Option<ExitStatus>> {
-    if stop.is_some_and(|s| s.load(Ordering::Acquire)) {
+    // Watchers retain their existing signal owner; one-shot commands need one
+    // before acquisition so a stalled download can clean up its owned stage.
+    let owned_stop;
+    let stop = match stop {
+        Some(stop) => stop,
+        None => {
+            owned_stop = crate::preview::signals()?;
+            &owned_stop
+        }
+    };
+    if stop.load(Ordering::Acquire) {
         return Ok(None);
     }
-    let engine = cache::obtain(offline, !silent)?;
-    if stop.is_some_and(|s| s.load(Ordering::Acquire)) {
+    let engine = match cache::obtain(offline, !silent, stop) {
+        Ok(engine) => engine,
+        Err(_) if stop.load(Ordering::Acquire) => return Ok(None),
+        Err(error) => return Err(error),
+    };
+    if stop.load(Ordering::Acquire) {
         return Ok(None);
     }
     let request_path = work.join("request.json");
@@ -85,7 +99,7 @@ fn execute(
         command.zel_spawn()?
     };
     loop {
-        if stop.is_some_and(|s| s.load(Ordering::Acquire)) {
+        if stop.load(Ordering::Acquire) {
             child.cancel()?;
             return Ok(None);
         }
@@ -244,8 +258,12 @@ pub(crate) fn build(
     options: &BuildOptions,
     offline: bool,
 ) -> Result<()> {
+    let stop = crate::preview::signals()?;
     let prepared =
-        prepare(target, content, out, options, offline, None)?.ok_or(Error::BuildFailed)?;
+        prepare(target, content, out, options, offline, Some(&stop))?.ok_or_else(|| {
+            Error::InvalidArgument("rich build cancelled; previous output was preserved".into())
+        })?;
+    crate::package_transfer::check_stop(&stop, "Rich renderer")?;
     prepared.publish()?;
     if target == Target::File {
         zellij_core::statusln!(

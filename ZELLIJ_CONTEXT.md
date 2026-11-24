@@ -8,7 +8,34 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-23**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-23: Rust PDF supervision — implementation in progress**
+**2026-11-23: cancellable renderer acquisition — implementation in progress**
+
+PR #249 merged as `0935d5c`, with the same tree as tested `b18ce11`. All 37
+normal CI jobs pass in `45278436633`, with one conditional skip and no retries.
+All seven PDF jobs pass in `45278435861`: 114 manuscripts / 342 passes across
+six targets, 84 Rust supervision regression groups without skips, and 269
+native-matched Linux page rasters. Independent artifact checks confirm matching
+resource/source receipts. Post-merge CI `45282777504` and base image
+`45282777241` both pass. Earlier browser timing findings remain recorded.
+
+The next integration step fixes shared renderer acquisition before the PDF
+backend reuses its private Node. Network transfers can be cancelled while a
+connection or body read stalls; only the caller owns cache files. Extraction and
+hashing observe cancellation, and one-shot commands/watch register signal owners
+before acquisition. Validation checks the exact inventory, including unlisted
+files/directories, missing entries, path aliases and links/junctions. See the
+[cache acquisition record](specs/zellij-renderer-cache-acquisition-2026-11-23.md).
+The editable-source cache uses the same network transfer and signal registration.
+Initial PR #250 CI `45304356856` at `06e2678` exposes an independent watch defect:
+the generated `public` parent changes an app-root content snapshot and schedules
+an unnecessary development revision. A timer-free regression reproduces it;
+the fix excludes that directory's bookkeeping while retaining authored public
+siblings. The record preserves the initial failure separately from the still
+unexplained historical WebKit findings.
+PDF packaging/distribution review and CLI dispatch remain; no new candidate or
+PDF runtime archive is published, and released rc.19 still uses container PDFs.
+
+**2026-11-23: Rust PDF supervision — implemented in PR #249**
 
 PR #248 merged as `83f3608`, identical in tree to tested `bf6445b`. All seven PDF
 jobs pass in `45232766997` (114 manuscripts / 342 passes across six targets), and
