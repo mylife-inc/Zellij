@@ -76,6 +76,40 @@ def parse_tlpdb(text):
     return result
 
 
+def original_selection(runtime, policy):
+    """Select independently pinned original releases, never relabel mirror data."""
+    candidates = {p["id"]: p for p in policy.get("originalPackages", [])}
+    require(len(candidates) == len(policy.get("originalPackages", [])), "Duplicate original package")
+    packages, files = {}, []
+    for resource in runtime["resources"]:
+        if "original" not in resource:
+            continue
+        require("url" not in resource, "Original resource cannot also select a mirror URL")
+        selected = candidates.get(resource["original"])
+        require(selected is not None, "Unknown original package")
+        matches = [f for f in selected["files"] if f["resource"] == resource["name"]]
+        require(len(matches) == 1, "Missing or duplicate original resource")
+        record = matches[0]
+        require(record["bytes"] == resource["bytes"] and record["sha256"] == resource["sha256"],
+                "Original resource differs from its policy")
+        package = selected["package"]
+        require(record["package"] == package["name"] and package["noticePaths"] and package["archives"]
+                and package.get("license", {}).get("ids"),
+                "Original package provenance is incomplete")
+        require(package["name"] not in packages or packages[package["name"]] == package,
+                "Conflicting original package")
+        for entry in package["archives"]:
+            require("/" not in safe_path(entry["name"]) and entry["url"].startswith("https://")
+                    and re.fullmatch(r"[a-f0-9]{64}", entry["sha256"])
+                    and 0 < entry["bytes"] <= 256 * 1024 * 1024, "Invalid original archive pin")
+        for name in package["noticePaths"] + package["completePaths"] + [record["path"]]:
+            safe_path(name)
+        packages[package["name"]] = package
+        files.append(record)
+    require(len(files) == len({f["resource"] for f in files}), "Duplicate original runtime resource")
+    return {"packages": [packages[k] for k in sorted(packages)], "files": files}
+
+
 def build_inventory(runtime, provenance, tlpdb, policy, artifacts):
     require(artifacts["provenanceSha256"] == policy["provenance"]["sha256"], "Generated resource provenance mismatch")
     require(artifacts["mirrorRevision"] == provenance["mirrorRevision"], "Generated resource mirror mismatch")
@@ -85,11 +119,15 @@ def build_inventory(runtime, provenance, tlpdb, policy, artifacts):
     for record in provenance["files"] + artifacts["artifacts"]:
         require(record["key"] not in records, "Duplicate provenance key")
         records[record["key"]] = record
-    packages, files, generated = {}, [], []
+    originals = original_selection(runtime, policy)
+    packages = {p["name"]: p for p in originals["packages"]}
+    files, generated = list(originals["files"]), []
     seen = set()
     for resource in runtime["resources"]:
         require(resource["name"] not in seen, "Duplicate runtime resource")
         seen.add(resource["name"])
+        if "original" in resource:
+            continue
         require(resource["url"].startswith(runtime["mirror"]), "Resource outside the pinned mirror")
         key = resource["url"][len(runtime["mirror"]):]
         record = records.get(key)

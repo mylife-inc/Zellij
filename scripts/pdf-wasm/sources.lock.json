@@ -10,10 +10,14 @@
     {
       "item": "Complete the precompiled format input inventory and generated font-metadata source closure.",
       "evidence": "PR #245 (aff7d36) and PR #246 (1364bb3): exact original inventories, two identical generated format/font builds and six-platform manuscript acceptance."
+    },
+    {
+      "item": "Select original url 3.3 with its unversioned LPPL notice instead of interpreting the ambiguous url 3.4 version-2 wording.",
+      "evidence": "The TeX Live 2012 final archives (revision 16864) retain the unchanged 3.3 source and documentation; source hashes and all four original component files are preserved. See specs/zellij-pdf-original-url-2026-11-24.md."
     }
   ],
-  "runtimeLockSha256": "9efe37b612cb97491aef4c0872a7bef02a5dcfd2e7da8f616062bc9296fcd658",
-  "policySha256": "df0ace5e734c64ce4238e690138e79109b1ed26267950662749c11c8d3efa430",
+  "runtimeLockSha256": "8c748563406d4843574f152d128791fd9de4c7e22a04cba8945c9a0b72014efa",
+  "policySha256": "f4cf476aee8b4e18b79ac105188b0ad41b7f0465fe306d40c7f61f9debace3cd",
   "metadata": [
     {
       "name": "texlive-provenance.json",
@@ -2210,36 +2214,44 @@
     },
     {
       "name": "url",
-      "revision": "77682",
+      "revision": "16864",
       "relocated": true,
       "license": {
         "ids": [
-          "lppl"
+          "LicenseRef-LPPL-Unversioned"
         ],
         "references": [
-          "https://ctan.org/license/lppl"
+          "texmf-dist/tex/latex/url/url.sty",
+          "texmf-dist/doc/latex/url/url.tex"
         ],
-        "source": "texlive-tlpdb-catalogue-license",
+        "source": "original-url-3.3-notices",
         "reviewed": true
       },
       "noticePaths": [
-        "texmf-dist/tex/latex/url/url.sty"
+        "texmf-dist/tex/latex/url/url.sty",
+        "texmf-dist/doc/latex/url/url.tex"
       ],
       "archives": [
         {
-          "name": "url.tar.xz",
+          "name": "url-3.3.tar.xz",
           "kind": "run",
-          "bytes": 5516,
-          "sha512": "4d036b664abd4917c9237aaa84bd5f93baa5589fda698543ac31fe18ab686ec25926a127733435a0cb5f4230d0d3be05b392c0395eb57991e3e9f0b93fe4a35a",
-          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/url.tar.xz"
+          "bytes": 8404,
+          "sha256": "8121206b39935cc52f7efcdeab3a3af73fc322521ec231770c3d23cbfbc65dc2",
+          "url": "https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2012/tlnet-final/archive/url.tar.xz"
         },
         {
-          "name": "url.doc.tar.xz",
+          "name": "url-3.3.doc.tar.xz",
           "kind": "doc",
-          "bytes": 266856,
-          "sha512": "56ea7a79181156a61ec34ecd75d7fc420b3e31a475a5d39448edfab0a73bc0cade5d6480cd65cda69af0db5bfb3cb5013b686153e63101e817745ad3e0389ab1",
-          "url": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/url.doc.tar.xz"
+          "bytes": 240792,
+          "sha256": "ce0fbde77e1f81cb0d3bf6902bb7b5c4980bd68ed22c8161a8d084fa90c943a4",
+          "url": "https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2012/tlnet-final/archive/url.doc.tar.xz"
         }
+      ],
+      "completePaths": [
+        "texmf-dist/tex/latex/url/url.sty",
+        "texmf-dist/doc/latex/url/miscdoc.sty",
+        "texmf-dist/doc/latex/url/url.pdf",
+        "texmf-dist/doc/latex/url/url.tex"
       ]
     },
     {
@@ -3038,8 +3050,8 @@
       "resource": "26/url.sty",
       "path": "texmf-dist/tex/latex/url/url.sty",
       "package": "url",
-      "bytes": 12796,
-      "sha256": "2373f56849ac606473e77053e5c1d14c92aba312b3f684e02a130eaf36f2de47"
+      "bytes": 21932,
+      "sha256": "a89cb82fae2a1cf2a273fb30d8a96228b80e79a53b5326fd3582a3f21e8ba767"
     },
     {
       "resource": "26/xcolor.sty",
@@ -4275,7 +4287,6 @@
     }
   ],
   "openItems": [
-    "Resolve url.sty's historical LPPL version wording against authoritative distribution terms.",
     "Preserve the complete EC font distribution required by copyrite.txt in any eventual redistribution.",
     "Complete the final component/font redistribution review and supply matching source with any release."
   ]

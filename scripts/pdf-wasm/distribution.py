@@ -138,6 +138,31 @@ def verified_inputs(cache):
     return merged, upstream, matched, notices, engine, engine_notices, ec, ec_receipts
 
 
+def complete_originals(cache, packages):
+    """Retain every explicitly selected original component, not just notices."""
+    files, receipts = {}, []
+    for package in packages:
+        wanted = package.get("completePaths", [])
+        if not wanted:
+            continue
+        names = {p.removeprefix("texmf-dist/") if package["relocated"] else p: p for p in wanted}
+        s.require(len(names) == len(wanted), "Duplicate complete-original path")
+        seen = set()
+        for entry in package["archives"]:
+            s.verified(cache / entry["name"], entry)
+            found = s.archive_files(cache / entry["name"], set(names))
+            s.require(not seen.intersection(found), "Duplicate complete original across archives")
+            for name, data in found.items():
+                s.require(data, "Empty complete original")
+                target = "originals/" + package["name"] + "/" + name
+                files[target] = data
+                receipts.append({"package": package["name"], "path": names[name], "file": target,
+                                 "archive": entry["name"], "bytes": len(data), "sha256": s.digest(data)})
+            seen.update(found)
+        s.require(seen == names.keys(), "Incomplete original distribution")
+    return files, sorted(receipts, key=lambda r: r["file"])
+
+
 def file_record(path, name):
     info = path.lstat()
     s.require(path.is_file() and not path.is_symlink(), f"Nonregular distribution file: {name}")
@@ -197,6 +222,7 @@ def archive(root, output):
 def assemble(cache, output):
     s.require(not output.exists() and not output.is_symlink(), "Distribution output already exists")
     merged, upstream, matched, notices, engine, engine_notices, ec, ec_receipts = verified_inputs(cache)
+    originals, original_receipts = complete_originals(cache, merged["packages"])
     recipe = s.read_json(HERE / "distribution-inputs.json")
     selected = recipe["buildFiles"]
     s.require(selected == sorted(set(selected)) and all("/" not in s.safe_path(n) for n in selected),
@@ -226,10 +252,12 @@ def assemble(cache, output):
         write_bytes(notice_root, "ZELLIJ-ADAPTER-NOTICE.txt", build_files["NOTICE"])
         for name, data in ec.items():
             write_bytes(notice_root, "originals/ec/" + name, data)
+        for name, data in originals.items():
+            write_bytes(notice_root, name, data)
         index = {"schemaVersion": 1, "experimental": True, "redistributionReviewComplete": False,
                  "sourceArchive": "experimental-pdf-sources.tar.gz", "engine": engine,
                  "packages": merged["packages"], "notices": notice_records, "completeEcDistribution": ec_receipts,
-                 "reviewItems": recipe["reviewItems"]}
+                 "completeOriginals": original_receipts, "reviewItems": recipe["reviewItems"]}
         write_bytes(notice_root, "NOTICES.json", s.encoded(index))
         write_bytes(notice_root, "README.md", build_files["distribution-notices.md"])
         for name, entry in sorted(upstream.items()):
@@ -255,6 +283,7 @@ def assemble(cache, output):
                   "sourceLocks": manifest["sourceLocks"], "packageCount": len(merged["packages"]),
                   "matchedOriginals": len(matched), "upstreamInputs": len(upstream),
                   "noticeCount": len(notice_records), "completeEcFiles": len(ec_receipts),
+                  "completeOriginalFiles": len(original_receipts),
                   "notices": {"archive": notice_archive, "files": len(notice_files)},
                   "sources": {"archive": source_archive, "files": len(all_source_files)},
                   "sourceManifestSha256": s.digest(s.encoded(manifest)), "reviewItems": recipe["reviewItems"]}

@@ -673,9 +673,9 @@
     },
     {
       "name": "26/url.sty",
-      "bytes": 12796,
-      "sha256": "2373f56849ac606473e77053e5c1d14c92aba312b3f684e02a130eaf36f2de47",
-      "url": "https://texlive.corca.ai/snapshots/2026-d26706764b740276/2026/pdftex/26/url.sty"
+      "bytes": 21932,
+      "sha256": "a89cb82fae2a1cf2a273fb30d8a96228b80e79a53b5326fd3582a3f21e8ba767",
+      "original": "url-3.3"
     },
     {
       "name": "26/WordBreakProperty.txt",

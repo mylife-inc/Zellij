@@ -60,6 +60,30 @@ try {
     cpSync(`scripts/fixtures/${name}`, manuscript, { recursive: true });
     await check(name, manuscript);
   }
+  const links = path.join(root, 'link-layout');
+  mkdirSync(path.join(links, 'content'), { recursive: true });
+  writeFileSync(path.join(links, 'zel.yaml'), JSON.stringify({ version: 1, renderer: 'portable',
+    book: { version: 1, title: 'An atlas of links', authors: ['Mira Vale'],
+      chapters: [{ id: 'links', source: 'links.md' }] } }, null, 2));
+  writeFileSync(path.join(links, 'content/links.md'), `# Links, paths and query strings
+
+[A query with underscores and an anchor](https://example.test/a_b?q=one&next=two#section).
+
+[A percent-encoded path](https://example.test/a%20b?q=one%26two).
+
+[An email address](mailto:reader@example.test).
+
+[https://example.test/reference/long_path_with_underscores_and-a-hyphen?q=first&next=second](https://example.test/reference/long_path_with_underscores_and-a-hyphen?q=first&next=second).
+
+[**https://example.test/reference/long_path_with_underscores_and-a-hyphen?q=first&next=second**](https://example.test/reference/long_path_with_underscores_and-a-hyphen?q=first&next=second).
+
+[\`https://example.test/reference/long_path_with_underscores_and-a-hyphen?q=first&next=second\`](https://example.test/reference/long_path_with_underscores_and-a-hyphen?q=first&next=second).
+
+The local path is \`C:\\Documents\\My_Book\\chapter.md\`.
+
+[Return to this chapter](#links-paths-and-query-strings).
+`);
+  await check('link-layout', links);
   for (const [size, paper] of [[10, 'a4'], [12, 'letter']]) {
     const name = `book-${size}pt-${paper}`;
     const manuscript = path.join(root, name);

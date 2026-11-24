@@ -10,10 +10,14 @@
     {
       "item": "Complete the precompiled format input inventory and generated font-metadata source closure.",
       "evidence": "PR #245 (aff7d36) and PR #246 (1364bb3): exact original inventories, two identical generated format/font builds and six-platform manuscript acceptance."
+    },
+    {
+      "item": "Select original url 3.3 with its unversioned LPPL notice instead of interpreting the ambiguous url 3.4 version-2 wording.",
+      "evidence": "The TeX Live 2012 final archives (revision 16864) retain the unchanged 3.3 source and documentation; source hashes and all four original component files are preserved. See specs/zellij-pdf-original-url-2026-11-24.md."
     }
   ],
   "runtimeLockSha256": "0368bbeed9b098009cd24c3e3beb10ff818e4012133cb8b705c8f5450e2b2189",
-  "policySha256": "749bb5696129ebe959d104fa25fd6d8c878c2b6a1393abd51ed0306d4a8a4543",
+  "policySha256": "becd53c1738d95966adbfc9237d9a6d1a64c4e1ff368e556485ff8630c2a5760",
   "metadata": [
     {
       "name": "texlive-provenance.json",
@@ -1117,7 +1121,6 @@
   "generatedResources": [],
   "supportingNotices": [],
   "openItems": [
-    "Resolve url.sty's historical LPPL version wording against authoritative distribution terms.",
     "Preserve the complete EC font distribution required by copyrite.txt in any eventual redistribution.",
     "Complete the final component/font redistribution review and supply matching source with any release.",
     "Retain the Knuth source header and catalogue terms; null.tex contains no license text (https://ctan.org/pkg/knuth-lib, https://ctan.org/license/knuth)."

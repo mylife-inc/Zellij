@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, rename, rm, writeFile, lstat } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
-import { entries, sha256 } from './bundle.mjs';
+import { entries, sha256, verifiedBytes } from './bundle.mjs';
 
 const transientCodes = new Set(['ECONNRESET', 'ETIMEDOUT', 'EAI_AGAIN', 'UND_ERR_SOCKET', 'UND_ERR_CONNECT_TIMEOUT',
   'UND_ERR_HEADERS_TIMEOUT', 'UND_ERR_BODY_TIMEOUT']);
@@ -12,11 +12,19 @@ class RetryableHttp extends Error {}
 const transient = error => error instanceof RetryableHttp || error?.name === 'TimeoutError'
   || transientCodes.has(error?.code) || transientCodes.has(error?.cause?.code);
 
-export async function fetchResource(entry, { fetcher = fetch, sleep = delay, timeoutMs = 60_000, report = console.warn } = {}) {
+export async function fetchResource(entry, { fetcher = fetch, sleep = delay, timeoutMs = 60_000, report = console.warn, originals } = {}) {
   if (!/^[a-f0-9]{64}$/.test(entry.sha256) || !Number.isSafeInteger(entry.bytes)
       || entry.bytes < 0 || entry.bytes > 64 * 1024 * 1024
       || !Number.isSafeInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 60_000) {
     throw new Error('Invalid pinned download input or deadline');
+  }
+  if (entry.original !== undefined) {
+    if (typeof entry.original !== 'string' || entry.url !== undefined || !originals) {
+      throw new Error('Prepare the pinned original resources with originals.py and pass their directory');
+    }
+    const info = await lstat(originals);
+    if (!info.isDirectory() || info.isSymbolicLink()) throw new Error('Original resources must be a real directory');
+    return Buffer.from(verifiedBytes(originals, entry));
   }
   for (let attempt = 1; attempt <= 3; attempt++) {
     const signal = AbortSignal.timeout(timeoutMs);
@@ -73,7 +81,7 @@ export async function downloadBundle(target, options, inventory = entries) {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
-  if (process.argv.length !== 3) throw new Error('Usage: node scripts/pdf-wasm/download.mjs NEW_BUNDLE_DIRECTORY');
-  await downloadBundle(process.argv[2]);
+  if (![3, 4].includes(process.argv.length)) throw new Error('Usage: node scripts/pdf-wasm/download.mjs NEW_BUNDLE_DIRECTORY [PREPARED_ORIGINALS]');
+  await downloadBundle(process.argv[2], { originals: process.argv[3] });
   console.log(`Verified ${entries.length} PDF feasibility resources in ${path.resolve(process.argv[2])}`);
 }

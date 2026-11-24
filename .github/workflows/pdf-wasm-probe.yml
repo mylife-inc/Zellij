@@ -42,6 +42,9 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24.22.3
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
       - run: cargo build --locked -p zellij-cli
         working-directory: cli
       - run: cargo build --locked -p zellij-docs --example pdf_probe_inputs
@@ -53,13 +56,14 @@ jobs:
       - run: cargo build --locked -p zellij-cli --example pdf_cache
         working-directory: cli
       - run: node --test scripts/pdf-wasm/download.test.mjs
+      - name: Prepare unchanged original resources from their pinned archives
+        shell: bash
+        run: python scripts/pdf-wasm/originals.py "$RUNNER_TEMP/pdf-format-sources" test-results/pdf-originals
       - name: Fetch the pinned feasibility inputs (not release assets)
         shell: bash
-        run: node scripts/pdf-wasm/download.mjs "$ZEL_PDF_PROBE_BUNDLE"
+        run: node scripts/pdf-wasm/download.mjs "$ZEL_PDF_PROBE_BUNDLE" test-results/pdf-originals
       - run: node --test scripts/pdf-wasm/probe.test.mjs
-      - uses: actions/setup-python@v6
-        with:
-          python-version: '3.13'
+      - run: node --test scripts/pdf-wasm/originals.test.mjs
       - name: Prepare the original format sources and notices
         shell: bash
         run: |
@@ -127,6 +131,7 @@ jobs:
             test-results/pdf-font-inputs/verification.json
             test-results/pdf-font-metadata/verification.json
             test-results/pdf-compact/verification.json
+            test-results/pdf-originals/verification.json
             test-results/pdf-toolchain/verification.json
             test-results/pdf-cache/verification.json
           if-no-files-found: error

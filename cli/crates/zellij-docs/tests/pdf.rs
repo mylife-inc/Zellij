@@ -180,6 +180,50 @@ fn print_uses_validated_content_order_links_math_and_escaped_text() {
     assert!(!root.join("site").exists());
 }
 #[test]
+fn visible_url_labels_can_wrap_without_changing_targets_or_prose() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = Utf8Path::from_path(temp.path()).unwrap();
+    fixture(root);
+    fs::write(
+        root.join("content/first.md"),
+        r#"# First
+
+## Detail
+
+[https://example.test/a_b?q=one&next=two#part](https://example.test/a_b?q=one&next=two#part)
+
+[`https://example.test/a%20b?q=one`](https://example.test/a%20b?q=one)
+
+[**https://example.test/bold**](https://example.test/bold)
+
+[Read https://example.test/the-guide](https://example.test/the-guide)
+
+https://example.test/plain
+
+[https://example.test/internal](second.md#answer)
+"#,
+    )
+    .unwrap();
+    let prepared = pdf::prepare(
+        &SiteInput::from(root),
+        &root.join("pdf"),
+        BuildOptions::default(),
+        false,
+    )
+    .unwrap();
+    let tex = String::from_utf8(prepared.source.files[Utf8Path::new("book.tex")].clone()).unwrap();
+    assert!(tex.contains("\\href{https://example.test/a\\_b?q=one\\&next=two\\#part}{https:\\allowbreak{}/\\allowbreak{}/\\allowbreak{}example.\\allowbreak{}test/\\allowbreak{}a\\_\\allowbreak{}b?\\allowbreak{}q=\\allowbreak{}one\\&\\allowbreak{}next=\\allowbreak{}two\\#\\allowbreak{}part}"));
+    assert!(
+        tex.contains("\\href{https://example.test/a\\%20b?q=one}{\\texttt{https:\\allowbreak{}")
+    );
+    assert!(tex.contains("test/\\allowbreak{}a\\%20b?\\allowbreak{}"));
+    assert!(tex.contains("\\href{https://example.test/bold}{\\textbf{https:\\allowbreak{}"));
+    assert!(tex.contains("{Read https://example.test/the-guide}"));
+    assert!(tex.contains("https://example.test/plain\n"));
+    assert!(tex.contains("{https://example.test/internal}"));
+}
+
+#[test]
 fn unsupported_print_features_and_failed_export_preserve_web_output() {
     let temp = tempfile::tempdir().unwrap();
     let root = Utf8Path::from_path(temp.path()).unwrap();

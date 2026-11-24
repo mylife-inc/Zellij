@@ -32,7 +32,6 @@
     "51/luaotfload-names.lua"
   ],
   "openItems": [
-    "Resolve url.sty's historical LPPL version wording against authoritative distribution terms.",
     "Preserve the complete EC font distribution required by copyrite.txt in any eventual redistribution.",
     "Complete the final component/font redistribution review and supply matching source with any release."
   ],
@@ -59,6 +58,66 @@
     {
       "item": "Complete the precompiled format input inventory and generated font-metadata source closure.",
       "evidence": "PR #245 (aff7d36) and PR #246 (1364bb3): exact original inventories, two identical generated format/font builds and six-platform manuscript acceptance."
+    },
+    {
+      "item": "Select original url 3.3 with its unversioned LPPL notice instead of interpreting the ambiguous url 3.4 version-2 wording.",
+      "evidence": "The TeX Live 2012 final archives (revision 16864) retain the unchanged 3.3 source and documentation; source hashes and all four original component files are preserved. See specs/zellij-pdf-original-url-2026-11-24.md."
+    }
+  ],
+  "originalPackages": [
+    {
+      "id": "url-3.3",
+      "package": {
+        "name": "url",
+        "revision": "16864",
+        "relocated": true,
+        "license": {
+          "ids": [
+            "LicenseRef-LPPL-Unversioned"
+          ],
+          "references": [
+            "texmf-dist/tex/latex/url/url.sty",
+            "texmf-dist/doc/latex/url/url.tex"
+          ],
+          "source": "original-url-3.3-notices",
+          "reviewed": true
+        },
+        "noticePaths": [
+          "texmf-dist/tex/latex/url/url.sty",
+          "texmf-dist/doc/latex/url/url.tex"
+        ],
+        "archives": [
+          {
+            "name": "url-3.3.tar.xz",
+            "kind": "run",
+            "bytes": 8404,
+            "sha256": "8121206b39935cc52f7efcdeab3a3af73fc322521ec231770c3d23cbfbc65dc2",
+            "url": "https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2012/tlnet-final/archive/url.tar.xz"
+          },
+          {
+            "name": "url-3.3.doc.tar.xz",
+            "kind": "doc",
+            "bytes": 240792,
+            "sha256": "ce0fbde77e1f81cb0d3bf6902bb7b5c4980bd68ed22c8161a8d084fa90c943a4",
+            "url": "https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2012/tlnet-final/archive/url.doc.tar.xz"
+          }
+        ],
+        "completePaths": [
+          "texmf-dist/tex/latex/url/url.sty",
+          "texmf-dist/doc/latex/url/miscdoc.sty",
+          "texmf-dist/doc/latex/url/url.pdf",
+          "texmf-dist/doc/latex/url/url.tex"
+        ]
+      },
+      "files": [
+        {
+          "resource": "26/url.sty",
+          "path": "texmf-dist/tex/latex/url/url.sty",
+          "package": "url",
+          "bytes": 21932,
+          "sha256": "a89cb82fae2a1cf2a273fb30d8a96228b80e79a53b5326fd3582a3f21e8ba767"
+        }
+      ]
     }
   ]
 }

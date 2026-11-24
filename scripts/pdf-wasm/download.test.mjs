@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import http from 'node:http';
-import { mkdtemp, mkdir, readFile, readdir, writeFile, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, readdir, writeFile, rm, symlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fetchResource, downloadBundle } from './download.mjs';
@@ -10,6 +10,25 @@ import { sha256 } from './bundle.mjs';
 const content = Buffer.from('synthetic pinned resource');
 const resource = url => ({ name: 'fixture', url, bytes: content.length, sha256: sha256(content) });
 const options = { sleep: async () => {}, report: () => {} };
+
+test('original resources require their prepared bytes and never fall back to HTTP', async () => {
+  const root = await mkdtemp(path.join(tmpdir(), 'zel-original-download-'));
+  const entry = { name: 'original', original: 'synthetic', bytes: content.length, sha256: sha256(content) };
+  let requests = 0;
+  const fetcher = async () => { requests++; throw new Error('unexpected network request'); };
+  try {
+    await assert.rejects(fetchResource(entry, { fetcher }), /Prepare the pinned original/);
+    await assert.rejects(fetchResource({ ...entry, url: 'unused' }, { fetcher, originals: root }), /Prepare the pinned original/);
+    await writeFile(path.join(root, entry.sha256), content);
+    assert.deepEqual(await fetchResource(entry, { fetcher, originals: root }), content);
+    await writeFile(path.join(root, entry.sha256), Buffer.alloc(content.length));
+    await assert.rejects(fetchResource(entry, { fetcher, originals: root }), /integrity failed/);
+    const link = path.join(root, 'linked');
+    await symlink(root, link, process.platform === 'win32' ? 'junction' : 'dir');
+    await assert.rejects(fetchResource(entry, { fetcher, originals: link }), /real directory/);
+    assert.equal(requests, 0);
+  } finally { await rm(root, { recursive: true, force: true }); }
+});
 async function server(handler, run) {
   const app = http.createServer(handler);
   await new Promise(resolve => app.listen(0, '127.0.0.1', resolve));
