@@ -8,7 +8,29 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-23**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-23: cancellable renderer acquisition — implementation in progress**
+**2026-11-23: versioned PDF package/cache — qualification in progress**
+
+PR #250 merged as `e64e07c`, identical in tree to tested `c1d768a`. Its final
+CI `45305132347` passes all 37 jobs with one conditional skip, including 72 real
+download cancellation scenarios across six platforms and all editable-source
+acceptance checks. The production docs workflow `45308679236` and base image
+`45308679278` pass. Main CI `45308679266` initially times out while downloading
+Ubuntu dependencies for Playwright, before browser tests start; a targeted retry
+passes, giving 37 successful jobs in attempt 2. This is distinct from the earlier
+unexplained browser timing findings.
+
+The next increment assembles versioned optional PDF qualification packages with
+the runner, compact resources and original notices. Each package binds the exact
+separate corresponding-source archive and rejects stale source recipes. A Rust
+maintainer harness exercises verified download/extraction, complete cache
+validation, offline reuse and compilation under `$ZELLIJ_HOME`. Qualification
+entries have their own cache namespace and no public download URL. See the
+[package/cache record](specs/zellij-pdf-package-cache-2026-11-23.md).
+Distribution review, installed CLI dispatch/private-Node reuse, diagnostics/docs
+and public-package acceptance remain. No new CLI candidate or runtime is released;
+rc.19 still uses container PDFs.
+
+**2026-11-23: cancellable renderer acquisition — implemented in PR #250**
 
 PR #249 merged as `0935d5c`, with the same tree as tested `b18ce11`. All 37
 normal CI jobs pass in `45278436633`, with one conditional skip and no retries.

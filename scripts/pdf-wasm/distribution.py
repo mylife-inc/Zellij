@@ -175,7 +175,9 @@ def verify_archive(path, expected):
 def archive(root, output):
     """Fixed-order/timestamp gzip archive, with only regular pre-staged files."""
     files = []
-    for item in sorted(root.rglob("*")):
+    # Windows Path ordering is case-insensitive. Archive names and manifests use
+    # portable, case-sensitive POSIX strings on every platform.
+    for item in sorted(root.rglob("*"), key=lambda p: p.relative_to(root).as_posix()):
         s.require(not item.is_symlink(), "Distribution cannot contain a symlink")
         if item.is_dir():
             continue
@@ -241,7 +243,8 @@ def assemble(cache, output):
             if file.is_file():
                 write_bytes(source_root, "notices/" + file.relative_to(notice_root).as_posix(), file.read_bytes())
         source_files = [file_record(p, p.relative_to(source_root).as_posix())
-                        for p in sorted(source_root.rglob("*")) if p.is_file()]
+                        for p in sorted(source_root.rglob("*"), key=lambda p: p.relative_to(source_root).as_posix())
+                        if p.is_file()]
         manifest = {"schemaVersion": 1, "experimental": True, "redistributionReviewComplete": False,
                     "sourceLocks": {n: s.digest(build_files[n]) for n in LOCKS},
                     "matchedOriginals": matched, "files": source_files, "reviewItems": recipe["reviewItems"]}

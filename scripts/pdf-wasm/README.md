@@ -116,6 +116,48 @@ runner; other runners test offline generation and isolation without containers.
 The probe workflow uploads Zellij-produced PDFs/logs only. It does not upload or
 redistribute the experimental engine/data bundle.
 
+## Versioned package and cache qualification
+
+`toolchain.py` assembles the runner scripts, compact resources and original
+notices into a single versioned optional archive. It verifies the complete
+corresponding-source archive and refuses stale build recipes before binding its
+size, hash and source-manifest hash into the runtime manifest. The source archive
+and private Node are separate; neither is duplicated inside the runtime download.
+The package remains explicitly experimental, with redistribution review pending.
+
+```sh
+python scripts/pdf-wasm/distribution.py SOURCE_CACHE test-results/pdf-toolchain-distribution
+python scripts/pdf-wasm/toolchain.py test-results/pdf-compact/package test-results/pdf-toolchain-distribution test-results/pdf-toolchain --version 0.2.0-rc.19
+cargo test --manifest-path cli/Cargo.toml --locked -p zellij-cli --example pdf_cache
+cargo build --manifest-path cli/Cargo.toml --locked -p zellij-cli --example pdf_cache
+node --test scripts/pdf-wasm/cache.test.mjs
+```
+
+The Rust `pdf_cache` example downloads from an explicit maintainer endpoint;
+there is no public PDF package URL or installed CLI command. It uses the shared
+cancellable transfer, bounds archive/extraction sizes, rejects unsafe paths,
+links/junctions, case aliases, unlisted/missing files and hash/version mismatches,
+and verifies every cached file before reuse. Failed acquisition removes only its
+own staging directory. A damaged existing cache is reported and preserved.
+
+Qualification entries live under `$ZELLIJ_HOME/cache/pdf-qualification/VERSION`
+(default `~/Dev/config/zellij/cache/pdf-qualification/VERSION`), separate from
+future released toolchains. Offline misses make no request and create no cache;
+valid offline entries run the packaged scripts through the Rust supervisor.
+The harness passes an absolute Node 24 executable; production CLI integration
+must reuse the renderer's verified private Node. A checksum supplied by a chosen
+endpoint does not independently authenticate that endpoint, and these checks do
+not prevent arbitrary concurrent hostile filesystem replacement.
+
+All six runners build the package locally and exercise cold/offline compilation
+with an empty system PATH, Unicode/spaced paths, corruption and link/junction
+rejection, and cancellation during stalled transfers. Only receipts are uploaded.
+An aggregate job compares all six runtime/source identities with the independently
+built source archive. Source text uses LF on every checkout, and archive members
+are sorted as portable strings rather than platform-specific Path objects.
+The installed `zel pdf`, build integration and published prerequisites remain
+unchanged until distribution review, dispatch and public-package acceptance finish.
+
 ## Process supervision contract
 
 `process.mjs` supplies a runner entry point for the future Rust cache integration

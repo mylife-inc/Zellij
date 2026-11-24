@@ -130,6 +130,18 @@ class DistributionTest(unittest.TestCase):
                 self.assertEqual((len(data), d.s.digest(data)), (item["bytes"], item["sha256"]))
         self.assertFalse(a["redistributionReviewComplete"])
 
+    def test_archive_member_order_is_case_sensitive_on_every_platform(self):
+        root = self.root / "case-order"
+        root.mkdir()
+        for name in ["notices/LICENSE.txt", "README.md", "scripts/source.py", "SOURCE-MANIFEST.json"]:
+            d.write_bytes(root, name, b"synthetic")
+        output = self.root / "case-order.tar.gz"
+        _, records = d.archive(root, output)
+        expected = ["README.md", "SOURCE-MANIFEST.json", "notices/LICENSE.txt", "scripts/source.py"]
+        self.assertEqual([r["name"] for r in records], expected)
+        with tarfile.open(output) as tar:
+            self.assertEqual(tar.getnames(), expected)
+
     def test_corruption_during_preparation_and_existing_outputs_are_preserved(self):
         fake = self.fake_inputs()
         output = self.root / "output"
