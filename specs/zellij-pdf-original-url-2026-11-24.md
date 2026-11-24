@@ -73,6 +73,12 @@ inline code labels and bibliography link text. It leaves escaped destinations,
 descriptive prose labels and internal-link labels unchanged. A Rust regression
 checks those boundaries; both original components compile the repaired isolated
 case without overflow. No strict validation threshold is weakened.
+The additional bold/monospace cases show that a bare break penalty is insufficient
+for lines with no stretchable spaces. The shared template uses paired cancelling
+fills: no extra width on an unbroken line, a ragged line end at an actual break.
+The final page is visually inspected, and Poppler checks the exact clickable
+destinations, including percent escapes and query strings. Linux CI repeats
+that annotation check alongside native page/text comparisons.
 
 Synthetic source tests cover exact original correspondence, changed/unknown
 pins, complete distribution preservation, duplicate/missing originals and owned

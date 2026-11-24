@@ -212,12 +212,12 @@ https://example.test/plain
     )
     .unwrap();
     let tex = String::from_utf8(prepared.source.files[Utf8Path::new("book.tex")].clone()).unwrap();
-    assert!(tex.contains("\\href{https://example.test/a\\_b?q=one\\&next=two\\#part}{https:\\allowbreak{}/\\allowbreak{}/\\allowbreak{}example.\\allowbreak{}test/\\allowbreak{}a\\_\\allowbreak{}b?\\allowbreak{}q=\\allowbreak{}one\\&\\allowbreak{}next=\\allowbreak{}two\\#\\allowbreak{}part}"));
+    assert!(tex.contains("\\href{https://example.test/a\\_b?q=one\\&next=two\\#part}{https:\\zelurlbreak{}/\\zelurlbreak{}/\\zelurlbreak{}example.\\zelurlbreak{}test/\\zelurlbreak{}a\\_\\zelurlbreak{}b?\\zelurlbreak{}q=\\zelurlbreak{}one\\&\\zelurlbreak{}next=\\zelurlbreak{}two\\#\\zelurlbreak{}part}"));
     assert!(
-        tex.contains("\\href{https://example.test/a\\%20b?q=one}{\\texttt{https:\\allowbreak{}")
+        tex.contains("\\href{https://example.test/a\\%20b?q=one}{\\texttt{https:\\zelurlbreak{}")
     );
-    assert!(tex.contains("test/\\allowbreak{}a\\%20b?\\allowbreak{}"));
-    assert!(tex.contains("\\href{https://example.test/bold}{\\textbf{https:\\allowbreak{}"));
+    assert!(tex.contains("test/\\zelurlbreak{}a\\%20b?\\zelurlbreak{}"));
+    assert!(tex.contains("\\href{https://example.test/bold}{\\textbf{https:\\zelurlbreak{}"));
     assert!(tex.contains("{Read https://example.test/the-guide}"));
     assert!(tex.contains("https://example.test/plain\n"));
     assert!(tex.contains("{https://example.test/internal}"));

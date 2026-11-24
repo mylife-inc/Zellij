@@ -1,5 +1,6 @@
 // Repository-owned manuscripts only. Output is evidence, never a CLI release.
 import { execFileSync } from 'node:child_process';
+import assert from 'node:assert/strict';
 import { cpSync, mkdtempSync, rmSync, writeFileSync, readFileSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -47,6 +48,18 @@ async function check(name, manuscript) {
     const baseline = path.join(artifacts, name + '-native');
     execFileSync(zel, ['pdf', manuscript, '--out', baseline], { stdio: 'pipe', timeout: 600_000 });
     result.comparison = compare(path.join(baseline, 'book.pdf'), path.join(artifacts, name, 'book.pdf'));
+    if (name === 'link-layout') {
+      const annotations = execFileSync('pdfinfo', ['-url', path.join(output, 'book.pdf')], { encoding: 'utf8', timeout: 30_000 });
+      const urls = annotations.split('\n').filter(line => /\sAnnotation\s/.test(line))
+        .map(line => line.trim().split(/\s+/).slice(2).join(' '));
+      assert.deepEqual([...new Set(urls)].sort(), [
+        'https://example.test/a_b?q=one&next=two#section',
+        'https://example.test/a%20b?q=one%26two',
+        'mailto:reader@example.test',
+        'https://example.test/reference/long_path_with_underscores_and-a-hyphen?q=first&next=second',
+      ].sort());
+      result.linkDestinationsVerified = true;
+    }
   }
   results.push({ name, ...result });
   writeFileSync(path.join(artifacts, 'acceptance.json'), JSON.stringify({

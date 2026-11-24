@@ -197,7 +197,7 @@ fn link_text(s: &str) -> String {
     for c in s.chars() {
         out.push_str(&tex(&c.to_string()));
         if matches!(c, ':' | '/' | '.' | '_' | '-' | '?' | '&' | '=' | '#') {
-            out.push_str("\\allowbreak{}");
+            out.push_str("\\zelurlbreak{}");
         }
     }
     out
