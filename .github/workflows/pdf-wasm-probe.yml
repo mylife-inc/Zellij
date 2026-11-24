@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
+      - .gitattributes
       - .github/workflows/pdf-wasm-probe.yml
       - scripts/pdf-wasm/**
       - cli/crates/zellij-docs/examples/pdf_probe_inputs.rs
@@ -174,3 +175,29 @@ jobs:
           if-no-files-found: error
           retention-days: 14
       # Keep source archives, notices and engine/data binaries out of artifacts.
+
+  package-parity:
+    name: PDF package and source parity
+    needs: [probe, sources]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.22.3
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: pdf-format-receipts-*
+          path: test-results/pdf-package-receipts
+      - uses: actions/download-artifact@v8
+        with:
+          name: pdf-distribution-receipt
+          path: test-results/pdf-package-source-receipt
+      - run: node scripts/pdf-wasm/receipts.mjs
+      - uses: actions/upload-artifact@v7
+        with:
+          name: pdf-package-parity
+          path: test-results/pdf-package-parity.json
+          if-no-files-found: error
+          retention-days: 14

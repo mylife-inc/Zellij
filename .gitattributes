@@ -8,5 +8,5 @@ scripts/install.sh text eol=lf
 scripts/install.ps1 text eol=lf
 # Template bundles and release archives must agree byte-for-byte across native OSes.
 templates/** text=auto eol=lf
-# Source and format receipts identify the same pinned manifest bytes on every OS.
-scripts/pdf-wasm/*.json text eol=lf
+# PDF packages and source receipts must have identical script/notice/recipe bytes.
+scripts/pdf-wasm/** text=auto eol=lf

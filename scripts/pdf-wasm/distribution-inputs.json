@@ -29,6 +29,7 @@
     "probe.test.mjs",
     "process.mjs",
     "process.test.mjs",
+    "receipts.mjs",
     "rust-process.test.mjs",
     "source-policy.json",
     "sources.lock.json",

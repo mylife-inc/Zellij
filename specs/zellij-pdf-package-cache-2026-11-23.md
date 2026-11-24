@@ -88,6 +88,9 @@ manifests now sort relative POSIX strings explicitly. A regression covers the
 mixed-case root/source/notice names; the six native builds qualify the same
 archive on Windows for the first time. This adds a thirty-ninth Python test and
 changes the source/runtime hashes from the initial local measurements above.
+PDF source text is checked out with LF on every platform. An aggregate receipt
+job requires all six package/source identities to match each other and the
+independent source job, and all 78 cache scenarios / twelve compilations to pass.
 
 Remaining: distribution review, production package/release arrangement, installed
 CLI dispatch and private-Node reuse, offline propagation through every PDF call

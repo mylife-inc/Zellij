@@ -152,6 +152,9 @@ not prevent arbitrary concurrent hostile filesystem replacement.
 All six runners build the package locally and exercise cold/offline compilation
 with an empty system PATH, Unicode/spaced paths, corruption and link/junction
 rejection, and cancellation during stalled transfers. Only receipts are uploaded.
+An aggregate job compares all six runtime/source identities with the independently
+built source archive. Source text uses LF on every checkout, and archive members
+are sorted as portable strings rather than platform-specific Path objects.
 The installed `zel pdf`, build integration and published prerequisites remain
 unchanged until distribution review, dispatch and public-package acceptance finish.
 
