@@ -81,6 +81,14 @@ cache scenarios on Intel macOS. The qualification archive is 11,326,373 bytes
 with 529 files (29,502,907 expanded bytes); its separate source archive is
 429,781,852 bytes. These are qualification measurements, not published assets.
 
+Pre-CI review also identifies a Windows packaging issue: Python orders Windows
+`Path` objects without case sensitivity, whereas the canonical archive verifier
+orders portable names with case sensitivity. Distribution packaging and source
+manifests now sort relative POSIX strings explicitly. A regression covers the
+mixed-case root/source/notice names; the six native builds qualify the same
+archive on Windows for the first time. This adds a thirty-ninth Python test and
+changes the source/runtime hashes from the initial local measurements above.
+
 Remaining: distribution review, production package/release arrangement, installed
 CLI dispatch and private-Node reuse, offline propagation through every PDF call
 path, diagnostics and user documentation, installed/public-package acceptance.
