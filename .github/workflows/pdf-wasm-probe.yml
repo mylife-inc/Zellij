@@ -10,6 +10,10 @@ on:
       - cli/crates/zellij-core/src/process/**
       - cli/crates/zellij-engine/src/pdf_runner.rs
       - cli/crates/zellij-engine/examples/pdf_process.rs
+      - cli/crates/zellij-cli/examples/pdf_cache.rs
+      - cli/crates/zellij-cli/src/pdf_package.rs
+      - cli/crates/zellij-cli/src/package_transfer.rs
+      - cli/crates/zellij-cli/src/user_home.rs
       - cli/crates/zellij-docs/src/pdf.rs
       - cli/crates/zellij-docs/assets/book*.tex
       - scripts/fixtures/long-book.mjs
@@ -42,6 +46,10 @@ jobs:
       - run: cargo build --locked -p zellij-docs --example pdf_probe_inputs
         working-directory: cli
       - run: cargo build --locked -p zellij-engine --example pdf_process
+        working-directory: cli
+      - run: cargo test --locked -p zellij-cli --example pdf_cache
+        working-directory: cli
+      - run: cargo build --locked -p zellij-cli --example pdf_cache
         working-directory: cli
       - run: node --test scripts/pdf-wasm/download.test.mjs
       - name: Fetch the pinned feasibility inputs (not release assets)
@@ -85,6 +93,15 @@ jobs:
         run: node --test scripts/pdf-wasm/rust-process.test.mjs
         env:
           ZEL_PDF_COMPACT_PACKAGE: test-results/pdf-compact/package
+      - name: Bind the versioned qualification package to exact original sources and notices
+        shell: bash
+        run: |
+          python scripts/pdf-wasm/sources.py fetch "$RUNNER_TEMP/pdf-format-sources"
+          python scripts/pdf-wasm/distribution.py "$RUNNER_TEMP/pdf-format-sources" test-results/pdf-toolchain-distribution
+          version=$(python -c "import tomllib; print(tomllib.load(open('cli/Cargo.toml', 'rb'))['workspace']['package']['version'])")
+          python scripts/pdf-wasm/toolchain.py test-results/pdf-compact/package test-results/pdf-toolchain-distribution test-results/pdf-toolchain --version "$version"
+      - name: Download, verify, cache and run the real package with an empty system PATH
+        run: node --test scripts/pdf-wasm/cache.test.mjs
       - name: Install maintainer PDF comparison tools
         if: matrix.runner == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends poppler-utils qpdf
@@ -109,6 +126,8 @@ jobs:
             test-results/pdf-font-inputs/verification.json
             test-results/pdf-font-metadata/verification.json
             test-results/pdf-compact/verification.json
+            test-results/pdf-toolchain/verification.json
+            test-results/pdf-cache/verification.json
           if-no-files-found: error
           retention-days: 14
       # Never upload the engine/resource bundle before redistribution review.
