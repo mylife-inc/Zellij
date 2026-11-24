@@ -25,7 +25,7 @@ pub fn check(
         "static" => {
             let content = crate::resolve_content(dir)?;
             let report = crate::rich_build::check(&content, options, offline, None)?
-                .ok_or(Error::ContentInvalid)?;
+                .ok_or_else(|| Error::InvalidArgument("rich validation cancelled".into()))?;
             emit_hosted(&report);
             // Composed import commands must retain control to explain that
             // converted sources survive a failed optional validation.
@@ -60,7 +60,8 @@ fn hosted_report(
     let result = (|| {
         let content = crate::resolve_content(dir)?;
         root = content.to_string();
-        crate::rich_build::check(&content, options, offline, None)?.ok_or(Error::ContentInvalid)
+        crate::rich_build::check(&content, options, offline, None)?
+            .ok_or_else(|| Error::InvalidArgument("rich validation cancelled".into()))
     })();
     let (report, exit_code) = match result {
         Ok(mut report) => {

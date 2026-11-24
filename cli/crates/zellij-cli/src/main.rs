@@ -31,6 +31,7 @@ mod images;
 mod imports;
 mod maintenance;
 mod netlify;
+mod package_transfer;
 mod page_authoring;
 mod pdf;
 mod preview;

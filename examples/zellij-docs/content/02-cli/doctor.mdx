@@ -23,6 +23,12 @@ preview port. Rich sites report their standalone
 renderer version, platform, cache path and whether an initial download is needed.
 Doctor verifies an existing cache but never downloads or executes it.
 
+**Next candidate (implemented in source):** the check also rejects unlisted
+files/directories and links/junctions, and reports the affected cache directory
+on failure. It leaves that directory intact; remove only the affected
+version/platform directory, then run a rich build or check online to download
+it again. These additions are not included in the published rc.19 binary.
+
 The renderer cache defaults to `$ZELLIJ_HOME/cache/engines`, with
 `ZELLIJ_HOME` defaulting to `~/Dev/config/zellij`. `ZEL_ENGINE_CACHE` takes
 precedence for this cache only. The reported path makes a changed resource

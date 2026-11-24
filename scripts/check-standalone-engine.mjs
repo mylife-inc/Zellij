@@ -1,10 +1,11 @@
 /** Real CLI download/cache/build acceptance; no external tools on the child's PATH. */
 import { spawn, execFileSync } from 'node:child_process';
 import { createServer } from 'node:http';
-import { mkdtemp, mkdir, readFile, writeFile, cp, rm, readdir } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, writeFile, cp, rm, readdir, symlink } from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import assert from 'node:assert/strict';
+import { setTimeout as delay } from 'node:timers/promises';
 import { checkStandaloneAuthoring } from './check-standalone-authoring.mjs';
 const repo = path.resolve(import.meta.dirname, '..');
 const binary = path.resolve(process.argv[2] ?? `cli/target/debug/zel${process.platform === 'win32' ? '.exe' : ''}`);
@@ -17,8 +18,16 @@ const publicBase = process.env.ZEL_TEST_ENGINE_BASE_URL;
 const downloads = new Map(publicBase ? [] : await Promise.all([archive, archive + '.sha256'].map(async name => [name, await readFile(path.join(directory, name))])));
 const root = await mkdtemp(path.join(os.tmpdir(), 'zel rich 日本 '));
 const requests = [];
+let stalled = false;
+let stallMode;
 const server = createServer((req,res) => {
   requests.push(req.url);const data = downloads.get(decodeURIComponent(req.url.slice(1)));
+  const checksum = req.url.endsWith('.sha256');
+  if (stallMode && ((stallMode.startsWith('checksum') && checksum) || (stallMode === 'archive-body' && !checksum))) {
+    stalled = true;
+    if (stallMode !== 'checksum-headers') { res.writeHead(200, { 'content-length': data.length }); res.write(data.subarray(0, 8)); }
+    return;
+  }
   res.writeHead(data ? 200 : 404);res.end(data ?? 'not found');
 });
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
@@ -36,6 +45,49 @@ async function run(args, code = 0, overrides = {}) {
     });
   });
 }
+
+async function cancelColdAcquisition(previousSite) {
+  const windows = process.platform === 'win32';
+  const consoleHelper = path.join(root, 'console.exe');
+  if (windows) execFileSync('rustc', ['--edition=2024', path.join(repo, 'scripts/fixtures/preview-console.rs'), '-o', consoleHelper]);
+  const cases = [
+    { args: ['build', '--quiet'], code: 2 },
+    { args: ['check', '--target', 'static', '--json'], code: 2 },
+    { args: ['watch', '--target', 'file', '--quiet'], code: 0 },
+    { args: ['view', '--target', 'static', '--no-open', '--port', '0'], code: 0 },
+  ];
+  let count = 0;
+  for (const mode of ['checksum-headers', 'checksum-body', 'archive-body']) {
+    for (const item of cases) {
+      stallMode = mode; stalled = false;
+      const home = path.join(root, `cancel-${count++} café`);
+      const child = spawn(windows ? consoleHelper : binary, windows ? [binary, ...item.args] : item.args,
+        { cwd: root, env: { ...env, ZELLIJ_HOME: home }, stdio: ['pipe', 'pipe', 'pipe'] });
+      let stdout = '', stderr = '';
+      child.stdout.on('data', bytes => stdout += bytes); child.stderr.on('data', bytes => stderr += bytes);
+      const done = new Promise((resolve, reject) => { child.once('error', reject); child.once('close', (code, signal) => resolve({ code, signal })); });
+      const watchdog = setTimeout(() => child.kill('SIGKILL'), 15000);
+      try {
+        for (let i = 0; i < 100 && !stalled && child.exitCode === null; i++) await delay(50);
+        assert(stalled, `Request did not reach stall: ${item.args} ${mode} ${stderr}`);
+        const started = Date.now();
+        if (windows) child.stdin.write('stop\n'); else child.kill('SIGINT');
+        const result = await done;
+        assert.equal(result.code, item.code, JSON.stringify({ mode, args: item.args, ...result, stdout, stderr }));
+        assert(Date.now() - started < 8000, 'Cancellation waited for the network timeout');
+        if (item.args[0] === 'check') { assert.equal(JSON.parse(stdout).ok, false); assert.equal(stderr, ''); }
+        assert.deepEqual(await readdir(path.join(home, 'cache/engines')), [], 'Cancelled download left cache files');
+        assert.deepEqual(await readFile(path.join(root, 'site/index.html')), previousSite, 'Cancellation replaced the existing site');
+        assert(!(await readdir(root)).some(name => name.startsWith('.zel-build-')), 'Cancelled output stage remains');
+      } finally { clearTimeout(watchdog); if (child.exitCode === null) child.kill('SIGKILL'); await done; }
+    }
+  }
+  stallMode = undefined;
+  requests.splice(2); // Exclude requests from the twelve isolated cancellation fixtures.
+  return count;
+}
+
+let cancelledAcquisitions = 0;
 try {
   assert.match(await run(['build', '--offline'], 2), /not cached/);
   assert.equal(requests.length, 0);
@@ -56,6 +108,7 @@ try {
   const manifest = JSON.parse(await readFile(path.join(root, 'site/_zellij/file/manifest.json')));
   assert.equal(manifest.pages, 16);
   assert.match(before.toString(), /file\/styles\.css/);
+  if (!publicBase) cancelledAcquisitions = await cancelColdAcquisition(before);
   await new Promise(resolve => server.close(resolve));
   await run(['build', '--offline']);
   assert.match(await run(['build', '--offline'], 2, { ZELLIJ_HOME: path.join(root, 'other-home') }), /not cached/);
@@ -118,6 +171,21 @@ try {
   await writeFile(content, 'broken: [');await run(['build', '--offline'], 3);
   assert((await readFile(path.join(root, 'site/index.html'))).equals(before));await writeFile(content, original);
   const cached = path.join(engineCache, `${version}-${platform}`);
+  for (const extra of ['file', 'directory']) {
+    const extraPath = path.join(cached, 'engine', `unlisted-${extra}`);
+    if (extra === 'file') await writeFile(extraPath, 'must not execute'); else await mkdir(extraPath);
+    assert.match(await run(['build', '--offline'], 2), /unlisted/);
+    assert.match(await run(['doctor', '--json'], 2), /unlisted/);
+    assert.deepEqual(await readFile(path.join(root, 'site/index.html')), before);
+    await rm(extraPath, { recursive: true });
+  }
+  const outside = path.join(root, 'outside-cache'); await mkdir(outside);
+  await writeFile(path.join(outside, 'authored.txt'), 'preserve');
+  const linked = path.join(cached, 'engine/linked-directory');
+  await symlink(outside, linked, process.platform === 'win32' ? 'junction' : 'dir');
+  assert.match(await run(['build', '--offline'], 2), /link or junction/);
+  assert.equal(await readFile(path.join(outside, 'authored.txt'), 'utf8'), 'preserve');
+  await rm(linked);
   const originalStyles = await readFile(path.join(cached, 'engine/styles.css'));
   await writeFile(path.join(cached, 'engine/styles.css'), 'tampered');
   assert.match(await run(['build', '--offline'], 2), /integrity verification/);
@@ -130,5 +198,5 @@ try {
   }
   await checkStandaloneAuthoring(binary, env, root);
   assert.equal((await readdir(root)).some(n => n.startsWith('.zel-build-')), false);
-  console.log(JSON.stringify({ platform, initialDownloads: requests.length, pages: manifest.pages, completeStarterPages: complete.pages, cachedOfflineBuild: true, cachedHttpBuild: true, failedBuildPreservedSite: true, tamperRejected: true, routeTraversalRejected: true, metadataOverrides: true, systemTools: false }));
-} finally { server.close();await rm(root, { recursive: true, force: true }); }
+  console.log(JSON.stringify({ platform, initialDownloads: requests.length, pages: manifest.pages, completeStarterPages: complete.pages, cachedOfflineBuild: true, cachedHttpBuild: true, failedBuildPreservedSite: true, tamperRejected: true, unlistedCacheEntriesRejected: true, cancelledAcquisitions, routeTraversalRejected: true, metadataOverrides: true, systemTools: false }));
+} finally { server.closeAllConnections();server.close();await rm(root, { recursive: true, force: true }); }

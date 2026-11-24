@@ -39,11 +39,17 @@ pub fn run(
     if target != "portable" && !site.configured {
         site.input = crate::resolve_content(&selected)?.into();
     }
-    // Missing prerequisites fail once at startup; bad content remains watched.
-    if target != "portable" {
-        crate::rich_build::ensure_cached(offline)?;
-    }
     let stop = crate::preview::signals()?;
+    // Missing prerequisites fail once at startup; bad content remains watched.
+    // Own cancellation before the first network request, too.
+    if target != "portable" {
+        let result = crate::rich_build::ensure_cached(offline, &stop);
+        if stop.load(Ordering::Acquire) {
+            zellij_core::statusln!("Stopped.");
+            return Ok(());
+        }
+        result?;
+    }
     let snapshot = || {
         Snapshot::site_for(&site.input, site.configured, site.renderer).map_err(|e| e.to_string())
     };

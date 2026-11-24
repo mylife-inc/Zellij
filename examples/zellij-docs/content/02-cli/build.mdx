@@ -327,6 +327,14 @@ then run with `--offline`. `zel doctor` reports the cache location and readiness
 without downloading anything. A CLI upgrade uses its own versioned cache;
 an older cached engine is never silently substituted.
 
+**Next candidate (implemented in source):** Ctrl-C also cancels a stalled first
+download and removes its temporary download/build files while preserving the
+previous site. Cache checks reject unlisted files/directories, missing entries
+and links/junctions. A damaged cache is left intact for inspection: remove only
+the affected version/platform directory reported by `zel doctor`, then retry
+online. `--offline` does not repair or replace a damaged cache. These additions
+are not included in the published rc.19 binary.
+
 Packages cover x64 and ARM64 macOS, Windows and GNU/Linux. The CLI's Linux
 build baseline is Ubuntu 22.04/glibc 2.35; Alpine/musl is not supported. The
 private Node runtime requires macOS 13.5 or newer. Native CI tests Ubuntu 22.04,

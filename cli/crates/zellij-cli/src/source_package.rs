@@ -1,6 +1,6 @@
 //! Version-matched editable sources. No runtime or package manager is executed.
 use camino::{Utf8Path, Utf8PathBuf};
-use reqwest::{Url, blocking::Client, redirect::Policy};
+use reqwest::Url;
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
 use std::{
@@ -8,12 +8,7 @@ use std::{
     fs::{self, File},
     io::{Read, Write},
     path::{Path, PathBuf},
-    sync::{
-        atomic::{AtomicBool, Ordering},
-        mpsc,
-    },
-    thread,
-    time::Duration,
+    sync::atomic::{AtomicBool, Ordering},
 };
 use zellij_core::{Error, Result, files, site::is_link};
 const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -32,11 +27,7 @@ pub(crate) fn check_stop(stop: &AtomicBool) -> Result<()> {
     }
 }
 pub(crate) fn stop_handler() -> Result<std::sync::Arc<AtomicBool>> {
-    let stop = std::sync::Arc::new(AtomicBool::new(false));
-    let signal = stop.clone();
-    ctrlc::set_handler(move || signal.store(true, Ordering::Release))
-        .map_err(std::io::Error::other)?;
-    Ok(stop)
+    crate::preview::signals()
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -197,7 +188,7 @@ fn validate(root: &Path, stop: &AtomicBool) -> Result<Manifest> {
             .unwrap()
             .to_str()
             .ok_or_else(|| fail("non-UTF-8 source path"))?
-            .replace('\\', "/");
+            .replace(std::path::MAIN_SEPARATOR, "/");
         let meta = fs::symlink_metadata(entry.path())?;
         if is_link(&meta) {
             return Err(fail("source cache contains a link or junction"));
@@ -266,79 +257,10 @@ fn base_url() -> Result<Url> {
     }
     Ok(url)
 }
-// The worker owns only network state. The caller owns all files, can cancel even
-// during a stalled connection/read, and never leaves a late writer in its cache.
 fn download(url: Url, limit: u64, output: &mut impl Write, stop: &AtomicBool) -> Result<()> {
-    check_stop(stop)?;
-    let origin = url.origin();
-    let (sender, receiver) = mpsc::sync_channel(2);
-    thread::spawn(move || {
-        let result = (|| -> std::result::Result<(), String> {
-            let client = Client::builder()
-                .user_agent(concat!("zel/", env!("CARGO_PKG_VERSION")))
-                .connect_timeout(Duration::from_secs(15))
-                .timeout(Duration::from_secs(300))
-                .redirect(Policy::custom(move |attempt| {
-                    let url = attempt.url();
-                    if attempt.previous().len() < 5
-                        && url.username().is_empty()
-                        && url.password().is_none()
-                        && (url.scheme() == "https"
-                            || url.scheme() == "http" && url.origin() == origin)
-                    {
-                        attempt.follow()
-                    } else {
-                        attempt.stop()
-                    }
-                }))
-                .build()
-                .map_err(|_| "could not initialize HTTPS client".to_owned())?;
-            let mut response = client.get(url).send().map_err(|_| {
-                "download failed; check connectivity or use a prepared cache with --offline"
-                    .to_owned()
-            })?;
-            if !response.status().is_success() {
-                return Err(format!(
-                    "download returned HTTP {}; use a released CLI with matching editable-source assets",
-                    response.status()
-                ));
-            }
-            if response.content_length().is_some_and(|size| size > limit) {
-                return Err("download size limit exceeded".into());
-            }
-            let mut total = 0;
-            loop {
-                let mut bytes = vec![0; 65536];
-                let n = response
-                    .read(&mut bytes)
-                    .map_err(|_| "source download was interrupted".to_owned())?;
-                total += n as u64;
-                if total > limit {
-                    return Err("download size limit exceeded".into());
-                }
-                bytes.truncate(n);
-                if sender.send(Ok(bytes)).is_err() || n == 0 {
-                    return Ok(());
-                }
-            }
-        })();
-        if let Err(error) = result {
-            let _ = sender.send(Err(error));
-        }
-    });
-    loop {
-        check_stop(stop)?;
-        match receiver.recv_timeout(Duration::from_millis(50)) {
-            Ok(Ok(bytes)) if bytes.is_empty() => return Ok(()),
-            Ok(Ok(bytes)) => output.write_all(&bytes)?,
-            Ok(Err(error)) => return Err(fail(error)),
-            Err(mpsc::RecvTimeoutError::Timeout) => {}
-            Err(mpsc::RecvTimeoutError::Disconnected) => {
-                return Err(fail("download ended unexpectedly"));
-            }
-        }
-    }
+    crate::package_transfer::download(url, limit, output, stop, "editable sources")
 }
+
 fn extract(archive: &Path, into: &Path, stop: &AtomicBool) -> Result<()> {
     let mut reader = tar::Archive::new(
         flate2::read::GzDecoder::new(File::open(archive)?).take(EXPANDED_LIMIT + 16 * 1024 * 1024),
@@ -739,5 +661,23 @@ mod tests {
         manifest["files"]["ENGINE/other.ts"] = serde_json::json!(sha(b"fixture"));
         fs::write(&file, serde_json::to_vec(&manifest).unwrap()).unwrap();
         assert!(validate(dir.path(), &stop).is_err());
+    }
+    #[cfg(unix)]
+    #[test]
+    fn literal_backslash_file_cannot_alias_a_manifested_nested_path() {
+        let dir = tempfile::tempdir().unwrap();
+        fixture(dir.path());
+        fs::copy(
+            dir.path().join("app/package.json"),
+            dir.path().join(r"app\package.json"),
+        )
+        .unwrap();
+        assert!(
+            validate(dir.path(), &AtomicBool::new(false))
+                .err()
+                .unwrap()
+                .to_string()
+                .contains("unlisted")
+        );
     }
 }
