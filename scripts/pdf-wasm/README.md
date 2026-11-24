@@ -5,8 +5,8 @@ This is a maintainer experiment for the optional cached PDF toolchain. It is
 production isolation contract is complete. Released rc.19 still uses its pinned
 container for PDF. Ordinary rich web builds already use the cached renderer.
 
-The probe downloads 287 hash-pinned resources (33,610,991 bytes before packaging)
-from the upstream engine release and an immutable TeX mirror. It then compiles
+The probe prepares 287 hash-pinned resources from the upstream engine release,
+an immutable TeX mirror and independently pinned original archives. It then compiles
 generated Zellij print inputs without a network resolver, container, system TeX,
 curl, Python or npm packages. The maintainer invokes Node 24 explicitly here; a
 production integration would reuse the private Node already in the renderer
@@ -20,7 +20,8 @@ From the repository root, choose new directories for each output:
 cargo build --manifest-path cli/Cargo.toml --locked -p zellij-cli
 cargo build --manifest-path cli/Cargo.toml --locked -p zellij-docs --example pdf_probe_inputs
 export ZEL_PDF_PROBE_BUNDLE="$PWD/test-results/pdf-wasm-bundle"
-node scripts/pdf-wasm/download.mjs "$ZEL_PDF_PROBE_BUNDLE"
+python scripts/pdf-wasm/originals.py SOURCE_CACHE test-results/pdf-originals
+node scripts/pdf-wasm/download.mjs "$ZEL_PDF_PROBE_BUNDLE" test-results/pdf-originals
 node --test scripts/pdf-wasm/probe.test.mjs
 node scripts/pdf-wasm/check.mjs
 ```
@@ -29,12 +30,12 @@ The maintainer downloader retries only transient connection failures, deadlines
 and selected temporary HTTP statuses, at most three attempts with one-/two-second
 backoff. Each attempt starts with an empty buffer. Permanent HTTP/TLS failures,
 oversized responses and checksum mismatches fail immediately; previous output is
-preserved. Eight loopback/failure regressions run before downloads in CI. This
+preserved. Nine loopback/failure regressions run before downloads in CI. This
 does not add network access to the compiler or change installed CLI downloads.
 
 `check.mjs` uses only repository-owned manuscripts: all three book editions,
 equations, statements, bibliography, glossary/index, Arabic RTL, and French,
-German and Spanish, plus a 100-chapter book across two parts. It writes PDFs,
+German and Spanish, URL/query/path layout, plus a 100-chapter book across two parts. It writes PDFs,
 typesetter logs and experimental receipts
 under `test-results/pdf-wasm`. It refuses to overwrite outputs. Remove or move
 only those generated test outputs before intentionally repeating the check.
@@ -42,6 +43,12 @@ The default matrix now runs each manuscript in a separate Node process with
 three disposable worker passes. Receipts identify that execution mode. Explicit
 legacy format/metadata substitutions retain the in-process comparison path;
 those runs do not qualify the process boundary.
+
+The link-layout case includes long plain, bold and code-styled URL labels. The
+print adapter permits wrapping at URL punctuation while preserving hyperlink
+destinations and descriptive labels. This fixes an overflow reproduced with
+both the earlier URL 3.4 resource and the selected unchanged original 3.3;
+strict overflow validation remains enabled.
 
 For one generated input folder:
 
@@ -246,8 +253,10 @@ rebuild claim. A separate clean engine rebuild is recorded in
 [PR #244](https://github.com/mylife-inc/Zellij/pull/244): the adapter and Wasm
 compiler match the pinned bytes exactly. The original mirror-generated metadata remain the legacy comparison inputs;
 the compact replacement below has its own complete selected input inventory. `source-policy.json` records remaining
-review items, including EC's full-distribution requirement and the historical
-license-version wording in `url.sty`. The additional ConTeXt notice is collected
+review items and records resolved findings. The selected original URL 3.3 has
+unchanged source/documentation and an unversioned LPPL notice; it replaces the
+later 3.4 resource rather than interpreting that release's historical wording.
+The additional ConTeXt notice is collected
 from the exact frozen documentation archive, not inferred from a package label.
 The policy now also records the completed engine/format rebuild and font-source
 work with its evidence; those historical findings are not silently discarded.
@@ -279,11 +288,13 @@ python3 scripts/pdf-wasm/distribution.py /tmp/zellij-pdf-source-cache test-resul
 The packager regenerates and checks all three input inventories, combines their
 65 original packages without losing notices, and rejects conflicting package,
 archive or resource records. It verifies 351 distinct original resource files.
-The notices package retains 114 original notice records and every one of the
+The notices package retains 115 original notice records and every one of the
 121 files listed in EC's original `00files.txt`, with original names and bytes.
 Missing, duplicate, nonregular or incorrectly sized EC files fail qualification.
+It also retains all four original URL 3.3 component files, with source/archive
+receipts. The runtime loader receives the unchanged original `url.sty` bytes.
 
-The notices archive is about **428 KB**. The separate matching-source archive is
+The notices archive is under **1 MB**. The separate matching-source archive is
 about **430 MB**, including the original compressed source packages, engine
 corresponding source, provenance metadata, exact build programs/recipes and
 notices. It is not part of an ordinary rendering download. The prospective
@@ -298,10 +309,11 @@ original notices and records review items. CI replays source verification and
 format/font preparation using only the packaged scripts and upstream files.
 Only `verification.json` is uploaded, never either archive or the copied sources.
 
-The exact historical LPPL wording in `url.sty` remains unchanged and unresolved.
-The package preparation is a concrete source/notices layout, not a new permission
-or a completed component redistribution review. The archive's own READMEs explain
-its contents, offline verification and original compiler rebuild instructions.
+The earlier 3.4 notice issue remains documented in the historical audit records.
+Its code is absent from the new runtime/source package selection. The package
+preparation does not change any original terms or complete the final component
+redistribution review. The archive's own READMEs explain its contents, offline
+verification and original compiler rebuild instructions.
 
 ## Rebuild the format from original sources
 
@@ -333,7 +345,7 @@ using real time. Format construction is maintainer work, not an end-user step.
 The compiled format is 6,744,585 bytes before outer archive compression. Its bytes
 are intentionally pinned independently of the upstream precompiled format. The
 six-platform workflow builds it independently, checks failure/recovery boundaries,
-then uses it for all 19 manuscripts; Linux compares the books with the native
+then uses it for all 20 manuscripts; Linux compares the books with the native
 renderer. Only JSON receipts and Zellij-produced PDFs/logs are uploaded, never the
 format binary, input sources or compiler. This does not ship a cached PDF backend.
 
@@ -394,7 +406,7 @@ python3 -m unittest discover -s scripts/pdf-wasm -p 'test_*.py' -v
 
 Outside replacements are rejected for a compact package. CI independently
 prepares and generates metadata on every platform, assembles the resource
-archive, and typesets all 19 books from that compact inventory. Linux compares
+archive, and typesets all 20 books from that compact inventory. Linux compares
 all resulting pages with the native backend. Four metadata regressions cover
 independent builds, input/output integrity, incomplete/oversized databases and
 termination; two package-loader regressions cover byte equivalence, manifest

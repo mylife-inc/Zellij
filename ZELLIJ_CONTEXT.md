@@ -5,10 +5,36 @@ tests only. Keep third-party project identities, local case studies and delivery
 details out of tracked files, pull requests, release notes, logs and artifacts.
 External test projects are not Zellij deliverables or product backlog.
 
-Last refreshed: **2026-11-23**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-24**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-23: versioned PDF package/cache — qualification in progress**
+**2026-11-24: original URL package selection — qualification in progress**
+
+PR #251 merged as `9e0b3a5`, identical in tree to tested `5d8146e`. PDF CI
+`45340856363` passes all eight jobs: six identical package/source archives,
+78 cache scenarios, twelve cold/offline compilations, 114 manuscripts / 342
+passes and 269 native-matched page rasters. Regular CI `45340856436` passes all
+37 jobs with one conditional skip in attempt 2; the first Showcase job times out
+downloading Ubuntu dependencies before tests start. Its targeted retry reports
+552 passed browser tests and no flaky results. Post-merge CI `45345879289` and
+base image `45345879118` both pass. Earlier browser timing findings remain
+separate.
+
+The next increment selects the unchanged original URL 3.3 release from TeX Live
+2012 final, preserving its source, documentation and unversioned LPPL notice.
+It avoids interpreting the later release's ambiguous license-version wording.
+Archive/source hashes, original provenance and all four component files are
+checked and retained; the old resource is excluded from the new selection.
+Qualification also reproduces a long visible-URL overflow with both components.
+The print adapter fixes wrapping at URL punctuation without changing hyperlink
+destinations or weakening overflow validation; the manuscript matrix covers
+plain, bold and inline-code URL labels.
+See the [original-package record](specs/zellij-pdf-original-url-2026-11-24.md).
+Final component review/release arrangement, installed CLI dispatch/private-Node
+reuse and public-package acceptance remain. Rc.19 still uses container PDFs;
+no optional compiler archive or new candidate is published by this increment.
+
+**2026-11-23: versioned PDF package/cache — implemented in PR #251**
 
 PR #250 merged as `e64e07c`, identical in tree to tested `c1d768a`. Its final
 CI `45305132347` passes all 37 jobs with one conditional skip, including 72 real

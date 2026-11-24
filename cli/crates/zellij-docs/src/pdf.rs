@@ -183,6 +183,25 @@ fn tex(s: &str) -> String {
         })
         .collect()
 }
+fn link_text(s: &str) -> String {
+    // A visible URL is otherwise one unbreakable word inside \href. Keep the
+    // destination untouched and add discretionary breaks only to URL labels.
+    if !["https://", "http://", "mailto:", "tel:"]
+        .iter()
+        .any(|prefix| s.starts_with(prefix))
+        || s.chars().any(char::is_whitespace)
+    {
+        return tex(s);
+    }
+    let mut out = String::new();
+    for c in s.chars() {
+        out.push_str(&tex(&c.to_string()));
+        if matches!(c, ':' | '/' | '.' | '_' | '-' | '?' | '&' | '=' | '#') {
+            out.push_str("\\zelurlbreak{}");
+        }
+    }
+    out
+}
 fn label(page: usize, id: &str) -> String {
     format!(
         "p{page}-{}",
@@ -234,6 +253,7 @@ impl Writer<'_> {
         let mut lists = vec![];
         let mut quotes = vec![];
         let mut cell = 0;
+        let mut external_link = false;
         while i < events.len() {
             match &events[i] {
                 Event::Start(Tag::FootnoteDefinition(_)) => {
@@ -271,11 +291,11 @@ impl Writer<'_> {
                             "\\leavevmode\\hypertarget{{{anchor}}}{{}}\\label{{{anchor}}}"
                         ));
                     }
-                    if dest_url.starts_with("https:")
+                    external_link = dest_url.starts_with("https:")
                         || dest_url.starts_with("http:")
                         || dest_url.starts_with("mailto:")
-                        || dest_url.starts_with("tel:")
-                    {
+                        || dest_url.starts_with("tel:");
+                    if external_link {
                         // Escape every TeX metacharacter; URLs are arguments, never commands.
                         out.push_str(&format!("\\href{{{}}}{{", tex(dest_url)));
                     } else {
@@ -301,7 +321,10 @@ impl Writer<'_> {
                         out.push_str(&format!("\\hyperlink{{{}}}{{", label(target, &fragment)));
                     }
                 }
-                Event::End(TagEnd::Link) => out.push('}'),
+                Event::End(TagEnd::Link) => {
+                    out.push('}');
+                    external_link = false;
+                }
                 Event::Start(Tag::Heading { level, id, .. }) => {
                     let command = match level {
                         HeadingLevel::H1 | HeadingLevel::H2 => "section",
@@ -400,12 +423,17 @@ impl Writer<'_> {
                     if self.rtl {
                         out.push_str("{\\textdir TLT ");
                     }
-                    out.push_str(&format!("\\texttt{{{}}}", tex(s)));
+                    out.push_str(&format!(
+                        "\\texttt{{{}}}",
+                        if external_link { link_text(s) } else { tex(s) }
+                    ));
                     if self.rtl {
                         out.push('}');
                     }
                 }
-                Event::Text(s) => out.push_str(&tex(s)),
+                Event::Text(s) => {
+                    out.push_str(&if external_link { link_text(s) } else { tex(s) });
+                }
                 Event::InlineMath(s) | Event::DisplayMath(s) => {
                     if let crate::equations::Expression::Numbered { id, tex: body } =
                         crate::equations::expression(
@@ -717,7 +745,7 @@ pub(crate) fn compose(
                     out.push_str(&format!(
                         " \\href{{{}}}{{{}}}",
                         tex(url),
-                        tex(reference.link_text.as_deref().unwrap_or("Online source"))
+                        link_text(reference.link_text.as_deref().unwrap_or("Online source"))
                     ));
                 }
                 out.push_str("\\par\n");

@@ -30,4 +30,8 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.55em}
 \setlength{\emergencystretch}{2em}
+% URL-only break points: the two fills cancel within a line. At a break,
+% the trailing negative fill is discarded, leaving a ragged line end. Unlike
+% a bare penalty, this also fits bold/monospace URLs without stretchable spaces.
+\newcommand{\zelurlbreak}{\nobreak\hspace{0pt plus 1fil}\penalty0\hspace{0pt plus -1fil}}
 \hypersetup{colorlinks=true,linkcolor=zelaccent,urlcolor=zelaccent,bookmarksopen=true}

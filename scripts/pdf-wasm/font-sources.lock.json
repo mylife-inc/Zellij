@@ -10,10 +10,14 @@
     {
       "item": "Complete the precompiled format input inventory and generated font-metadata source closure.",
       "evidence": "PR #245 (aff7d36) and PR #246 (1364bb3): exact original inventories, two identical generated format/font builds and six-platform manuscript acceptance."
+    },
+    {
+      "item": "Select original url 3.3 with its unversioned LPPL notice instead of interpreting the ambiguous url 3.4 version-2 wording.",
+      "evidence": "The TeX Live 2012 final archives (revision 16864) retain the unchanged 3.3 source and documentation; source hashes and all four original component files are preserved. See specs/zellij-pdf-original-url-2026-11-24.md."
     }
   ],
   "runtimeLockSha256": "127aadeb9522b7b92fdeb0e6f14ea17e3a4569615304f1bf1e6580cff5235a47",
-  "policySha256": "d68498b3e685ead06c342cd8f4cd07bc0d99f737856eba1ba2d7754e496a3862",
+  "policySha256": "3a69bd2b94dae51b71e7a4166d367ea0e223293fc0d590a72040847b9a57c51d",
   "metadata": [
     {
       "name": "texlive-provenance.json",
@@ -849,7 +853,6 @@
   "generatedResources": [],
   "supportingNotices": [],
   "openItems": [
-    "Resolve url.sty's historical LPPL version wording against authoritative distribution terms.",
     "Preserve the complete EC font distribution required by copyrite.txt in any eventual redistribution.",
     "Complete the final component/font redistribution review and supply matching source with any release."
   ],

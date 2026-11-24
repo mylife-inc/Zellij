@@ -1,5 +1,6 @@
 // Repository-owned manuscripts only. Output is evidence, never a CLI release.
 import { execFileSync } from 'node:child_process';
+import assert from 'node:assert/strict';
 import { cpSync, mkdtempSync, rmSync, writeFileSync, readFileSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -47,6 +48,18 @@ async function check(name, manuscript) {
     const baseline = path.join(artifacts, name + '-native');
     execFileSync(zel, ['pdf', manuscript, '--out', baseline], { stdio: 'pipe', timeout: 600_000 });
     result.comparison = compare(path.join(baseline, 'book.pdf'), path.join(artifacts, name, 'book.pdf'));
+    if (name === 'link-layout') {
+      const annotations = execFileSync('pdfinfo', ['-url', path.join(output, 'book.pdf')], { encoding: 'utf8', timeout: 30_000 });
+      const urls = annotations.split('\n').filter(line => /\sAnnotation\s/.test(line))
+        .map(line => line.trim().split(/\s+/).slice(2).join(' '));
+      assert.deepEqual([...new Set(urls)].sort(), [
+        'https://example.test/a_b?q=one&next=two#section',
+        'https://example.test/a%20b?q=one%26two',
+        'mailto:reader@example.test',
+        'https://example.test/reference/long_path_with_underscores_and-a-hyphen?q=first&next=second',
+      ].sort());
+      result.linkDestinationsVerified = true;
+    }
   }
   results.push({ name, ...result });
   writeFileSync(path.join(artifacts, 'acceptance.json'), JSON.stringify({
@@ -60,6 +73,30 @@ try {
     cpSync(`scripts/fixtures/${name}`, manuscript, { recursive: true });
     await check(name, manuscript);
   }
+  const links = path.join(root, 'link-layout');
+  mkdirSync(path.join(links, 'content'), { recursive: true });
+  writeFileSync(path.join(links, 'zel.yaml'), JSON.stringify({ version: 1, renderer: 'portable',
+    book: { version: 1, title: 'An atlas of links', authors: ['Mira Vale'],
+      chapters: [{ id: 'links', source: 'links.md' }] } }, null, 2));
+  writeFileSync(path.join(links, 'content/links.md'), `# Links, paths and query strings
+
+[A query with underscores and an anchor](https://example.test/a_b?q=one&next=two#section).
+
+[A percent-encoded path](https://example.test/a%20b?q=one%26two).
+
+[An email address](mailto:reader@example.test).
+
+[https://example.test/reference/long_path_with_underscores_and-a-hyphen?q=first&next=second](https://example.test/reference/long_path_with_underscores_and-a-hyphen?q=first&next=second).
+
+[**https://example.test/reference/long_path_with_underscores_and-a-hyphen?q=first&next=second**](https://example.test/reference/long_path_with_underscores_and-a-hyphen?q=first&next=second).
+
+[\`https://example.test/reference/long_path_with_underscores_and-a-hyphen?q=first&next=second\`](https://example.test/reference/long_path_with_underscores_and-a-hyphen?q=first&next=second).
+
+The local path is \`C:\\Documents\\My_Book\\chapter.md\`.
+
+[Return to this chapter](#links-paths-and-query-strings).
+`);
+  await check('link-layout', links);
   for (const [size, paper] of [[10, 'a4'], [12, 'letter']]) {
     const name = `book-${size}pt-${paper}`;
     const manuscript = path.join(root, name);

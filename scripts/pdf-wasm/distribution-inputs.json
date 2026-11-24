@@ -24,6 +24,8 @@
     "format.test.mjs",
     "format_sources.py",
     "lock.json",
+    "originals.py",
+    "originals.test.mjs",
     "pass.mjs",
     "probe.mjs",
     "probe.test.mjs",
@@ -38,12 +40,12 @@
     "test_distribution.py",
     "test_font_sources.py",
     "test_format_sources.py",
+    "test_originals.py",
     "test_sources.py",
     "test_toolchain.py",
     "toolchain.py"
   ],
   "reviewItems": [
-    "Clarify the historical LPPL version wording in url.sty without rewriting its original notice.",
     "Finish the engine/component distribution review and publish the exact matching source archive alongside any eventual runtime release."
   ]
 }

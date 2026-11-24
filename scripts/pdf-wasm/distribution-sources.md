@@ -15,7 +15,8 @@ records its hash and the archive hash. Original archives are copied byte for byt
   recipes and their tests. Python is a maintainer tool, never an installed zel
   dependency. The generated Zellij manuscript acceptance suite lives in the
   Zellij repository and is not part of this compiler/source archive.
-- notices contains original component notices and the complete EC distribution.
+- notices contains original component notices, the complete EC distribution and
+  all four files of the selected original URL 3.3 distribution.
 
 To verify source correspondence without downloads, from this directory use:
 
@@ -42,6 +43,7 @@ output hashes. compact.py verifies and packages the compiler, format and runtime
 resources; it does not add the notices directory automatically. The eventual
 runtime packager must include the matching notices and source download details.
 
-This archive deliberately retains original license statements, including the
-unresolved historical wording in url.sty. See notices/NOTICES.json for review
+This archive retains original license statements. URL 3.3 is selected with its
+unchanged source/documentation and unversioned LPPL notice; the later URL 3.4
+source with ambiguous version wording is not redistributed. See notices/NOTICES.json for review
 items. No engine or resource license is replaced by Zellij's project terms.

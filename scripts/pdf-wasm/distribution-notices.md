@@ -22,8 +22,11 @@ additional installed rendering dependency. A release must provide the actual
 matching source download alongside the optional runtime and retain the original
 component terms. A filename in this document is not a published source offer.
 
-The historical url.sty header specifies an LPPL version that still needs
-clarification. Its exact header is retained; no correction or new permission is
-claimed. NOTICES.json records the outstanding review items. Completing this
-directory does not finish production isolation, CLI cache integration or public
-package acceptance.
+The selected URL component is the unchanged 3.3 original from TeX Live 2012 final
+(revision 16864). Its source and documentation both identify the LPPL without a
+version number. originals/url retains all four original component files. The
+later 3.4 component with ambiguous version wording is not included; its earlier
+qualification history is preserved in the project audit records. This selection
+does not edit an original notice or claim to clarify the later release's terms.
+NOTICES.json records the outstanding final distribution review. Completing this
+directory does not finish CLI integration or public-package acceptance.
