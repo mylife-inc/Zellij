@@ -10,9 +10,13 @@ compiler's preserved `release/LICENSE-MANIFEST.json` identifies the selected
 LuaHBTeX JS/Wasm artifacts as GPL-2.0-only with MIT and linked-component terms.
 Its corresponding-source archive includes the exact engine-generation source,
 TeX Live and Emscripten sources, port archives, build receipts and rebuild/relink
-instructions. These are verified inputs; Zellij has not independently reproduced
-the compiler binary. The upstream manifest retains its own development-status
-wording; Zellij does not edit it or claim upstream promotion.
+instructions. The separate clean Linux amd64 build recorded in
+[PR #244](https://github.com/mylife-inc/Zellij/pull/244) reproduces the selected
+JS and Wasm bytes exactly. The source verifier's `rebuildVerified: false` means
+that verifier does not execute a compiler; it does not negate the separate
+rebuild. A modified-library relink test remains unqualified. The upstream
+manifest retains its own development-status wording; Zellij does not edit it or
+claim upstream promotion.
 
 The Zellij JavaScript adapter directly loads the compiler and supplies its Wasm
 imports, virtual filesystem and worker/process boundary. The Rust CLI launches
@@ -47,7 +51,8 @@ No licensing change is applied until the owner approves this specific scope.
 - Retain original component notices, the complete EC and URL distributions, and
   the complete frozen package archives used by the runtime/format/font recipes.
 - Retain LGPL component source and the preserved relinking instructions. Do not
-  impose restrictions on debugging modifications to those components.
+  impose restrictions on debugging modifications to those components. Complete
+  the modified-library relink qualification before promoting the runtime.
 - Keep the larger source archive separate from the normal runtime download. It
   is not an end-user build dependency.
 - Bind the review to exact resource/source recipes and explicit release checks.

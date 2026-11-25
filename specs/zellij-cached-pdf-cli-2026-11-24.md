@@ -83,6 +83,11 @@ in the CLI exposes Clippy's interior-mutable-constant lint. The six package guar
 tests also pass through both the CLI and qualification harness. All 44 Python
 source/package tests pass.
 
+Source-policy review also corrects an earlier combined "rebuild and relink"
+completion label. PR #244 proves the clean compiler build but explicitly does
+not qualify modified-library relinking. The policy now retains that distinction
+and lists the relink exercise as outstanding; the actual hashes are unchanged.
+
 ## Remaining release work
 
 Resolve the scoped licensing decision, finish the exact component/source review

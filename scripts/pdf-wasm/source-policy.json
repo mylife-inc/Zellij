@@ -33,7 +33,8 @@
   ],
   "openItems": [
     "Preserve the complete EC font distribution required by copyrite.txt in any eventual redistribution.",
-    "Complete the final component/font redistribution review and supply matching source with any release."
+    "Complete the final component/font redistribution review and supply matching source with any release.",
+    "Qualify modified-library relinking separately from the already completed clean engine rebuild."
   ],
   "generatedManifest": {
     "name": "snapshot-artifacts.json",
@@ -52,8 +53,8 @@
   ],
   "resolvedItems": [
     {
-      "item": "Complete engine rebuild and relink qualification against receipt-bound outputs.",
-      "evidence": "PR #244: clean engine rebuild matches the locked JS/Wasm outputs; PR #245: independent format rebuild on all six targets."
+      "item": "Complete clean engine rebuild qualification against receipt-bound outputs.",
+      "evidence": "PR #244: clean engine rebuild matches the locked JS/Wasm outputs; PR #245: independent format rebuild on all six targets. The earlier combined rebuild/relink wording was too broad: PR #244 explicitly leaves modified-library relink qualification open."
     },
     {
       "item": "Complete the precompiled format input inventory and generated font-metadata source closure.",
