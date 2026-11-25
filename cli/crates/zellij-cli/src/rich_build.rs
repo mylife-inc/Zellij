@@ -30,6 +30,12 @@ pub(crate) fn ensure_cached(offline: bool, stop: &AtomicBool) -> Result<()> {
     cache::obtain(offline, true, stop).map(|_| ())
 }
 
+/// Reuse only the runtime from a completely verified renderer package.
+pub(crate) fn private_node(offline: bool, stop: &AtomicBool) -> Result<std::path::PathBuf> {
+    let root = cache::obtain(offline, true, stop)?;
+    Ok(root.join(if cfg!(windows) { "node.exe" } else { "node" }))
+}
+
 // Node reports ordinary Windows paths, without Rust's verbatim prefix.
 fn content_path(content: &Utf8Path) -> Result<Utf8PathBuf> {
     let content = files::absolute_path(content)?;

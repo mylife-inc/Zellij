@@ -793,6 +793,16 @@ at punctuation, including labels styled with bold or inline code. Their clickabl
 destinations remain unchanged. Descriptive prose labels keep their ordinary
 typesetting. This layout fix is not included in the published rc.19 binary.
 
+The development CLI also has a cached PDF backend. It shares the rich renderer's
+verified private Node runtime and stores the optional compiler under
+`$ZELLIJ_HOME/cache/pdf/` (default `~/Dev/config/zellij/cache/pdf/`). Its installed
+command acceptance covers PDF exports, builds and watched offline previews with
+an empty system PATH. **The compiler package is not published yet**: distribution
+review and public-package acceptance remain open. The default and
+released rc.19 PDF instructions above still use the container backend. The
+development `--pdf-backend cached` selector is for maintainer qualification until
+the matching release packages are available.
+
 ### First print template and current boundaries
 
 The classic print template provides a title page, optional cover, paginated

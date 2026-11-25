@@ -8,9 +8,68 @@ fn command(root: &Path) -> Command {
     let mut c = Command::new(env!("CARGO_BIN_EXE_zel"));
     c.current_dir(root)
         .env("PATH", root.join("bin"))
+        .env_remove("ZEL_PDF_BACKEND")
         .env("DOCKER_HOST", "unix:///fixture.sock")
         .env("CONTAINER_HOST", "unix:///fixture-other.sock");
     c
+}
+#[test]
+fn cached_pdf_preflight_is_read_only_and_offline_never_falls_back_to_container() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    site(root);
+    let base = fs::read_to_string(root.join("zel.yaml")).unwrap();
+    fs::write(
+        root.join("zel.yaml"),
+        format!("{base}pdf: {{enabled: true}}\n"),
+    )
+    .unwrap();
+    let home = root.join("zel home");
+    let run = |args: &[&str]| {
+        command(root)
+            .env("ZELLIJ_HOME", &home)
+            .env_remove("ZEL_ENGINE_CACHE")
+            .env("ZEL_PDF_BACKEND", "cached")
+            .args(args)
+            .output()
+            .unwrap()
+    };
+    let diagnostic = run(&["doctor", "--json"]);
+    assert!(diagnostic.status.success(), "{diagnostic:?}");
+    let report: serde_json::Value = serde_json::from_slice(&diagnostic.stdout).unwrap();
+    assert_eq!(report["runtime"]["status"], "not_required");
+    assert_eq!(report["pdf_engine"]["status"], "download_required");
+    assert_eq!(report["rich_engine"]["status"], "download_required");
+    assert!(report["image"].is_null());
+    assert!(run(&["pdf", "--check", "--offline"]).status.success());
+    assert!(run(&["build", "--no-pdf", "--offline"]).status.success());
+    let before = fs::read(root.join("site/index.html")).unwrap();
+    for args in [vec!["pdf", "--offline"], vec!["build", "--offline"]] {
+        let result = run(&args);
+        assert!(!result.status.success(), "{result:?}");
+        assert!(String::from_utf8_lossy(&result.stderr).contains("compiler is not cached"));
+    }
+    let result = run(&["pdf", "--offline", "--pdf-backend", "container"]);
+    assert!(!result.status.success());
+    assert!(
+        String::from_utf8_lossy(&result.stderr)
+            .contains("--offline PDFs require --pdf-backend cached")
+    );
+    assert_eq!(before, fs::read(root.join("site/index.html")).unwrap());
+    assert!(!root.join("pdf").exists());
+    assert!(!home.exists());
+    let cache = home.join("cache/pdf").join(env!("CARGO_PKG_VERSION"));
+    fs::create_dir_all(&cache).unwrap();
+    fs::write(cache.join("manifest.json"), "broken").unwrap();
+    let diagnosis = run(&["doctor"]);
+    assert!(!diagnosis.status.success());
+    let text = String::from_utf8_lossy(&diagnosis.stdout);
+    assert!(text.contains("not required for cached PDF builds"));
+    assert!(!text.contains("portable web-only"));
+    assert_eq!(
+        fs::read_to_string(cache.join("manifest.json")).unwrap(),
+        "broken"
+    );
 }
 #[test]
 fn pdf_is_explicit_check_is_native_and_missing_runtime_keeps_previous_output() {

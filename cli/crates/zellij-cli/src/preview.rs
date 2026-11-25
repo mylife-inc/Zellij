@@ -61,11 +61,6 @@ pub fn view(dir: Option<&SiteInput>, options: ViewOptions<'_>) -> Result<()> {
     } else {
         zellij_core::site::Renderer::Hosted
     })?;
-    if options.offline && target == "portable" {
-        return Err(zellij_core::Error::InvalidArgument(
-            "--offline applies to cached rich preview (--target file or static)".into(),
-        ));
-    }
     if target != "portable" && !site.configured {
         // Resolve legacy `.` before Site's canonical input loses that spelling.
         // Pin the discovered content directory, excluding sibling output and
@@ -97,6 +92,7 @@ pub fn view(dir: Option<&SiteInput>, options: ViewOptions<'_>) -> Result<()> {
             features: options.features,
         },
         options.pdf,
+        options.offline,
         &stop,
     );
     if stop.load(Ordering::Acquire) {
@@ -122,6 +118,7 @@ pub fn view(dir: Option<&SiteInput>, options: ViewOptions<'_>) -> Result<()> {
         let theme = options.theme.map(str::to_owned);
         let features = options.features;
         let pdf = options.pdf;
+        let offline = options.offline;
         Some(Watcher::spawn_with(
             initial,
             live,
@@ -138,6 +135,7 @@ pub fn view(dir: Option<&SiteInput>, options: ViewOptions<'_>) -> Result<()> {
                         features,
                     },
                     pdf,
+                    offline,
                     &signal,
                 )?;
                 if signal.load(Ordering::Acquire) {

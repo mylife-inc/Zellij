@@ -1,5 +1,4 @@
-//! Optional PDF package acquisition. Currently used only by the qualification
-//! example; installed CLI dispatch waits for distribution review and acceptance.
+//! Verified PDF package acquisition. Released and qualification caches are separate.
 use reqwest::Url;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -152,11 +151,11 @@ fn transfer(
     Ok((size, format!("{:x}", hash.finalize())))
 }
 
-fn validate(root: &Path, stop: &AtomicBool) -> Result<Verified> {
-    validate_files(root, stop)
+fn validate(root: &Path, stop: &AtomicBool, released: bool) -> Result<Verified> {
+    validate_files(root, stop, released)
         .map_err(|error| Error::InvalidArgument(format!("{error} (PDF cache: {})", root.display())))
 }
-fn validate_files(root: &Path, stop: &AtomicBool) -> Result<Verified> {
+fn validate_files(root: &Path, stop: &AtomicBool, released: bool) -> Result<Verified> {
     check_stop(stop)?;
     let metadata = fs::symlink_metadata(root)?;
     if !metadata.is_dir() || is_link(&metadata) {
@@ -170,22 +169,30 @@ fn validate_files(root: &Path, stop: &AtomicBool) -> Result<Verified> {
     let (_, manifest_sha256) = transfer(&mut File::open(file)?, &mut bytes, MANIFEST_LIMIT, stop)?;
     let manifest: Manifest =
         serde_json::from_slice(&bytes).map_err(|_| fail("invalid manifest"))?;
-    if manifest.format != 1
-        || manifest.kind != "experimental-pdf-toolchain"
+    if manifest.format != if released { 2 } else { 1 }
+        || manifest.kind
+            != if released {
+                "zellij-pdf-toolchain"
+            } else {
+                "experimental-pdf-toolchain"
+            }
         || manifest.version != VERSION
-        || manifest.redistribution_review_complete
+        || manifest.redistribution_review_complete != released
         || manifest.node_major != 24
         || manifest.files.is_empty()
         || manifest.files.len() > MAX_FILES
-        || manifest.source_archive.name != "experimental-pdf-sources.tar.gz"
+        || manifest.source_archive.name
+            != if released {
+                format!("zel-pdf-sources-v{VERSION}.tar.gz")
+            } else {
+                "experimental-pdf-sources.tar.gz".into()
+            }
         || manifest.source_archive.bytes == 0
         || manifest.source_archive.bytes > 1024 * 1024 * 1024
         || !hash_name(&manifest.source_archive.sha256)
         || !hash_name(&manifest.source_manifest_sha256)
     {
-        return Err(fail(
-            "incompatible qualification package or source identity",
-        ));
+        return Err(fail("incompatible PDF package or source identity"));
     }
     for required in RUNNER_FILES
         .map(|n| format!("runner/{n}"))
@@ -201,6 +208,19 @@ fn validate_files(root: &Path, stop: &AtomicBool) -> Result<Verified> {
     {
         if !manifest.files.contains_key(&required) {
             return Err(fail(format!("missing {required}")));
+        }
+    }
+    if released {
+        for required in [
+            "notices/ZELLIJ-PDF-ADAPTER-LICENSE.txt",
+            "notices/ZELLIJ-PDF-ADAPTER-SCOPE.md",
+            "notices/DISTRIBUTION-REVIEW.json",
+            "notices/originals/url/tex/latex/url/url.sty",
+            "notices/originals/url/doc/latex/url/url.tex",
+        ] {
+            if !manifest.files.contains_key(required) {
+                return Err(fail(format!("missing {required}")));
+            }
         }
     }
     let mut dirs = BTreeSet::new();
@@ -347,15 +367,35 @@ fn present(path: &Path) -> Result<bool> {
     }
 }
 
-/// An explicit maintainer endpoint is required. No public download is configured.
-pub(crate) fn obtain(base: &str, offline: bool, stop: &AtomicBool) -> Result<Verified> {
+/// Read-only preflight: inspect the released cache without fetching or executing.
+pub(crate) fn inspect() -> Result<serde_json::Value> {
+    let installed = crate::user_home::root()?.join("cache/pdf").join(VERSION);
+    let cached = present(&installed)?;
+    if cached {
+        validate(&installed, &AtomicBool::new(false), true)?;
+    }
+    Ok(
+        serde_json::json!({"status":if cached {"cached"} else {"download_required"},
+        "version":VERSION,"cache":installed.to_string_lossy()}),
+    )
+}
+
+/// Only the maintainer harness may select the qualification profile.
+pub(crate) fn obtain(
+    base: &str,
+    offline: bool,
+    stop: &AtomicBool,
+    released: bool,
+) -> Result<Verified> {
     check_stop(stop)?;
-    let cache = crate::user_home::root()?
-        .join("cache")
-        .join("pdf-qualification");
+    let cache = crate::user_home::root()?.join("cache").join(if released {
+        "pdf"
+    } else {
+        "pdf-qualification"
+    });
     let installed = cache.join(VERSION);
     if present(&installed)? {
-        return validate(&installed, stop);
+        return validate(&installed, stop, released);
     }
     if offline {
         return Err(fail(
@@ -380,7 +420,11 @@ pub(crate) fn obtain(base: &str, offline: bool, stop: &AtomicBool) -> Result<Ver
     let stage = tempfile::Builder::new()
         .prefix(".download-")
         .tempdir_in(&cache)?;
-    let name = format!("zel-pdf-qualification-v{VERSION}.tar.gz");
+    let name = if released {
+        format!("zel-pdf-v{VERSION}.tar.gz")
+    } else {
+        format!("zel-pdf-qualification-v{VERSION}.tar.gz")
+    };
     let mut checksum = Vec::new();
     crate::package_transfer::download(
         base.join(&(name.clone() + ".sha256")).unwrap(),
@@ -417,21 +461,21 @@ pub(crate) fn obtain(base: &str, offline: bool, stop: &AtomicBool) -> Result<Ver
     let unpacked = stage.path().join("package");
     fs::create_dir(&unpacked)?;
     extract(&archive, &unpacked, stop)?;
-    validate(&unpacked, stop)?;
+    validate(&unpacked, stop, released)?;
     check_stop(stop)?;
     if let Err(error) = fs::rename(&unpacked, &installed)
         && !present(&installed)?
     {
         return Err(error.into());
     }
-    validate(&installed, stop)
+    validate(&installed, stop, released)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use serde_json::{Value, json};
-    const STOP: AtomicBool = AtomicBool::new(false);
+    static STOP: AtomicBool = AtomicBool::new(false);
 
     fn fixture(root: &Path) -> Value {
         fs::create_dir(root).unwrap();
@@ -471,7 +515,7 @@ mod tests {
         .unwrap();
     }
     fn message(root: &Path) -> String {
-        match validate(root, &STOP) {
+        match validate(root, &STOP, false) {
             Ok(_) => panic!("accepted invalid cache"),
             Err(e) => e.to_string(),
         }
@@ -481,7 +525,7 @@ mod tests {
         let temp = tempfile::tempdir().unwrap();
         let root = temp.path().join("resources café 日本");
         let original = fixture(&root);
-        let package = validate(&root, &STOP).unwrap();
+        let package = validate(&root, &STOP, false).unwrap();
         assert_eq!(
             package.script(),
             fs::canonicalize(&root).unwrap().join("runner/process.mjs")
@@ -503,6 +547,47 @@ mod tests {
         altered["source_archive"]["name"] = json!("../source.tar.gz");
         save(&root, &altered);
         assert!(message(&root).contains("source identity"));
+    }
+    #[test]
+    fn released_profile_requires_matching_identity_and_distribution_notices() {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path().join("cache");
+        let mut manifest = fixture(&root);
+        assert!(validate(&root, &STOP, true).is_err());
+        manifest["format"] = json!(2);
+        manifest["kind"] = json!("zellij-pdf-toolchain");
+        manifest["redistribution_review_complete"] = json!(true);
+        manifest["source_archive"]["name"] = json!(format!("zel-pdf-sources-v{VERSION}.tar.gz"));
+        let required = [
+            "notices/ZELLIJ-PDF-ADAPTER-LICENSE.txt",
+            "notices/ZELLIJ-PDF-ADAPTER-SCOPE.md",
+            "notices/DISTRIBUTION-REVIEW.json",
+            "notices/originals/url/tex/latex/url/url.sty",
+            "notices/originals/url/doc/latex/url/url.tex",
+        ];
+        for name in required {
+            save(&root, &manifest);
+            assert!(validate(&root, &STOP, true).is_err());
+            let file = root.join(name);
+            fs::create_dir_all(file.parent().unwrap()).unwrap();
+            fs::write(file, b"synthetic").unwrap();
+            manifest["files"][name] =
+                json!({"bytes":9,"sha256":format!("{:x}",Sha256::digest(b"synthetic"))});
+        }
+        save(&root, &manifest);
+        assert!(validate(&root, &STOP, true).is_ok());
+        assert!(validate(&root, &STOP, false).is_err());
+        for (key, value) in [
+            ("version", json!("0.0.0")),
+            ("format", json!(1)),
+            ("kind", json!("experimental-pdf-toolchain")),
+            ("redistribution_review_complete", json!(false)),
+        ] {
+            let mut altered = manifest.clone();
+            altered[key] = value;
+            save(&root, &altered);
+            assert!(validate(&root, &STOP, true).is_err());
+        }
     }
     #[test]
     fn changed_missing_extra_and_linked_cache_files_are_preserved_and_rejected() {

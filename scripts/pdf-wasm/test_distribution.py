@@ -124,6 +124,12 @@ class DistributionTest(unittest.TestCase):
                 self.assertEqual(source.read(10)[4:8], b"\0" * 4)
         with tarfile.open(self.root / "first/experimental-pdf-sources.tar.gz", "r:gz") as tar:
             self.assertEqual(tar.extractfile("upstream/ec.tar.xz").read(), (self.cache / "ec.tar.xz").read_bytes())
+            for original, packaged in [("LICENSE", "ZELLIJ-PDF-ADAPTER-LICENSE.txt"),
+                                       ("LICENSE-SCOPE.md", "ZELLIJ-PDF-ADAPTER-SCOPE.md"),
+                                       ("NOTICE", "ZELLIJ-ADAPTER-NOTICE.txt")]:
+                expected = (d.HERE / original).read_bytes()
+                self.assertEqual(tar.extractfile("scripts/pdf-wasm/" + original).read(), expected)
+                self.assertEqual(tar.extractfile("notices/" + packaged).read(), expected)
             manifest = json.load(tar.extractfile("SOURCE-MANIFEST.json"))
             for item in manifest["files"]:
                 data = tar.extractfile(item["name"]).read()

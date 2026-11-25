@@ -43,13 +43,14 @@ await mkdir(emptyPath);
 
 function execute(executable, args, env = {}, timeout = 45_000) {
   return new Promise((resolve, reject) => {
+    const started = performance.now();
     const child = spawn(executable, args, { env: { ...process.env, ...env }, stdio: ['ignore', 'pipe', 'pipe'] });
     let stdout = '', stderr = '';
     const timer = setTimeout(() => { child.kill(); reject(new Error(`Acceptance deadline: ${stderr}`)); }, timeout);
     child.stdout.on('data', b => { stdout += b; });
     child.stderr.on('data', b => { stderr += b; });
     child.once('error', e => { clearTimeout(timer); reject(e); });
-    child.once('close', (code, signal) => { clearTimeout(timer); resolve({ code, signal, stdout, stderr }); });
+    child.once('close', (code, signal) => { clearTimeout(timer); resolve({ code, signal, stdout, stderr, elapsedMs: Math.round(performance.now() - started) }); });
   });
 }
 async function endpoint(handle) {
@@ -66,12 +67,16 @@ async function noStage(home) {
 }
 function invoke(home, url, mode, output, env = {}) {
   return execute(runner, [url, mode, process.execPath, input, output],
-    { PATH: emptyPath, ZELLIJ_HOME: home, ...env });
+    { PATH: emptyPath, ZELLIJ_HOME: home, ZEL_PDF_CACHE_TEST_TRACE: '1', ...env },
+    // Three-pass compilation is not a 45-second performance contract. Match the
+    // installed-command acceptance budget; production/supervisor limits stay fixed.
+    mode === 'inspect' ? 45_000 : 120_000);
 }
 const goodHome = path.join(temp, 'Zellij home café 日本');
 let assertions = 0;
+const timings = {};
 
-test('versioned PDF package cache acceptance', { timeout: 180_000 }, async t => {
+test('versioned PDF package cache acceptance', { timeout: 360_000 }, async t => {
   t.after(async () => { await rm(temp, { recursive: true, force: true }); });
   const generated = await execute(generator, [path.join(root, 'scripts/fixtures/pdf-book'), input]);
   assert.equal(generated.code, 0, generated.stderr);
@@ -83,12 +88,14 @@ test('versioned PDF package cache acceptance', { timeout: 180_000 }, async t => 
     });
     try {
       const first = await invoke(goodHome, server.url, 'online', path.join(temp, 'online'));
+      t.diagnostic(first.stderr.trim());
       assert.equal(first.code, 0, first.stderr);
       const evidence = JSON.parse(first.stdout);
       assert.equal(evidence.manifestSha256, report.manifestSha256);
       assert.deepEqual(evidence.sourceArchive, report.sourceArchive);
       assert.deepEqual(server.requests, [`/${archive}.sha256`, `/${archive}`]);
       const second = await invoke(goodHome, server.url, 'offline', path.join(temp, 'offline'));
+      t.diagnostic(second.stderr.trim());
       assert.equal(second.code, 0, second.stderr);
       assert.equal(server.requests.length, 2);
       await cp(path.join(temp, 'online'), path.join(evidenceRoot, 'online'), { recursive: true });
@@ -98,6 +105,8 @@ test('versioned PDF package cache acceptance', { timeout: 180_000 }, async t => 
       const proof = JSON.parse(await readFile(path.join(temp, 'offline/probe.json')));
       assert.deepEqual(proof.execution, { kind: 'rust-process', node: process.version });
       await noStage(goodHome);
+      timings.coldMs = first.elapsedMs;
+      timings.offlineMs = second.elapsedMs;
       assertions++;
     } finally { await server.close(); }
   });
@@ -168,6 +177,6 @@ test('versioned PDF package cache acceptance', { timeout: 180_000 }, async t => 
   await writeFile(path.join(evidenceRoot, 'verification.json'), JSON.stringify({ schemaVersion: 1,
     experimental: true, redistributionReviewComplete: false, platform: `${process.platform}-${process.arch}`,
     assertions, archive: report.archive, manifestSha256: report.manifestSha256,
-    sourceArchive: report.sourceArchive, emptyPath: true, coldAndOfflineCompiled: true,
+    sourceArchive: report.sourceArchive, emptyPath: true, coldAndOfflineCompiled: true, timings,
     pdfComparison: 'all bytes except exactly two PDF timestamps and one document-ID pair' }, null, 2) + '\n');
 });

@@ -86,6 +86,13 @@ fn inspect(input: Option<&SiteInput>, report: &mut Value) -> Result<()> {
                 report["runtime"] = json!({ "status": "not_required" });
                 return Ok(());
             }
+            if crate::pdf::selected_backend() == crate::pdf::Backend::Cached {
+                report["runtime"] = json!({ "status": "not_required" });
+                report["pdf_backend"] = json!("cached");
+                report["pdf_engine"] = crate::pdf_package::inspect()?;
+                report["rich_engine"] = crate::rich_build::inspect_cache()?;
+                return Ok(());
+            }
             report["runtime"] = json!({ "status": "unavailable" });
             let runtime = zellij_engine::runtime::detect()?;
             report["runtime"] = json!({ "status": "available", "program": runtime.program,
@@ -145,7 +152,19 @@ fn human(report: &Value) {
     let runtime = &report["runtime"];
     match runtime["status"].as_str() {
         Some("not_required") => {
-            if report["site"]["renderer"] == "hosted" {
+            if report["pdf_backend"] == "cached" {
+                zellij_core::reportln!("  · not required for cached PDF builds; not probed");
+                for (label, key) in [
+                    ("PDF compiler", "pdf_engine"),
+                    ("Private runtime", "rich_engine"),
+                ] {
+                    zellij_core::reportln!(
+                        "  {label}: {} ({})",
+                        text(&report[key]["status"]),
+                        text(&report[key]["cache"])
+                    );
+                }
+            } else if report["site"]["renderer"] == "hosted" {
                 zellij_core::reportln!("  · not required for rich file builds; not probed");
                 zellij_core::reportln!(
                     "  Rich renderer: {} ({})",

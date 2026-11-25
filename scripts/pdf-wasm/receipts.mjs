@@ -17,6 +17,7 @@ for (const [runner, platform] of matrix) {
   const dir = path.join(root, `pdf-format-receipts-${runner}`);
   const toolchain = await json(path.join(dir, 'pdf-toolchain/verification.json'));
   const cache = await json(path.join(dir, 'pdf-cache/verification.json'));
+  const installed = await json(path.join(dir, 'pdf-installed/verification.json'));
   if (reference) assert.deepEqual(toolchain, reference, `Package/source bytes differ on ${platform}`);
   else reference = toolchain;
   assert.equal(toolchain.experimental, true);
@@ -28,14 +29,25 @@ for (const [runner, platform] of matrix) {
   assert.equal(cache.manifestSha256, toolchain.manifestSha256);
   assert.deepEqual(cache.archive, toolchain.archive);
   assert.deepEqual(cache.sourceArchive, toolchain.sourceArchive);
+  for (const key of ['coldMs', 'offlineMs']) {
+    assert(Number.isInteger(cache.timings?.[key]) && cache.timings[key] > 0, `Missing ${key} timing on ${platform}`);
+  }
+  assert.equal(installed.platform, platform);
+  assert.equal(installed.fixtureOnly, true);
+  assert.equal(installed.releaseApproved, false);
+  assert.equal(installed.cases, 4);
+  assert.equal(installed.emptyPath, true);
+  assert.equal(installed.privateNodeReused, true);
+  assert.equal(installed.coldRequests, 4);
+  assert.equal(installed.offlineWatchRebuilt, true);
   platforms.push(platform);
 }
 const sources = await json('test-results/pdf-package-source-receipt/verification.json');
 assert.deepEqual(reference.sourceArchive, sources.sources.archive);
 assert.equal(reference.sourceManifestSha256, sources.sourceManifestSha256);
 const evidence = { schemaVersion: 1, experimental: true, redistributionReviewComplete: false,
-  platforms, cacheScenarios: 78, compilations: 12, archive: reference.archive,
+  platforms, cacheScenarios: 78, compilations: 12, installedCliScenarios: 24, archive: reference.archive,
   manifestSha256: reference.manifestSha256, sourceArchive: reference.sourceArchive,
   sourceManifestSha256: reference.sourceManifestSha256 };
 await writeFile('test-results/pdf-package-parity.json', JSON.stringify(evidence, null, 2) + '\n');
-console.log('Six identical runtime/source packages; 78 cache scenarios and 12 real compilations passed.');
+console.log('Six identical runtime/source packages; 78 cache scenarios, 12 cache compilations and 24 installed CLI scenarios passed.');

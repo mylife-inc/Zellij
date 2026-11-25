@@ -4,8 +4,8 @@
   "redistributionReviewComplete": false,
   "resolvedItems": [
     {
-      "item": "Complete engine rebuild and relink qualification against receipt-bound outputs.",
-      "evidence": "PR #244: clean engine rebuild matches the locked JS/Wasm outputs; PR #245: independent format rebuild on all six targets."
+      "item": "Complete clean engine rebuild qualification against receipt-bound outputs.",
+      "evidence": "PR #244: clean engine rebuild matches the locked JS/Wasm outputs; PR #245: independent format rebuild on all six targets. The earlier combined rebuild/relink wording was too broad: PR #244 explicitly leaves modified-library relink qualification open."
     },
     {
       "item": "Complete the precompiled format input inventory and generated font-metadata source closure.",
@@ -17,7 +17,7 @@
     }
   ],
   "runtimeLockSha256": "127aadeb9522b7b92fdeb0e6f14ea17e3a4569615304f1bf1e6580cff5235a47",
-  "policySha256": "3a69bd2b94dae51b71e7a4166d367ea0e223293fc0d590a72040847b9a57c51d",
+  "policySha256": "7c4641a59ee11ca324a0de8a71f1d89a1078c5b9b3f86bd9515c6de446147255",
   "metadata": [
     {
       "name": "texlive-provenance.json",
@@ -854,7 +854,8 @@
   "supportingNotices": [],
   "openItems": [
     "Preserve the complete EC font distribution required by copyrite.txt in any eventual redistribution.",
-    "Complete the final component/font redistribution review and supply matching source with any release."
+    "Complete the final component/font redistribution review and supply matching source with any release.",
+    "Qualify modified-library relinking separately from the already completed clean engine rebuild."
   ],
   "recipe": {
     "schemaVersion": 1,
