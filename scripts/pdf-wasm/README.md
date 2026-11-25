@@ -14,24 +14,47 @@ development CLI integration reuses the verified private Node in the renderer
 cache rather than asking users to install Node or download a second copy.
 
 The installed-command acceptance test (`node --test scripts/pdf-wasm/installed.test.mjs`)
-uses the qualification package in `test-results/pdf-toolchain` (override with
-`ZEL_PDF_TOOLCHAIN`). Its temporary loopback server supplies a synthetic release
-manifest solely to exercise the contract; this is not a reviewed distribution.
+uses the actual reviewed package in `test-results/pdf-release/toolchain` (override
+with `ZEL_PDF_RELEASE_TOOLCHAIN`). Its temporary loopback server supplies the
+unchanged runtime archive and checksum; only the renderer shell is a fixture.
 With an empty system PATH it checks cold download, native compatibility checking,
 offline cache misses, `export pdf`, `build --pdf`, output preservation and a
-watched offline `view`. Only its verification receipt may be uploaded. Never
-publish these temporary fixture archives or treat their simulated review flag
-as compiler distribution approval. The ordinary qualification package/cache remains separate.
+watched offline `view`. PR jobs upload receipts only. Public download acceptance
+remains separate, and the ordinary qualification package/cache remains separate.
 
 Shebka's original work in this directory is licensed under GPL-2.0-only, as
 approved by the owner on 24 November 2026. See [LICENSE-SCOPE.md](LICENSE-SCOPE.md)
 and [LICENSE](LICENSE); the upstream MIT notice remains in [NOTICE](NOTICE).
 The Rust CLI, website engine and other directories retain their existing terms.
 The source/runtime qualification packages preserve these files. This scoped
-grant does not complete third-party component review or approve compiler publication.
+grant applies only to this directory. The exact component review is recorded in
+[distribution-review.md](distribution-review.md) and its machine-checked JSON inventory.
 
 See the [CLI integration record](../../specs/zellij-cached-pdf-cli-2026-11-24.md)
 and the [distribution decision](../../specs/zellij-pdf-distribution-decision-2026-11-24.md).
+
+## Reviewed release packaging
+
+After preparing the verified original source cache and compact resources:
+
+```sh
+python scripts/pdf-wasm/release.py SOURCE_CACHE test-results/pdf-compact/package test-results/pdf-release --version 0.2.0-rc.19
+node --test scripts/pdf-wasm/installed.test.mjs
+```
+
+This builds private acceptance assets at the current source version; it does not
+replace the published rc.19 or publish anything. The artifacts directory contains
+the versioned optional runtime, separate matching source archive and both SHA-256
+files. The runtime reuses the renderer's private Node and excludes the large
+source download. A changed input invalidates distribution-review.json; the
+inventory command records observations and never approves a review automatically.
+
+The release workflow requires all six platform jobs, offline source replay and
+runtime/source parity before publishing this pair alongside a future CLI release.
+The full source archive and notices must remain available with every offered
+runtime, including after repository sealing. Ordinary PR runs upload receipts,
+not compiler archives. See [release-sources.md](release-sources.md) for rebuilding
+and the executable modified-library relink proof.
 
 ## Run
 
@@ -141,8 +164,8 @@ runner; other runners test offline generation and isolation without containers.
 - Run installed/public-package acceptance before changing the documented
   prerequisites or cutting the candidate that includes this backend.
 
-The probe workflow uploads Zellij-produced PDFs/logs only. It does not upload or
-redistribute the experimental engine/data bundle.
+Ordinary probe runs upload Zellij-produced PDFs/logs and verification receipts.
+Only a release caller requests the reviewed runtime/source pair as artifacts.
 
 ## Versioned package and cache qualification
 
@@ -151,7 +174,8 @@ notices into a single versioned optional archive. It verifies the complete
 corresponding-source archive and refuses stale build recipes before binding its
 size, hash and source-manifest hash into the runtime manifest. The source archive
 and private Node are separate; neither is duplicated inside the runtime download.
-The package remains explicitly experimental, with redistribution review pending.
+This qualification profile remains explicitly experimental; release.py selects
+the separately reviewed release profile described above.
 
 ```sh
 python scripts/pdf-wasm/distribution.py SOURCE_CACHE test-results/pdf-toolchain-distribution
@@ -162,7 +186,7 @@ node --test scripts/pdf-wasm/cache.test.mjs
 ```
 
 The Rust `pdf_cache` example downloads from an explicit maintainer endpoint;
-there is no public PDF package URL or installed CLI command. It uses the shared
+its qualification profile has no public package URL. It uses the shared
 cancellable transfer, bounds archive/extraction sizes, rejects unsafe paths,
 links/junctions, case aliases, unlisted/missing files and hash/version mismatches,
 and verifies every cached file before reuse. Failed acquisition removes only its
@@ -172,8 +196,8 @@ Qualification entries live under `$ZELLIJ_HOME/cache/pdf-qualification/VERSION`
 (default `~/Dev/config/zellij/cache/pdf-qualification/VERSION`), separate from
 future released toolchains. Offline misses make no request and create no cache;
 valid offline entries run the packaged scripts through the Rust supervisor.
-The harness passes an absolute Node 24 executable; production CLI integration
-must reuse the renderer's verified private Node. A checksum supplied by a chosen
+The harness passes an absolute Node 24 executable; installed CLI integration
+reuses the renderer's verified private Node. A checksum supplied by a chosen
 endpoint does not independently authenticate that endpoint, and these checks do
 not prevent arbitrary concurrent hostile filesystem replacement.
 
@@ -183,14 +207,15 @@ rejection, and cancellation during stalled transfers. Only receipts are uploaded
 An aggregate job compares all six runtime/source identities with the independently
 built source archive. Source text uses LF on every checkout, and archive members
 are sorted as portable strings rather than platform-specific Path objects.
-The installed `zel pdf`, build integration and published prerequisites remain
-unchanged until distribution review, dispatch and public-package acceptance finish.
+Development CLI dispatch supports the reviewed package with an explicit cached
+backend. Released rc.19 and its published prerequisites remain unchanged until
+the next candidate and public-package acceptance.
 
 ## Process supervision contract
 
-`process.mjs` supplies a runner entry point for the future Rust cache integration
-and a maintainer acceptance adapter, `compileProcess`. Installed `zel` does not
-invoke it yet. After preparing the compact package, run:
+`process.mjs` supplies the runner entry point for Rust cache integration and a
+maintainer acceptance adapter, `compileProcess`. Development `zel` invokes it
+with the cached backend. After preparing the compact package, run:
 
 ```sh
 ZEL_PDF_COMPACT_PACKAGE="$PWD/test-results/pdf-compact/package" node --test scripts/pdf-wasm/process.test.mjs
@@ -233,9 +258,8 @@ use the separate-process path and retain the native Linux PDF comparison.
 
 Process/worker heap flags and existing guest budgets do not establish a hard
 total RSS limit. This does not turn `node:vm` or Node's permission model into a
-security sandbox. Final isolation review, Rust ownership/download/cache
-integration, distribution review and installed-package acceptance remain before
-the cached PDF backend can be released.
+security sandbox. Rust ownership, cache integration and component review are
+implemented; the paired-package and public-release gates above still apply.
 
 ## Source correspondence and notices
 
@@ -328,12 +352,12 @@ before publication and preserves pre-existing outputs and corrupt inputs.
 `SOURCE-MANIFEST.json` inventories the source package; `NOTICES.json` maps the
 original notices and records review items. CI replays source verification and
 format/font preparation using only the packaged scripts and upstream files.
-Only `verification.json` is uploaded, never either archive or the copied sources.
+Ordinary PR jobs upload verification receipts, not these archives or copied sources.
 
 The earlier 3.4 notice issue remains documented in the historical audit records.
 Its code is absent from the new runtime/source package selection. The package
-preparation does not change any original terms or complete the final component
-redistribution review. The archive's own READMEs explain its contents, offline
+preparation does not change any original terms. The separate release profile
+requires the exact component review. The archive's own READMEs explain its contents, offline
 verification and original compiler rebuild instructions.
 
 ## Rebuild the format from original sources
@@ -412,9 +436,9 @@ matches the complete manifest against the reviewed inventory before resolving
 any blob, then checks every used byte. It reads neither the old precompiled
 format nor either upstream metadata file. The local archive is 10,845,108 bytes;
 compression-library versions can affect archive bytes, while the uncompressed
-manifest and blob identities must agree. This is **not a release package**: final
-notices, source-distribution arrangements and the installed runtime/CLI entry
-point remain separate work. No private Node runtime is included here.
+manifest and blob identities must agree. This is **not a release package**:
+release.py adds the required reviewed notices, source pairing and CLI runner.
+No private Node runtime is included here.
 
 To test the assembled resource directory, start with a new `test-results/pdf-wasm`
 output (move an existing generated result if it needs preservation):

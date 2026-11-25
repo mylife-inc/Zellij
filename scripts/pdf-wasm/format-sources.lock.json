@@ -4,6 +4,14 @@
   "redistributionReviewComplete": false,
   "resolvedItems": [
     {
+      "item": "Complete the final component/font redistribution review and matching source arrangement.",
+      "evidence": "The 2026-11-24 distribution-review.json binds exact original resources, component notices and scoped adapter terms. Release packaging requires matching source beside the runtime; publication and public-download acceptance remain separate gates."
+    },
+    {
+      "item": "Preserve the complete EC font distribution and qualify modified-library relinking.",
+      "evidence": "The distribution packager verifies every original EC manifest entry. PR #253 records a network-disabled modified-library rebuild, executed markers for kpathsea/Graphite2/zziplib and three successful typesetting passes; the exact patch and evidence are retained alongside the source recipe."
+    },
+    {
       "item": "Complete clean engine rebuild qualification against receipt-bound outputs.",
       "evidence": "PR #244: clean engine rebuild matches the locked JS/Wasm outputs; PR #245: independent format rebuild on all six targets. The earlier combined rebuild/relink wording was too broad: PR #244 explicitly leaves modified-library relink qualification open."
     },
@@ -17,7 +25,7 @@
     }
   ],
   "runtimeLockSha256": "0368bbeed9b098009cd24c3e3beb10ff818e4012133cb8b705c8f5450e2b2189",
-  "policySha256": "04992632d45134b608ef8706980277c55e0b51882ef24634490cdc41d52af796",
+  "policySha256": "73197c47b5092144dc6cef6d8b07816a232f2f5bd0cddc6bd88d024bfa550cbc",
   "metadata": [
     {
       "name": "texlive-provenance.json",
@@ -259,7 +267,8 @@
       },
       "noticePaths": [
         "texmf-dist/tex/generic/config/language.dat",
-        "texmf-dist/tex/generic/config/language.us"
+        "texmf-dist/tex/generic/config/language.us",
+        "texmf-dist/tex/generic/hyphen/hyphen.tex"
       ],
       "archives": [
         {
@@ -1121,9 +1130,6 @@
   "generatedResources": [],
   "supportingNotices": [],
   "openItems": [
-    "Preserve the complete EC font distribution required by copyrite.txt in any eventual redistribution.",
-    "Complete the final component/font redistribution review and supply matching source with any release.",
-    "Qualify modified-library relinking separately from the already completed clean engine rebuild.",
     "Retain the Knuth source header and catalogue terms; null.tex contains no license text (https://ctan.org/pkg/knuth-lib, https://ctan.org/license/knuth)."
   ],
   "recipe": {

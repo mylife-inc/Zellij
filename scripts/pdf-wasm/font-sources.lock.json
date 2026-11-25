@@ -4,6 +4,14 @@
   "redistributionReviewComplete": false,
   "resolvedItems": [
     {
+      "item": "Complete the final component/font redistribution review and matching source arrangement.",
+      "evidence": "The 2026-11-24 distribution-review.json binds exact original resources, component notices and scoped adapter terms. Release packaging requires matching source beside the runtime; publication and public-download acceptance remain separate gates."
+    },
+    {
+      "item": "Preserve the complete EC font distribution and qualify modified-library relinking.",
+      "evidence": "The distribution packager verifies every original EC manifest entry. PR #253 records a network-disabled modified-library rebuild, executed markers for kpathsea/Graphite2/zziplib and three successful typesetting passes; the exact patch and evidence are retained alongside the source recipe."
+    },
+    {
       "item": "Complete clean engine rebuild qualification against receipt-bound outputs.",
       "evidence": "PR #244: clean engine rebuild matches the locked JS/Wasm outputs; PR #245: independent format rebuild on all six targets. The earlier combined rebuild/relink wording was too broad: PR #244 explicitly leaves modified-library relink qualification open."
     },
@@ -17,7 +25,7 @@
     }
   ],
   "runtimeLockSha256": "127aadeb9522b7b92fdeb0e6f14ea17e3a4569615304f1bf1e6580cff5235a47",
-  "policySha256": "7c4641a59ee11ca324a0de8a71f1d89a1078c5b9b3f86bd9515c6de446147255",
+  "policySha256": "919cc9ee81bc8eb9feb518da11256d3f0db26b747ff3cbad03453ad638b9fcdb",
   "metadata": [
     {
       "name": "texlive-provenance.json",
@@ -852,11 +860,7 @@
   ],
   "generatedResources": [],
   "supportingNotices": [],
-  "openItems": [
-    "Preserve the complete EC font distribution required by copyrite.txt in any eventual redistribution.",
-    "Complete the final component/font redistribution review and supply matching source with any release.",
-    "Qualify modified-library relinking separately from the already completed clean engine rebuild."
-  ],
+  "openItems": [],
   "recipe": {
     "schemaVersion": 1,
     "entrypoint": "luaotfload-tool.lua",

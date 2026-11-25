@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "kind": "local-modified-library-relink-evidence",
+  "sourceArchive": {
+    "name": "corresponding-source.tar.xz",
+    "url": "https://github.com/corca-ai/wasmtex/releases/download/engine-2026-f5d94438a7c75a23/wasmtex-2026-f5d94438a7c75a23-source.tar.xz",
+    "sha256": "e6a1f9b8ad84c7127368bb521217af381407fcc0d5c5518114345d55b470d637"
+  },
+  "engineGeneration": "a97db8a62ed86b118bcfcc8784b7752aa8e988ac",
+  "builderImage": "sha256:c527fe86e75001e77ac7728f7d1d19ea6c763d284c02ad7595fbeecc9e9d1a42",
+  "builderPhase": "Native code-generation image reused from the byte-reproducible PR244 build; entire Wasm target phase rebuilt from an empty target directory.",
+  "network": "none",
+  "exitCode": 0,
+  "oomKilled": false,
+  "patchSha256": "ee0f9e4f160375fc0d6a06f01aa1b8ab14d499b3e2f701ee970a3dfc5555b307",
+  "changes": [
+    {
+      "name": "build.sh",
+      "path": "/src/build-luatex.sh",
+      "originalSha256": "ade5359182eadd3fb5401b78ae5236c8476785100233ff1003be7b9fe9328add",
+      "modifiedSha256": "6bb7c94c7cd935a05cedc96055032340fe658ff29c8360429dcc641308c8c724"
+    },
+    {
+      "name": "entry.c",
+      "path": "/src/luatex-entry.c",
+      "originalSha256": "94e18074a82c5919aa764ef04973c4754f876a7836845d2d14551ca169d76e6e",
+      "modifiedSha256": "a87afb3364eb6109ccb8987ff824caabd7b0fbd31bdf7998f573391a09a672ae"
+    },
+    {
+      "name": "graphite.cpp",
+      "path": "/src/texlive-source/libs/graphite2/graphite2-src/src/gr_font.cpp",
+      "originalSha256": "b395fa9710de654d09c8efc99a849c2467b845916bd39a0efe583b434788ecdf",
+      "modifiedSha256": "cefd7f020d507eafbd6717d3976650626183e58f013202ce15550ba759467087"
+    },
+    {
+      "name": "kpathsea.c",
+      "path": "/src/texlive-source/texk/kpathsea/version.c",
+      "originalSha256": "818b3b11dff4bbe87efacd39230834d3a1153064d6487fea91ebb5706b6eb7e5",
+      "modifiedSha256": "3edb66753ed70bce5e55a9b5f1132125f8c845bc300cca56178d8985d9197b3b"
+    },
+    {
+      "name": "zzip.c",
+      "path": "/src/texlive-source/libs/zziplib/zziplib-src/zzip/err.c",
+      "originalSha256": "9c2c7c1d9d2baec40f030fee6a94004f0e3737f26babff36413b3fbb23a24cf3",
+      "modifiedSha256": "9eff155ea5703cba6d74fb1a6781879c2b8b5e5ca5f2e344c2b9d59cc0f7ae76"
+    }
+  ],
+  "libraryFileCount": 556,
+  "libraryInventorySha256": "92955b2f798cf8df232aac95521b17189056ebd5cb3dd1c2022547c3f86e58a3",
+  "linkedArchives": [
+    "texlive-build/libs/graphite2/libgraphite2.a",
+    "texlive-build/libs/harfbuzz/libharfbuzz.a",
+    "texlive-build/libs/libpng/libpng.a",
+    "texlive-build/libs/lua53/.libs/libtexlua53.a",
+    "texlive-build/libs/xpdf/libxpdf.a",
+    "texlive-build/libs/zlib/libz.a",
+    "texlive-build/libs/zziplib/libzzip.a",
+    "texlive-build/texk/kpathsea/.libs/libkpathsea.a",
+    "emscripten-sysroot/lto/libc++-noexcept.a",
+    "emscripten-sysroot/lto/libc++abi-noexcept.a",
+    "emscripten-sysroot/lto/libc.a",
+    "emscripten-sysroot/lto/libcompiler_rt.a",
+    "emscripten-sysroot/lto/libdlmalloc.a",
+    "emscripten-sysroot/lto/libsockets.a",
+    "emscripten-sysroot/lto/libstubs.a",
+    "lib/lib.a",
+    "libff.a",
+    "libluaffi.a",
+    "libluaharfbuzz.a",
+    "libluaharfbuzzsubset.a",
+    "libluahbtexspecific.a",
+    "libluamisc.a",
+    "libluasocket.a",
+    "libluatex.a",
+    "libmd5.a",
+    "libmplibcore.a",
+    "libmputil.a",
+    "libunilib.a"
+  ],
+  "execution": {
+    "qualificationOnly": true,
+    "releaseApproved": false,
+    "inputsSha256": "d630d5f5ea7d87bf5144898f7263e37c1b27528bbacb51a64cc9b8a0b8254bca",
+    "originalEngine": {
+      "js": "2b16bc7f892a068a548e8950b7d3987f6b23ff2bac4ba6258520739a402906ef",
+      "wasm": "a5d940bf6e8f989c55816ceb06dfad8687100a58d109fa92873175ed4e48b53e"
+    },
+    "modifiedEngine": {
+      "js": {
+        "bytes": 117016,
+        "sha256": "da1a9f323364880060401ca8ed829700c254aac07c91483263bd045765479c32"
+      },
+      "wasm": {
+        "bytes": 8077426,
+        "sha256": "252ba3840b36a288bc918abbc140028d41a12955347e90ef6cb9a7ccd7c02e3d"
+      }
+    },
+    "importMapUnchanged": true,
+    "adapterSha256": "d05abcf71de8a380d790448aec5a78d461096fe7f79e72fadf998bff606739b9",
+    "instrumentedAdapterSha256": "0a158ad2295a1485da26b2c7e8bfb398e65cd1a0b3e4d6159046d800ba601c36",
+    "verifierSha256": "94eee300f73863590d564839996095427ce20b73f3145521e1d12ad2a34ad0b8",
+    "nodeVersion": "v24.22.3",
+    "nodeSha256": "796184b9a19ed300b1ba7cd0f7e49558fee9fc0f05080bb036025490a5a2edf3",
+    "manuscriptSha256": "4f74edc664f4120f67ab7457f49f37d87402da87fc0dd8b763611e3932cdf5a2",
+    "pdfSha256": "40d9a941e4c8dfbdfe9e349be83bf81a2bdb98de14fbe79700d1801926bfc1ce",
+    "passes": [
+      {
+        "pass": 1,
+        "relinkProof": 7,
+        "pdfBytes": 18247,
+        "heapBytes": 266403840
+      },
+      {
+        "pass": 2,
+        "relinkProof": 7,
+        "pdfBytes": 20670,
+        "heapBytes": 266403840
+      },
+      {
+        "pass": 3,
+        "relinkProof": 7,
+        "pdfBytes": 20670,
+        "heapBytes": 253689856
+      }
+    ]
+  },
+  "pdfInspection": {
+    "pages": 3,
+    "contents": true,
+    "resolvedSectionReference": "1.1"
+  },
+  "evidenceUrl": "https://github.com/mylife-inc/Zellij/pull/253",
+  "retainedFinding": "First handwritten fixture omitted unicode-math and requested unavailable bitmap cmr10. The unchanged compiler reproduces it. The successful fixture uses the supported OpenType math path.",
+  "linkTraceSha256": "3bd48158d89d8a4aabee4685af82d5e25b799da12fd10ac2050d4675388fc9fc"
+}
