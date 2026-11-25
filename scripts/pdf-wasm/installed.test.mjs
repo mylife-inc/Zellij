@@ -25,6 +25,7 @@ const site = path.join(root, 'book café 日本');
 const emptyPath = path.join(root, 'empty');
 const archiveRoot = path.join(root, 'archives');
 const requests = [];
+let passed = 0;
 const evidencePath = path.join(repo, 'test-results/pdf-installed/verification.json');
 await rm(evidencePath, { force: true });
 let base;
@@ -115,6 +116,7 @@ test('installed CLI uses cached PDF execution and its verified private Node', { 
     assert.notEqual(result.code, 0); assert.match(result.stderr, /not cached/);
     assert.deepEqual(requests, []);
     await assert.rejects(readdir(home), { code: 'ENOENT' });
+    passed++;
   });
   await t.test('cold PDF downloads both packages with an empty PATH and records the real backend', async () => {
     await good(['pdf', site]);
@@ -134,6 +136,7 @@ test('installed CLI uses cached PDF execution and its verified private Node', { 
     const diagnosis = JSON.parse((await good(['doctor', site, '--json'])).stdout);
     assert.equal(diagnosis.pdf_engine.status, 'cached');
     assert.equal(diagnosis.rich_engine.status, 'cached');
+    passed++;
   });
   await t.test('offline alias and PDF-enabled build reuse both caches and preserve output on corruption', async () => {
     await good(['export', 'pdf', site, '--offline']);
@@ -154,6 +157,7 @@ test('installed CLI uses cached PDF execution and its verified private Node', { 
       assert.deepEqual(await readFile(path.join(site, 'site/_zellij/pdf/book.pdf')), before);
       assert.equal(requests.length, 4);
     } finally { await rename(node + '.saved', node); }
+    passed++;
   });
   await t.test('watched preview rebuilds cached PDFs offline and serves the matching download', async () => {
     const run = launch(['view', site, '--pdf', '--offline', '--watch', '--no-open', '--port', '0']);
@@ -175,9 +179,11 @@ test('installed CLI uses cached PDF execution and its verified private Node', { 
       assert.equal(hash(Buffer.from(await updated.arrayBuffer())), after.pdf_sha256);
       assert.equal(requests.length, 4);
     } finally { run.child.kill(); await run.done; }
+    passed++;
   });
+  assert.equal(passed, 4, 'Do not emit a passing receipt for failed subtests');
   const evidence = { schemaVersion: 1, fixtureOnly: true, releaseApproved: false,
-    platform: `${process.platform}-${process.arch}`, cases: 4, emptyPath: true,
+    platform: `${process.platform}-${process.arch}`, cases: passed, emptyPath: true,
     privateNodeReused: true, coldRequests: requests.length, offlineWatchRebuilt: true };
   await mkdir(path.join(repo, 'test-results/pdf-installed'), { recursive: true });
   await writeFile(evidencePath, JSON.stringify(evidence, null, 2) + '\n');

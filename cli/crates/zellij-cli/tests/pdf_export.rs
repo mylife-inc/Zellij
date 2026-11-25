@@ -58,6 +58,18 @@ fn cached_pdf_preflight_is_read_only_and_offline_never_falls_back_to_container()
     assert_eq!(before, fs::read(root.join("site/index.html")).unwrap());
     assert!(!root.join("pdf").exists());
     assert!(!home.exists());
+    let cache = home.join("cache/pdf").join(env!("CARGO_PKG_VERSION"));
+    fs::create_dir_all(&cache).unwrap();
+    fs::write(cache.join("manifest.json"), "broken").unwrap();
+    let diagnosis = run(&["doctor"]);
+    assert!(!diagnosis.status.success());
+    let text = String::from_utf8_lossy(&diagnosis.stdout);
+    assert!(text.contains("not required for cached PDF builds"));
+    assert!(!text.contains("portable web-only"));
+    assert_eq!(
+        fs::read_to_string(cache.join("manifest.json")).unwrap(),
+        "broken"
+    );
 }
 #[test]
 fn pdf_is_explicit_check_is_native_and_missing_runtime_keeps_previous_output() {

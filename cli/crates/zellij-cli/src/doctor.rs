@@ -88,6 +88,7 @@ fn inspect(input: Option<&SiteInput>, report: &mut Value) -> Result<()> {
             }
             if crate::pdf::selected_backend() == crate::pdf::Backend::Cached {
                 report["runtime"] = json!({ "status": "not_required" });
+                report["pdf_backend"] = json!("cached");
                 report["pdf_engine"] = crate::pdf_package::inspect()?;
                 report["rich_engine"] = crate::rich_build::inspect_cache()?;
                 return Ok(());
@@ -151,7 +152,7 @@ fn human(report: &Value) {
     let runtime = &report["runtime"];
     match runtime["status"].as_str() {
         Some("not_required") => {
-            if !report["pdf_engine"].is_null() {
+            if report["pdf_backend"] == "cached" {
                 zellij_core::reportln!("  · not required for cached PDF builds; not probed");
                 for (label, key) in [
                     ("PDF compiler", "pdf_engine"),
