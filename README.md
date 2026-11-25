@@ -87,6 +87,12 @@ preface, part, chapters and appendix. `zel build my-book --pdf` optionally adds
 a LuaLaTeX PDF and download link. Add `--pdf-backend cached` to generate it with
 the verified downloaded compiler/private Node, without installed Docker, Node,
 Python or TeX. The container backend remains the default in rc.20.
+Current rc.21 source makes the cached compiler the default: use `zel pdf` for
+PDF only, or `zel bp` for the website and PDF together. `zel bs` selects an HTTP
+static export, `zel vw` previews edits, and `zel lint` runs deep/strict validation.
+See the detailed [book Quickstart](examples/zellij-docs/content/01-guide/quickstart/books.mdx)
+and [website-template Quickstart](examples/zellij-docs/content/01-guide/quickstart/website-templates.mdx),
+which also give equivalent commands for the published rc.20 CLI.
 PDF is off by default. Choose `book-technical` for mathematics and proofs or
 `book-study` for passages and commentary. All three editions coordinate web/print
 layouts. Print supports English, French, German and Spanish LTR and Arabic RTL,

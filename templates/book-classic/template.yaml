@@ -1,9 +1,9 @@
 schema: 1
 id: book-classic
-version: 0.2.0
+version: 0.3.0
 title: Classic book edition
 description: A complete portable manuscript with a cover, preface, part, chapters and appendix; optional LuaLaTeX PDF.
-minimum-cli: 0.2.0-rc.6
+minimum-cli: 0.2.0-rc.21
 minimum-engine: 0.2.0-rc.6
 renderer: portable
 kind: book

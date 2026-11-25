@@ -1,3 +1,5 @@
+// This suite deliberately exercises the optional container compiler.
+process.env.ZEL_PDF_BACKEND = 'container';
 // Real LuaLaTeX only on hosted runners; retain PDFs/text/fonts/pages for review.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';

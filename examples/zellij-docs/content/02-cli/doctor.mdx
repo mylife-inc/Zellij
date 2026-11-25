@@ -3,6 +3,14 @@ title: zel doctor
 description: Diagnose site settings, rich renderer readiness and required container tooling.
 ---
 
+<Callout type="info" title="PDF shortcuts and cached default in rc.21 source">
+Current source adds `zel bp` for website plus PDF and selects the cached compiler
+by default for `zel pdf` and PDF-enabled builds. Published rc.20 still needs
+`--pdf-backend cached`. The [book Quickstart](/guide/quickstart/books) gives both
+forms and explains output locations, editing and offline reuse.
+</Callout>
+
+
 <div id="what-it-is-for" className="zellij-legacy-anchor" />
 
 <Callout type="tip" title="Available in candidate 0.2.0-rc.20">
@@ -71,7 +79,7 @@ Candidate rc.20 uses a verified downloaded renderer for both rich web targets.
 | --- | --- |
 | Portable web-only `build` / `view`, `check`, `pdf --check` and static-file `serve` | No |
 | Rich `build`, `check`, `watch`, `view` / `view --watch`, with `file` or `static` | No; downloads a private renderer once, then uses the verified cache; supports `--offline` |
-| Portable book PDF generation | Default `container`: yes. `--pdf-backend cached`: no; downloads verified compiler/private Node once and supports `--offline`. PDF remains opt-in. |
+| Portable book PDF generation | Rc.20 default `container`: yes. Rc.21 default `cached`: no; downloads verified compiler/private Node once and supports `--offline`. PDF remains opt-in. |
 | Scaffolding, `explain`, `list`, `context`, `detect`, conversion without validation | No |
 | `migrate` / `convert --validate` | No; their final rich check uses the cached renderer |
 | `publish --dry-run` | No; resolves a plan without validation or credential checks |
@@ -237,7 +245,7 @@ replacing the executable. `zel --version` retains its compact binary version.
 ## PDF preflight
 
 When a portable book explicitly sets `pdf.enabled: true`, `doctor` checks its
-print settings. With the default `container` backend, it checks the selected
+print settings. With the explicitly selected `container` backend, it checks the selected
 runtime's user mapping and reports the pinned PDF image without inspecting,
 pulling or running it. With `--pdf-backend cached`, it checks the compiler and
 private Node caches without probing a container runtime. JSON includes the

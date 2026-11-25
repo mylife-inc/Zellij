@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "version": "0.2.0-rc.21",
+  "platform": "darwin-x64",
+  "publicDownloadVerified": false,
+  "realRenderer": true,
+  "emptyPath": true,
+  "offlinePdfAndRichBuilds": true,
+  "privateNodeReused": true,
+  "manifestSha256": "0743315135043973b9bdc4e9b063a919d2634713ce8d99af104fdaab2622d03e",
+  "runtime": {
+    "name": "zel-pdf-v0.2.0-rc.21.tar.gz",
+    "sha256": "1c00d7d3dd7faad5824ed4123c11da12d53046a2a22c978b6333d26c26db2d3d"
+  },
+  "source": {
+    "name": "zel-pdf-sources-v0.2.0-rc.21.tar.gz",
+    "bytes": 430327877,
+    "sha256": "bc5d7a03e36095ada010ff3998d7387007b9a473254147b32e0e91a9f39fa147"
+  },
+  "sourceManifestSha256": "a41c419ebbf145726a2c27124eb0e9a16947772bf1994ca610c2390682f8f4bc",
+  "sourceBytesVerified": true
+}

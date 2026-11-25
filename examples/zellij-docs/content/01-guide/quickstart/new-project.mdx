@@ -42,13 +42,13 @@ acme/
 
 ```bash
 zel check
-zel dev
+zel view --watch
 ```
 
 The default convention finds `docs/zellij/zel.yaml`. Hosted preview requires a
-usable container runtime; open the printed localhost URL. Edit files inside
-`docs/zellij/content/`. See [runtime diagnostics](/cli/doctor) if no runtime is
-available. Generation never installs or starts one automatically.
+cached renderer (downloaded on first use); the browser opens after the build. Edit files inside
+`docs/zellij/content/`. Use `--offline` after the renderer has been cached.
+The image workflow described next requires a container builder on its runner.
 
 </Step>
 <Step title="Review the generated workflow">
@@ -131,7 +131,7 @@ Set the repository secret `NETLIFY_AUTH_TOKEN` before running it. Generation
 uploads nothing by default; `--provision` explicitly copies an environment token
 to repository secrets through the GitHub CLI. Native Netlify delivery builds and
 uploads static HTML once, without Node or the Netlify CLI on the runner. Hosted
-rendering still uses its container. Draft previews are default; choose
+rendering uses its verified renderer cache. Draft previews are default; choose
 `ci.production: true` for production publication.
 
 The [`zel ci` reference](/cli/ci) covers branch/tag/schedule settings, secret

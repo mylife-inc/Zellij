@@ -5,11 +5,12 @@ Start with the preface and two chapters in `content/`. Edit `book.title`,
 `content/`; every discovered Markdown file belongs in the reading order.
 
 ```sh
-zel check --strict
+zel lint
 zel build                # Open site/index.html directly; no server needed
-zel view --watch         # Browser preview while writing
+zel vw         # Browser preview while writing
 zel pdf --check          # Validate print compatibility without a toolchain
-zel build --pdf          # Optional matching PDF and website download link
+zel pdf                  # PDF only: pdf/book.pdf
+zel bp          # Optional matching PDF and website download link
 ```
 
 `book.edition: study` selects coordinated web and print typography, chapter
@@ -18,11 +19,15 @@ changing the manuscript. Web readers can choose their theme and light/dark mode.
 The PDF uses the existing embedded Latin Modern family; web uses bundled fonts.
 The formats share a design direction, not identical pagination or font files.
 
-PDF is off by default. Requesting PDF needs a running Docker, Podman or nerdctl
-Linux container runtime. Nothing is installed automatically. `zel pdf` exports
+PDF is off by default. In zel 0.2.0-rc.21 or later the verified compiler and
+private runtime download on first use into `$ZELLIJ_HOME` (default:
+`~/Dev/config/zellij`). No Docker, Node.js, Python or system LaTeX is needed.
+Use `zel bp --offline` after the first successful build to forbid downloads.
+`--pdf-backend container` selects the optional container compiler explicitly. `zel pdf` exports
 only the PDF, generated TeX and logs into `pdf/`. You may set `pdf.enabled: true`
 for ordinary builds. Paper: `a5`, `a4` or `letter`; font size: 10, 11 or 12 points.
-Print currently supports English/LTR and the documented Markdown/math subset.
+Print supports the documented Markdown/math subset. For languages, direction
+and custom print designs, see https://zellij.shebka.net/cli/books.
 Use local PNG/JPEG artwork if adding `book.cover`; raw TeX/HTML is not executed.
 
 The sample bibliography entry is explicitly an illustrative, unpublished note;

@@ -2,8 +2,9 @@
 
 This is the maintainer qualification workspace for the optional cached PDF
 toolchain. Candidate rc.20 connects `zel pdf`, PDF-enabled builds and previews
-to the verified cache with `--pdf-backend cached`. The default remains
-`container`; cached PDF is an explicit option. Rc.19 uses its pinned container
+to the verified cache with `--pdf-backend cached`. Rc.20 keeps `container`
+as its default. Current rc.21 source makes `cached` the default after the
+public-download acceptance; `--pdf-backend container` retains explicit selection. Rc.19 uses its pinned container
 for PDF. Ordinary rich web builds use the cached renderer. Availability must be
 checked against the published release, not inferred from a qualification run.
 

@@ -6,12 +6,12 @@ description: An empty folder to a published site, with the browser open the whol
 **You have:** nothing. **You will have:** a site you wrote, running locally,
 then published.
 
-**Needs:** `zel`, and a container runtime from step 2 onward. Check with
-`zel doctor`.
+**Needs:** `zel`. The optional image-packaging path at the end needs a container
+builder. Preview, validation, rich builds and native Netlify upload do not.
 
 <Callout type="info" title="Use candidate 0.2.0-rc.20 or current source">
 The complete loop is implemented: create a site, preview edits, validate, build
-and deploy. This lab's live preview and deployment steps use a container.
+and deploy. Live preview and static deployment use the verified renderer cache.
 For just a rich double-click website, run `zel build my-docs` after creation;
 it downloads its renderer once and needs no separately installed tools.
 Native [portable Markdown sites](/cli/build) also work without a server or container.
@@ -49,29 +49,18 @@ right now.
 No `package.json`, no `node_modules`, nothing to install. This folder is
 **only** the words and the structure.
 
-<Callout type="info" title="Nothing ran but a file writer">
-`zel new docs` is native code. It wrote the configuration and content files and exited — **no container
-started, no image pulled, no Docker needed**. If your `docker pull` is still
-going, it did not wait for it.
-
-That changes at the next step. `zel dev` is the first command that needs a
-container: it starts one, mounts this folder into it, and runs the engine. The
-two commands have nothing in common except the folder they both care about.
-
-| | | |
-| --- | --- | --- |
-| `zel new docs` | Writes files | No container |
-| `zel dev` | Serves them | Starts one |
-| `zel check` | Validates them | Uses the cached rich renderer |
-| `zel build` | Builds the rich double-clickable site | Uses the cached rich renderer |
-| `zel view --watch` | Builds and previews edits | Uses the cached rich renderer and native HTTP server |
-| `zel build --target static` | Builds the Next HTTP export | Starts one |
+<Callout type="info" title="Only zel is needed">
+`zel new docs` writes files natively. `zel check`, `zel build` and
+`zel view --watch` acquire the verified renderer once and reuse it afterward.
+They do not need a system Node.js, Python or container installation. Rich
+`--target static` exports use the same cache. Hosted Next `zel dev` and image
+packaging are separate workflows with a container requirement.
 </Callout>
 
 <Callout type="tip" title="What about the Next.js app?">
 There isn't one, and you do not need one. The application that renders your site
-lives inside the container image. It does not need to be part of your repository;
-upgrading the engine image updates the rendering implementation.
+is supplied by the downloaded renderer. It does not need to be part of your
+repository; upgrading the CLI selects its matching renderer.
 
 If you *do* want it on disk — because you deploy to Vercel, or you want your own
 React pages alongside — `zel eject my-docs --out my-site` extracts a wrapper and
@@ -86,25 +75,22 @@ using the same cached sources by default, or your built local engine with
 <Step title="Watch it while you write">
 
 ```bash title="terminal"
-zel dev my-docs --open
+zel view my-docs --watch
 ```
 
 <Callout type="info" title="Open after the server is ready">
-`--open` launches your browser after startup succeeds. Omit it to open the
-printed URL yourself. The default port is 3000; `--port` overrides it.
+The browser opens after a successful build. Use `--no-open` to open the printed
+URL yourself; `--port 0` selects an available port. Rc.21 also accepts the short
+form `zel vw my-docs`.
 </Callout>
 
-The terminal reports the selected image, mounted content and serving URL.
 Edit files under `my-docs/content`; press Ctrl-C in the terminal to stop.
-
-It validates first, installs what the site needs, then serves. The first run
-may download the engine image and install dependencies into a named volume.
-Later runs reuse the image and dependency cache; timing depends on the machine
-and selected features.
+The first run downloads the private renderer if needed. Later runs reuse it;
+`--offline` requires it to be present and forbids downloads.
 
 <Callout type="info" title="Edits reload the browser">
-The engine watches content files, assets and guide routes. A valid change
-refreshes prepared content and reloads open pages. Invalid edits appear in the
+The CLI watches content files, assets and guide routes. A valid change
+rebuilds the site and reloads open pages. Invalid edits appear in the
 terminal while the last rendered page stays visible; correcting them resumes
 reloads. Restart after changing the deployment prefix or installed features.
 </Callout>
@@ -193,10 +179,10 @@ description: Get it running in two minutes.
 
 ## Requirements
 
-Anything that runs a container.
+List your product's actual prerequisites here.
 
 <Callout type="tip" title="On a Mac">
-`brew install colima && colima start`
+Include the installation command appropriate for your product.
 </Callout>
 ```
 
@@ -231,9 +217,9 @@ separately installed Docker, Node.js or Python. The first check downloads that
 renderer; add `--offline` once it is cached. Source files remain unchanged.
 
 <Callout type="warning" title="File sharing for optional container commands">
-This applies to hosted `zel dev`, `zel check --target static`, explicit static
-exports and deployment commands. Default rich `zel check` and `zel build` read
-the local filesystem directly and do not need container file sharing.
+This applies to hosted `zel dev` and image builds/deployments. Rich validation,
+file/HTTP exports and native static deployment read the local filesystem
+directly and do not need container file sharing.
 
 Container runtimes only share part of your filesystem with the virtual machine
 they run in. Colima shares `$HOME` and not `/tmp`. A bind mount of a path it
@@ -315,7 +301,7 @@ zel netlify my-docs --prod
 
 <Callout type="info" title="Native upload and optional Netlify CLI">
 `zel` uses the supplied token and project ID; it does not read Netlify CLI's
-stored login. If using that CLI instead, `zel build my-docs --out dist` followed
+stored login. If using that CLI instead, `zel build my-docs --target static --out dist` followed
 by `netlify deploy --prod --dir dist` remains a valid manual alternative and
 uses the login created by `netlify login`. CI requires explicitly stored secrets.
 </Callout>

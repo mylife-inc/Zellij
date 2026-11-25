@@ -1,9 +1,9 @@
 schema: 1
 id: book-study
-version: 0.1.0
+version: 0.2.0
 title: Study book edition
 description: A reflective reading edition with original passages, commentary, questions, footnotes and a glossary. Optional LuaLaTeX PDF.
-minimum-cli: 0.2.0-rc.8
+minimum-cli: 0.2.0-rc.21
 minimum-engine: 0.2.0-rc.8
 renderer: portable
 kind: book

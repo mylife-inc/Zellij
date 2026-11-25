@@ -7,8 +7,8 @@ description: Migrate the documentation already in your repo, and publish it on e
 folder, a wiki you exported, a `README.md` that grew. **You will have:** that
 documentation as a Zellij folder, in the same repository, published by CI.
 
-**Needs:** `zel`, push access to the repository. A container runtime for the
-local steps.
+**Needs:** `zel` and push access to the repository. Local previews use the
+verified renderer cache. Image jobs require a container builder on their runner.
 
 This is [Lab 3](/guide/quickstart/new-project) with an awkward first half: the
 repository exists, so nothing can be scaffolded around you.
@@ -94,7 +94,7 @@ fail to build.
 </Callout>
 
 ```bash title="terminal"
-zel dev docs-site --open   # read the pages, then stop with Ctrl-C
+zel view docs-site --watch   # read the pages, then stop with Ctrl-C
 zel build docs-site       # prove the imported MDX compiles
 ```
 

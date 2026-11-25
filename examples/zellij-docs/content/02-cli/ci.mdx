@@ -3,6 +3,14 @@ title: zel ci
 description: Generate GitHub Actions, GitLab or CircleCI configuration from saved site settings.
 ---
 
+<Callout type="info" title="PDF shortcuts and cached default in rc.21 source">
+Current source adds `zel bp` for website plus PDF and selects the cached compiler
+by default for `zel pdf` and PDF-enabled builds. Published rc.20 still needs
+`--pdf-backend cached`. The [book Quickstart](/guide/quickstart/books) gives both
+forms and explains output locations, editing and offline reuse.
+</Callout>
+
+
 <Callout type="info" title="Compatible published candidate">
 The generator requires **0.2.0 or later, including release candidates**.
 Published candidate `0.2.0-rc.20` supplies its own version as the default pin, so
@@ -648,12 +656,13 @@ Portable books with `pdf.enabled: true` generate the website and matching PDF
 before static deployment or static-image packaging. Candidate rc.20 also
 supports PDF-enabled Next images.
 The Next image includes the PDF and receipt, without TeX inputs or the toolchain.
-Next-image CI requires a pin of rc.8 or later. This opt-in requires the
-optional LaTeX container runtime by default; PDF failure stops delivery.
+Next-image CI requires a pin of rc.8 or later. PDF uses the cached compiler with
+rc.21-or-later pins. Older pins keep their container requirement; PDF failure
+stops delivery. Image jobs still need a container builder.
 The rc.20 cached PDF backend can be selected in a custom job with
-`ZEL_PDF_BACKEND=cached`; generated PDF jobs still provision the default
-container backend. Generated CI
-requires a compatible release pin and, for GitLab, a shared Docker build directory.
+`ZEL_PDF_BACKEND=cached`; jobs generated for rc.20 still provision its default
+container backend. Generation checks compatibility but does not verify release
+availability. GitLab jobs that use Docker also need a shared Docker build directory.
 See [static book publication and CI](/cli/books#static-publication-and-ci) for
 supported output kinds, release requirements and configuration.
 

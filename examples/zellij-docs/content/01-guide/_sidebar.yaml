@@ -7,8 +7,10 @@ nav:
     items:
       - index
       - quickstart/index
-      - label: Labs
+      - label: Quickstart use cases
         items:
+          - quickstart/books
+          - quickstart/website-templates
           - quickstart/from-scratch
           - quickstart/existing-docs
           - quickstart/new-project

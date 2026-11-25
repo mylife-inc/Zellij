@@ -38,6 +38,30 @@ type Case = (
     &'static [&'static str],
 );
 const CASES: &[Case] = &[
+    (
+        "bp",
+        "build --pdf",
+        &[],
+        &["book", "--out", "edition", "--offline"],
+    ),
+    (
+        "bs",
+        "build --target static",
+        &[],
+        &["website", "--out", "public", "--offline"],
+    ),
+    (
+        "vw",
+        "view --watch",
+        &[],
+        &["website", "--port", "0", "--no-open", "--offline"],
+    ),
+    (
+        "lint",
+        "check --deep --strict",
+        &[],
+        &["website", "--target", "file", "--offline"],
+    ),
     ("pdf", "export pdf", &[], &["book", "--out", "printed"]),
     (
         "create",
@@ -395,6 +419,59 @@ fn every_registered_shortcut_is_tested_and_names_do_not_collide() {
 }
 
 #[test]
+fn presets_preserve_site_selection_and_reject_contradictory_options() {
+    for (short, full) in [
+        ("bp", "build --pdf"),
+        ("bs", "build --target static"),
+        ("vw", "view --watch"),
+        ("lint", "check --deep --strict"),
+    ] {
+        for selector in ["--config", "--site-root"] {
+            assert_eq!(
+                parse(&invocation(
+                    short,
+                    &[selector, "book 日本", "--cwd", "workspace"]
+                ))
+                .unwrap(),
+                parse(&invocation(
+                    full,
+                    &[selector, "book 日本", "--cwd", "workspace"]
+                ))
+                .unwrap()
+            );
+            assert_eq!(
+                parse(&invocation(short, &["book", selector, "other"]))
+                    .unwrap_err()
+                    .kind(),
+                ErrorKind::ArgumentConflict
+            );
+        }
+    }
+    for tokens in [
+        vec!["bp", "--no-pdf"],
+        vec!["bs", "--target", "file"],
+        vec!["bs", "--target", "portable"],
+    ] {
+        assert_eq!(
+            parse(&tokens).unwrap_err().kind(),
+            ErrorKind::ArgumentConflict
+        );
+    }
+    assert_eq!(parse(&["bp", "--pdf"]).unwrap(), parse(&["bp"]).unwrap());
+    assert_eq!(
+        parse(&["bs", "--target", "static"]).unwrap(),
+        parse(&["bs"]).unwrap()
+    );
+    assert_eq!(parse(&["vw", "--watch"]).unwrap(), parse(&["vw"]).unwrap());
+    assert_eq!(
+        parse(&["pdf", "--pdf-backend", "container"])
+            .unwrap()
+            .pdf_backend,
+        crate::pdf::Backend::Container
+    );
+}
+
+#[test]
 fn help_links_the_short_and_descriptive_forms() {
     for (short, full, ..) in CASES {
         let short_help = parse(&invocation(short, &["--help"])).unwrap_err();
@@ -660,7 +737,7 @@ fn repeated_global_paths_fail_across_command_levels_without_rewriting_values() {
     );
     let value = parse(&["--cwd=--site-root", "build", "--name=--cwd", "--", "--cwd"]).unwrap();
     assert_eq!(value.cwd.as_deref(), Some("--site-root"));
-    let Command::Build { dir, name, .. } = value.command else {
+    let Command::Build(BuildArgs { dir, name, .. }) = value.command else {
         panic!("expected build")
     };
     assert_eq!(dir, Some(SiteInput::from("--cwd")));
@@ -684,7 +761,7 @@ fn explicit_config_keeps_its_identity_through_commands_and_aliases() {
     let before = parse(&["--config", "preview.yaml", "b"]).unwrap();
     let after = parse(&["build", "--config=preview.yaml"]).unwrap();
     assert_eq!(before, after);
-    let Command::Build { dir, .. } = before.command else {
+    let Command::Build(BuildArgs { dir, .. }) = before.command else {
         panic!("build")
     };
     assert_eq!(dir, Some(SiteInput::Config("preview.yaml".into())));

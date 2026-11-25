@@ -1,9 +1,9 @@
 schema: 1
 id: book-technical
-version: 0.1.0
+version: 0.2.0
 title: Technical book edition
 description: A mathematics handbook with numbered equations, proofs, references and a subject index. Optional LuaLaTeX PDF.
-minimum-cli: 0.2.0-rc.8
+minimum-cli: 0.2.0-rc.21
 minimum-engine: 0.2.0-rc.8
 renderer: portable
 kind: book

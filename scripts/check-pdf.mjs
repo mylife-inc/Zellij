@@ -1,3 +1,5 @@
+// This suite deliberately exercises the optional container compiler.
+process.env.ZEL_PDF_BACKEND = 'container';
 // Real toolchain acceptance runs only on hosted native Linux runners.
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync, spawn } from 'node:child_process';

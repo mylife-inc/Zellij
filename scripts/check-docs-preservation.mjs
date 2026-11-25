@@ -12,7 +12,7 @@ import { browserFailureState } from './browser-failure-state.mjs';
 const repo = fileURLToPath(new URL('../', import.meta.url));
 const output = path.resolve(process.argv[2] ?? path.join(repo, 'examples/zellij-docs/out'));
 const baseline = JSON.parse(await readFile(new URL('../specs/evidence/zellij-production-comparison-2026-11-02.json', import.meta.url)));
-const addedRoutes = [...new Set([...baseline.new_routes, '/sections/compose', '/sections/media-accordion', '/cli/books'])];
+const addedRoutes = [...new Set([...baseline.new_routes, '/sections/compose', '/sections/media-accordion', '/cli/books', '/guide/quickstart/books', '/guide/quickstart/website-templates'])];
 const aliases = JSON.parse(await readFile(new URL('../specs/evidence/zellij-legacy-heading-aliases-2026-11-02.json', import.meta.url)));
 const mime = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.txt': 'text/plain' };
 const server = createServer(async (req, res) => {

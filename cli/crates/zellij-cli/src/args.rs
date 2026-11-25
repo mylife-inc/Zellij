@@ -34,6 +34,10 @@ macro_rules! shortcuts {
 
 shortcuts! {
     args {
+        BuildPdf(BuildArgs) => ("bp", "build --pdf", |mut a: BuildArgs| { a.pdf.pdf = true; Command::Build(a) });
+        BuildStatic(BuildArgs) => ("bs", "build --target static", |mut a: BuildArgs| { a.target = Some("static".into()); Command::Build(a) });
+        ViewWatch(ViewArgs) => ("vw", "view --watch", |mut a: ViewArgs| { a.watch = true; Command::View(a) });
+        Lint(CheckArgs) => ("lint", "check --deep --strict", |mut a: CheckArgs| { a.deep = true; a.strict = true; Command::Check(a) });
         Pdf(PdfArgs) => ("pdf", "export pdf", |a| Command::Export { format: ExportFormat::Pdf(a) });
         Create(NewSiteArgs) => ("create", "new site", |a| Command::New(NewTarget::Site(a)));
         Init(NewPortableArgs) => ("init", "new portable", |a| Command::New(NewTarget::Portable(a)));
@@ -79,12 +83,21 @@ impl Cli {
         describe_aliases(&mut command, "");
         for (short, full) in SHORTCUTS {
             let mut leaf = &mut command;
-            for part in full.split_whitespace() {
+            for part in full
+                .split_whitespace()
+                .take_while(|part| !part.starts_with('-'))
+            {
                 leaf = leaf
                     .find_subcommand_mut(part)
                     .expect("shortcut target exists");
             }
-            *leaf = leaf.clone().after_help(format!("Shortcut: zel {short}"));
+            let previous = leaf
+                .get_after_help()
+                .map(ToString::to_string)
+                .unwrap_or_default();
+            *leaf = leaf
+                .clone()
+                .after_help(format!("{previous}\nShortcut: zel {short} = zel {full}"));
         }
         command
     }
@@ -92,6 +105,7 @@ impl Cli {
     fn from_matches(matches: &clap::ArgMatches) -> Result<Self, clap::Error> {
         let mut cli = Self::from_arg_matches(matches)?;
         if let Command::Shortcut(shortcut) = cli.command {
+            shortcut.validate()?;
             cli.command = shortcut.into_command();
         }
         if let Command::Netlify(options) = cli.command {
@@ -259,13 +273,13 @@ pub(crate) struct Cli {
     #[arg(long, global = true)]
     pub(crate) no_color: bool,
 
-    /// PDF compiler: container (default) or a verified downloadable cached toolchain.
+    /// PDF compiler: verified downloadable cache (default), or an explicitly selected container.
     #[arg(
         long,
         global = true,
         value_enum,
         env = "ZEL_PDF_BACKEND",
-        default_value = "container"
+        default_value = "cached"
     )]
     pub(crate) pdf_backend: crate::pdf::Backend,
 
@@ -326,22 +340,7 @@ pub(crate) enum Command {
 
     /// Validate portable Markdown natively, or hosted content using its engine.
     #[command(visible_alias = "c")]
-    Check {
-        /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
-        dir: Option<SiteInput>,
-        /// Override selection: native portable, or cached rich file/static validation.
-        #[arg(long, value_parser = ["portable", "file", "static"])]
-        target: Option<String>,
-        /// Require a cached rich renderer; do not download one.
-        #[arg(long)]
-        offline: bool,
-        /// Hosted: parse MDX and check local references. Portable always checks references.
-        #[arg(long)]
-        deep: bool,
-        /// Fail when validation reports warnings.
-        #[arg(long)]
-        strict: bool,
-    },
+    Check(CheckArgs),
 
     /// Authoring server: native portable watch/preview or hosted Next.js development.
     Dev {
@@ -368,45 +367,7 @@ pub(crate) enum Command {
 
     /// Build the site.
     #[command(visible_alias = "b")]
-    Build {
-        /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
-        dir: Option<SiteInput>,
-
-        #[command(flatten)]
-        pdf: PdfSelection,
-
-        /// Output: portable (native manual), static (rich HTTP site), file (rich double-click site), or image.
-        #[arg(long)]
-        target: Option<String>,
-
-        /// Build without downloads; enabled cached tools must already be installed.
-        #[arg(long)]
-        offline: bool,
-
-        #[arg(long)]
-        out: Option<String>,
-
-        /// Image tag. `--target image` only.
-        #[arg(long)]
-        tag: Option<String>,
-        /// Linux image platform: linux/amd64 or linux/arm64; all publishes both (pub/ship/ci only). Overrides image.platform.
-        #[arg(long)]
-        platform: Option<ImagePlatform>,
-        /// Override this build: maths, diagrams, maths,diagrams, all, or none.
-        #[arg(long)]
-        features: Option<Features>,
-
-        #[command(flatten)]
-        overrides: BuildOverrideArgs,
-
-        /// Portable site name: overrides zel.yaml, then defaults to the source folder name.
-        #[arg(long)]
-        name: Option<String>,
-
-        /// Portable theme: overrides zel.yaml, then defaults to cupertino; see `zel list themes`.
-        #[arg(long)]
-        theme: Option<String>,
-    },
+    Build(BuildArgs),
 
     /// Export a publication in another format.
     Export {
@@ -484,41 +445,7 @@ pub(crate) enum Command {
 
     /// Build a portable or hosted static site, serve locally, and open a browser.
     #[command(visible_alias = "v")]
-    View {
-        /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
-        dir: Option<SiteInput>,
-        /// Override selection: native portable, or cached rich file/static export.
-        #[arg(long, value_parser = ["portable", "file", "static"])]
-        target: Option<String>,
-        /// Preview without downloads; enabled cached tools must already be installed.
-        #[arg(long)]
-        offline: bool,
-        #[arg(long)]
-        out: Option<String>,
-        /// Portable site name; hosted sites use content/site.yaml.
-        #[arg(long)]
-        name: Option<String>,
-        /// Portable theme; hosted sites use content/site.yaml.
-        #[arg(long)]
-        theme: Option<String>,
-        /// Override every preview build: maths, diagrams, maths,diagrams, all, or none.
-        #[arg(long)]
-        features: Option<Features>,
-        /// Local port; use 0 to choose an available port.
-        #[arg(long)]
-        port: Option<u16>,
-        /// Print the URL without launching a browser.
-        #[arg(long, conflicts_with = "browser")]
-        no_open: bool,
-        /// Browser executable to launch with the URL as its sole argument.
-        #[arg(long)]
-        browser: Option<String>,
-        /// Rebuild on source edits and reload the HTTP preview after success.
-        #[arg(long)]
-        watch: bool,
-        #[command(flatten)]
-        pdf: PdfSelection,
-    },
+    View(ViewArgs),
 
     /// Canonical formatting for the YAML.
     Fmt {
@@ -1201,12 +1128,12 @@ impl Command {
             )
         };
         let slot = match self {
-            Self::Check { dir, .. }
+            Self::Check(CheckArgs { dir, .. })
             | Self::Doctor { dir }
             | Self::Dev { dir, .. }
-            | Self::Build { dir, .. }
+            | Self::Build(BuildArgs { dir, .. })
             | Self::Serve { dir, .. }
-            | Self::View { dir, .. }
+            | Self::View(ViewArgs { dir, .. })
             | Self::Fmt { dir, .. }
             | Self::Watch { dir, .. } => dir,
             Self::Export {
@@ -1314,6 +1241,127 @@ impl PdfSelection {
             Some(false)
         } else {
             None
+        }
+    }
+}
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct CheckArgs {
+    /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
+    pub dir: Option<SiteInput>,
+    /// Override selection: native portable, or cached rich file/static validation.
+    #[arg(long, value_parser = ["portable", "file", "static"])]
+    pub target: Option<String>,
+    /// Require a cached rich renderer; do not download one.
+    #[arg(long)]
+    pub offline: bool,
+    /// Hosted: parse MDX and check local references. Portable always checks references.
+    #[arg(long)]
+    pub deep: bool,
+    /// Fail when validation reports warnings.
+    #[arg(long)]
+    pub strict: bool,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct BuildArgs {
+    /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
+    pub dir: Option<SiteInput>,
+
+    #[command(flatten)]
+    pub pdf: PdfSelection,
+
+    /// Output: portable (native manual), static (rich HTTP site), file (rich double-click site), or image.
+    #[arg(long)]
+    pub target: Option<String>,
+
+    /// Build without downloads; enabled cached tools must already be installed.
+    #[arg(long)]
+    pub offline: bool,
+
+    #[arg(long)]
+    pub out: Option<String>,
+
+    /// Image tag. `--target image` only.
+    #[arg(long)]
+    pub tag: Option<String>,
+    /// Linux image platform: linux/amd64 or linux/arm64; all publishes both (pub/ship/ci only). Overrides image.platform.
+    #[arg(long)]
+    pub platform: Option<ImagePlatform>,
+    /// Override this build: maths, diagrams, maths,diagrams, all, or none.
+    #[arg(long)]
+    pub features: Option<Features>,
+
+    #[command(flatten)]
+    pub overrides: BuildOverrideArgs,
+
+    /// Portable site name: overrides zel.yaml, then defaults to the source folder name.
+    #[arg(long)]
+    pub name: Option<String>,
+
+    /// Portable theme: overrides zel.yaml, then defaults to cupertino; see `zel list themes`.
+    #[arg(long)]
+    pub theme: Option<String>,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct ViewArgs {
+    /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
+    pub dir: Option<SiteInput>,
+    /// Override selection: native portable, or cached rich file/static export.
+    #[arg(long, value_parser = ["portable", "file", "static"])]
+    pub target: Option<String>,
+    /// Preview without downloads; enabled cached tools must already be installed.
+    #[arg(long)]
+    pub offline: bool,
+    #[arg(long)]
+    pub out: Option<String>,
+    /// Portable site name; hosted sites use content/site.yaml.
+    #[arg(long)]
+    pub name: Option<String>,
+    /// Portable theme; hosted sites use content/site.yaml.
+    #[arg(long)]
+    pub theme: Option<String>,
+    /// Override every preview build: maths, diagrams, maths,diagrams, all, or none.
+    #[arg(long)]
+    pub features: Option<Features>,
+    /// Local port; use 0 to choose an available port.
+    #[arg(long)]
+    pub port: Option<u16>,
+    /// Print the URL without launching a browser.
+    #[arg(long, conflicts_with = "browser")]
+    pub no_open: bool,
+    /// Browser executable to launch with the URL as its sole argument.
+    #[arg(long)]
+    pub browser: Option<String>,
+    /// Rebuild on source edits and reload the HTTP preview after success.
+    #[arg(long)]
+    pub watch: bool,
+    #[command(flatten)]
+    pub pdf: PdfSelection,
+}
+
+impl Shortcut {
+    fn validate(&self) -> Result<(), clap::Error> {
+        let message = match self {
+            Self::BuildPdf(args) if args.pdf.no_pdf => Some(
+                "zel bp includes --pdf and cannot be combined with --no-pdf; use zel build for a web-only build",
+            ),
+            Self::BuildStatic(args)
+                if args
+                    .target
+                    .as_deref()
+                    .is_some_and(|target| target != "static") =>
+            {
+                Some("zel bs selects --target static; use zel build for another target")
+            }
+            _ => None,
+        };
+        match message {
+            Some(message) => {
+                Err(Cli::command_tree().error(clap::error::ErrorKind::ArgumentConflict, message))
+            }
+            None => Ok(()),
         }
     }
 }
