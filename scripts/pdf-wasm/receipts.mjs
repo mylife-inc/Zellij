@@ -20,6 +20,7 @@ for (const [runner, platform] of matrix) {
   const installed = await json(path.join(dir, 'pdf-installed/verification.json'));
   const released = await json(path.join(dir, 'pdf-release/toolchain/verification.json'));
   const paired = await json(path.join(dir, 'pdf-release/verification.json'));
+  const real = await json(path.join(dir, 'pdf-real-packages/verification.json'));
   if (reference) assert.deepEqual(toolchain, reference, `Package/source bytes differ on ${platform}`);
   else reference = toolchain;
   if (releasedReference) assert.deepEqual(released, releasedReference, `Reviewed package differs on ${platform}`);
@@ -57,6 +58,16 @@ for (const [runner, platform] of matrix) {
   assert.equal(installed.privateNodeReused, true);
   assert.equal(installed.coldRequests, 4);
   assert.equal(installed.offlineWatchRebuilt, true);
+  assert.equal(real.platform, platform.replace('win32-', 'win-'));
+  assert.equal(real.version, paired.version);
+  assert.equal(real.publicDownloadVerified, false);
+  for (const flag of ['realRenderer', 'emptyPath', 'offlinePdfAndRichBuilds', 'privateNodeReused', 'sourceBytesVerified']) {
+    assert.equal(real[flag], true, `Missing real-package evidence: ${flag} on ${platform}`);
+  }
+  assert.equal(real.manifestSha256, released.manifestSha256);
+  assert.deepEqual(real.runtime, { name: paired.runtime.name, sha256: paired.runtime.sha256 });
+  assert.deepEqual(real.source, paired.source);
+  assert.equal(real.sourceManifestSha256, paired.sourceManifestSha256);
   platforms.push(platform);
 }
 const sources = await json('test-results/pdf-package-source-receipt/verification.json');
@@ -67,8 +78,9 @@ assert.deepEqual(releasedReference.sourceArchive, reviewedSources.sources.archiv
 assert.equal(releasedReference.sourceManifestSha256, reviewedSources.sourceManifestSha256);
 assert.equal(pairedReference.reviewSha256, reviewedSources.reviewSha256);
 const evidence = { schemaVersion: 1, publicDownloadVerified: false, redistributionReviewComplete: true,
-  platforms, cacheScenarios: 78, compilations: 12, installedCliScenarios: 24, archive: reference.archive,
+  platforms, cacheScenarios: 78, compilations: 12, installedCliScenarios: 24,
+  realRendererCompilerPlatforms: 6, completeSourceTransfers: 6, archive: reference.archive,
   manifestSha256: reference.manifestSha256, sourceArchive: reference.sourceArchive,
   sourceManifestSha256: reference.sourceManifestSha256, reviewed: pairedReference };
 await writeFile('test-results/pdf-package-parity.json', JSON.stringify(evidence, null, 2) + '\n');
-console.log('Six identical qualification and reviewed runtime/source pairs; 78 cache scenarios, 12 cache compilations and 24 installed CLI scenarios passed.');
+console.log('Six identical reviewed pairs; 78 cache scenarios, 24 installed CLI scenarios, six real-renderer offline builds and complete source transfers passed.');

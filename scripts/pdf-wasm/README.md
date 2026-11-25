@@ -1,10 +1,11 @@
-# Offline LuaHBTeX feasibility probe
+# Cached PDF qualification and release packaging
 
 This is the maintainer qualification workspace for the optional cached PDF
-toolchain. Development CLI code now connects `zel pdf`, PDF-enabled builds and
-previews to the verified cache with `--pdf-backend cached`. No public compiler
-package exists yet; the default remains `container`. Released rc.19 still uses
-its pinned container for PDF. Ordinary rich web builds use the cached renderer.
+toolchain. Candidate rc.20 connects `zel pdf`, PDF-enabled builds and previews
+to the verified cache with `--pdf-backend cached`. The default remains
+`container`; cached PDF is an explicit option. Rc.19 uses its pinned container
+for PDF. Ordinary rich web builds use the cached renderer. Availability must be
+checked against the published release, not inferred from a qualification run.
 
 The probe prepares 287 hash-pinned resources from the upstream engine release,
 an immutable TeX mirror and independently pinned original archives. It then compiles
@@ -22,6 +23,14 @@ offline cache misses, `export pdf`, `build --pdf`, output preservation and a
 watched offline `view`. PR jobs upload receipts only. Public download acceptance
 remains separate, and the ordinary qualification package/cache remains separate.
 
+`node scripts/check-cached-pdf.mjs` additionally uses the real renderer archive,
+the reviewed compiler and the complete matching-source archive. It verifies
+both checksum inventories, then builds a PDF-enabled book and a rich product
+website offline with an empty PATH, reusing the private Node runtime. All six
+native platform jobs must pass. `check-published-cached-pdf.mjs` repeats these
+checks through anonymous public URLs and the published installer in each release
+repository. Loopback receipts never claim public-download verification.
+
 Shebka's original work in this directory is licensed under GPL-2.0-only, as
 approved by the owner on 24 November 2026. See [LICENSE-SCOPE.md](LICENSE-SCOPE.md)
 and [LICENSE](LICENSE); the upstream MIT notice remains in [NOTICE](NOTICE).
@@ -38,19 +47,19 @@ and the [distribution decision](../../specs/zellij-pdf-distribution-decision-202
 After preparing the verified original source cache and compact resources:
 
 ```sh
-python scripts/pdf-wasm/release.py SOURCE_CACHE test-results/pdf-compact/package test-results/pdf-release --version 0.2.0-rc.19
+python scripts/pdf-wasm/release.py SOURCE_CACHE test-results/pdf-compact/package test-results/pdf-release --version 0.2.0-rc.20
 node --test scripts/pdf-wasm/installed.test.mjs
 ```
 
-This builds private acceptance assets at the current source version; it does not
-replace the published rc.19 or publish anything. The artifacts directory contains
+This builds local acceptance assets at the current source version; it does not
+publish anything. The artifacts directory contains
 the versioned optional runtime, separate matching source archive and both SHA-256
 files. The runtime reuses the renderer's private Node and excludes the large
 source download. A changed input invalidates distribution-review.json; the
 inventory command records observations and never approves a review automatically.
 
 The release workflow requires all six platform jobs, offline source replay and
-runtime/source parity before publishing this pair alongside a future CLI release.
+runtime/source parity before publishing this pair alongside its CLI release.
 The full source archive and notices must remain available with every offered
 runtime, including after repository sealing. Ordinary PR runs upload receipts,
 not compiler archives. See [release-sources.md](release-sources.md) for rebuilding
@@ -145,24 +154,17 @@ checks PDF structure, page sizes/counts, NFKC-normalized extracted text/layout
 and every page rasterized at 1300 pixels. It is enabled on the Linux x64 probe
 runner; other runners test offline generation and isolation without containers.
 
-## Before a released toolchain
+## Release gates
 
-- Complete component/font/package notices and license provenance. The engine
-  manifest identifies GPL-2.0-only plus linked-component terms. The compiled
-  format and TeX files have separate terms. `lock.json` records the exact
-  corresponding-source URL/hash, but that source and the complete notices must
-  be verified and provided with any Zellij binary redistribution. A maintainer
-  download is not a completed redistribution review.
-- Establish that the resource inventory covers every supported print setting,
-  not just the manuscripts observed so far. Complete image, font, links and
-  cross-reference inspection and native/Wasm comparisons.
-- Qualify the resource limits, filesystem/process/network isolation and
-  cancellation on all supported platforms. Preserve strict failure semantics.
-- Add optional version-matched archive packaging, verified extraction, cache
-  integrity/recovery and offline behavior under `ZELLIJ_HOME`; connect shared PDF
-  dispatch, diagnostics, generated CI and documentation.
-- Run installed/public-package acceptance before changing the documented
-  prerequisites or cutting the candidate that includes this backend.
+The component/font/package review, original sources/notices, native/Wasm
+comparison matrix, process isolation/cancellation and versioned cache checks
+are implemented and retained in this directory. A maintainer download alone
+does not qualify a release: the workflow must pass all native-platform checks,
+independent source replay and exact archive parity. Public installed acceptance
+then verifies the offered bytes, matching sources and offline builds. Keep
+cached PDF opt-in until those public checks qualify the default transition.
+Changes to supported print settings must extend the comparison matrix; passing
+the current manuscripts does not establish support for arbitrary TeX packages.
 
 Ordinary probe runs upload Zellij-produced PDFs/logs and verification receipts.
 Only a release caller requests the reviewed runtime/source pair as artifacts.
@@ -179,7 +181,7 @@ the separately reviewed release profile described above.
 
 ```sh
 python scripts/pdf-wasm/distribution.py SOURCE_CACHE test-results/pdf-toolchain-distribution
-python scripts/pdf-wasm/toolchain.py test-results/pdf-compact/package test-results/pdf-toolchain-distribution test-results/pdf-toolchain --version 0.2.0-rc.19
+python scripts/pdf-wasm/toolchain.py test-results/pdf-compact/package test-results/pdf-toolchain-distribution test-results/pdf-toolchain --version 0.2.0-rc.20
 cargo test --manifest-path cli/Cargo.toml --locked -p zellij-cli --example pdf_cache
 cargo build --manifest-path cli/Cargo.toml --locked -p zellij-cli --example pdf_cache
 node --test scripts/pdf-wasm/cache.test.mjs

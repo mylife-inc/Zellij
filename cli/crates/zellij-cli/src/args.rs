@@ -259,7 +259,7 @@ pub(crate) struct Cli {
     #[arg(long, global = true)]
     pub(crate) no_color: bool,
 
-    /// Optional PDF compiler (cached is in development; no public package yet).
+    /// PDF compiler: container (default) or a verified downloadable cached toolchain.
     #[arg(
         long,
         global = true,

@@ -793,17 +793,43 @@ at punctuation, including labels styled with bold or inline code. Their clickabl
 destinations remain unchanged. Descriptive prose labels keep their ordinary
 typesetting. This layout fix is not included in the published rc.19 binary.
 
-The development CLI also has a cached PDF backend. It shares the rich renderer's
-verified private Node runtime and stores the optional compiler under
-`$ZELLIJ_HOME/cache/pdf/` (default `~/Dev/config/zellij/cache/pdf/`). Its installed
-command acceptance covers PDF exports, builds and watched offline previews with
-an empty system PATH. The component review and paired runtime/source packager are
-implemented; command tests use the actual reviewed compiler package with a
-renderer fixture. **The compiler package is not published yet**: release and
-public-download acceptance remain open. The default and
-released rc.19 PDF instructions above still use the container backend. The
-development `--pdf-backend cached` selector is for maintainer qualification until
-the matching release packages are available.
+### Cached PDF option in the next candidate
+
+Rc.20 is being prepared with an explicit cached PDF option. **Until its matching
+packages are published, use the released rc.19 container instructions above.**
+The new option shares the rich renderer's verified private Node runtime and
+stores its compiler under `$ZELLIJ_HOME/cache/pdf/VERSION` (default
+`~/Dev/config/zellij/cache/pdf/VERSION`). It needs no user-installed Docker,
+Node.js, Python or TeX. The container backend remains the default in rc.20.
+
+After installing rc.20 and its published packages, select the backend with:
+
+```sh
+zel pdf my-book --pdf-backend cached
+zel build my-book --pdf --pdf-backend cached
+zel build my-book --pdf --pdf-backend cached --offline
+zel view my-book --pdf-backend cached --offline
+```
+
+The first PDF command downloads the version-matched compiler (about 12 MB),
+and the platform-specific rich renderer/private Node if it is not already cached.
+Later commands verify and reuse those files. `--offline` never downloads;
+a missing or damaged cache produces an error and preserves the previous output.
+For PDF previews, enable `pdf: {enabled: true}` in `zel.yaml`. Set
+`ZEL_PDF_BACKEND=cached` in your shell or CI environment to avoid repeating the
+option; `--pdf-backend container` explicitly selects the existing runtime.
+
+`zel pdf my-book --check --offline` validates the content contract without
+installing or invoking either compiler. Actual typesetting is still needed to
+check layout and fonts. Both backends retain the supported print-content
+boundaries below; cached PDF does not install arbitrary TeX packages.
+
+Each compiler release is paired with its complete corresponding-source archive,
+original notices and checksums. Sources are separately downloadable release
+assets and are not required for normal PDF generation. Six-platform acceptance
+uses the real compiler and renderer, verifies the complete source download and
+builds both a book and a rich website with an empty system PATH. Public-download
+acceptance remains a distinct publication gate; local tests do not establish it.
 
 ### First print template and current boundaries
 

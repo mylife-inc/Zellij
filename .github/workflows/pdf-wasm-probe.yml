@@ -11,6 +11,14 @@ on:
       - .gitattributes
       - .github/workflows/pdf-wasm-probe.yml
       - scripts/pdf-wasm/**
+      - scripts/check-cached-pdf.mjs
+      - scripts/check-published-cached-pdf.mjs
+      - scripts/verify-pdf-release*
+      - scripts/build-standalone-engine.mjs
+      - scripts/package-standalone-engine.mjs
+      - scripts/standalone-runtime.json
+      - cli/Cargo.toml
+      - cli/Cargo.lock
       - cli/crates/zellij-docs/examples/pdf_probe_inputs.rs
       - cli/crates/zellij-core/src/process.rs
       - cli/crates/zellij-core/src/process/**
@@ -36,12 +44,39 @@ on:
 permissions:
   contents: read
 jobs:
+  renderer:
+    name: Compile PDF companion renderer
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.22.3
+          cache: npm
+      - run: node --test scripts/verify-pdf-release.test.mjs
+      - run: npm ci
+      - name: Compile the real renderer used by the installed PDF path
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: |
+          npm run build --workspace @shebka/zellij
+          node scripts/build-standalone-engine.mjs
+      - uses: actions/upload-artifact@v7
+        with:
+          name: pdf-standalone-engine
+          path: dist/standalone-engine/
+          if-no-files-found: error
+          retention-days: 7
+
   probe:
     name: Offline LuaHBTeX (${{ matrix.runner }})
+    needs: renderer
     runs-on: ${{ matrix.runner }}
-    # Includes cold Rust compilation, complete source packaging and installed CLI tests.
+    # Includes cold Rust compilation, source packaging, installed CLI tests and
+    # the real renderer/compiler pair with a full matching-source transfer.
     # Compiler pass/total and cancellation deadlines remain independently tested.
-    timeout-minutes: 45
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -127,6 +162,14 @@ jobs:
         run: node --test scripts/pdf-wasm/cache.test.mjs
       - name: Exercise installed CLI PDF commands and offline watched previews
         run: node --test scripts/pdf-wasm/installed.test.mjs
+      - uses: actions/download-artifact@v8
+        with:
+          name: pdf-standalone-engine
+          path: dist/standalone-engine
+      - name: Package the real private Node and website renderer
+        run: node scripts/package-standalone-engine.mjs
+      - name: Verify the real compiler/source pair and offline PDF and rich builds
+        run: node scripts/check-cached-pdf.mjs
       - name: Install maintainer PDF comparison tools
         if: matrix.runner == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends poppler-utils qpdf
@@ -157,6 +200,7 @@ jobs:
             test-results/pdf-installed/verification.json
             test-results/pdf-release/verification.json
             test-results/pdf-release/toolchain/verification.json
+            test-results/pdf-real-packages/verification.json
           if-no-files-found: error
           retention-days: 14
       - name: Retain the exact paired assets for a gated release caller
