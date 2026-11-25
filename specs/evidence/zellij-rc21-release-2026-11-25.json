@@ -1,0 +1,3554 @@
+{
+  "date": "2026-11-25",
+  "version": "v0.2.0-rc.21",
+  "status": "rc.21 published, all 55 release jobs and eight actual channel upgrades passed, local CLI installed and verified; revised guides await pull-request checks and production publication.",
+  "source": {
+    "pr": 258,
+    "testedHead": "178c8e0aefdaa8b802428143679fb4cef284c41f",
+    "merge": "cd7608e5521fafd1abde827cc7bcb02950aa9a6b",
+    "mergeTreeMatchesTestedHead": true,
+    "checks": {
+      "ci": {
+        "id": 45703096716,
+        "head_sha": "178c8e0aefdaa8b802428143679fb4cef284c41f",
+        "run_attempt": 1,
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45703096716",
+        "created_at": "2026-11-25T21:18:16Z",
+        "updated_at": "2026-11-25T21:44:11Z"
+      }
+    },
+    "local": {
+      "rustPassed": 858,
+      "existingHostedTestsIgnored": 5,
+      "clippyWarningsDenied": true,
+      "productionAndDevelopmentAuditFindings": 0,
+      "deadlineBaselineRepetitions": 200,
+      "deadlineFixedRepetitions": 200
+    },
+    "retainedFailure": {
+      "run": 45688978899,
+      "job": 139469052544,
+      "test": "vercel::tests::deadline_stops_polling_without_recreating_deployment",
+      "actualErrorCaptured": false,
+      "exactCauseEstablished": false,
+      "controlledBodyTimeoutDefectReproducedBeforeFix": true,
+      "fix": "08a0b28",
+      "logSha256": "a917ab3634bdb9f38838886b898e2e964a8357d13fb59a1665b38a666bd9891d"
+    },
+    "postMergeCi": {
+      "id": 45707147021,
+      "head_sha": "cd7608e5521fafd1abde827cc7bcb02950aa9a6b",
+      "run_attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707147021",
+      "created_at": "2026-11-25T21:44:50Z",
+      "updated_at": "2026-11-25T22:08:37Z"
+    },
+    "postMergeImages": {
+      "id": 45707147017,
+      "head_sha": "cd7608e5521fafd1abde827cc7bcb02950aa9a6b",
+      "run_attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707147017",
+      "created_at": "2026-11-25T21:44:50Z",
+      "updated_at": "2026-11-25T21:50:08Z"
+    },
+    "pdfParity": {
+      "schemaVersion": 1,
+      "publicDownloadVerified": false,
+      "redistributionReviewComplete": true,
+      "platforms": [
+        "linux-x64",
+        "linux-arm64",
+        "darwin-x64",
+        "darwin-arm64",
+        "win32-x64",
+        "win32-arm64"
+      ],
+      "cacheScenarios": 78,
+      "compilations": 12,
+      "installedCliScenarios": 24,
+      "realRendererCompilerPlatforms": 6,
+      "completeSourceTransfers": 6,
+      "archive": {
+        "name": "zel-pdf-qualification-v0.2.0-rc.21.tar.gz",
+        "bytes": 11630439,
+        "sha256": "eee6b18bba4ffd3a41ed1ea6b9e52d39c6c7569932e9b0b9ae46427d57490746"
+      },
+      "manifestSha256": "63f81dadecdc3e7ca0c89d94b3141619478adbda43e5a81e366de2aaf971583f",
+      "sourceArchive": {
+        "name": "experimental-pdf-sources.tar.gz",
+        "bytes": 430154108,
+        "sha256": "e8f1b8370a9aacbb1b3d15ccbd630eed969ca1a8eae2fa19489dee98e8ac74f1"
+      },
+      "sourceManifestSha256": "f4da51b48842b908a7c15ecb680cfbde272eca0abddc73c0dc9ab423f2742949",
+      "reviewed": {
+        "schemaVersion": 1,
+        "version": "0.2.0-rc.21",
+        "redistributionReviewComplete": true,
+        "published": false,
+        "reviewSha256": "ff93454483cf313555a1d490f48dbe5f680e93dda7a5b84fe44cc32b620b6db3",
+        "runtime": {
+          "name": "zel-pdf-v0.2.0-rc.21.tar.gz",
+          "bytes": 11792863,
+          "sha256": "1c00d7d3dd7faad5824ed4123c11da12d53046a2a22c978b6333d26c26db2d3d"
+        },
+        "source": {
+          "name": "zel-pdf-sources-v0.2.0-rc.21.tar.gz",
+          "bytes": 430327877,
+          "sha256": "bc5d7a03e36095ada010ff3998d7387007b9a473254147b32e0e91a9f39fa147"
+        },
+        "sourceManifestSha256": "a41c419ebbf145726a2c27124eb0e9a16947772bf1994ca610c2390682f8f4bc"
+      }
+    },
+    "pdfSourceCorrespondence": {
+      "schemaVersion": 1,
+      "redistributionReviewComplete": false,
+      "inventorySha256": "71462f5da128edb258650d457a006d7c7c69ab98802691d587b9bf63e9d5ebfc",
+      "packageCount": 58,
+      "archiveCount": 152,
+      "matchedResources": [
+        {
+          "resource": "26/amsbsy.sty",
+          "archive": "amsmath.tar.xz",
+          "path": "texmf-dist/tex/latex/amsmath/amsbsy.sty",
+          "sha256": "938d9149d311b3a88836220bc76b057739958704a65422bee052696329fd41f8"
+        },
+        {
+          "resource": "26/amsgen.sty",
+          "archive": "amsmath.tar.xz",
+          "path": "texmf-dist/tex/latex/amsmath/amsgen.sty",
+          "sha256": "f78fa573b1596ea6589570f3c357b68a511fb8050607a3c898b25bc728571a9e"
+        },
+        {
+          "resource": "26/amsmath.sty",
+          "archive": "amsmath.tar.xz",
+          "path": "texmf-dist/tex/latex/amsmath/amsmath.sty",
+          "sha256": "8bf35130be39e123cbd0e4f0c09d3806d745d4c08ee391a543a8b9675191e6a7"
+        },
+        {
+          "resource": "26/amsopn.sty",
+          "archive": "amsmath.tar.xz",
+          "path": "texmf-dist/tex/latex/amsmath/amsopn.sty",
+          "sha256": "2d8dfd81cdb5eeffc4f03b64f5754808c809fb729d883fd4a94facada0d63765"
+        },
+        {
+          "resource": "26/amstext.sty",
+          "archive": "amsmath.tar.xz",
+          "path": "texmf-dist/tex/latex/amsmath/amstext.sty",
+          "sha256": "aa4458f9b4a5e6c1a79172fd670bcefbe717f3af0dfc9c18b95bc34b60afce7b"
+        },
+        {
+          "resource": "26/babel-Arab.ini",
+          "archive": "babel.tar.xz",
+          "path": "texmf-dist/tex/generic/babel/locale/shared/babel-Arab.ini",
+          "sha256": "3461e9c90ada0e49dbe9d230e025e0e6ce1e29e8ab9854c55b5782d3567d2de8"
+        },
+        {
+          "resource": "26/babel-ar.ini",
+          "archive": "babel.tar.xz",
+          "path": "texmf-dist/tex/generic/babel/locale/ar/babel-ar.ini",
+          "sha256": "f00f5c51c78dc4626c09e46a0203f7f943176911837d6aca9d8ed724d64b10cc"
+        },
+        {
+          "resource": "26/babel-arabic.tex",
+          "archive": "babel.tar.xz",
+          "path": "texmf-dist/tex/generic/babel/locale/ar/babel-arabic.tex",
+          "sha256": "075dbc746081593693e318113ed93ac07726b9f6c2620659fd8391856218ad30"
+        },
+        {
+          "resource": "26/babel-ca-islamic.tex",
+          "archive": "babel.tar.xz",
+          "path": "texmf-dist/tex/generic/babel/babel-ca-islamic.tex",
+          "sha256": "cc22ca51368cb9bf2b2cddacbd43b11f45b3c1ff8eef13d912861902d80c6255"
+        },
+        {
+          "resource": "26/babel-de.ini",
+          "archive": "babel.tar.xz",
+          "path": "texmf-dist/tex/generic/babel/locale/de/babel-de.ini",
+          "sha256": "77020008d060b4178c0a137b07302f46197ae702d43a94ed5a3f0650d89e11b8"
+        },
+        {
+          "resource": "26/babel-en.ini",
+          "archive": "babel.tar.xz",
+          "path": "texmf-dist/tex/generic/babel/locale/en/babel-en.ini",
+          "sha256": "0245d0eb3732cac2b81b55b65729f8498f7291df8eadbd0f5681cd8be68fa825"
+        },
+        {
+          "resource": "26/babel-english.tex",
+          "archive": "babel.tar.xz",
+          "path": "texmf-dist/tex/generic/babel/locale/en/babel-english.tex",
+          "sha256": "4aae05e9125e81791e22edde092cfff5861ac4c596895825820f683d9d1a099a"
+        },
+        {
+          "resource": "26/babel-es.ini",
+          "archive": "babel.tar.xz",
+          "path": "texmf-dist/tex/generic/babel/locale/es/babel-es.ini",
+          "sha256": "5cffabb47ac60e62ac5e3eed5afd6d5d32ce477aaa6a7fabe4863284dab563ee"
+        },
+        {
+          "resource": "26/babel-fr.ini",
+          "archive": "babel.tar.xz",
+          "path": "texmf-dist/tex/generic/babel/locale/fr/babel-fr.ini",
+          "sha256": "c599b7f11245e92b328525e7125b4e55b5b521bc53997b853864f6555f198979"
+        },
+        {
+          "resource": "26/babel-french.tex",
+          "archive": "babel.tar.xz",
+          "path": "texmf-dist/tex/generic/babel/locale/fr/babel-french.tex",
+          "sha256": "b1ed8e98c78420edf48f5872bc2d7751c6c09dd128d377dda80737c70e8662f4"
+        },
+        {
+          "resource": "26/babel-ngerman.tex",
+          "archive": "babel.tar.xz",
+          "path": "texmf-dist/tex/generic/babel/locale/invalid/babel-ngerman.tex",
+          "sha256": "577c8c385b1af9b3d51cf1e46764ee2f9344dab90cf305be6b4c9297053bc704"
+        },
+        {
+          "resource": "26/babel-spanish.tex",
+          "archive": "babel.tar.xz",
+          "path": "texmf-dist/tex/generic/babel/locale/es/babel-spanish.tex",
+          "sha256": "ad61ceb78a932e9a42eb3abdd19d710886b4841cb9d8a6c52c4185a6390d0893"
+        },
+        {
+          "resource": "26/babel-und-x-nil.ini",
+          "archive": "babel.tar.xz",
+          "path": "texmf-dist/tex/generic/babel/locale/und/babel-und-x-nil.ini",
+          "sha256": "1460fffd1199439ced07897841ad8908c9dfc2cd759ddef44e6c1e29420daf1f"
+        },
+        {
+          "resource": "26/babel.sty",
+          "archive": "babel.tar.xz",
+          "path": "texmf-dist/tex/generic/babel/babel.sty",
+          "sha256": "c1969f7625de7da83a37324de97f0eff5c2aed3894efd0a2eb48dfab26ee4d82"
+        },
+        {
+          "resource": "26/luababel.def",
+          "archive": "babel.tar.xz",
+          "path": "texmf-dist/tex/generic/babel/luababel.def",
+          "sha256": "59cc6cc64367aebd1abad88f637ae8dd4b973de05d7d65d3fda36da33a682587"
+        },
+        {
+          "resource": "26/nil.ldf",
+          "archive": "babel.tar.xz",
+          "path": "texmf-dist/tex/generic/babel/nil.ldf",
+          "sha256": "213a3ab69ec604b73289cf36922418896fb978cbf6a895332f402ecad8d10ae3"
+        },
+        {
+          "resource": "51/babel-bidi-basic.lua",
+          "archive": "babel.tar.xz",
+          "path": "texmf-dist/tex/generic/babel/babel-bidi-basic.lua",
+          "sha256": "886e1d0b36c3580b538cb667254f8edefada452dd78ce38d3748e9c2563d16d4"
+        },
+        {
+          "resource": "51/babel-data-bidi.lua",
+          "archive": "babel.tar.xz",
+          "path": "texmf-dist/tex/generic/babel/babel-data-bidi.lua",
+          "sha256": "9d86843116e51e7e823eb9778a860394694f08b6830db65608c12dab7cfb1217"
+        },
+        {
+          "resource": "26/bigintcalc.sty",
+          "archive": "bigintcalc.tar.xz",
+          "path": "texmf-dist/tex/generic/bigintcalc/bigintcalc.sty",
+          "sha256": "050f2ad3a3671a1f4f9bcf97784836301bc751507e7ada546632379406aea103"
+        },
+        {
+          "resource": "26/bitset.sty",
+          "archive": "bitset.tar.xz",
+          "path": "texmf-dist/tex/generic/bitset/bitset.sty",
+          "sha256": "af5c7196c69dc9d28225189169b60c9b9039125bc1756c04d54886f0a3e1891e"
+        },
+        {
+          "resource": "26/bkm-luatex.def",
+          "archive": "bookmark.tar.xz",
+          "path": "texmf-dist/tex/latex/bookmark/bkm-luatex.def",
+          "sha256": "528402dfd3fc018e6050b1a40d4d65d0e2ab8a2e1623009493fc4061d88ca0c8"
+        },
+        {
+          "resource": "26/bookmark.sty",
+          "archive": "bookmark.tar.xz",
+          "path": "texmf-dist/tex/latex/bookmark/bookmark.sty",
+          "sha256": "5ffaadec366a639e1f0456dad55886059b6da8c34e21b9018349095a76d16f56"
+        },
+        {
+          "resource": "26/booktabs.sty",
+          "archive": "booktabs.tar.xz",
+          "path": "texmf-dist/tex/latex/booktabs/booktabs.sty",
+          "sha256": "3fe694a5406f84847143e56ba1841385364277cfe7694a9f4bc0072ca8656abc"
+        },
+        {
+          "resource": "3/cmb10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmb10.tfm",
+          "sha256": "55cbc994b903a1c77150b9e8be4c12d745758aff76ac4f9dd7db5c5e00bc8aca"
+        },
+        {
+          "resource": "3/cmbsy10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmbsy10.tfm",
+          "sha256": "b5a0bf8a30db124f56f4e48237b510be6b1a78886da1540f2394ddfaf3186c25"
+        },
+        {
+          "resource": "3/cmbx10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmbx10.tfm",
+          "sha256": "ae296e8e41b2b0f73e9a17fdc42c743b9ddcc58d23c30acaa3411206f7824780"
+        },
+        {
+          "resource": "3/cmbx12",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmbx12.tfm",
+          "sha256": "0eb2f13840155007c2d3c59b074322a3aa7358b9643aa314f3146468ae7f0806"
+        },
+        {
+          "resource": "3/cmbx5",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmbx5.tfm",
+          "sha256": "a746151d8e3a521965bbfae2666e1528374a514375daa7d620e9b89ebbbfb0ae"
+        },
+        {
+          "resource": "3/cmbx6",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmbx6.tfm",
+          "sha256": "38ded79d7cce07fa28921f37f6b88e67bd86951a3e5af709c219d63454786ce1"
+        },
+        {
+          "resource": "3/cmbx7",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmbx7.tfm",
+          "sha256": "e7b284f0ee98b7773be9b57ca652b4bb14391370509a424b5b62b06b5cae86e4"
+        },
+        {
+          "resource": "3/cmbx8",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmbx8.tfm",
+          "sha256": "6dab44c885b7cbf567771d9cfa565f3df34d0e8124132b9b6f9fdc496a1c2eda"
+        },
+        {
+          "resource": "3/cmbx9",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmbx9.tfm",
+          "sha256": "9fb9cbe254c828bc6bdcc0ca66f81b6cb9b713edf0ef1b7fa67e231920112499"
+        },
+        {
+          "resource": "3/cmbxsl10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmbxsl10.tfm",
+          "sha256": "4a2dbf075487bcdb3b081926f8e5a03520b16a2e1af643e1e0fc36d7f344fb1e"
+        },
+        {
+          "resource": "3/cmbxti10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmbxti10.tfm",
+          "sha256": "2ba218c04e402c9d013cf5e36ffffe6ae420c1f2192291606405ef9f3f86df70"
+        },
+        {
+          "resource": "3/cmcsc10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmcsc10.tfm",
+          "sha256": "0d691f70f365e55b83096764fe0c65338842d704bd5b979ed0c6882f9e17ce0d"
+        },
+        {
+          "resource": "3/cmdunh10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmdunh10.tfm",
+          "sha256": "a94093bba5082a6e63fc95dd9bf4d10a8152a2a5f9e3913ab04dd6f60974d843"
+        },
+        {
+          "resource": "3/cmex10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmex10.tfm",
+          "sha256": "0890bccea1dd4d27f001ac30e86c63af35bc803e0557c35aafb1903c8d208e92"
+        },
+        {
+          "resource": "3/cmff10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmff10.tfm",
+          "sha256": "d7c17659aa5ddd781518ea67ba3e569be634fd2c156e76899d5c196bbf3e0e5f"
+        },
+        {
+          "resource": "3/cmfi10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmfi10.tfm",
+          "sha256": "ffd5979983f29ec2c5d5bdcdb3d2cc2f956f7e2cd891a4a3b36269c2c52ab063"
+        },
+        {
+          "resource": "3/cmfib8",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmfib8.tfm",
+          "sha256": "49253478733658d6926b0d755ef24c1c66f382fe95862c9466fc249c014896ed"
+        },
+        {
+          "resource": "3/cminch",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cminch.tfm",
+          "sha256": "5d7afb37cd4737e2a88a5c50ed820fa3949df058087cd07e5bf4812011d07f7d"
+        },
+        {
+          "resource": "3/cmitt10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmitt10.tfm",
+          "sha256": "bef521b29b7f2cd162767471db15078e30fd2df5a4bb1e1293a1a4c081ed3f6a"
+        },
+        {
+          "resource": "3/cmmi10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmmi10.tfm",
+          "sha256": "e442c5487f84df70218ff37f775c87060856f5b6e04c011b6cadbbadfcf46645"
+        },
+        {
+          "resource": "3/cmmi12",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmmi12.tfm",
+          "sha256": "79563547084d85388e6909888f9fa7f5cad33bdda44ca6b25b362e1d301db539"
+        },
+        {
+          "resource": "3/cmmi5",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmmi5.tfm",
+          "sha256": "8839e40838381a0a3c976bdd5becf72afd60bde5a965c3d9b985c3479c6cf75e"
+        },
+        {
+          "resource": "3/cmmi6",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmmi6.tfm",
+          "sha256": "ab6ecb4aaba9ca1b4259b1d1f64309a785bbaeb09183fd79a066b7764a448a28"
+        },
+        {
+          "resource": "3/cmmi7",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmmi7.tfm",
+          "sha256": "ce55681703aae565f17286d800ea9780223132589bdbaeda1751b869aba26a38"
+        },
+        {
+          "resource": "3/cmmi8",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmmi8.tfm",
+          "sha256": "65af8c1e162a952cab8e93c834fcf43ce09b508e6c16e512ebb673cd850b0d41"
+        },
+        {
+          "resource": "3/cmmi9",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmmi9.tfm",
+          "sha256": "20672649a2f07eef8fe07ccb42eeb731023e48f2e0797ecef57c0887da46c032"
+        },
+        {
+          "resource": "3/cmmib10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmmib10.tfm",
+          "sha256": "4465d20955917959c68d0254647e5caba1f38c4516a1fd212eab2da9b8645874"
+        },
+        {
+          "resource": "3/cmr10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmr10.tfm",
+          "sha256": "87f2d8981927644cbecaf3d639e96e348ea4e7be49d8804468bd8ba9ff3f5244"
+        },
+        {
+          "resource": "3/cmr12",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmr12.tfm",
+          "sha256": "1ce8af37ed38e93940829d3540e494eaaddc5201758d036b9074467e70a738dc"
+        },
+        {
+          "resource": "3/cmr17",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmr17.tfm",
+          "sha256": "86b6e8a52aae6ad1655e32099e12bd2904b158aba4c8afb74143266d2d9cd18f"
+        },
+        {
+          "resource": "3/cmr5",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmr5.tfm",
+          "sha256": "581be818f67bd11a1792d05e129abe3ea30c5cbdfce3bed8da7c5fb50f5ba95b"
+        },
+        {
+          "resource": "3/cmr6",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmr6.tfm",
+          "sha256": "106afa9172f0c00e58b9f5cbc72b302a18aaeeaddf50caca145af9cc0b81afd2"
+        },
+        {
+          "resource": "3/cmr7",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmr7.tfm",
+          "sha256": "28f9f4d237bdae4babef4a59d90f17686a09d6f9df0b2c3c23b2ba15f20eee82"
+        },
+        {
+          "resource": "3/cmr8",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmr8.tfm",
+          "sha256": "4c5ae243ac0aa254e7ec7f0602cc2a4351e5011ff0cb6dc150a5f6de19585de6"
+        },
+        {
+          "resource": "3/cmr9",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmr9.tfm",
+          "sha256": "2ffa73e8446c1d46c3509a0f65ff97d4d09de46f48e1ce578a1004498b67dba9"
+        },
+        {
+          "resource": "3/cmsl10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmsl10.tfm",
+          "sha256": "dcbfc25c5aac16dc2b820e089a00aedef20a1af6d8d3c2efa54f6f17a985d33f"
+        },
+        {
+          "resource": "3/cmsl12",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmsl12.tfm",
+          "sha256": "0bfef4919b1be6619d3e6892ea75066f4aa372b82d6164ebd06ef6c5b6281278"
+        },
+        {
+          "resource": "3/cmsl8",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmsl8.tfm",
+          "sha256": "581080f4ebd96f58b4b6f774ea2882f5e83fef7c932647a7c957f7e8db1f7823"
+        },
+        {
+          "resource": "3/cmsl9",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmsl9.tfm",
+          "sha256": "bb0f9deb6852caed902cb04bfc8e8333345a37946bd0b6bd56d11848e729d3ca"
+        },
+        {
+          "resource": "3/cmsltt10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmsltt10.tfm",
+          "sha256": "c093023e8958e30678808a843f4f4248f5ab609f8994182fded845590fe19cc3"
+        },
+        {
+          "resource": "3/cmss10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmss10.tfm",
+          "sha256": "431472f34665b6243a32936215f2e17d1f124cdf8513e86e2bedc4c3de3f980b"
+        },
+        {
+          "resource": "3/cmss12",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmss12.tfm",
+          "sha256": "38ba636afc0e32d07c340b9ad747c33c6d4a4256ccb9e42ae9f7d3df11b3fe1a"
+        },
+        {
+          "resource": "3/cmss17",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmss17.tfm",
+          "sha256": "a88f81798171b3582557826302ad7233e676949e17182d3dc84ea65bdf58e631"
+        },
+        {
+          "resource": "3/cmss8",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmss8.tfm",
+          "sha256": "25650d37e11bee41e03dc4757a1b6f1a64f27a53c664aa618d1a8ded54d96ed5"
+        },
+        {
+          "resource": "3/cmss9",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmss9.tfm",
+          "sha256": "904af036b1e2e1d1375cf763959ef9517a2fc3e24ac94dbb6290574cfafc0b50"
+        },
+        {
+          "resource": "3/cmssbx10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmssbx10.tfm",
+          "sha256": "59fcefaa9436cb00b1579a549b4a16b38606bb1b6138743d05ea35a74f168f54"
+        },
+        {
+          "resource": "3/cmssdc10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmssdc10.tfm",
+          "sha256": "1a0a6b7410c4c9fcc683cedcb9282428c98bd6aa54902e84ef6e71913f8aaaa2"
+        },
+        {
+          "resource": "3/cmssi10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmssi10.tfm",
+          "sha256": "9faee1d46e86de1eb7a8f7a53522d15fa8f06e75d292d8e6989dfcd252b322c7"
+        },
+        {
+          "resource": "3/cmssi12",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmssi12.tfm",
+          "sha256": "e8ea523bf347a1e932fa15a7d67af8bbc3720f4f59566ef9bf4270b9c26518da"
+        },
+        {
+          "resource": "3/cmssi17",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmssi17.tfm",
+          "sha256": "469b3e0bba8808729745f6221efb2bd1057814d24ecccc79ba67fdfad4ec2cd7"
+        },
+        {
+          "resource": "3/cmssi8",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmssi8.tfm",
+          "sha256": "79ce614e9edf079e9656dd8103402fc2dc745c77846a6c0a921342b8ad6c33e3"
+        },
+        {
+          "resource": "3/cmssi9",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmssi9.tfm",
+          "sha256": "c7e5764b1d1f637e733efdff121f7c88957a71844a3c4f5d4563f2b8c5d6bab2"
+        },
+        {
+          "resource": "3/cmssq8",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmssq8.tfm",
+          "sha256": "a813de9f318949969010f4a363b2c3076e5cefa4436e779404453b2c34435504"
+        },
+        {
+          "resource": "3/cmssqi8",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmssqi8.tfm",
+          "sha256": "78673efe5657b8a293e160c0ac88834778cf9a5ed1922a0bfcca3f5562c17f88"
+        },
+        {
+          "resource": "3/cmsy10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmsy10.tfm",
+          "sha256": "0ca13d421ac7133271aed7c935099ecf3d1d08ac9e15f81acb34a16564ab8a46"
+        },
+        {
+          "resource": "3/cmsy5",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmsy5.tfm",
+          "sha256": "6b7dc18cba9ca8996d7b146f1ed78d9227577b26248083310fec227692198ca5"
+        },
+        {
+          "resource": "3/cmsy6",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmsy6.tfm",
+          "sha256": "137eb9f38f661c66309614066a7b5d63d8969d33aba0c9efee9f844a4ce65b50"
+        },
+        {
+          "resource": "3/cmsy7",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmsy7.tfm",
+          "sha256": "4f59bbf683e947c807158641621982dc83f55fec042fea7963d8ce9f9da98256"
+        },
+        {
+          "resource": "3/cmsy8",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmsy8.tfm",
+          "sha256": "84c37f07ca360c41ad0a0fba7387d279d72457c69bdae03653208c683d8de6bc"
+        },
+        {
+          "resource": "3/cmsy9",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmsy9.tfm",
+          "sha256": "b57c5c42a7991a004ee1b40b340d7bd12cc75ab0a6f7daf7a207827504f91712"
+        },
+        {
+          "resource": "3/cmtcsc10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmtcsc10.tfm",
+          "sha256": "15d384d3e1b9edbe61fa59f7778fa52328507cfed3b84ef1133971eb23534a8f"
+        },
+        {
+          "resource": "3/cmtex10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmtex10.tfm",
+          "sha256": "b3cf3073fc0365ed335305b04579068059b8de860875bee514509764243f28d9"
+        },
+        {
+          "resource": "3/cmtex8",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmtex8.tfm",
+          "sha256": "fe5347dbbdc0e43b6f6a4b746abbda5f40e504916f14cd98d5572df9c8dd9f3c"
+        },
+        {
+          "resource": "3/cmtex9",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmtex9.tfm",
+          "sha256": "c7cd0eee8b1087c3afae677d6f9ce5483bdfa26ec571b706e999fdde0677ac3b"
+        },
+        {
+          "resource": "3/cmti10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmti10.tfm",
+          "sha256": "46a66e937f809c4fbe317947b583a14b408aca41ecb835eca3be46391190432a"
+        },
+        {
+          "resource": "3/cmti12",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmti12.tfm",
+          "sha256": "92d92985d932893a426546c1e59b69107423785857f6f29aa866be0aa8970883"
+        },
+        {
+          "resource": "3/cmti7",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmti7.tfm",
+          "sha256": "78921699d46fd39b25e2e3ea08b96d9c3ad9c858a6ad2cc1aa60204a36ce88f0"
+        },
+        {
+          "resource": "3/cmti8",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmti8.tfm",
+          "sha256": "7a212edaa5bbb6898b6196e32a5753811dc3295a18b9bcd9c727c23ce0c21a4e"
+        },
+        {
+          "resource": "3/cmti9",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmti9.tfm",
+          "sha256": "bae91797b96e40fbeb97e2ea3184070e7cf707b72422c7c107edf1d1d5a10abb"
+        },
+        {
+          "resource": "3/cmtt10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmtt10.tfm",
+          "sha256": "11f3331c958b696fd484fe45c28285622617a2593d7a34511a1d6b279e1578a2"
+        },
+        {
+          "resource": "3/cmtt12",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmtt12.tfm",
+          "sha256": "156417e26b9a51c7e052d5fdb3db7b25f10d4fa0d094180ae7834894189a0a0b"
+        },
+        {
+          "resource": "3/cmtt8",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmtt8.tfm",
+          "sha256": "62f6142387fe8d4be3ba2d46034e76fd6c3fc1d22ab44663a4eaa3f42b97039e"
+        },
+        {
+          "resource": "3/cmtt9",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmtt9.tfm",
+          "sha256": "2989dbdeed1533cdeba5dcd0edee59c4509b5c934b3db8847de78d8c94a9966d"
+        },
+        {
+          "resource": "3/cmu10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmu10.tfm",
+          "sha256": "7896645187499d599c330a8cbebc4ba1e21fa88b4ad46a86ef3db53cfa39b6f7"
+        },
+        {
+          "resource": "3/cmvtt10",
+          "archive": "cm.tar.xz",
+          "path": "texmf-dist/fonts/tfm/public/cm/cmvtt10.tfm",
+          "sha256": "1ef141c7fcac180ec4293f4f43c34089bb09f4d794663bf122f8f9a089fd23b1"
+        },
+        {
+          "resource": "26/ctablestack.sty",
+          "archive": "ctablestack.tar.xz",
+          "path": "texmf-dist/tex/luatex/ctablestack/ctablestack.sty",
+          "sha256": "2993431c0138c4c9b715e121ffea8bab0b8edd9eea7344c7d4a1665f0901643f"
+        },
+        {
+          "resource": "26/dehyphn-x-2024-02-28.pat",
+          "archive": "dehyph-exptl.tar.xz",
+          "path": "texmf-dist/tex/generic/dehyph-exptl/dehyphn-x-2024-02-28.pat",
+          "sha256": "e6cdda0e47efa1daf1673ed4737e75c826f6c0c2a074f021a28c2fb076ad64d6"
+        },
+        {
+          "resource": "26/dehyphn-x-2024-02-28.tex",
+          "archive": "dehyph-exptl.tar.xz",
+          "path": "texmf-dist/tex/generic/dehyph-exptl/dehyphn-x-2024-02-28.tex",
+          "sha256": "d41721236b336305d7c98723e558a0b2023704eed058f3d8ef1d1e0eb9ae8967"
+        },
+        {
+          "resource": "3/ectt1000",
+          "archive": "ec.tar.xz",
+          "path": "texmf-dist/fonts/tfm/jknappen/ec/ectt1000.tfm",
+          "sha256": "365b93b6dbeaa38c5e16d4951c35e66c15b200cb245b0259ade6181201bd54ec"
+        },
+        {
+          "resource": "26/epstopdf-base.sty",
+          "archive": "epstopdf-pkg.tar.xz",
+          "path": "texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty",
+          "sha256": "3d2226e3d68b4255061baa496cc9cbc107816a7d364720c1bd8c83dccb047b64"
+        },
+        {
+          "resource": "26/etexcmds.sty",
+          "archive": "etexcmds.tar.xz",
+          "path": "texmf-dist/tex/generic/etexcmds/etexcmds.sty",
+          "sha256": "a7db2834e02bd11be0e62a3be15e3dc293ba1be9196f19b29b9d98bfdbeb7514"
+        },
+        {
+          "resource": "26/etoolbox.sty",
+          "archive": "etoolbox.tar.xz",
+          "path": "texmf-dist/tex/latex/etoolbox/etoolbox.sty",
+          "sha256": "e48026fcea59b4906d1fd47bde658cb5caf0a7928c45a45ea563b18d5b40ebd4"
+        },
+        {
+          "resource": "26/fontspec-luatex.sty",
+          "archive": "fontspec.tar.xz",
+          "path": "texmf-dist/tex/latex/fontspec/fontspec-luatex.sty",
+          "sha256": "bc7f86bcf3fe0b5909299c0d6a944082c90593d8820590c4b9088be331c7e415"
+        },
+        {
+          "resource": "26/fontspec.cfg",
+          "archive": "fontspec.tar.xz",
+          "path": "texmf-dist/tex/latex/fontspec/fontspec.cfg",
+          "sha256": "f31d038ca5322ef4fc3fbe391f42695bf1305567a04b6ac1005964703dd1232a"
+        },
+        {
+          "resource": "26/fontspec.sty",
+          "archive": "fontspec.tar.xz",
+          "path": "texmf-dist/tex/latex/fontspec/fontspec.sty",
+          "sha256": "b190fc3e1a226b1deeffd441183406d3c9bc490f582ff4f5f5d8d927072f6469"
+        },
+        {
+          "resource": "51/fontspec.lua",
+          "archive": "fontspec.tar.xz",
+          "path": "texmf-dist/tex/latex/fontspec/fontspec.lua",
+          "sha256": "07d3754a64556ef6e74faf44a07bd89f910b7a3d0e8cb4c51a8af1566ebc7166"
+        },
+        {
+          "resource": "26/geometry.sty",
+          "archive": "geometry.tar.xz",
+          "path": "texmf-dist/tex/latex/geometry/geometry.sty",
+          "sha256": "d541ce56a3f45e2462be958ec62a50404213f26b241c7d7ad3e812685d38f5d8"
+        },
+        {
+          "resource": "26/gettitlestring.sty",
+          "archive": "gettitlestring.tar.xz",
+          "path": "texmf-dist/tex/generic/gettitlestring/gettitlestring.sty",
+          "sha256": "26ab10fd43fd5a90f98bcbed3a99978808da8878eb73835db4e0346371aee41e"
+        },
+        {
+          "resource": "26/color.sty",
+          "archive": "graphics.tar.xz",
+          "path": "texmf-dist/tex/latex/graphics/color.sty",
+          "sha256": "d01f66306b38122993e83c664c6767627d7d11a8f0dab73de3c578ffc34ef0c0"
+        },
+        {
+          "resource": "26/graphics.sty",
+          "archive": "graphics.tar.xz",
+          "path": "texmf-dist/tex/latex/graphics/graphics.sty",
+          "sha256": "fb1a1a212ef63b4e928ddf1c5e37bcb468fe3f52184adae93265bd277775fe76"
+        },
+        {
+          "resource": "26/graphicx.sty",
+          "archive": "graphics.tar.xz",
+          "path": "texmf-dist/tex/latex/graphics/graphicx.sty",
+          "sha256": "ed13d7b0b9b619804d9dc97030aa7d121b542a04174da1a59a8e5f43c6e834da"
+        },
+        {
+          "resource": "26/keyval.sty",
+          "archive": "graphics.tar.xz",
+          "path": "texmf-dist/tex/latex/graphics/keyval.sty",
+          "sha256": "e82c9ff41e9f97190a716024e89f3afdc65bf40bace3a2c6cbb5f517bacee322"
+        },
+        {
+          "resource": "26/mathcolor.ltx",
+          "archive": "graphics.tar.xz",
+          "path": "texmf-dist/tex/latex/graphics/mathcolor.ltx",
+          "sha256": "0804bb6e9e1eeeaeda861f29206d308194ea7cc846e38abaa344cdefa1d408cd"
+        },
+        {
+          "resource": "26/trig.sty",
+          "archive": "graphics.tar.xz",
+          "path": "texmf-dist/tex/latex/graphics/trig.sty",
+          "sha256": "859a9a09eef2c2498ffe1ffc3c251c8c1d455af6961ec5088b90c191ae97e46b"
+        },
+        {
+          "resource": "26/color.cfg",
+          "archive": "graphics-cfg.tar.xz",
+          "path": "texmf-dist/tex/latex/graphics-cfg/color.cfg",
+          "sha256": "a3529ccdadc8248b4c5d7c34ceea53bdc1509b54f18a192ad51b924bd297d8df"
+        },
+        {
+          "resource": "26/graphics.cfg",
+          "archive": "graphics-cfg.tar.xz",
+          "path": "texmf-dist/tex/latex/graphics-cfg/graphics.cfg",
+          "sha256": "feb91e48789a21e4acced98e952c77a2e2cf4a77e01bf147b59fa56a1b3f2008"
+        },
+        {
+          "resource": "26/luatex.def",
+          "archive": "graphics-def.tar.xz",
+          "path": "texmf-dist/tex/latex/graphics-def/luatex.def",
+          "sha256": "fded712a2a67d724f869864ae88b327bba1ff8476a65c18f11e81b16e5c47691"
+        },
+        {
+          "resource": "26/hycolor.sty",
+          "archive": "hycolor.tar.xz",
+          "path": "texmf-dist/tex/latex/hycolor/hycolor.sty",
+          "sha256": "8acaa03eda19a8158780356701e905e354e1dc47dc736e6e26fc860c12a15e14"
+        },
+        {
+          "resource": "26/hluatex.def",
+          "archive": "hyperref.tar.xz",
+          "path": "texmf-dist/tex/latex/hyperref/hluatex.def",
+          "sha256": "06708994717f6bac279dd3aedcd1336867621b03c2650aa89a0e9481e81c7b45"
+        },
+        {
+          "resource": "26/hyperref.sty",
+          "archive": "hyperref.tar.xz",
+          "path": "texmf-dist/tex/latex/hyperref/hyperref.sty",
+          "sha256": "da65dca8a44a4946284e6344ed731c9c1c6629bf7bd636b176a0cb2ea50af0cb"
+        },
+        {
+          "resource": "26/nameref.sty",
+          "archive": "hyperref.tar.xz",
+          "path": "texmf-dist/tex/latex/hyperref/nameref.sty",
+          "sha256": "567afe6847e20afcd0cbc5898274b815055cf96db3bee2fc74b97b310d17f602"
+        },
+        {
+          "resource": "26/pd1enc.def",
+          "archive": "hyperref.tar.xz",
+          "path": "texmf-dist/tex/latex/hyperref/pd1enc.def",
+          "sha256": "6b33f39f29b44db26efbe3e173a4c30c12e5fb8f66fece93750aa616e64f4170"
+        },
+        {
+          "resource": "26/puenc.def",
+          "archive": "hyperref.tar.xz",
+          "path": "texmf-dist/tex/latex/hyperref/puenc.def",
+          "sha256": "2e89cb339ac037594b6eb96233e879a6aaf2fffe78e2c02325c598f664847359"
+        },
+        {
+          "resource": "26/hyph-ar.tex",
+          "archive": "hyphen-arabic.tar.xz",
+          "path": "texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-ar.tex",
+          "sha256": "42a876e2c31dc7e98df30850ee994fbe1242f5e49ccee8399c2ccf7793c537e7"
+        },
+        {
+          "resource": "26/language.dat",
+          "archive": "hyphen-base.tar.xz",
+          "path": "texmf-dist/tex/generic/config/language.dat",
+          "sha256": "16f004f6c0683b502062b971af12b248643c83c8fb7aa44d6a2d5be5fb81c414"
+        },
+        {
+          "resource": "26/hyph-fr.tex",
+          "archive": "hyphen-french.tar.xz",
+          "path": "texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-fr.tex",
+          "sha256": "526cad6fe8f52fcd3caa3fcaf667cb1740cfc14bca198680e00dc343a84594de"
+        },
+        {
+          "resource": "26/hyph-quote-fr.tex",
+          "archive": "hyphen-french.tar.xz",
+          "path": "texmf-dist/tex/generic/hyph-utf8/patterns/quote/hyph-quote-fr.tex",
+          "sha256": "708975d63ba0777eed42b57046d4514c88170c1c924ec714837870d753bd794d"
+        },
+        {
+          "resource": "26/loadhyph-fr.tex",
+          "archive": "hyphen-french.tar.xz",
+          "path": "texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-fr.tex",
+          "sha256": "42a59379a68359fb243cfc428bbc4347b1fb9832f82b9a29a62f79927ac2f95e"
+        },
+        {
+          "resource": "26/hyph-es.tex",
+          "archive": "hyphen-spanish.tar.xz",
+          "path": "texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-es.tex",
+          "sha256": "6a2e5f39a991a23d1cd8a23dbd0f6fe96a9f07561a6695f4f3320f47030e236c"
+        },
+        {
+          "resource": "26/loadhyph-es.tex",
+          "archive": "hyphen-spanish.tar.xz",
+          "path": "texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-es.tex",
+          "sha256": "6d6bfa74e8896320cea3cfc9360b33c1a02d4266ee111d674a511532e8490556"
+        },
+        {
+          "resource": "26/iftex.sty",
+          "archive": "iftex.tar.xz",
+          "path": "texmf-dist/tex/generic/iftex/iftex.sty",
+          "sha256": "0dc0cefe2131f82330a3b8e62034c184455329d7d9bb94abe21e740821630381"
+        },
+        {
+          "resource": "26/ifvtex.sty",
+          "archive": "iftex.tar.xz",
+          "path": "texmf-dist/tex/generic/iftex/ifvtex.sty",
+          "sha256": "1138730b9ad7d9f664b4760a4ea0ae0945afd21c006b76b67e623e863bbf3756"
+        },
+        {
+          "resource": "26/infwarerr.sty",
+          "archive": "infwarerr.tar.xz",
+          "path": "texmf-dist/tex/generic/infwarerr/infwarerr.sty",
+          "sha256": "8c3e23b8bb7d940ff26cb0cf96e0151f540acf55020dc3c1aa8bcdb2eb66305c"
+        },
+        {
+          "resource": "26/intcalc.sty",
+          "archive": "intcalc.tar.xz",
+          "path": "texmf-dist/tex/generic/intcalc/intcalc.sty",
+          "sha256": "1343ba1b10b245bfd199c22947249af1d756808690c7811c90f07fe0a3772080"
+        },
+        {
+          "resource": "26/kvdefinekeys.sty",
+          "archive": "kvdefinekeys.tar.xz",
+          "path": "texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty",
+          "sha256": "c42f0c2628dc5fbd95b535cf8cd3cc964347653c099d38c0d416f896d84e8240"
+        },
+        {
+          "resource": "26/kvoptions.sty",
+          "archive": "kvoptions.tar.xz",
+          "path": "texmf-dist/tex/latex/kvoptions/kvoptions.sty",
+          "sha256": "70595629ec990ba8c0b6e6a54afcff2603464e6fce380a54a98549a78d2fc74a"
+        },
+        {
+          "resource": "26/kvsetkeys.sty",
+          "archive": "kvsetkeys.tar.xz",
+          "path": "texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty",
+          "sha256": "e3fcf7f3372a27bb478eb9488eca1e25ed382480d02a6898f190bd955388e055"
+        },
+        {
+          "resource": "26/expl3.sty",
+          "archive": "l3kernel.tar.xz",
+          "path": "texmf-dist/tex/latex/l3kernel/expl3.sty",
+          "sha256": "49487d4371ee09a440f28bae83949e8683019b89eed4d08d7604a159d0d37473"
+        },
+        {
+          "resource": "26/l3backend-luatex.def",
+          "archive": "l3kernel.tar.xz",
+          "path": "texmf-dist/tex/latex/l3kernel/l3backend-luatex.def",
+          "sha256": "2628254d8aca395bdf021c41fea32d748e2d5cbc2ff9544752ae6bee5924fa06"
+        },
+        {
+          "resource": "51/expl3.lua",
+          "archive": "l3kernel.tar.xz",
+          "path": "texmf-dist/tex/latex/l3kernel/expl3.lua",
+          "sha256": "236915d5c91d3bb2d3b5129e9971591a56b137e671ba34b6b753d22c8604e932"
+        },
+        {
+          "resource": "51/l3backend-luatex.lua",
+          "archive": "l3kernel.tar.xz",
+          "path": "texmf-dist/tex/latex/l3kernel/l3backend-luatex.lua",
+          "sha256": "2af937e42d0018e49df1073bf7de22b87d312668b5d4556d64541980193dca9d"
+        },
+        {
+          "resource": "26/l3keys2e.sty",
+          "archive": "l3packages.tar.xz",
+          "path": "texmf-dist/tex/latex/l3packages/l3keys2e/l3keys2e.sty",
+          "sha256": "b3959f34308f3edc6ee9656d0e8825b2f77ada1fb14ab11b82b796317fc52e56"
+        },
+        {
+          "resource": "26/xparse.sty",
+          "archive": "l3packages.tar.xz",
+          "path": "texmf-dist/tex/latex/l3packages/xparse/xparse.sty",
+          "sha256": "0280c6a086e4fc115c66589db0c5883a3e2eded2e2e2bfdd73d947a5b8092933"
+        },
+        {
+          "resource": "26/article.cls",
+          "archive": "latex.tar.xz",
+          "path": "texmf-dist/tex/latex/base/article.cls",
+          "sha256": "c09f5982893f8a092e69435caa151eef0d3cb4d7495abf23f08b640191cf81f6"
+        },
+        {
+          "resource": "26/bk10.clo",
+          "archive": "latex.tar.xz",
+          "path": "texmf-dist/tex/latex/base/bk10.clo",
+          "sha256": "c44ca4b67cc1ffe7d15b3e3d838f568c64bdb8e9d783767c1099653c1eaebbe3"
+        },
+        {
+          "resource": "26/bk11.clo",
+          "archive": "latex.tar.xz",
+          "path": "texmf-dist/tex/latex/base/bk11.clo",
+          "sha256": "671e9553ba09971fe9cbc7864b21072527586e55bf57c197621111513168eb01"
+        },
+        {
+          "resource": "26/bk12.clo",
+          "archive": "latex.tar.xz",
+          "path": "texmf-dist/tex/latex/base/bk12.clo",
+          "sha256": "410e8399b4b8a08c5b226849af1846ca379ed38820fb607ec5c5de644563ea53"
+        },
+        {
+          "resource": "26/book.cls",
+          "archive": "latex.tar.xz",
+          "path": "texmf-dist/tex/latex/base/book.cls",
+          "sha256": "ff9dcfb536554e5afd36ba4dd1fb8f15ac634c4ef108b0531475523f0d5d6762"
+        },
+        {
+          "resource": "26/fix-cm.sty",
+          "archive": "latex.tar.xz",
+          "path": "texmf-dist/tex/latex/base/fix-cm.sty",
+          "sha256": "e7b11f2e8d19a0d44644189a369d9649c5901962af4722de833167ed29326e6f"
+        },
+        {
+          "resource": "26/fontenc.sty",
+          "archive": "latex.tar.xz",
+          "path": "texmf-dist/tex/latex/base/fontenc.sty",
+          "sha256": "ac8ca5b250f2b6b545d0d82a10a2fc17e36fe95e2e0c48eba5626cf8af877263"
+        },
+        {
+          "resource": "26/size10.clo",
+          "archive": "latex.tar.xz",
+          "path": "texmf-dist/tex/latex/base/size10.clo",
+          "sha256": "7a5ab9aa1794b8864e2963db211ca03b48a455c706190c7f85124c6ca9714183"
+        },
+        {
+          "resource": "26/ts1enc.def",
+          "archive": "latex.tar.xz",
+          "path": "texmf-dist/tex/latex/base/ts1enc.def",
+          "sha256": "b04bd3e5c6356522c91eb5cef7f6537f8ef78bc9a92be2d7c81688e996594dc7"
+        },
+        {
+          "resource": "51/ltluatex.lua",
+          "archive": "latex.tar.xz",
+          "path": "texmf-dist/tex/latex/base/ltluatex.lua",
+          "sha256": "eab6abcb337f88697af783d11ce26914d56d4762135acf219e9c5db811466612"
+        },
+        {
+          "resource": "26/epstopdf-sys.cfg",
+          "archive": "latexconfig.tar.xz",
+          "path": "texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg",
+          "sha256": "10db2171b6e267720299c10b9e84f92c5cf069941dbfe3760e198304e49d5324"
+        },
+        {
+          "resource": "47/lmmono10-italic.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmmono10-italic.otf",
+          "sha256": "14e6328a5383d2b927c47051093ce0aff60deea07e6df71b8b99ee8d9c2ff8f2"
+        },
+        {
+          "resource": "47/lmmono10-regular.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmmono10-regular.otf",
+          "sha256": "22deb6d3be3ffcb40b33f0e010afb256c677d97c2a2bdee1f5740cdc97751558"
+        },
+        {
+          "resource": "47/lmmono12-regular.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmmono12-regular.otf",
+          "sha256": "b826e490fa671f254840abe88afea0975b606f57fb4a8b93f53787c26d8ac319"
+        },
+        {
+          "resource": "47/lmmono8-regular.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmmono8-regular.otf",
+          "sha256": "17319490d20f24e192bd7e7999484b95111a4654ac2620e7aa215591142ae997"
+        },
+        {
+          "resource": "47/lmmono9-regular.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmmono9-regular.otf",
+          "sha256": "cdd53c7dc01a1d25f21eaf7cae44bfb8a9665e4cbd60e5f8da14287aca819bb9"
+        },
+        {
+          "resource": "47/lmroman10-bold.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman10-bold.otf",
+          "sha256": "102fe06c430a8b681b2bf6876b7cd967ae4d47b4b6b41d915eb7913b726d9fb1"
+        },
+        {
+          "resource": "47/lmroman10-bolditalic.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman10-bolditalic.otf",
+          "sha256": "c37a28eed7a6e03f792b98b5e5f637b2fcda378bb4855f99284f1a88fe35f124"
+        },
+        {
+          "resource": "47/lmroman10-italic.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman10-italic.otf",
+          "sha256": "c1fce25075567bb8dbf2151658c3b442690041db17a2d49fc9e55905ea5b7169"
+        },
+        {
+          "resource": "47/lmroman10-regular.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman10-regular.otf",
+          "sha256": "1aa18cfefa58132c52ce5de70db1fd1154201c19cd2b2cdaffba4906a33e6852"
+        },
+        {
+          "resource": "47/lmroman12-bold.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman12-bold.otf",
+          "sha256": "28c8782ac2b6486958b5dc7610ada7800c53546ff7f36bc65909a876e1cd338e"
+        },
+        {
+          "resource": "47/lmroman12-italic.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman12-italic.otf",
+          "sha256": "ada6b3f451238784e5a5ea75d43efa1eb4329cd75ce65bf047ed2f31b7b5e2f3"
+        },
+        {
+          "resource": "47/lmroman12-regular.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman12-regular.otf",
+          "sha256": "e6be218ae83e61aa8a29990d3cdc401c678c1962188cb9a4a8b6359e4f5e5870"
+        },
+        {
+          "resource": "47/lmroman17-regular.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman17-regular.otf",
+          "sha256": "ed048c80fb4b67663b80899b89fe5fba17d7442e1286d61fd08fe5689c6b7c3c"
+        },
+        {
+          "resource": "47/lmroman5-bold.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman5-bold.otf",
+          "sha256": "6326fb955d07bedcc8f73684e6b6bfa76706d38f3a85bd89c0659504ace366a1"
+        },
+        {
+          "resource": "47/lmroman5-regular.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman5-regular.otf",
+          "sha256": "954bd9c376597c7043e7b616430163e0158155edf7434fd70082cf8460c08533"
+        },
+        {
+          "resource": "47/lmroman6-bold.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman6-bold.otf",
+          "sha256": "f1ebd52916182bfc2e3f9d4b5ba847ad6acc6c7761354c0dc052fb01ec14f73c"
+        },
+        {
+          "resource": "47/lmroman6-regular.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman6-regular.otf",
+          "sha256": "501396c437f76c260b8724265b8495f318a640ee5a4674852ecbb20daf256696"
+        },
+        {
+          "resource": "47/lmroman7-bold.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman7-bold.otf",
+          "sha256": "063ea9e378b4fca4fd59771cf522faa21eb7c8516c89464745c79725b384fb9a"
+        },
+        {
+          "resource": "47/lmroman7-italic.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman7-italic.otf",
+          "sha256": "19d20f2bb00fbffe5d3d66e9b6a54f0108289068029e9d88649d981d53613ddf"
+        },
+        {
+          "resource": "47/lmroman7-regular.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman7-regular.otf",
+          "sha256": "48c4b46ab255eec96588fb992fba1ed6102e53d051da480738a61cc6cdb328c3"
+        },
+        {
+          "resource": "47/lmroman8-bold.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman8-bold.otf",
+          "sha256": "04d4f633c3da31a169f4c54a7fe8c7e63925b39d030381f8d3eab955f16be7b2"
+        },
+        {
+          "resource": "47/lmroman8-italic.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman8-italic.otf",
+          "sha256": "fb0536b5c3eee5b5622cd827ceb410e6514e36512ebdc51d2cf98a96c06d44e8"
+        },
+        {
+          "resource": "47/lmroman8-regular.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman8-regular.otf",
+          "sha256": "f73015c3827596586faa380c398501caf9b5bcbb6f40b46af6a51277ca97c9fc"
+        },
+        {
+          "resource": "47/lmroman9-bold.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman9-bold.otf",
+          "sha256": "f72feac9ea12eb858d8093d6c0ee710a6c25f59b61278c88ec41c0a680838415"
+        },
+        {
+          "resource": "47/lmroman9-italic.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman9-italic.otf",
+          "sha256": "2106cffcdc9f9cb411d7c3441e34d77a168b998a58b40e727ab5b815437d1975"
+        },
+        {
+          "resource": "47/lmroman9-regular.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmroman9-regular.otf",
+          "sha256": "8ab7b017fc67ea0e30cbf9e7ebd940010442ea67b40cf65f87d73f3ca11b0e6f"
+        },
+        {
+          "resource": "47/lmsans10-bold.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmsans10-bold.otf",
+          "sha256": "a597b710326c1a8a2c7238d808e5d38711638a72a32383478db4829d63afd687"
+        },
+        {
+          "resource": "47/lmsans10-boldoblique.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmsans10-boldoblique.otf",
+          "sha256": "e45673d84754a94f2f053bd4c15950b4b320144fbb622c630a26fd7b68cfabc5"
+        },
+        {
+          "resource": "47/lmsans10-oblique.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmsans10-oblique.otf",
+          "sha256": "1b38b36efc21f9d3f34edf6a13f9d71f59c41f824e790f5d3ee5ba5b4936f377"
+        },
+        {
+          "resource": "47/lmsans10-regular.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmsans10-regular.otf",
+          "sha256": "d431b786b9b603662718e79cfe9b441f47a8b0b3e854dde89d5acb3ed7cfd682"
+        },
+        {
+          "resource": "47/lmsans12-oblique.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmsans12-oblique.otf",
+          "sha256": "1f138e6203f7092f9a01f6193ed97d971b5045b99969f3a62c7e43a7faabc1c0"
+        },
+        {
+          "resource": "47/lmsans12-regular.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmsans12-regular.otf",
+          "sha256": "f87ebdea035a96e8787e2c663cfcc78ce73205d37800eafe7948278e2cc7666a"
+        },
+        {
+          "resource": "47/lmsans17-oblique.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmsans17-oblique.otf",
+          "sha256": "0f6a4450c5fc9afd3650f24ad9003684fff3252691bbf2a33be94b383db8a77c"
+        },
+        {
+          "resource": "47/lmsans17-regular.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmsans17-regular.otf",
+          "sha256": "f6c395a436e4fa7e88bbf1445e64b9c78ce4effba3668b13cc433077fc71a984"
+        },
+        {
+          "resource": "47/lmsans8-oblique.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmsans8-oblique.otf",
+          "sha256": "7f4227513bfd47b7077bedd125caa4c0a223a2cdad17a1470145cdea83353c88"
+        },
+        {
+          "resource": "47/lmsans8-regular.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmsans8-regular.otf",
+          "sha256": "04f0d25ca474494cb707e752170f6c22cdcb8ae2b5fb80872143e18d5cc463f8"
+        },
+        {
+          "resource": "47/lmsans9-oblique.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmsans9-oblique.otf",
+          "sha256": "ac0535d7d4a8eb1b531c5faeb9060a4b9bac397d72cf54191ef53eea6f66b617"
+        },
+        {
+          "resource": "47/lmsans9-regular.otf",
+          "archive": "lm.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm/lmsans9-regular.otf",
+          "sha256": "80ef596460b7b402621780f7cd73a348efedc4cd2c6deca37da58f07ee61b85d"
+        },
+        {
+          "resource": "47/latinmodern-math.otf",
+          "archive": "lm-math.tar.xz",
+          "path": "texmf-dist/fonts/opentype/public/lm-math/latinmodern-math.otf",
+          "sha256": "6075562b771f8b82f0c179e363389684f2dd09de30038269e2628e504bd7be0f"
+        },
+        {
+          "resource": "26/ltxcmds.sty",
+          "archive": "ltxcmds.tar.xz",
+          "path": "texmf-dist/tex/generic/ltxcmds/ltxcmds.sty",
+          "sha256": "8fea89995d37ba4c69137186faafc589c470edcc5026d8a31aadbe5cef47dcb4"
+        },
+        {
+          "resource": "51/lua-uni-case.lua",
+          "archive": "lua-uni-algos.tar.xz",
+          "path": "texmf-dist/tex/luatex/lua-uni-algos/lua-uni-case.lua",
+          "sha256": "0c55c6f21798aa474070a6117ed45703f30eea7f7514138e5f64e90be09139f8"
+        },
+        {
+          "resource": "51/lua-uni-normalize.lua",
+          "archive": "lua-uni-algos.tar.xz",
+          "path": "texmf-dist/tex/luatex/lua-uni-algos/lua-uni-normalize.lua",
+          "sha256": "c4ba2d9ea36980a8e9ef19e2dae069e6d10722a1c9bbfe9a48808006530dff3c"
+        },
+        {
+          "resource": "51/lua-uni-parse.lua",
+          "archive": "lua-uni-algos.tar.xz",
+          "path": "texmf-dist/tex/luatex/lua-uni-algos/lua-uni-parse.lua",
+          "sha256": "2fab16ae6bdfef52b77b5d640f9a7debc075f5c97d251c9dccc24f8974f1db1b"
+        },
+        {
+          "resource": "51/lua-uni-stage-tables.lua",
+          "archive": "lua-uni-algos.tar.xz",
+          "path": "texmf-dist/tex/luatex/lua-uni-algos/lua-uni-stage-tables.lua",
+          "sha256": "fec274b96e20bf8300b955f34638d99119bb9a829520c978ef9c8afc24e98725"
+        },
+        {
+          "resource": "26/lualatex-math.sty",
+          "archive": "lualatex-math.tar.xz",
+          "path": "texmf-dist/tex/lualatex/lualatex-math/lualatex-math.sty",
+          "sha256": "5054a75bee5ac0800110168a4df57a089969b14f883d161a1e83726021d6511d"
+        },
+        {
+          "resource": "51/lualatex-math.lua",
+          "archive": "lualatex-math.tar.xz",
+          "path": "texmf-dist/tex/lualatex/lualatex-math/lualatex-math.lua",
+          "sha256": "5b9ef1ab7eea2544accb2653c45839540ed8761d384ca00aa806293018654ea5"
+        },
+        {
+          "resource": "51/lualibs-basic-merged.lua",
+          "archive": "lualibs.tar.xz",
+          "path": "texmf-dist/tex/luatex/lualibs/lualibs-basic-merged.lua",
+          "sha256": "a7970784ab066597d5003ac0e35cecae64784a0e3056aed034ed22397e580c59"
+        },
+        {
+          "resource": "51/lualibs-basic.lua",
+          "archive": "lualibs.tar.xz",
+          "path": "texmf-dist/tex/luatex/lualibs/lualibs-basic.lua",
+          "sha256": "937cf2975b322e3b2dd342ddd93e722a6b51c08d196e0af5bbed07b95219510c"
+        },
+        {
+          "resource": "51/lualibs-compat.lua",
+          "archive": "lualibs.tar.xz",
+          "path": "texmf-dist/tex/luatex/lualibs/lualibs-compat.lua",
+          "sha256": "93c0a38d03278e68fb2aa3f7a1cea090555ddb981225a5771530e678d28301ba"
+        },
+        {
+          "resource": "51/lualibs-extended-merged.lua",
+          "archive": "lualibs.tar.xz",
+          "path": "texmf-dist/tex/luatex/lualibs/lualibs-extended-merged.lua",
+          "sha256": "ada22ed59f683cfc3a645830201f77c2a3d4d06aaca2924297cef7192b0a9e13"
+        },
+        {
+          "resource": "51/lualibs-extended.lua",
+          "archive": "lualibs.tar.xz",
+          "path": "texmf-dist/tex/luatex/lualibs/lualibs-extended.lua",
+          "sha256": "805bebd2d9063fd3103e98e764b3ed4eb3d3368d22c8fa2e15375a59d3ae07b1"
+        },
+        {
+          "resource": "51/lualibs.lua",
+          "archive": "lualibs.tar.xz",
+          "path": "texmf-dist/tex/luatex/lualibs/lualibs.lua",
+          "sha256": "c64ac1bf3b572279d4ff6d44addfa4873c123759c021bbc23edc562c800adc2e"
+        },
+        {
+          "resource": "26/luaotfload.sty",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload.sty",
+          "sha256": "885e0f962d7c3ae83cf7c31bd535a539e37444394c414f42b46b8f15c1139a5d"
+        },
+        {
+          "resource": "51/fontloader-2023-12-28.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/fontloader-2023-12-28.lua",
+          "sha256": "02226780693404d7c80cd363c971082b3f56e27a255d47b17afeb8d97c140ab4"
+        },
+        {
+          "resource": "51/fontloader-basics-gen.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/fontloader-basics-gen.lua",
+          "sha256": "4edd18bc02449161027855499a96f1e044cb029cf1d62cc95ea958216ab7b430"
+        },
+        {
+          "resource": "51/luaotfload-arabic.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-arabic.lua",
+          "sha256": "4199a1409668abfa6d1219f19c8007d7ac89a9407cb99cd66d2e2c755e0b62e5"
+        },
+        {
+          "resource": "51/luaotfload-auxiliary.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-auxiliary.lua",
+          "sha256": "f5348e65ebc5092cc9a9987d430ee7cd621791462d8e853cc3616c63ce495b27"
+        },
+        {
+          "resource": "51/luaotfload-bcp47.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-bcp47.lua",
+          "sha256": "a0f34ad794bbe70304b56e558f396e5e27322ec6625532658423c45791151275"
+        },
+        {
+          "resource": "51/luaotfload-case.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-case.lua",
+          "sha256": "8d6028c760e0fa3a251427f991fffcbf5bc1b649dee0e6cc925375f0733d7d1e"
+        },
+        {
+          "resource": "51/luaotfload-colors.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-colors.lua",
+          "sha256": "a564d0ef3b9abd494e77c253ee6dbb532d568878b226b4f8f15ffff6cacfc2b5"
+        },
+        {
+          "resource": "51/luaotfload-configuration.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-configuration.lua",
+          "sha256": "fb81488992c9a23c66c5f4e589cd5ab934d7e748ceb955188bf69dded3f4b56d"
+        },
+        {
+          "resource": "51/luaotfload-database.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-database.lua",
+          "sha256": "9fb4c512243d7886c873785d1126498e7cfcfc395969593660b211d63707561a"
+        },
+        {
+          "resource": "51/luaotfload-embolden.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-embolden.lua",
+          "sha256": "f9f757abfe98513dda9fde79098c9d4f67a60b6c155307664a5845c2daaa090b"
+        },
+        {
+          "resource": "51/luaotfload-fallback.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-fallback.lua",
+          "sha256": "6c7c7964eff4e1a4840b90216499d4946a24aab4d7acbb27c785d8e209f1111e"
+        },
+        {
+          "resource": "51/luaotfload-features.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-features.lua",
+          "sha256": "35b4fef439e5cc6e9d7a9dfecce0b422f1cdab2d19f8258b907e0b2ec4de3b87"
+        },
+        {
+          "resource": "51/luaotfload-glyphlist.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-glyphlist.lua",
+          "sha256": "43d32f4089acc216e6a3e219863df132876df43a8d7399968e90a7c113c6bc90"
+        },
+        {
+          "resource": "51/luaotfload-harf-define.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-harf-define.lua",
+          "sha256": "8459cb1749c853d68e4cd98fa4b4ae287c3bfdcaae9ef1eec48f656595086420"
+        },
+        {
+          "resource": "51/luaotfload-harf-plug.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-harf-plug.lua",
+          "sha256": "4bc58e29dac3788900404097c7fc374f462d450133b57252b2da499896f07efe"
+        },
+        {
+          "resource": "51/luaotfload-harf-var-cff2.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-harf-var-cff2.lua",
+          "sha256": "dee45277c6ea8da59792091a6b275eb6d13941d3b8ef4636672b2cf6cebf8021"
+        },
+        {
+          "resource": "51/luaotfload-harf-var-t2-writer.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-harf-var-t2-writer.lua",
+          "sha256": "fe54ff36fe6c14a0eb38334269a902f73501d9506ee11ea5416d266db59480e6"
+        },
+        {
+          "resource": "51/luaotfload-harf-var-ttf.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-harf-var-ttf.lua",
+          "sha256": "4857ec528bc9ec308e5c3fd75c9e50123128f765beb7fbb626605ba8038b06e4"
+        },
+        {
+          "resource": "51/luaotfload-init.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-init.lua",
+          "sha256": "c2946e42dbb539ba61c5ea381b4c8f2a351397aa41294992c7899b8df7e6f552"
+        },
+        {
+          "resource": "51/luaotfload-letterspace.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-letterspace.lua",
+          "sha256": "7a51031d7698ba4408221751688c6363c743cc58f17522ce309b34416a353aa2"
+        },
+        {
+          "resource": "51/luaotfload-loaders.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-loaders.lua",
+          "sha256": "d8ee364a95311c33f91932f35fb92713e77ff1e896581402162576b49eb94039"
+        },
+        {
+          "resource": "51/luaotfload-log.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-log.lua",
+          "sha256": "129ec03517e625392724083a602b9023a601749dcd35235e083bcd8873c579b5"
+        },
+        {
+          "resource": "51/luaotfload-main.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-main.lua",
+          "sha256": "a288ce8b68e2acbbc18bb67c2f8bdefd6a4dbf692fb68f756f2b4db56c3d0ab2"
+        },
+        {
+          "resource": "51/luaotfload-multiscript.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-multiscript.lua",
+          "sha256": "5c2ddb0ca04537c754496c3cd4ef3c00cc53bb329c3e56d1833d19b8b7a75792"
+        },
+        {
+          "resource": "51/luaotfload-notdef.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-notdef.lua",
+          "sha256": "357b38767fd2a00bf7105b04ae1019c12662643eaa4cef1098556c7bd98df462"
+        },
+        {
+          "resource": "51/luaotfload-parsers.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-parsers.lua",
+          "sha256": "d20a610d1e7c0b55e5cf1a2cae9c468971b94346a6b578ff83fd17accb65f0c0"
+        },
+        {
+          "resource": "51/luaotfload-realpath.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-realpath.lua",
+          "sha256": "720e7e8ff2c8ffbc8d980f718038a07679e39df176d410f8b86bc0da1e78d559"
+        },
+        {
+          "resource": "51/luaotfload-resolvers.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-resolvers.lua",
+          "sha256": "24e3d5289b3de153358c51a7787a5be45495c2bb3d38d8c7c97685bad682ae57"
+        },
+        {
+          "resource": "51/luaotfload-scripts.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-scripts.lua",
+          "sha256": "0dd54d6c16f4760348fdb69481a7dff14e8c9c9866ceba75109ec90ada8d1c62"
+        },
+        {
+          "resource": "51/luaotfload-status.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-status.lua",
+          "sha256": "7ab746ef65ad8292b5fd2bf603cfaa5239a317e6afb8d1f7caac89dde36f54b6"
+        },
+        {
+          "resource": "51/luaotfload-suppress.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-suppress.lua",
+          "sha256": "b2cce5bc790c5666595b09112f3eac7c597e017b20609bbaeeb09c2fce697d27"
+        },
+        {
+          "resource": "51/luaotfload-szss.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-szss.lua",
+          "sha256": "357d81680d2d58f687c9bc25539382dcc962d21642056108f6232e2b6b5faf55"
+        },
+        {
+          "resource": "51/luaotfload-tounicode.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-tounicode.lua",
+          "sha256": "2ef62facf487caf703e12e0a8884dff599c1d055731ae5cbcdf37157764c8ea7"
+        },
+        {
+          "resource": "51/luaotfload-unicode.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload-unicode.lua",
+          "sha256": "53f2e6f79279364a8749fc64b2d542f6d831ae3eae1ad800899bcf9b87f3d4a5"
+        },
+        {
+          "resource": "51/luaotfload.lua",
+          "archive": "luaotfload.tar.xz",
+          "path": "texmf-dist/tex/luatex/luaotfload/luaotfload.lua",
+          "sha256": "33adcff01fe3c655eb7acb476fcb91171e4f6bf394bda3eecac68682634d6128"
+        },
+        {
+          "resource": "26/luatexbase.sty",
+          "archive": "luatexbase.tar.xz",
+          "path": "texmf-dist/tex/luatex/luatexbase/luatexbase.sty",
+          "sha256": "74e7c1b13c51319dbb93a9593067084cf0552e10a6cdf7a4f3c345879664c25c"
+        },
+        {
+          "resource": "26/microtype-luatex.def",
+          "archive": "microtype.tar.xz",
+          "path": "texmf-dist/tex/latex/microtype/microtype-luatex.def",
+          "sha256": "37c46edf406c2e609f446ba263569db5f4db9fbc14a077df387575141d568d47"
+        },
+        {
+          "resource": "26/microtype.cfg",
+          "archive": "microtype.tar.xz",
+          "path": "texmf-dist/tex/latex/microtype/microtype.cfg",
+          "sha256": "38ed6ed6c40d85163281b6d45ad9949c9566acf5f9fa03b1363e42f18b5e1258"
+        },
+        {
+          "resource": "26/microtype.sty",
+          "archive": "microtype.tar.xz",
+          "path": "texmf-dist/tex/latex/microtype/microtype.sty",
+          "sha256": "49f84ac779174f3295733b64fcf382fde6178b09c2c67c198fdf0167c2f3e71d"
+        },
+        {
+          "resource": "26/mt-LatinModernRoman.cfg",
+          "archive": "microtype.tar.xz",
+          "path": "texmf-dist/tex/latex/microtype/mt-LatinModernRoman.cfg",
+          "sha256": "1c4b8811b46ff22b107ce00048bba8008bdf731dcabdd91da3e08eb78d130101"
+        },
+        {
+          "resource": "51/microtype.lua",
+          "archive": "microtype.tar.xz",
+          "path": "texmf-dist/tex/latex/microtype/microtype.lua",
+          "sha256": "9b8649bc77892b89d5f20ffd7e0393101b36e1a0191c94255709bae2b6a3de69"
+        },
+        {
+          "resource": "26/supp-pdf.mkii",
+          "archive": "mptopdf.tar.xz",
+          "path": "texmf-dist/tex/context/base/mkii/supp-pdf.mkii",
+          "sha256": "5dd3675b88c7b61d3703e6bf35ed75623acc6b163dff7b1477b485cee8ad71cb"
+        },
+        {
+          "resource": "26/pdfescape.sty",
+          "archive": "pdfescape.tar.xz",
+          "path": "texmf-dist/tex/generic/pdfescape/pdfescape.sty",
+          "sha256": "b3f0e56366c11b85dae521f9a48a6fd415dec1ce8c83152fde813a9f64445b49"
+        },
+        {
+          "resource": "26/pdftexcmds.sty",
+          "archive": "pdftexcmds.tar.xz",
+          "path": "texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty",
+          "sha256": "2df7e0bd148c99d8097352b8ac9948dccf91d61ba360dcf43f82206933b6045b"
+        },
+        {
+          "resource": "51/pdftexcmds.lua",
+          "archive": "pdftexcmds.tar.xz",
+          "path": "texmf-dist/tex/generic/pdftexcmds/pdftexcmds.lua",
+          "sha256": "872a8889c423ec55c119f78055c7b92768af2fc8d480d44d04899581e347a363"
+        },
+        {
+          "resource": "26/refcount.sty",
+          "archive": "refcount.tar.xz",
+          "path": "texmf-dist/tex/latex/refcount/refcount.sty",
+          "sha256": "1bd5d42025520bef74f8808af99cf3f3be7d2e3774b9931bf85c11ba81bb6cab"
+        },
+        {
+          "resource": "26/rerunfilecheck.sty",
+          "archive": "rerunfilecheck.tar.xz",
+          "path": "texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty",
+          "sha256": "7771d8fb8f76147d1d6fc5b205c8989feb270bafccd6021570cd7e5152ead1d6"
+        },
+        {
+          "resource": "26/soul-ori.sty",
+          "archive": "soul.tar.xz",
+          "path": "texmf-dist/tex/generic/soul/soul-ori.sty",
+          "sha256": "842e46b91b146591ebde3348a684b04fae92d46d4508482bc5036e1805e57f9c"
+        },
+        {
+          "resource": "26/soul.sty",
+          "archive": "soul.tar.xz",
+          "path": "texmf-dist/tex/generic/soul/soul.sty",
+          "sha256": "0bc2aecc16e0a261db88863dfc5e26b0745abf3fc02caa97fcd076f2e56bf940"
+        },
+        {
+          "resource": "26/stringenc.sty",
+          "archive": "stringenc.tar.xz",
+          "path": "texmf-dist/tex/generic/stringenc/stringenc.sty",
+          "sha256": "b134a7bba648a6987afc83ddfb6a3fcdad43bcae6b616e533eb484306d56ac45"
+        },
+        {
+          "resource": "51/lualatexquotejobname.lua",
+          "archive": "tex-ini-files.tar.xz",
+          "path": "texmf-dist/tex/latex/tex-ini-files/lualatexquotejobname.lua",
+          "sha256": "bc04b2ddea7dafd084f3b51e12240d1107b10a7ea30a64f7b688ac65e4f0338d"
+        },
+        {
+          "resource": "26/longtable.sty",
+          "archive": "tools.tar.xz",
+          "path": "texmf-dist/tex/latex/tools/longtable.sty",
+          "sha256": "d1074f79197cd8dc8bc1bdc546d5844ec2cd876c206b2e5935ede4a2003d51b1"
+        },
+        {
+          "resource": "26/CaseFolding.txt",
+          "archive": "unicode-data.tar.xz",
+          "path": "texmf-dist/tex/generic/unicode-data/CaseFolding.txt",
+          "sha256": "ff8d8fefbf123574205085d6714c36149eb946d717a0c585c27f0f4ef58c4183"
+        },
+        {
+          "resource": "26/PropList.txt",
+          "archive": "unicode-data.tar.xz",
+          "path": "texmf-dist/tex/generic/unicode-data/PropList.txt",
+          "sha256": "130dcddcaadaf071008bdfce1e7743e04fdfbc910886f017d9f9ac931d8c64dd"
+        },
+        {
+          "resource": "26/ScriptExtensions.txt",
+          "archive": "unicode-data.tar.xz",
+          "path": "texmf-dist/tex/generic/unicode-data/ScriptExtensions.txt",
+          "sha256": "ec2107e58825a1586acee8e0911ce18260394ac8b87e535ca325f1ccbeb06bc6"
+        },
+        {
+          "resource": "26/Scripts.txt",
+          "archive": "unicode-data.tar.xz",
+          "path": "texmf-dist/tex/generic/unicode-data/Scripts.txt",
+          "sha256": "9f5e50d3abaee7d6ce09480f325c706f485ae3240912527e651954d2d6b035bf"
+        },
+        {
+          "resource": "26/SpecialCasing.txt",
+          "archive": "unicode-data.tar.xz",
+          "path": "texmf-dist/tex/generic/unicode-data/SpecialCasing.txt",
+          "sha256": "efc25faf19de21b92c1194c111c932e03d2a5eaf18194e33f1156e96de4c9588"
+        },
+        {
+          "resource": "26/UnicodeData.txt",
+          "archive": "unicode-data.tar.xz",
+          "path": "texmf-dist/tex/generic/unicode-data/UnicodeData.txt",
+          "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c"
+        },
+        {
+          "resource": "26/WordBreakProperty.txt",
+          "archive": "unicode-data.tar.xz",
+          "path": "texmf-dist/tex/generic/unicode-data/WordBreakProperty.txt",
+          "sha256": "72274cac1e6b919507db35655c3e175aa27274668a1ece95c28d2069f2ad9852"
+        },
+        {
+          "resource": "26/unicode-math-luatex.sty",
+          "archive": "unicode-math.tar.xz",
+          "path": "texmf-dist/tex/latex/unicode-math/unicode-math-luatex.sty",
+          "sha256": "b901badb8469dc6b004d51e5fd5706f761d000972ade219b57ac01731504a94f"
+        },
+        {
+          "resource": "26/unicode-math-table.tex",
+          "archive": "unicode-math.tar.xz",
+          "path": "texmf-dist/tex/latex/unicode-math/unicode-math-table.tex",
+          "sha256": "3976ff8f39c84b61055b1cb6851a1b2cfdefa918a2a642c954e6ceafdca7277e"
+        },
+        {
+          "resource": "26/unicode-math.sty",
+          "archive": "unicode-math.tar.xz",
+          "path": "texmf-dist/tex/latex/unicode-math/unicode-math.sty",
+          "sha256": "91388a2e1332388bcf8393d79a9fb67f4bd197f982503297dbf971f5f7cec111"
+        },
+        {
+          "resource": "26/uniquecounter.sty",
+          "archive": "uniquecounter.tar.xz",
+          "path": "texmf-dist/tex/generic/uniquecounter/uniquecounter.sty",
+          "sha256": "9d11c81501953d689787ff14c073d2f1eda5874068db9e882b8dbbf9a9d863b0"
+        },
+        {
+          "resource": "26/url.sty",
+          "archive": "url-3.3.tar.xz",
+          "path": "texmf-dist/tex/latex/url/url.sty",
+          "sha256": "a89cb82fae2a1cf2a273fb30d8a96228b80e79a53b5326fd3582a3f21e8ba767"
+        },
+        {
+          "resource": "26/xcolor.sty",
+          "archive": "xcolor.tar.xz",
+          "path": "texmf-dist/tex/latex/xcolor/xcolor.sty",
+          "sha256": "478888f8e8f00345fd645b6cdd6fa7db1e9efdd6f585b25c89bb3665d9029295"
+        }
+      ],
+      "generatedResources": [
+        {
+          "resource": "11/pdftex.map",
+          "sha256": "0382ce7f0404251185a5f9e98e5fc8b9a5c1718efbc2e8ebec460e5e32736a49",
+          "kind": "pdftex-font-map"
+        },
+        {
+          "resource": "51/luaotfload-names.lua",
+          "sha256": "197995236dd4409d1fc8d62052a0e3469431d36474328f674175f0cb7530e0de",
+          "kind": "luaotfload-font-database"
+        }
+      ],
+      "engine": {
+        "release": "2026-f5d94438a7c75a23",
+        "matchedArtifacts": [
+          "wasmtex-luatex.js",
+          "wasmtex-luatex.wasm",
+          "wasmtex-luatex.fmt.gz"
+        ],
+        "engineSourceRevision": "a97db8a62ed86b118bcfcc8784b7752aa8e988ac",
+        "formatSourceRevision": "c8b5f0d1c50d67e917a150b1334ab5ff03d8ae96",
+        "rebuildVerified": false
+      },
+      "supportingArchiveCount": 1,
+      "notices": [
+        {
+          "path": "texmf-dist/doc/context/sources/general/manuals/readme/mreadme.tex",
+          "archive": "context.doc.tar.xz",
+          "sha256": "e65ba80a879ae8e1bf88134c07a2fd1ba7314ba377eedc17c73b3098ee4ef6d5"
+        },
+        {
+          "path": "texmf-dist/doc/fonts/cm/README",
+          "archive": "cm.doc.tar.xz",
+          "sha256": "df37bc99ee2ed981004fc36690f9dbd44045348ae1b63b7ef2894e5b02d0f1a5"
+        },
+        {
+          "path": "texmf-dist/doc/fonts/cm/README-cmps.txt",
+          "archive": "cm.doc.tar.xz",
+          "sha256": "8486ab502a86e9cfa29c87b4047f592a9e3e3ebb24a54acbdb34069d9da8c061"
+        },
+        {
+          "path": "texmf-dist/doc/fonts/ec/00readme.txt",
+          "archive": "ec.doc.tar.xz",
+          "sha256": "6b5b6133f2c82650d6fb0b53c13caad3042d1242ae3c680ac840e694a32ed69d"
+        },
+        {
+          "path": "texmf-dist/doc/fonts/ec/copyrite.txt",
+          "archive": "ec.doc.tar.xz",
+          "sha256": "ff60c4b3c1099ca7ec439fc3c7fa141f0ebde71ff0e54fd68b03de6a98151974"
+        },
+        {
+          "path": "texmf-dist/doc/fonts/lm-math/GUST-FONT-LICENSE.txt",
+          "archive": "lm-math.doc.tar.xz",
+          "sha256": "2bd69affc3da00715116f713f57eab9707e96daf3562ad0215987b15b9c16f73"
+        },
+        {
+          "path": "texmf-dist/doc/fonts/lm-math/README-Latin-Modern-Math.txt",
+          "archive": "lm-math.doc.tar.xz",
+          "sha256": "e6fdd5fb44b656146fa988d191f58901c09a347d3f4fbaa3b45b24a6ad7ec30b"
+        },
+        {
+          "path": "texmf-dist/doc/fonts/lm/GUST-FONT-LICENSE.TXT",
+          "archive": "lm.doc.tar.xz",
+          "sha256": "49ea6cb9257bbee0a3979c48a774cd221550ac1c20c95549efe45fc99cc18050"
+        },
+        {
+          "path": "texmf-dist/doc/fonts/lm/README-Latin-Modern.TXT",
+          "archive": "lm.doc.tar.xz",
+          "sha256": "7cac4a4a78985ccb1ed429bb2eddf32eeb2e413c94493c7b268385bb7b525250"
+        },
+        {
+          "path": "texmf-dist/doc/generic/dehyph-exptl/LICENSE.data",
+          "archive": "dehyph-exptl.doc.tar.xz",
+          "sha256": "f545c5ff406ae0c3013eae9916f47d44ebeccb40f8e44b631db78b769953abb4"
+        },
+        {
+          "path": "texmf-dist/doc/generic/dehyph-exptl/LICENSE.documentation",
+          "archive": "dehyph-exptl.doc.tar.xz",
+          "sha256": "71c5e418291364abfb9af218ae4a69515e37eb6748f02863f1b5cdbb90bae6c3"
+        },
+        {
+          "path": "texmf-dist/doc/generic/dehyph-exptl/README",
+          "archive": "dehyph-exptl.doc.tar.xz",
+          "sha256": "6c8c4f0318c9811e053539ab94b278983ed3ef78267dd8ec9e5f62b9e7d9f61c"
+        },
+        {
+          "path": "texmf-dist/doc/generic/hyph-utf8/languages/es/README",
+          "archive": "hyphen-spanish.doc.tar.xz",
+          "sha256": "6631dec36718d084813fa7ee6359fe9fffee0ea12a92ea7697c01c38053e634f"
+        },
+        {
+          "path": "texmf-dist/doc/generic/iftex/README.md",
+          "archive": "iftex.doc.tar.xz",
+          "sha256": "2b4eca4cc3d1aa9758e18d429fb1e6c597a4602dbc54edbebabe4f3d0888e61c"
+        },
+        {
+          "path": "texmf-dist/doc/generic/ltxcmds/README.md",
+          "archive": "ltxcmds.doc.tar.xz",
+          "sha256": "3335930220c7e23ff255df6fb2221ad7b64d48980dbbfe2c89d83e86cb499185"
+        },
+        {
+          "path": "texmf-dist/doc/generic/pdftexcmds/README.md",
+          "archive": "pdftexcmds.doc.tar.xz",
+          "sha256": "c1c9a982e924e6cd781f0c78493f1a574a54ce7641de08423246aa990acf2f97"
+        },
+        {
+          "path": "texmf-dist/doc/generic/soul/README.md",
+          "archive": "soul.doc.tar.xz",
+          "sha256": "27ca9a3c387e84b5b35e01b7ce387b898415406e2d38df6eb1015839e5cf5768"
+        },
+        {
+          "path": "texmf-dist/doc/generic/tex-ini-files/README.md",
+          "archive": "tex-ini-files.doc.tar.xz",
+          "sha256": "3070c82eac2bb1b18ddddc2ea422b8a036923b9a272dc1c6d0a9b2e6906482b2"
+        },
+        {
+          "path": "texmf-dist/doc/generic/unicode-data/README.md",
+          "archive": "unicode-data.doc.tar.xz",
+          "sha256": "c25cae414fe7771791834542f9cf6dc52a4ead14eb6bb736956cbf632727d63d"
+        },
+        {
+          "path": "texmf-dist/doc/latex/amsmath/README.md",
+          "archive": "amsmath.doc.tar.xz",
+          "sha256": "92ab60ff0cb06e763bd31569f050c7e5aa302f7e849a429a620176535bbc9fbe"
+        },
+        {
+          "path": "texmf-dist/doc/latex/babel/README.md",
+          "archive": "babel.doc.tar.xz",
+          "sha256": "2eaf7851b84abf84f53ff7e1bf00d19c1ba278515f06ccb86975b17a752d0ff0"
+        },
+        {
+          "path": "texmf-dist/doc/latex/base/README.md",
+          "archive": "latex.doc.tar.xz",
+          "sha256": "bb4428984159e300a56c987d19dc900b18ec075494812d512740997797849868"
+        },
+        {
+          "path": "texmf-dist/doc/latex/base/lppl.txt",
+          "archive": "latex.doc.tar.xz",
+          "sha256": "ca3227f672053cb608959d7e1d476c7a13efea11be3f6e53758a68b650c918e8"
+        },
+        {
+          "path": "texmf-dist/doc/latex/bigintcalc/README.md",
+          "archive": "bigintcalc.doc.tar.xz",
+          "sha256": "0fe07226f5990e111be7c305156d3ed59d67354538d42bbb9031a9de3271e64b"
+        },
+        {
+          "path": "texmf-dist/doc/latex/bitset/README.md",
+          "archive": "bitset.doc.tar.xz",
+          "sha256": "032d2a3a690b771a8b18dfbee4805804ed3e150266550840d09b182bd6dfb328"
+        },
+        {
+          "path": "texmf-dist/doc/latex/bookmark/README.md",
+          "archive": "bookmark.doc.tar.xz",
+          "sha256": "b04999e6b715acb068db425194c2eeb46c70545e9b0571b58c2b9b2e2ad070e7"
+        },
+        {
+          "path": "texmf-dist/doc/latex/booktabs/README",
+          "archive": "booktabs.doc.tar.xz",
+          "sha256": "a4344f142d259d807eb56a57ac01de2e2fd27c8f15e4a210c8faf12bf46006ed"
+        },
+        {
+          "path": "texmf-dist/doc/latex/epstopdf-pkg/README.md",
+          "archive": "epstopdf-pkg.doc.tar.xz",
+          "sha256": "c6cd3643112e08f67c579191c0335e54708dd982f019982f0bbe709fa5b95802"
+        },
+        {
+          "path": "texmf-dist/doc/latex/etexcmds/README.md",
+          "archive": "etexcmds.doc.tar.xz",
+          "sha256": "39fd7b7c89f8eb82bbdcc51240f8adbd9724c73cfb95f02c2cdc1fff01cd2455"
+        },
+        {
+          "path": "texmf-dist/doc/latex/etoolbox/README.md",
+          "archive": "etoolbox.doc.tar.xz",
+          "sha256": "2de170ec8999fc1aa62ecc7f5de69d539dc6129ffc2ceb0126a1b70ae99929ca"
+        },
+        {
+          "path": "texmf-dist/doc/latex/fontspec/LICENSE",
+          "archive": "fontspec.doc.tar.xz",
+          "sha256": "5f05fcf6ef25a6c31bccd2df7c0c46b23107bbeb2ce5cdba74efb5cc357f4dbb"
+        },
+        {
+          "path": "texmf-dist/doc/latex/fontspec/README.md",
+          "archive": "fontspec.doc.tar.xz",
+          "sha256": "66c7b9423500992ca2a72ccc1302c0576c6ec4dcbee70bcb235705933c69b755"
+        },
+        {
+          "path": "texmf-dist/doc/latex/geometry/README.md",
+          "archive": "geometry.doc.tar.xz",
+          "sha256": "a745b60ca53626dda59d85b217274e758836020812ecd1b5b73ba53e7a602171"
+        },
+        {
+          "path": "texmf-dist/doc/latex/gettitlestring/README.md",
+          "archive": "gettitlestring.doc.tar.xz",
+          "sha256": "3a9907a1a8d0ddbdc8842881f33f9e8e53e9f9c7bf08fd8cc6fce51410fb9857"
+        },
+        {
+          "path": "texmf-dist/doc/latex/graphics-cfg/README.md",
+          "archive": "graphics-cfg.doc.tar.xz",
+          "sha256": "7f2f26b545650200369b9aa43e01dbf544db874db7568c68e9ff946f6b3c0351"
+        },
+        {
+          "path": "texmf-dist/doc/latex/graphics-def/README.md",
+          "archive": "graphics-def.doc.tar.xz",
+          "sha256": "905c8584e09925ed846c0464058d42afffedcc1f53f03f0f98e9d2d08249a707"
+        },
+        {
+          "path": "texmf-dist/doc/latex/graphics/README.md",
+          "archive": "graphics.doc.tar.xz",
+          "sha256": "d6fffacc31809ae53cc8c5dab0c5ae2e356062936f7be5a1996786234b29fc44"
+        },
+        {
+          "path": "texmf-dist/doc/latex/hycolor/README.md",
+          "archive": "hycolor.doc.tar.xz",
+          "sha256": "0488f8c6030fe64491b151bff4ff8350b727e5d5de0dfefc8adc836732c5154f"
+        },
+        {
+          "path": "texmf-dist/doc/latex/hyperref/README.md",
+          "archive": "hyperref.doc.tar.xz",
+          "sha256": "87693978b35ad71af07a8c277eafbe1f95295fd297067631f2e842a9626ad725"
+        },
+        {
+          "path": "texmf-dist/doc/latex/infwarerr/README.md",
+          "archive": "infwarerr.doc.tar.xz",
+          "sha256": "8ef182cf61c1d79364926e517a11af4aa25c749c2d2cc056ed8a6540282a27ec"
+        },
+        {
+          "path": "texmf-dist/doc/latex/intcalc/README.md",
+          "archive": "intcalc.doc.tar.xz",
+          "sha256": "e12a5f83be80a7696ce4c3a60638843a199472bd29337958c249459c61912297"
+        },
+        {
+          "path": "texmf-dist/doc/latex/kvdefinekeys/README.md",
+          "archive": "kvdefinekeys.doc.tar.xz",
+          "sha256": "6ac2b79e168baa8d134ca01d2de6c5096e7f62a91ac0c7101e791a0313c5159b"
+        },
+        {
+          "path": "texmf-dist/doc/latex/kvoptions/README.md",
+          "archive": "kvoptions.doc.tar.xz",
+          "sha256": "a8cd0a34d4ac1ac4b8a7dad3f7150863cc25eb0cf5e773bccf74932640bd13b1"
+        },
+        {
+          "path": "texmf-dist/doc/latex/kvsetkeys/README.md",
+          "archive": "kvsetkeys.doc.tar.xz",
+          "sha256": "a9291407b91eb9a7ec153470d77c559c0e025b9090e6964e0d3f77d49c5f25fb"
+        },
+        {
+          "path": "texmf-dist/doc/latex/l3kernel/README.md",
+          "archive": "l3kernel.doc.tar.xz",
+          "sha256": "6af6159df66d048e2a81b09921b589bc4e5e9dfde13cb47fd267b2f047e87e89"
+        },
+        {
+          "path": "texmf-dist/doc/latex/l3packages/README.md",
+          "archive": "l3packages.doc.tar.xz",
+          "sha256": "0a11f7e3168b58e3f8d736fc93bdf6e72ac959de25581425f98ff179165265a6"
+        },
+        {
+          "path": "texmf-dist/doc/latex/microtype/README.md",
+          "archive": "microtype.doc.tar.xz",
+          "sha256": "d7b00234047cd6c7f7b61b9739a0fd7c39700ea93c47ae7b6d6f06578a62db7c"
+        },
+        {
+          "path": "texmf-dist/doc/latex/pdfescape/README.md",
+          "archive": "pdfescape.doc.tar.xz",
+          "sha256": "22a99269cbe491cb01a51507766be162a5fa3c3d1b8d0589e0f578d7031663ee"
+        },
+        {
+          "path": "texmf-dist/doc/latex/refcount/README.md",
+          "archive": "refcount.doc.tar.xz",
+          "sha256": "24df5a24ca803f958873596f578f9adbecac3c69a3a6c16066cc002460469074"
+        },
+        {
+          "path": "texmf-dist/doc/latex/rerunfilecheck/README.md",
+          "archive": "rerunfilecheck.doc.tar.xz",
+          "sha256": "86a4eca8624804642fb08ccc8dd8bd1f21be1ef737360c37fe519998cc09fcd4"
+        },
+        {
+          "path": "texmf-dist/doc/latex/stringenc/README.md",
+          "archive": "stringenc.doc.tar.xz",
+          "sha256": "321addd89ee30b070b1331ec6038158695911a61d87b9a1e27f25f5223cb9a19"
+        },
+        {
+          "path": "texmf-dist/doc/latex/tools/README.md",
+          "archive": "tools.doc.tar.xz",
+          "sha256": "c5d3effa2ac3c05abbd80956170c68c4fc547ef671b75f16e7566326cdde0c46"
+        },
+        {
+          "path": "texmf-dist/doc/latex/unicode-math/LICENSE",
+          "archive": "unicode-math.doc.tar.xz",
+          "sha256": "5f05fcf6ef25a6c31bccd2df7c0c46b23107bbeb2ce5cdba74efb5cc357f4dbb"
+        },
+        {
+          "path": "texmf-dist/doc/latex/unicode-math/README.md",
+          "archive": "unicode-math.doc.tar.xz",
+          "sha256": "84647bd666f7b38f0d76bd54b7a2822f3d3b2d7c2fae3df096370865d45b9590"
+        },
+        {
+          "path": "texmf-dist/doc/latex/uniquecounter/README.md",
+          "archive": "uniquecounter.doc.tar.xz",
+          "sha256": "9befb5b9decbb184053a1aa83eacf310b9f375846691d7739c2bc8f458c9e595"
+        },
+        {
+          "path": "texmf-dist/doc/latex/url/url.tex",
+          "archive": "url-3.3.doc.tar.xz",
+          "sha256": "53a06871225806235c1774c207c95948a5056a2ca11a01e334c3d156bc07cf1e"
+        },
+        {
+          "path": "texmf-dist/doc/latex/xcolor/README.md",
+          "archive": "xcolor.doc.tar.xz",
+          "sha256": "fbd14e85b05b32f2ec4cba54dd0c5939c43fbe61c52626f40f3a8661906b1e0c"
+        },
+        {
+          "path": "texmf-dist/doc/lualatex/lualatex-math/README",
+          "archive": "lualatex-math.doc.tar.xz",
+          "sha256": "18f5c91ed710e33d41c3608b167dccd595b9281a067ed8feb22aaf8189a229d3"
+        },
+        {
+          "path": "texmf-dist/doc/luatex/ctablestack/README.md",
+          "archive": "ctablestack.doc.tar.xz",
+          "sha256": "808e1102664d0e5700319dc8a04082ad8cccafe2e23173d48521f9de7c44d248"
+        },
+        {
+          "path": "texmf-dist/doc/luatex/lua-uni-algos/README.md",
+          "archive": "lua-uni-algos.doc.tar.xz",
+          "sha256": "c169254de306ffc063aaac36ed7401cddbeef5ac35eed0d4140b7e875f3d9228"
+        },
+        {
+          "path": "texmf-dist/doc/luatex/lualibs/LICENSE",
+          "archive": "lualibs.doc.tar.xz",
+          "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+        },
+        {
+          "path": "texmf-dist/doc/luatex/lualibs/README.md",
+          "archive": "lualibs.doc.tar.xz",
+          "sha256": "8d72a5ae2c30c078d94ceb335db4c145155b1a6507914a7881ccdfe6e4ad1c03"
+        },
+        {
+          "path": "texmf-dist/doc/luatex/luaotfload/COPYING",
+          "archive": "luaotfload.doc.tar.xz",
+          "sha256": "b2723a2a9d58936e6914e126ea22a6da33e494252855a6ec5fbcda10c16900f2"
+        },
+        {
+          "path": "texmf-dist/doc/luatex/luaotfload/README.md",
+          "archive": "luaotfload.doc.tar.xz",
+          "sha256": "bd90593ce88cc7fc6bbabc843462054c855269be219e34ce530e544e8297f3b3"
+        },
+        {
+          "path": "texmf-dist/doc/luatex/luatexbase/README.md",
+          "archive": "luatexbase.doc.tar.xz",
+          "sha256": "a82a1c206712f7bfef97f1851e6ad23f32b2c26c5662854710aef54fa668e158"
+        },
+        {
+          "path": "texmf-dist/source/generic/hyph-utf8/languages/es/README",
+          "archive": "hyphen-spanish.source.tar.xz",
+          "sha256": "6631dec36718d084813fa7ee6359fe9fffee0ea12a92ea7697c01c38053e634f"
+        },
+        {
+          "path": "texmf-dist/tex/context/base/mkii/supp-pdf.mkii",
+          "archive": "mptopdf.tar.xz",
+          "sha256": "5dd3675b88c7b61d3703e6bf35ed75623acc6b163dff7b1477b485cee8ad71cb"
+        },
+        {
+          "path": "texmf-dist/tex/generic/config/language.dat",
+          "archive": "hyphen-base.tar.xz",
+          "sha256": "16f004f6c0683b502062b971af12b248643c83c8fb7aa44d6a2d5be5fb81c414"
+        },
+        {
+          "path": "texmf-dist/tex/generic/config/language.us",
+          "archive": "hyphen-base.tar.xz",
+          "sha256": "eab7ab74174d8b9fb75ba348a74a61c8478a7bfdd7d6326a03b9d688547c3492"
+        },
+        {
+          "path": "texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-es.tex",
+          "archive": "hyphen-spanish.tar.xz",
+          "sha256": "6d6bfa74e8896320cea3cfc9360b33c1a02d4266ee111d674a511532e8490556"
+        },
+        {
+          "path": "texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-fr.tex",
+          "archive": "hyphen-french.tar.xz",
+          "sha256": "42a59379a68359fb243cfc428bbc4347b1fb9832f82b9a29a62f79927ac2f95e"
+        },
+        {
+          "path": "texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-ar.tex",
+          "archive": "hyphen-arabic.tar.xz",
+          "sha256": "42a876e2c31dc7e98df30850ee994fbe1242f5e49ccee8399c2ccf7793c537e7"
+        },
+        {
+          "path": "texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-es.tex",
+          "archive": "hyphen-spanish.tar.xz",
+          "sha256": "6a2e5f39a991a23d1cd8a23dbd0f6fe96a9f07561a6695f4f3320f47030e236c"
+        },
+        {
+          "path": "texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-fr.tex",
+          "archive": "hyphen-french.tar.xz",
+          "sha256": "526cad6fe8f52fcd3caa3fcaf667cb1740cfc14bca198680e00dc343a84594de"
+        },
+        {
+          "path": "texmf-dist/tex/generic/hyphen/hyphen.tex",
+          "archive": "hyphen-base.tar.xz",
+          "sha256": "2c18acdc04c1a066aeb1759905e7ca449f0616c314b5ed6aebe55b9d4a89b8d4"
+        },
+        {
+          "path": "texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg",
+          "archive": "latexconfig.tar.xz",
+          "sha256": "10db2171b6e267720299c10b9e84f92c5cf069941dbfe3760e198304e49d5324"
+        },
+        {
+          "path": "texmf-dist/tex/latex/url/url.sty",
+          "archive": "url-3.3.tar.xz",
+          "sha256": "a89cb82fae2a1cf2a273fb30d8a96228b80e79a53b5326fd3582a3f21e8ba767"
+        }
+      ],
+      "engineNotices": [
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSE",
+          "sha256": "5030e211523e0c0c78b6f6686f146dc3360f6c9656604eff9d4e6e8897071baa"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/Apache-2.0.txt",
+          "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/BibTeX.txt",
+          "sha256": "c319f297b9e5156b7d4a09c637f6187884e213f7483933b51f5243f1070d6464"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/Emscripten-3.1.46.txt",
+          "sha256": "620a78084fc7ca97c0b5dea9abf891f3ffcadfdbf305276f099c9c4e12fc1d86"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/FreeType.txt",
+          "sha256": "832e75434619e56c81ca252fecd7c50711fda68b7208df37000a7c4370f70e8c"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/GPL-2.0.txt",
+          "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/GPL-3.0.txt",
+          "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/Graphite2.txt",
+          "sha256": "2c272829ff23f182c8bf7ea12fedea69b0ae148663123ed5240c117cb129c9c1"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/HarfBuzz.txt",
+          "sha256": "ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/ICU-68.2.txt",
+          "sha256": "7915b19db903070778581ae05d8bf4ea241b34a05deb51ca4f5cbb15ea1cbba3"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/LGPL-2.0.txt",
+          "sha256": "94b03f1a60a7fd5007149530626a895a6ef5a8b9342abfd56860c5f3956f5d23"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/LGPL-2.1.txt",
+          "sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/LLVM-exception.txt",
+          "sha256": "ddabf2be4dbf3d983bce354836ed5b72221aba21e807e308948f182423c79306"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/Lua-5.3.txt",
+          "sha256": "ac08f17bfcd1e8a9eab1b4cd86eb7cd609c35b3501284fa97ebf82fc034fc001"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/LuaHBTeX-embedded.txt",
+          "sha256": "9d5e61c11b7fb39807ee397cb902efcdd29b1d61a578bcf67afc39a75319f60e"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/MakeIndex.txt",
+          "sha256": "ee0e2749997200d05f317d121c2fe98cf21f7655285cd22d042b29acccd6dfe9"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/Metafont.txt",
+          "sha256": "a3bdcd9f0b1e5cad167fbb68f0645bee153b4076cab989ad1ffb1a285cd8b27f"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/Monaco-Editor.txt",
+          "sha256": "33e4ff1a06ef62ba21788ea162564ee8165269a24a9ce6ef301837447eab0ac6"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/README.md",
+          "sha256": "d094456cd2fc1ba695024e69be7c17d7a632f00ff78e008ee77de785a7e6f92a"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/SyncTeX.txt",
+          "sha256": "5b7614c8b5f0fc8a88332984d0fc64e9b4989cf8cfb7a74dd0fe6cd91a322775"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/TECkit.txt",
+          "sha256": "ecc26c87f90420fb025e3563231f00b983448b244fa36ef5a6ee4b69ab939bb2"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/XeTeX.txt",
+          "sha256": "b158ee0196388efcf852b8d54b7fc4fa71c49c983fd879cab6247c56198721d2"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/Xpdf-4.04-GPL-2.0.txt",
+          "sha256": "91df39d1816bfb17a4dda2d3d2c83b1f6f2d38d53e53e41e8f97ad5ac46a0cad"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/Xpdf-4.04-README.txt",
+          "sha256": "6f3f6abc77a8d7ef26e003a4436e145b583f7621c7aaa795af75c0deddab6118"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/Xpdf-4.06-GPL-2.0.txt",
+          "sha256": "91df39d1816bfb17a4dda2d3d2c83b1f6f2d38d53e53e41e8f97ad5ac46a0cad"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/Xpdf-4.06-README.txt",
+          "sha256": "680aa3d935860a0c69c4d33af2a3b444567a4e4133e33ff5b1c2e5220cb9848b"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/libpng.txt",
+          "sha256": "16d9daaafbf63a31a5bdc91d4600972548fef5aaa1244202393288dbd079c49a"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/musl.txt",
+          "sha256": "d3cd0d01f32365ab813cb7f8ebdb4b166868d68379bac89280ffd8f4a4d2cc7a"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/pdf-lib.txt",
+          "sha256": "f2c9fc00fdb66eb99ac156ba52d734af66d8d309f65753ae809ad34ee2883bcb"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/zlib.txt",
+          "sha256": "845efc77857d485d91fb3e0b884aaa929368c717ae8186b66fe1ed2495753243"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/LICENSES/zziplib.txt",
+          "sha256": "eb92020572a460079f998e343f7d622276f41e3a7853e6de0558ddfdfa795c8a"
+        },
+        {
+          "path": "wasmtex-2026-f5d94438a7c75a23-source/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/THIRD_PARTY_NOTICES.md",
+          "sha256": "af3c9d52fa458514aab3d98f0caa158dc22bfe5f1647033cb7a7857b81100eb2"
+        }
+      ],
+      "openItems": []
+    }
+  },
+  "release": {
+    "run": 45707661537,
+    "tag": "v0.2.0-rc.21",
+    "immutableCommit": "cd7608e5521fafd1abde827cc7bcb02950aa9a6b",
+    "defaultPdfBackend": "cached",
+    "status": "completed",
+    "repositories": [
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.21",
+        "id": 458721769,
+        "prerelease": true,
+        "url": "https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.21",
+        "publishedAt": "2026-11-25T22:32:22Z",
+        "assets": [
+          {
+            "name": "install.ps1",
+            "size": 7573,
+            "digest": "sha256:f652f0ac06bf1794be6f48c32a22e8d0a78fece873f6b1d53102ed16069a07a1",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/install.ps1"
+          },
+          {
+            "name": "install.sh",
+            "size": 13685,
+            "digest": "sha256:fdaea859ada3b454522a2413dc5d7e59908cf6d506e24457e93cd8925a3297a0",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/install.sh"
+          },
+          {
+            "name": "SHA256SUMS",
+            "size": 2690,
+            "digest": "sha256:78cd21a9a5a0bf49ab87db1722d1376cb3900bb904ec77d32c99ce1592cb2a6e",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/SHA256SUMS"
+          },
+          {
+            "name": "template-api-platform-0.1.2.tar.gz",
+            "size": 6135,
+            "digest": "sha256:15121abc9fe6f4c11230d17b9d02bc7f4250b31d1692e975da19b140664c0504",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/template-api-platform-0.1.2.tar.gz"
+          },
+          {
+            "name": "template-book-classic-0.3.0.tar.gz",
+            "size": 4544,
+            "digest": "sha256:78b2643a7dc7bd386e8b3459c09738a0131b8690856096b7fa87fc73f9612e54",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/template-book-classic-0.3.0.tar.gz"
+          },
+          {
+            "name": "template-book-study-0.2.0.tar.gz",
+            "size": 3995,
+            "digest": "sha256:c7eccf296906314f77bcfcddcbcc0cc70e24691820e95ceaa0ae96aaccb1be15",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/template-book-study-0.2.0.tar.gz"
+          },
+          {
+            "name": "template-book-technical-0.2.0.tar.gz",
+            "size": 4086,
+            "digest": "sha256:803a4a00e749dd8138781d6a46487b31addacbd6a7567626e0cd9c5aaed61e43",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/template-book-technical-0.2.0.tar.gz"
+          },
+          {
+            "name": "template-creative-studio-0.1.3.tar.gz",
+            "size": 6191,
+            "digest": "sha256:e54f2905adc90a58ad8a9b725101a78cfdf06ca2b668075d0a242ab27a4ee4dd",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/template-creative-studio-0.1.3.tar.gz"
+          },
+          {
+            "name": "template-product-docs-0.1.0.tar.gz",
+            "size": 1297,
+            "digest": "sha256:f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/template-product-docs-0.1.0.tar.gz"
+          },
+          {
+            "name": "template-product-launch-0.1.3.tar.gz",
+            "size": 6396,
+            "digest": "sha256:f7d446e59fb21bb8f5bce71382d666a2c7ee2d982b3027c265de73109b4fce40",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/template-product-launch-0.1.3.tar.gz"
+          },
+          {
+            "name": "template-product-studio-0.1.2.tar.gz",
+            "size": 2792,
+            "digest": "sha256:bad023420061d2f3bc051dcfc732d6aec3120af297544cb58d82631ab12393a1",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/template-product-studio-0.1.2.tar.gz"
+          },
+          {
+            "name": "template-software-platform-0.1.3.tar.gz",
+            "size": 6282,
+            "digest": "sha256:5412e9735419813ee519b68d3e5c8fdd314f0cb49c88472a9de8fdb8ac6a16ba",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/template-software-platform-0.1.3.tar.gz"
+          },
+          {
+            "name": "templates-catalog.json",
+            "size": 9540,
+            "digest": "sha256:a2ec924c3fc3fb4f6ad06a38999a929c4074558fd90f2bfa85a5ba689cde8f57",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/templates-catalog.json"
+          },
+          {
+            "name": "zel-pdf-sources-v0.2.0-rc.21.tar.gz",
+            "size": 430327877,
+            "digest": "sha256:bc5d7a03e36095ada010ff3998d7387007b9a473254147b32e0e91a9f39fa147",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-pdf-sources-v0.2.0-rc.21.tar.gz"
+          },
+          {
+            "name": "zel-pdf-sources-v0.2.0-rc.21.tar.gz.sha256",
+            "size": 102,
+            "digest": "sha256:114cc526ae102f3b0f961597da7b42a367f3b1164608ad9a172b5384d3ae8431",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-pdf-sources-v0.2.0-rc.21.tar.gz.sha256"
+          },
+          {
+            "name": "zel-pdf-v0.2.0-rc.21.tar.gz",
+            "size": 11792863,
+            "digest": "sha256:1c00d7d3dd7faad5824ed4123c11da12d53046a2a22c978b6333d26c26db2d3d",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-pdf-v0.2.0-rc.21.tar.gz"
+          },
+          {
+            "name": "zel-pdf-v0.2.0-rc.21.tar.gz.sha256",
+            "size": 94,
+            "digest": "sha256:998b5f7a3574b9925e2f70daeb621b9f89c85990a1a9bca5cc11f555baa72b98",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-pdf-v0.2.0-rc.21.tar.gz.sha256"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-darwin-arm64.tar.gz",
+            "size": 46743986,
+            "digest": "sha256:befc53bf17805e7f88bb83692cdbd9267e20e95926e47e26e20627f9fdf08ecd",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-darwin-arm64.tar.gz"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-darwin-arm64.tar.gz.sha256",
+            "size": 112,
+            "digest": "sha256:68bf6337b816f736ff750a2cb69468a50661b0257bd7c36afb013984bd695030",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-darwin-arm64.tar.gz.sha256"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-darwin-x64.tar.gz",
+            "size": 48103273,
+            "digest": "sha256:3ad12f52c14ea700931107a89383a6971475bb619dcf568067408fdcd806069e",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-darwin-x64.tar.gz"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-darwin-x64.tar.gz.sha256",
+            "size": 110,
+            "digest": "sha256:343678f319065a03b05230a437bae555770385a93d4f98efc4a4d61c4e427662",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-darwin-x64.tar.gz.sha256"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-linux-arm64.tar.gz",
+            "size": 51819665,
+            "digest": "sha256:51adc589755948c791ea694c168ed1ad66c4bf5d3efc82b0b97942c0eda4d6a7",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-linux-arm64.tar.gz"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-linux-arm64.tar.gz.sha256",
+            "size": 111,
+            "digest": "sha256:30426a2dc4c6825b10776ca6d7f621efb4db43c9d95a304d1aab4fc1cdaf8e56",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-linux-arm64.tar.gz.sha256"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-linux-x64.tar.gz",
+            "size": 52133666,
+            "digest": "sha256:6edc377954e755ec9f3b45b22e78d242e4bf5bebad4f224842f5b0c2fa22287f",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-linux-x64.tar.gz"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-linux-x64.tar.gz.sha256",
+            "size": 109,
+            "digest": "sha256:cfc442f8a87355a429417fe090d9fdb4a02a4a28e0d6712d932014d96795caa8",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-linux-x64.tar.gz.sha256"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-win-arm64.tar.gz",
+            "size": 38274079,
+            "digest": "sha256:81ace15d45a13db3e3ce1a82573e4c64ddb30c29b1e8e09c74c8872d4255c311",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-win-arm64.tar.gz"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-win-arm64.tar.gz.sha256",
+            "size": 109,
+            "digest": "sha256:fe7dd916197a77778848ab0ae14dcfbb5c23c2ca6e585741682ac8ebcae92a3c",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-win-arm64.tar.gz.sha256"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-win-x64.tar.gz",
+            "size": 42326339,
+            "digest": "sha256:902192e6cc14802a939e0b51231ef6ffa047280cc54b0d95694a8842a564eadd",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-win-x64.tar.gz"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-win-x64.tar.gz.sha256",
+            "size": 107,
+            "digest": "sha256:b0bf52ef02a0e5816b7eef90c1c21773230c77fddf0ec974b77f09697b1c088b",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-win-x64.tar.gz.sha256"
+          },
+          {
+            "name": "zel-sources-v0.2.0-rc.21.tar.gz",
+            "size": 8183484,
+            "digest": "sha256:e10b8b36949cef73b7d07eebc4de5d2e4810a8833da1b73c0dc5bbd7ca79408f",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-sources-v0.2.0-rc.21.tar.gz"
+          },
+          {
+            "name": "zel-sources-v0.2.0-rc.21.tar.gz.sha256",
+            "size": 98,
+            "digest": "sha256:b31b462ee2cb735a262bdb6599fac210227e0b9ca8ee0f83824fcae4870c5dde",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-sources-v0.2.0-rc.21.tar.gz.sha256"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-aarch64-apple-darwin.tar.gz",
+            "size": 10019713,
+            "digest": "sha256:fc3184794517eed9e38a56e1825c3ded947620731226fc69d951542a1b42049e",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-v0.2.0-rc.21-aarch64-apple-darwin.tar.gz"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-aarch64-apple-darwin.tar.gz.sha256",
+            "size": 111,
+            "digest": "sha256:15031e0c099ce97db1090df47044389c24e6cae0c4f8fe0463ebfbc27098fc64",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-v0.2.0-rc.21-aarch64-apple-darwin.tar.gz.sha256"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-aarch64-pc-windows-msvc.zip",
+            "size": 10430024,
+            "digest": "sha256:38dfc6f453e83254717c5c664efdcb9b76978c4953052d7dfba8bbf1d41a0d86",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-v0.2.0-rc.21-aarch64-pc-windows-msvc.zip"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-aarch64-pc-windows-msvc.zip.sha256",
+            "size": 111,
+            "digest": "sha256:af62f3f82bba8605524dac6126d712e7e3ef6ac06bb0f8799e9c3b3094892f50",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-v0.2.0-rc.21-aarch64-pc-windows-msvc.zip.sha256"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-aarch64-unknown-linux-gnu.tar.gz",
+            "size": 10265035,
+            "digest": "sha256:ac53a9e7783abc017513e851897d5092e577039f9532647369ffeca22be700f5",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-v0.2.0-rc.21-aarch64-unknown-linux-gnu.tar.gz"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-aarch64-unknown-linux-gnu.tar.gz.sha256",
+            "size": 116,
+            "digest": "sha256:d4a96318600f5fa928ba24c81b5b38040d9c2c6d643348581277eacc90e142f4",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-v0.2.0-rc.21-aarch64-unknown-linux-gnu.tar.gz.sha256"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-x86_64-apple-darwin.tar.gz",
+            "size": 10106187,
+            "digest": "sha256:fdf5bbd07e0b8db5d58eafcd99c2b4191306f736b1ded5a7be2bf6c61abb8492",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-v0.2.0-rc.21-x86_64-apple-darwin.tar.gz"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-x86_64-apple-darwin.tar.gz.sha256",
+            "size": 110,
+            "digest": "sha256:3b4a748a04898a79a1797bec389d9cb0f8bd52ad942e7874aa9bc9a5f8e5885b",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-v0.2.0-rc.21-x86_64-apple-darwin.tar.gz.sha256"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-x86_64-pc-windows-msvc.zip",
+            "size": 10598787,
+            "digest": "sha256:8b13fe47fffcb09ac1360b2af196855be25121b6ca734d0bcb74e660c3d75837",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-v0.2.0-rc.21-x86_64-pc-windows-msvc.zip"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-x86_64-pc-windows-msvc.zip.sha256",
+            "size": 110,
+            "digest": "sha256:b5154c124c79f35711e6ca2c4dbb667125ff39964e675e82423ba64d6f1f4123",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-v0.2.0-rc.21-x86_64-pc-windows-msvc.zip.sha256"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-x86_64-unknown-linux-gnu.tar.gz",
+            "size": 10403386,
+            "digest": "sha256:c7ac50c9f6c09afa39d82f78d73bb909d12f1081d3fb5d02b9de1d3b307f4678",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-v0.2.0-rc.21-x86_64-unknown-linux-gnu.tar.gz"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-x86_64-unknown-linux-gnu.tar.gz.sha256",
+            "size": 115,
+            "digest": "sha256:717c380a51e1d70dcf7ac6f9fab10e73c994d85e2b04cf567581561908dcb612",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-v0.2.0-rc.21-x86_64-unknown-linux-gnu.tar.gz.sha256"
+          },
+          {
+            "name": "zel-winget-v0.2.0-rc.21.zip",
+            "size": 1648,
+            "digest": "sha256:70d56f5d5881933aea812848bb4887240dcb7e44c044aeb3d4e799acace3fbd3",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel-winget-v0.2.0-rc.21.zip"
+          },
+          {
+            "name": "zel.json",
+            "size": 1526,
+            "digest": "sha256:6c534a034dd105777b17171f957cf270020fecd713d2819e8916372510814b73",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel.json"
+          },
+          {
+            "name": "zel.rb",
+            "size": 2388,
+            "digest": "sha256:e012cc43c069621a85ddaaa6730816519f85c4501a1d642a3b2c894cd61f500f",
+            "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/zel.rb"
+          }
+        ]
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.21",
+        "id": 458721993,
+        "prerelease": true,
+        "url": "https://github.com/mylife-inc/releases/releases/tag/zellij-v0.2.0-rc.21",
+        "publishedAt": "2026-11-25T22:32:39Z",
+        "assets": [
+          {
+            "name": "install.ps1",
+            "size": 7573,
+            "digest": "sha256:f652f0ac06bf1794be6f48c32a22e8d0a78fece873f6b1d53102ed16069a07a1",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/install.ps1"
+          },
+          {
+            "name": "install.sh",
+            "size": 13685,
+            "digest": "sha256:fdaea859ada3b454522a2413dc5d7e59908cf6d506e24457e93cd8925a3297a0",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/install.sh"
+          },
+          {
+            "name": "SHA256SUMS",
+            "size": 2690,
+            "digest": "sha256:78cd21a9a5a0bf49ab87db1722d1376cb3900bb904ec77d32c99ce1592cb2a6e",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/SHA256SUMS"
+          },
+          {
+            "name": "template-api-platform-0.1.2.tar.gz",
+            "size": 6135,
+            "digest": "sha256:15121abc9fe6f4c11230d17b9d02bc7f4250b31d1692e975da19b140664c0504",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/template-api-platform-0.1.2.tar.gz"
+          },
+          {
+            "name": "template-book-classic-0.3.0.tar.gz",
+            "size": 4544,
+            "digest": "sha256:78b2643a7dc7bd386e8b3459c09738a0131b8690856096b7fa87fc73f9612e54",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/template-book-classic-0.3.0.tar.gz"
+          },
+          {
+            "name": "template-book-study-0.2.0.tar.gz",
+            "size": 3995,
+            "digest": "sha256:c7eccf296906314f77bcfcddcbcc0cc70e24691820e95ceaa0ae96aaccb1be15",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/template-book-study-0.2.0.tar.gz"
+          },
+          {
+            "name": "template-book-technical-0.2.0.tar.gz",
+            "size": 4086,
+            "digest": "sha256:803a4a00e749dd8138781d6a46487b31addacbd6a7567626e0cd9c5aaed61e43",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/template-book-technical-0.2.0.tar.gz"
+          },
+          {
+            "name": "template-creative-studio-0.1.3.tar.gz",
+            "size": 6191,
+            "digest": "sha256:e54f2905adc90a58ad8a9b725101a78cfdf06ca2b668075d0a242ab27a4ee4dd",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/template-creative-studio-0.1.3.tar.gz"
+          },
+          {
+            "name": "template-product-docs-0.1.0.tar.gz",
+            "size": 1297,
+            "digest": "sha256:f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/template-product-docs-0.1.0.tar.gz"
+          },
+          {
+            "name": "template-product-launch-0.1.3.tar.gz",
+            "size": 6396,
+            "digest": "sha256:f7d446e59fb21bb8f5bce71382d666a2c7ee2d982b3027c265de73109b4fce40",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/template-product-launch-0.1.3.tar.gz"
+          },
+          {
+            "name": "template-product-studio-0.1.2.tar.gz",
+            "size": 2792,
+            "digest": "sha256:bad023420061d2f3bc051dcfc732d6aec3120af297544cb58d82631ab12393a1",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/template-product-studio-0.1.2.tar.gz"
+          },
+          {
+            "name": "template-software-platform-0.1.3.tar.gz",
+            "size": 6282,
+            "digest": "sha256:5412e9735419813ee519b68d3e5c8fdd314f0cb49c88472a9de8fdb8ac6a16ba",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/template-software-platform-0.1.3.tar.gz"
+          },
+          {
+            "name": "templates-catalog.json",
+            "size": 9540,
+            "digest": "sha256:a2ec924c3fc3fb4f6ad06a38999a929c4074558fd90f2bfa85a5ba689cde8f57",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/templates-catalog.json"
+          },
+          {
+            "name": "zel-pdf-sources-v0.2.0-rc.21.tar.gz",
+            "size": 430327877,
+            "digest": "sha256:bc5d7a03e36095ada010ff3998d7387007b9a473254147b32e0e91a9f39fa147",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-pdf-sources-v0.2.0-rc.21.tar.gz"
+          },
+          {
+            "name": "zel-pdf-sources-v0.2.0-rc.21.tar.gz.sha256",
+            "size": 102,
+            "digest": "sha256:114cc526ae102f3b0f961597da7b42a367f3b1164608ad9a172b5384d3ae8431",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-pdf-sources-v0.2.0-rc.21.tar.gz.sha256"
+          },
+          {
+            "name": "zel-pdf-v0.2.0-rc.21.tar.gz",
+            "size": 11792863,
+            "digest": "sha256:1c00d7d3dd7faad5824ed4123c11da12d53046a2a22c978b6333d26c26db2d3d",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-pdf-v0.2.0-rc.21.tar.gz"
+          },
+          {
+            "name": "zel-pdf-v0.2.0-rc.21.tar.gz.sha256",
+            "size": 94,
+            "digest": "sha256:998b5f7a3574b9925e2f70daeb621b9f89c85990a1a9bca5cc11f555baa72b98",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-pdf-v0.2.0-rc.21.tar.gz.sha256"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-darwin-arm64.tar.gz",
+            "size": 46743986,
+            "digest": "sha256:befc53bf17805e7f88bb83692cdbd9267e20e95926e47e26e20627f9fdf08ecd",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-darwin-arm64.tar.gz"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-darwin-arm64.tar.gz.sha256",
+            "size": 112,
+            "digest": "sha256:68bf6337b816f736ff750a2cb69468a50661b0257bd7c36afb013984bd695030",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-darwin-arm64.tar.gz.sha256"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-darwin-x64.tar.gz",
+            "size": 48103273,
+            "digest": "sha256:3ad12f52c14ea700931107a89383a6971475bb619dcf568067408fdcd806069e",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-darwin-x64.tar.gz"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-darwin-x64.tar.gz.sha256",
+            "size": 110,
+            "digest": "sha256:343678f319065a03b05230a437bae555770385a93d4f98efc4a4d61c4e427662",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-darwin-x64.tar.gz.sha256"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-linux-arm64.tar.gz",
+            "size": 51819665,
+            "digest": "sha256:51adc589755948c791ea694c168ed1ad66c4bf5d3efc82b0b97942c0eda4d6a7",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-linux-arm64.tar.gz"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-linux-arm64.tar.gz.sha256",
+            "size": 111,
+            "digest": "sha256:30426a2dc4c6825b10776ca6d7f621efb4db43c9d95a304d1aab4fc1cdaf8e56",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-linux-arm64.tar.gz.sha256"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-linux-x64.tar.gz",
+            "size": 52133666,
+            "digest": "sha256:6edc377954e755ec9f3b45b22e78d242e4bf5bebad4f224842f5b0c2fa22287f",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-linux-x64.tar.gz"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-linux-x64.tar.gz.sha256",
+            "size": 109,
+            "digest": "sha256:cfc442f8a87355a429417fe090d9fdb4a02a4a28e0d6712d932014d96795caa8",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-linux-x64.tar.gz.sha256"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-win-arm64.tar.gz",
+            "size": 38274079,
+            "digest": "sha256:81ace15d45a13db3e3ce1a82573e4c64ddb30c29b1e8e09c74c8872d4255c311",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-win-arm64.tar.gz"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-win-arm64.tar.gz.sha256",
+            "size": 109,
+            "digest": "sha256:fe7dd916197a77778848ab0ae14dcfbb5c23c2ca6e585741682ac8ebcae92a3c",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-win-arm64.tar.gz.sha256"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-win-x64.tar.gz",
+            "size": 42326339,
+            "digest": "sha256:902192e6cc14802a939e0b51231ef6ffa047280cc54b0d95694a8842a564eadd",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-win-x64.tar.gz"
+          },
+          {
+            "name": "zel-renderer-v0.2.0-rc.21-win-x64.tar.gz.sha256",
+            "size": 107,
+            "digest": "sha256:b0bf52ef02a0e5816b7eef90c1c21773230c77fddf0ec974b77f09697b1c088b",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-renderer-v0.2.0-rc.21-win-x64.tar.gz.sha256"
+          },
+          {
+            "name": "zel-sources-v0.2.0-rc.21.tar.gz",
+            "size": 8183484,
+            "digest": "sha256:e10b8b36949cef73b7d07eebc4de5d2e4810a8833da1b73c0dc5bbd7ca79408f",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-sources-v0.2.0-rc.21.tar.gz"
+          },
+          {
+            "name": "zel-sources-v0.2.0-rc.21.tar.gz.sha256",
+            "size": 98,
+            "digest": "sha256:b31b462ee2cb735a262bdb6599fac210227e0b9ca8ee0f83824fcae4870c5dde",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-sources-v0.2.0-rc.21.tar.gz.sha256"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-aarch64-apple-darwin.tar.gz",
+            "size": 10019713,
+            "digest": "sha256:fc3184794517eed9e38a56e1825c3ded947620731226fc69d951542a1b42049e",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-v0.2.0-rc.21-aarch64-apple-darwin.tar.gz"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-aarch64-apple-darwin.tar.gz.sha256",
+            "size": 111,
+            "digest": "sha256:15031e0c099ce97db1090df47044389c24e6cae0c4f8fe0463ebfbc27098fc64",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-v0.2.0-rc.21-aarch64-apple-darwin.tar.gz.sha256"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-aarch64-pc-windows-msvc.zip",
+            "size": 10430024,
+            "digest": "sha256:38dfc6f453e83254717c5c664efdcb9b76978c4953052d7dfba8bbf1d41a0d86",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-v0.2.0-rc.21-aarch64-pc-windows-msvc.zip"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-aarch64-pc-windows-msvc.zip.sha256",
+            "size": 111,
+            "digest": "sha256:af62f3f82bba8605524dac6126d712e7e3ef6ac06bb0f8799e9c3b3094892f50",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-v0.2.0-rc.21-aarch64-pc-windows-msvc.zip.sha256"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-aarch64-unknown-linux-gnu.tar.gz",
+            "size": 10265035,
+            "digest": "sha256:ac53a9e7783abc017513e851897d5092e577039f9532647369ffeca22be700f5",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-v0.2.0-rc.21-aarch64-unknown-linux-gnu.tar.gz"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-aarch64-unknown-linux-gnu.tar.gz.sha256",
+            "size": 116,
+            "digest": "sha256:d4a96318600f5fa928ba24c81b5b38040d9c2c6d643348581277eacc90e142f4",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-v0.2.0-rc.21-aarch64-unknown-linux-gnu.tar.gz.sha256"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-x86_64-apple-darwin.tar.gz",
+            "size": 10106187,
+            "digest": "sha256:fdf5bbd07e0b8db5d58eafcd99c2b4191306f736b1ded5a7be2bf6c61abb8492",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-v0.2.0-rc.21-x86_64-apple-darwin.tar.gz"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-x86_64-apple-darwin.tar.gz.sha256",
+            "size": 110,
+            "digest": "sha256:3b4a748a04898a79a1797bec389d9cb0f8bd52ad942e7874aa9bc9a5f8e5885b",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-v0.2.0-rc.21-x86_64-apple-darwin.tar.gz.sha256"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-x86_64-pc-windows-msvc.zip",
+            "size": 10598787,
+            "digest": "sha256:8b13fe47fffcb09ac1360b2af196855be25121b6ca734d0bcb74e660c3d75837",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-v0.2.0-rc.21-x86_64-pc-windows-msvc.zip"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-x86_64-pc-windows-msvc.zip.sha256",
+            "size": 110,
+            "digest": "sha256:b5154c124c79f35711e6ca2c4dbb667125ff39964e675e82423ba64d6f1f4123",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-v0.2.0-rc.21-x86_64-pc-windows-msvc.zip.sha256"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-x86_64-unknown-linux-gnu.tar.gz",
+            "size": 10403386,
+            "digest": "sha256:c7ac50c9f6c09afa39d82f78d73bb909d12f1081d3fb5d02b9de1d3b307f4678",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-v0.2.0-rc.21-x86_64-unknown-linux-gnu.tar.gz"
+          },
+          {
+            "name": "zel-v0.2.0-rc.21-x86_64-unknown-linux-gnu.tar.gz.sha256",
+            "size": 115,
+            "digest": "sha256:717c380a51e1d70dcf7ac6f9fab10e73c994d85e2b04cf567581561908dcb612",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-v0.2.0-rc.21-x86_64-unknown-linux-gnu.tar.gz.sha256"
+          },
+          {
+            "name": "zel-winget-v0.2.0-rc.21.zip",
+            "size": 1648,
+            "digest": "sha256:70d56f5d5881933aea812848bb4887240dcb7e44c044aeb3d4e799acace3fbd3",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel-winget-v0.2.0-rc.21.zip"
+          },
+          {
+            "name": "zel.json",
+            "size": 1526,
+            "digest": "sha256:6c534a034dd105777b17171f957cf270020fecd713d2819e8916372510814b73",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel.json"
+          },
+          {
+            "name": "zel.rb",
+            "size": 2388,
+            "digest": "sha256:e012cc43c069621a85ddaaa6730816519f85c4501a1d642a3b2c894cd61f500f",
+            "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21/zel.rb"
+          }
+        ]
+      }
+    ],
+    "smallPublicAssets": {
+      "downloadsVerified": 26,
+      "repositoriesMatch": true,
+      "checksumInventoryMatchesRecipes": true
+    },
+    "conclusion": "success",
+    "run_attempt": 1,
+    "head_sha": "cd7608e5521fafd1abde827cc7bcb02950aa9a6b",
+    "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537",
+    "created_at": "2026-11-25T21:48:18Z",
+    "updated_at": "2026-11-25T22:42:24Z",
+    "jobs": [
+      {
+        "id": 139533657944,
+        "name": "Verify",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139533657944"
+      },
+      {
+        "id": 139536039993,
+        "name": "Documentation site",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536039993"
+      },
+      {
+        "id": 139536040082,
+        "name": "Image maths \u00b7 arm64",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536040082"
+      },
+      {
+        "id": 139536040163,
+        "name": "Image maths \u00b7 amd64",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536040163"
+      },
+      {
+        "id": 139536040171,
+        "name": "Image none \u00b7 arm64",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536040171"
+      },
+      {
+        "id": 139536040217,
+        "name": "binaries / Compile shared rich renderer",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536040217"
+      },
+      {
+        "id": 139536040226,
+        "name": "pdf / Compile PDF companion renderer",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536040226"
+      },
+      {
+        "id": 139536040267,
+        "name": "Image all \u00b7 amd64",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536040267"
+      },
+      {
+        "id": 139536040280,
+        "name": "Image diagrams \u00b7 amd64",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536040280"
+      },
+      {
+        "id": 139536040305,
+        "name": "Image all \u00b7 arm64",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536040305"
+      },
+      {
+        "id": 139536040330,
+        "name": "Image none \u00b7 amd64",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536040330"
+      },
+      {
+        "id": 139536040343,
+        "name": "Image diagrams \u00b7 arm64",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536040343"
+      },
+      {
+        "id": 139536040399,
+        "name": "pdf / PDF source correspondence",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536040399"
+      },
+      {
+        "id": 139536466977,
+        "name": "Publish image none",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536466977"
+      },
+      {
+        "id": 139536467075,
+        "name": "Publish image diagrams",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536467075"
+      },
+      {
+        "id": 139536467086,
+        "name": "Publish image all",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536467086"
+      },
+      {
+        "id": 139536467177,
+        "name": "Publish image maths",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536467177"
+      },
+      {
+        "id": 139536469589,
+        "name": "pdf / Offline LuaHBTeX (windows-latest)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536469589"
+      },
+      {
+        "id": 139536469623,
+        "name": "pdf / Offline LuaHBTeX (ubuntu-latest)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536469623"
+      },
+      {
+        "id": 139536469638,
+        "name": "pdf / Offline LuaHBTeX (windows-11-arm)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536469638"
+      },
+      {
+        "id": 139536469650,
+        "name": "pdf / Offline LuaHBTeX (ubuntu-24.04-arm)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536469650"
+      },
+      {
+        "id": 139536469684,
+        "name": "pdf / Offline LuaHBTeX (macos-15-intel)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536469684"
+      },
+      {
+        "id": 139536469700,
+        "name": "pdf / Offline LuaHBTeX (macos-latest)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536469700"
+      },
+      {
+        "id": 139536584205,
+        "name": "binaries / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536584205"
+      },
+      {
+        "id": 139536584246,
+        "name": "binaries / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536584246"
+      },
+      {
+        "id": 139536584342,
+        "name": "binaries / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536584342"
+      },
+      {
+        "id": 139536584380,
+        "name": "binaries / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536584380"
+      },
+      {
+        "id": 139536584402,
+        "name": "binaries / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536584402"
+      },
+      {
+        "id": 139536584429,
+        "name": "binaries / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139536584429"
+      },
+      {
+        "id": 139546116215,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139546116215"
+      },
+      {
+        "id": 139546116260,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139546116260"
+      },
+      {
+        "id": 139546116269,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139546116269"
+      },
+      {
+        "id": 139546116315,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139546116315"
+      },
+      {
+        "id": 139546116794,
+        "name": "winget / WinGet lifecycle (x86_64-pc-windows-msvc)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139546116794"
+      },
+      {
+        "id": 139546116920,
+        "name": "winget / WinGet lifecycle (aarch64-pc-windows-msvc)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139546116920"
+      },
+      {
+        "id": 139546118571,
+        "name": "winget / WinGet binary (${{ matrix.target }})",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139546118571"
+      },
+      {
+        "id": 139555124500,
+        "name": "pdf / PDF package and source parity",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555124500"
+      },
+      {
+        "id": 139555244742,
+        "name": "Publish the release",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555244742"
+      },
+      {
+        "id": 139555900615,
+        "name": "Verify published artifacts / Published images (ubuntu-24.04-arm)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555900615"
+      },
+      {
+        "id": 139555900640,
+        "name": "Verify published artifacts / Published install (aarch64-pc-windows-msvc)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555900640"
+      },
+      {
+        "id": 139555900645,
+        "name": "Verify published artifacts / Published install (x86_64-pc-windows-msvc)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555900645"
+      },
+      {
+        "id": 139555900650,
+        "name": "Verify published artifacts / Published install (aarch64-apple-darwin)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555900650"
+      },
+      {
+        "id": 139555900651,
+        "name": "Verify published artifacts / Published cached PDF (x86_64-unknown-linux-gnu)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555900651"
+      },
+      {
+        "id": 139555900652,
+        "name": "Verify published artifacts / Published images (ubuntu-latest)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555900652"
+      },
+      {
+        "id": 139555900687,
+        "name": "Verify published artifacts / Published install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555900687"
+      },
+      {
+        "id": 139555900692,
+        "name": "Verify published artifacts / Published install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555900692"
+      },
+      {
+        "id": 139555900697,
+        "name": "Verify published artifacts / Published cached PDF (aarch64-unknown-linux-gnu)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555900697"
+      },
+      {
+        "id": 139555900714,
+        "name": "Verify published artifacts / Published cached PDF (x86_64-pc-windows-msvc)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555900714"
+      },
+      {
+        "id": 139555900726,
+        "name": "Verify published artifacts / Published cached PDF (aarch64-apple-darwin)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555900726"
+      },
+      {
+        "id": 139555900734,
+        "name": "Verify published artifacts / Published websites / Websites (ubuntu-latest)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555900734"
+      },
+      {
+        "id": 139555900745,
+        "name": "Verify published artifacts / Published websites / Websites (ubuntu-24.04-arm)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555900745"
+      },
+      {
+        "id": 139555900767,
+        "name": "Verify published artifacts / Published cached PDF (aarch64-pc-windows-msvc)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555900767"
+      },
+      {
+        "id": 139555900778,
+        "name": "Verify published artifacts / Published Next PDF / Next PDF (ubuntu-24.04-arm)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555900778"
+      },
+      {
+        "id": 139555900794,
+        "name": "Verify published artifacts / Published Next PDF / Next PDF (ubuntu-latest)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555900794"
+      },
+      {
+        "id": 139555900809,
+        "name": "Verify published artifacts / Published install (x86_64-apple-darwin)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555900809"
+      },
+      {
+        "id": 139555900945,
+        "name": "Verify published artifacts / Published cached PDF (x86_64-apple-darwin)",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45707661537/job/139555900945"
+      }
+    ],
+    "newBookTemplates": [
+      {
+        "id": "book-classic",
+        "version": "0.3.0",
+        "sha256": "78b2643a7dc7bd386e8b3459c09738a0131b8690856096b7fa87fc73f9612e54"
+      },
+      {
+        "id": "book-technical",
+        "version": "0.2.0",
+        "sha256": "803a4a00e749dd8138781d6a46487b31addacbd6a7567626e0cd9c5aaed61e43"
+      },
+      {
+        "id": "book-study",
+        "version": "0.2.0",
+        "sha256": "c7eccf296906314f77bcfcddcbcc0cc70e24691820e95ceaa0ae96aaccb1be15"
+      }
+    ]
+  },
+  "channels": {
+    "homebrew": {
+      "previousCommit": "feb88a679afca272a0d287070bf0c580baf25fcf",
+      "repository": "mylife-inc/homebrew-tap",
+      "commit": "235220b1e12faf87a47c3c6be040de3926ca80d8",
+      "upgradeRun": 45715606895,
+      "conclusion": "success",
+      "runAttempt": 1,
+      "proof": [
+        {
+          "job": 139560889412,
+          "name": "Install, upgrade and uninstall (ubuntu-latest)",
+          "conclusion": "success",
+          "upgradeFrom": "0.2.0-rc.20",
+          "upgradeTo": "0.2.0-rc.21",
+          "logSha256": "80f45c3e676ed562421f292a8af92c905be40ea5ad915bad0a2382949d731da1"
+        },
+        {
+          "job": 139560889760,
+          "name": "Install, upgrade and uninstall (ubuntu-24.04-arm)",
+          "conclusion": "success",
+          "upgradeFrom": "0.2.0-rc.20",
+          "upgradeTo": "0.2.0-rc.21",
+          "logSha256": "cd01b195196c8fcc98cee4035ce46891a6cb24eca85d195f9ad0ffd257613248"
+        },
+        {
+          "job": 139560889859,
+          "name": "Install, upgrade and uninstall (macos-15)",
+          "conclusion": "success",
+          "upgradeFrom": "0.2.0-rc.20",
+          "upgradeTo": "0.2.0-rc.21",
+          "logSha256": "a2c39624833b15aaaf82a79c68d43890eebf8d7a3ef50446c360ef83e7529813"
+        },
+        {
+          "job": 139560889860,
+          "name": "Install, upgrade and uninstall (macos-15-intel)",
+          "conclusion": "success",
+          "upgradeFrom": "0.2.0-rc.20",
+          "upgradeTo": "0.2.0-rc.21",
+          "logSha256": "cb5dd0ec68fd756e235c0fe4c0dc01d2d10b484d1430f5720d52f2d9404ec685"
+        }
+      ],
+      "pushRuns": [
+        {
+          "id": 45715539798,
+          "event": "push",
+          "conclusion": "cancelled",
+          "html_url": "https://github.com/mylife-inc/homebrew-tap/actions/runs/45715539798"
+        }
+      ]
+    },
+    "scoop": {
+      "previousCommit": "05b884327d96d4d92d652b8841a4fc687ed3cec2",
+      "repository": "mylife-inc/scoop-bucket",
+      "commit": "127de966dc473bde6f5e339207e443998392fd47",
+      "upgradeRun": 45715644549,
+      "conclusion": "success",
+      "runAttempt": 1,
+      "proof": [
+        {
+          "job": 139561007115,
+          "name": "Scoop (aarch64-pc-windows-msvc, pwsh)",
+          "conclusion": "success",
+          "upgradeFrom": "0.2.0-rc.20",
+          "upgradeTo": "0.2.0-rc.21",
+          "logSha256": "3078080362ca1256a8d7d2a751e6d4e84179ca80ae705c15ad68d1782d1cab46"
+        },
+        {
+          "job": 139561007375,
+          "name": "Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success",
+          "upgradeFrom": "0.2.0-rc.20",
+          "upgradeTo": "0.2.0-rc.21",
+          "logSha256": "54aed22349b0989ca1adfe1591aae00f0edc10fd27b0a4e2f6d7c7750d406f98"
+        },
+        {
+          "job": 139561007471,
+          "name": "Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success",
+          "upgradeFrom": "0.2.0-rc.20",
+          "upgradeTo": "0.2.0-rc.21",
+          "logSha256": "025db7aa8fc663875e9f1aaa746beff0b2557f43cd3604dd2b2e53f08b6ea2ea"
+        },
+        {
+          "job": 139561007527,
+          "name": "Scoop (x86_64-pc-windows-msvc, pwsh)",
+          "conclusion": "success",
+          "upgradeFrom": "0.2.0-rc.20",
+          "upgradeTo": "0.2.0-rc.21",
+          "logSha256": "54af186a604ace78adb5f7396f1e80dff2bc3deea26a3f17a63e87f992eab3c1"
+        }
+      ],
+      "pushRuns": [
+        {
+          "id": 45715562712,
+          "event": "push",
+          "conclusion": "cancelled",
+          "html_url": "https://github.com/mylife-inc/scoop-bucket/actions/runs/45715562712"
+        }
+      ]
+    },
+    "upgradeFrom": "v0.2.0-rc.20"
+  },
+  "retirement": {
+    "performed": false
+  },
+  "limits": [
+    "Historical browser timing findings remain unresolved.",
+    "External provider and catalog verification remain separate.",
+    "The original Mac deadline assertion did not capture its error, so the precise historical path is unproven."
+  ],
+  "independentMac": {
+    "publicCachedPdf": {
+      "version": "v0.2.0-rc.21",
+      "target": "x86_64-apple-darwin",
+      "reports": [
+        {
+          "repository": "mylife-inc/Zellij",
+          "base": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21",
+          "verification": {
+            "schemaVersion": 1,
+            "version": "0.2.0-rc.21",
+            "platform": "darwin-x64",
+            "publicDownloadVerified": true,
+            "realRenderer": true,
+            "emptyPath": true,
+            "offlinePdfAndRichBuilds": true,
+            "privateNodeReused": true,
+            "manifestSha256": "0743315135043973b9bdc4e9b063a919d2634713ce8d99af104fdaab2622d03e",
+            "runtime": {
+              "name": "zel-pdf-v0.2.0-rc.21.tar.gz",
+              "sha256": "1c00d7d3dd7faad5824ed4123c11da12d53046a2a22c978b6333d26c26db2d3d"
+            },
+            "source": {
+              "name": "zel-pdf-sources-v0.2.0-rc.21.tar.gz",
+              "bytes": 430327877,
+              "sha256": "bc5d7a03e36095ada010ff3998d7387007b9a473254147b32e0e91a9f39fa147"
+            },
+            "sourceManifestSha256": "a41c419ebbf145726a2c27124eb0e9a16947772bf1994ca610c2390682f8f4bc",
+            "sourceBytesVerified": true
+          }
+        },
+        {
+          "repository": "mylife-inc/releases",
+          "base": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.21",
+          "verification": {
+            "schemaVersion": 1,
+            "version": "0.2.0-rc.21",
+            "platform": "darwin-x64",
+            "publicDownloadVerified": true,
+            "realRenderer": true,
+            "emptyPath": true,
+            "offlinePdfAndRichBuilds": true,
+            "privateNodeReused": true,
+            "manifestSha256": "0743315135043973b9bdc4e9b063a919d2634713ce8d99af104fdaab2622d03e",
+            "runtime": {
+              "name": "zel-pdf-v0.2.0-rc.21.tar.gz",
+              "sha256": "1c00d7d3dd7faad5824ed4123c11da12d53046a2a22c978b6333d26c26db2d3d"
+            },
+            "source": {
+              "name": "zel-pdf-sources-v0.2.0-rc.21.tar.gz",
+              "bytes": 430327877,
+              "sha256": "bc5d7a03e36095ada010ff3998d7387007b9a473254147b32e0e91a9f39fa147"
+            },
+            "sourceManifestSha256": "a41c419ebbf145726a2c27124eb0e9a16947772bf1994ca610c2390682f8f4bc",
+            "sourceBytesVerified": true
+          }
+        }
+      ]
+    },
+    "publicCachedPdfLogSha256": "b0d037f7b2ac424a8c7e137d3e38beadaa46d360c4a57592828d3bf74374ba27",
+    "publicNative": {
+      "target": "x86_64-apple-darwin",
+      "repositories": [
+        "mylife-inc/Zellij",
+        "mylife-inc/releases"
+      ],
+      "completedBothRepositories": true,
+      "logSha256": "1305b54e14c08bd0f8b00d35fabfbfb68970b91e0de739f13507dfa883ec2cd2"
+    }
+  },
+  "installedBinary": {
+    "version": "0.2.0-rc.21",
+    "archiveSha256": "fdf5bbd07e0b8db5d58eafcd99c2b4191306f736b1ded5a7be2bf6c61abb8492",
+    "binarySha256": "5528cb2e0da52d342e588d77257464be566b7a47209c2d2ac48f5490e3ead090",
+    "equalsPublicArchive": true,
+    "standalone": true
+  },
+  "localInstalled": {
+    "version": "v0.2.0-rc.21",
+    "defaultHome": "~/Dev/config/zellij",
+    "explicitHomeOverride": false,
+    "downloadUrlOverrides": false,
+    "emptyPath": true,
+    "initialCache": {
+      "pdf": false,
+      "renderer": false
+    },
+    "commands": [
+      "create",
+      "pdf --check",
+      "pdf",
+      "bp --offline",
+      "lint --offline",
+      "b --offline",
+      "bs --offline"
+    ],
+    "receipt": {
+      "backend": "luahbtex-wasm",
+      "engine_release": "2026-f5d94438a7c75a23",
+      "font_metadata_sha256": "b3461a143b5c86c01a244182d820e58bf3c44301414bb024db3e6cc543677616",
+      "format_sha256": "d94612e32609313f591f7e39d7cae4a94e9cd2a284781db279befcec14a5adfd",
+      "node": "v24.22.3",
+      "pdf_sha256": "799056874bf3908e7b3a1596832044f597ff13d0f44413bc6245792fe5aeacf5",
+      "resource_lock_sha256": "c3444b5b472e2bc4feffd6bd4f64ca9352ef60629752e14af3a172fbb871874f",
+      "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+      "schema_version": 1,
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "source_archive": {
+        "bytes": 430327877,
+        "name": "zel-pdf-sources-v0.2.0-rc.21.tar.gz",
+        "sha256": "bc5d7a03e36095ada010ff3998d7387007b9a473254147b32e0e91a9f39fa147"
+      },
+      "template": "technical-v1",
+      "toolchain_manifest_sha256": "0743315135043973b9bdc4e9b063a919d2634713ce8d99af104fdaab2622d03e",
+      "toolchain_version": "0.2.0-rc.21"
+    },
+    "siteReceipt": {
+      "backend": "luahbtex-wasm",
+      "engine_release": "2026-f5d94438a7c75a23",
+      "font_metadata_sha256": "b3461a143b5c86c01a244182d820e58bf3c44301414bb024db3e6cc543677616",
+      "format_sha256": "d94612e32609313f591f7e39d7cae4a94e9cd2a284781db279befcec14a5adfd",
+      "node": "v24.22.3",
+      "pdf_sha256": "b3d72a19fa1ad2a749aaf9a42775ee942134cf1d0eaa8968db67081af3edf19f",
+      "resource_lock_sha256": "c3444b5b472e2bc4feffd6bd4f64ca9352ef60629752e14af3a172fbb871874f",
+      "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+      "schema_version": 1,
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "source_archive": {
+        "bytes": 430327877,
+        "name": "zel-pdf-sources-v0.2.0-rc.21.tar.gz",
+        "sha256": "bc5d7a03e36095ada010ff3998d7387007b9a473254147b32e0e91a9f39fa147"
+      },
+      "template": "technical-v1",
+      "toolchain_manifest_sha256": "0743315135043973b9bdc4e9b063a919d2634713ce8d99af104fdaab2622d03e",
+      "toolchain_version": "0.2.0-rc.21"
+    },
+    "coldAndOfflineBuildsPassed": true,
+    "richFileAndHttpPassed": true,
+    "binarySha256": "5528cb2e0da52d342e588d77257464be566b7a47209c2d2ac48f5490e3ead090"
+  },
+  "documentation": {
+    "state": "Local validation, production build and browser preservation passed; pull-request checks and automatic production publication follow this checkpoint.",
+    "routes": 61,
+    "originalHeadingIds": 282,
+    "compatibilityMappings": 82,
+    "unchangedImages": 29,
+    "capturedBrowserErrors": 0
+  }
+}

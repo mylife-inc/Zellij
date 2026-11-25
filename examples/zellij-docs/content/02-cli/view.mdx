@@ -3,12 +3,13 @@ title: zel view
 description: Build portable or hosted content, serve the static site locally, and open a browser.
 ---
 
-<Callout type="tip" title="Available in candidate 0.2.0-rc.20">
+<Callout type="tip" title="Available in candidate 0.2.0-rc.21">
 `view` / `v` builds portable Markdown natively or rich YAML/MDX with the cached
 renderer, serves it with the native HTTP server and opens a browser. Rich
 previews no longer require separately installed Docker, Node.js or Python.
-Optional book PDF generation uses a container by default; select
-`--pdf-backend cached` to use the verified compiler/private Node download instead.
+Optional book PDF generation uses the verified compiler/private Node download
+by default. Select `--pdf-backend container` for the separate container toolchain.
+`zel vw` is the short form of `zel view --watch`.
 </Callout>
 
 ```bash title="terminal"

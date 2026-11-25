@@ -7,14 +7,10 @@ description: Choose a book edition, edit the manuscript, and generate a reading 
 and an optional LuaLaTeX PDF with a title page, contents and chapter numbering.
 Only `zel` is needed; no separate Docker, Node.js, Python or LaTeX installation.
 
-<Callout type="info" title="Short commands in rc.21 source">
-The short recipes below use the upcoming rc.21 CLI: `zel pdf` selects the cached
-compiler by default, and `zel bp` builds the website and PDF together. If
-`zel --version` reports published rc.20, replace `zel pdf` with
-`zel pdf --pdf-backend cached`, `zel bp` with
-`zel build --pdf --pdf-backend cached`, `zel lint` with
-`zel check --deep --strict`, and `zel vw` with `zel view --watch`.
-The [installation page](/guide/quickstart#install-zel) identifies the published version.
+<Callout type="info" title="Use candidate rc.21 or later">
+`zel pdf` selects the cached compiler by default, and `zel bp` builds the website
+and PDF together. `zel lint` validates the manuscript; `zel vw` previews edits.
+Follow [installation](/guide/quickstart#install-zel) first and check `zel --version`.
 </Callout>
 
 ## 1. Choose a book edition

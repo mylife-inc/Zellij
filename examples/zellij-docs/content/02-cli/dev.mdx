@@ -156,7 +156,8 @@ Older wrappers using `next dev` should switch to that script or run
 ## Book PDFs
 
 Portable `dev` honors the book's `pdf.enabled` setting and accepts `--pdf` /
-`--no-pdf` as session overrides. PDF generation needs the optional container
-toolchain and can slow each rebuild; `zel dev --no-pdf` keeps web-only authoring
-native. Website and PDF publish together after a successful build. See
+`--no-pdf` as session overrides. PDF generation uses the verified cached compiler
+by default and can slow each rebuild; `zel dev --no-pdf` keeps web-only authoring
+native. First PDF use downloads the compiler/private runtime; `--offline` reuses
+prepared packages. Website and PDF publish together after a successful build. See
 [book print settings](/cli/books#saved-print-settings-and-previews).
