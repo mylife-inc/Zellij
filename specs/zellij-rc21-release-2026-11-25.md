@@ -27,7 +27,7 @@ HTTP headers was mapped to a generic response-read error. A controlled loopback
 fixture sends partial bytes, holds the connection until the client returns, and
 reproduced `deployment status: could not read response` before the fix.
 
-The Vercel client now recognizes the elapsed deadline, the I/O timeout kind and
+Fixing commit: `08a0b28`. The Vercel client now recognizes the elapsed deadline, the I/O timeout kind and
 the underlying HTTP-client timeout when reading a body. It reports a timeout
 without including partial bytes, URLs or credentials, and advises checking the
 dashboard before retrying. Ordinary truncated responses remain read errors.

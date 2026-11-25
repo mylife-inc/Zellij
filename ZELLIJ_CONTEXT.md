@@ -14,7 +14,7 @@ PR #257 merged as `0adba60`, tree-identical to the 53-check passing `f00aca6`.
 Production docs and base images passed. Main CI then failed one Mac Vercel
 deadline assertion; the actual error was not captured. A controlled stalled-body
 fixture reproduces a missing timeout diagnosis, now corrected without exposing
-response data or retrying deployment creation. Two hundred local runs did not
+response data or retrying deployment creation in `08a0b28`. Two hundred local runs did not
 reproduce the original intermittent assertion, so its exact cause remains
 unproven. See [the release and timeout record](specs/zellij-rc21-release-2026-11-25.md).
 Rc.20 remains the public/installed candidate until the rc.21 publication gates
