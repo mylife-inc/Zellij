@@ -180,12 +180,18 @@ builds use the verified renderer cache and support `--offline`.
 `config` (null for inferred settings), `layout` (`versioned` or `legacy`),
 `renderer`, `content`, `output`, and `preview_port`.
 
-Runtime status is `not_required` for portable sites, `not_checked` when site
-configuration fails first, `available`, or `unavailable`. An available runtime
+Runtime status is `not_required` for portable web-only sites, rich sites and
+cached PDF builds; otherwise it is `not_checked` when site configuration fails
+first, `available`, or `unavailable`. An available runtime
 includes `program`, `version` and a redacted `endpoint`. Image inspection reports
 `reference` and status `local`, `not_pulled`, or `unknown`; `image` is null when
 not inspected. `error` is null on success, otherwise an object with `kind`
 (`configuration` or `runtime`) and `message`.
+
+Rich sites include a `rich_engine` cache report. A PDF-enabled portable book
+using the cached backend also includes `pdf_backend: "cached"`, `pdf_engine`
+and `rich_engine`. These report cache paths, versions and readiness without
+downloading or executing the packages; `image` is null for this backend.
 
 | Exit code | Meaning |
 | --- | --- |
@@ -231,7 +237,10 @@ replacing the executable. `zel --version` retains its compact binary version.
 ## PDF preflight
 
 When a portable book explicitly sets `pdf.enabled: true`, `doctor` checks its
-print settings and the selected runtime's user mapping. It reports the pinned
-PDF toolchain image without inspecting, pulling or running it. JSON adds the
-resolved `site.pdf` settings. `zel pdf --check` separately validates manuscript
-compatibility without a runtime; actual typesetting is needed to verify layout.
+print settings. With the default `container` backend, it checks the selected
+runtime's user mapping and reports the pinned PDF image without inspecting,
+pulling or running it. With `--pdf-backend cached`, it checks the compiler and
+private Node caches without probing a container runtime. JSON includes the
+resolved `site.pdf` settings and the selected backend's diagnostics.
+`zel pdf --check` separately validates manuscript compatibility without a
+runtime; actual typesetting is needed to verify layout.
