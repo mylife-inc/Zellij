@@ -1,16 +1,30 @@
 # Offline LuaHBTeX feasibility probe
 
-This is a maintainer experiment for the optional cached PDF toolchain. It is
-**not connected to `zel pdf`**, not a release artifact, and not a claim that the
-production isolation contract is complete. Released rc.19 still uses its pinned
-container for PDF. Ordinary rich web builds already use the cached renderer.
+This is the maintainer qualification workspace for the optional cached PDF
+toolchain. Development CLI code now connects `zel pdf`, PDF-enabled builds and
+previews to the verified cache with `--pdf-backend cached`. No public compiler
+package exists yet; the default remains `container`. Released rc.19 still uses
+its pinned container for PDF. Ordinary rich web builds use the cached renderer.
 
 The probe prepares 287 hash-pinned resources from the upstream engine release,
 an immutable TeX mirror and independently pinned original archives. It then compiles
 generated Zellij print inputs without a network resolver, container, system TeX,
 curl, Python or npm packages. The maintainer invokes Node 24 explicitly here; a
-production integration would reuse the private Node already in the renderer
-cache rather than ask users to install Node or download a second copy.
+development CLI integration reuses the verified private Node in the renderer
+cache rather than asking users to install Node or download a second copy.
+
+The installed-command acceptance test (`node --test scripts/pdf-wasm/installed.test.mjs`)
+uses the qualification package in `test-results/pdf-toolchain` (override with
+`ZEL_PDF_TOOLCHAIN`). Its temporary loopback server supplies a synthetic release
+manifest solely to exercise the contract; this is not a reviewed distribution.
+With an empty system PATH it checks cold download, native compatibility checking,
+offline cache misses, `export pdf`, `build --pdf`, output preservation and a
+watched offline `view`. Only its verification receipt may be uploaded. Never
+publish these temporary fixture archives or treat their simulated review flag
+as licensing approval. The ordinary qualification package/cache remains separate.
+
+See the [CLI integration record](../../specs/zellij-cached-pdf-cli-2026-11-24.md)
+and the [pending distribution decision](../../specs/zellij-pdf-distribution-decision-2026-11-24.md).
 
 ## Run
 

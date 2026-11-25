@@ -1,7 +1,8 @@
-//! Maintainer-only package/cache acceptance. No installed CLI command or switch.
+//! Maintainer-only qualification profile; installed commands use the separate release profile.
 #[path = "../src/package_transfer.rs"]
 mod package_transfer;
 #[path = "../src/pdf_package.rs"]
+#[allow(dead_code)] // The installed CLI also exposes read-only release-cache diagnostics.
 mod pdf_package;
 #[path = "../src/user_home.rs"]
 mod user_home;
@@ -43,7 +44,12 @@ fn execute() -> zellij_core::Result<()> {
     let signal_stop = stop.clone();
     ctrlc::set_handler(move || signal_stop.store(true, std::sync::atomic::Ordering::Release))
         .map_err(|e| zellij_core::Error::InvalidArgument(e.to_string()))?;
-    let package = pdf_package::obtain(args[0].to_str().unwrap_or(""), mode != "online", &stop)?;
+    let package = pdf_package::obtain(
+        args[0].to_str().unwrap_or(""),
+        mode != "online",
+        &stop,
+        false,
+    )?;
     if mode != "inspect" {
         zellij_engine::pdf_runner::run(
             zellij_engine::pdf_runner::Runner {

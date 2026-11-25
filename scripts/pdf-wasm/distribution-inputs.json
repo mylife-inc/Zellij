@@ -23,6 +23,7 @@
     "format.mjs",
     "format.test.mjs",
     "format_sources.py",
+    "installed.test.mjs",
     "lock.json",
     "originals.py",
     "originals.test.mjs",

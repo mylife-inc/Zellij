@@ -34,6 +34,7 @@ mod netlify;
 mod package_transfer;
 mod page_authoring;
 mod pdf;
+mod pdf_package;
 mod preview;
 mod published_image;
 mod railway;
@@ -49,6 +50,7 @@ mod watch;
 
 fn main() {
     let cli = Cli::parse_args();
+    pdf::configure(cli.pdf_backend);
     zellij_core::reporting::initialize(zellij_core::reporting::Options {
         quiet: cli.quiet,
         verbose: cli.verbose,
@@ -431,15 +433,15 @@ fn build_dispatch(request: BuildInvocation<'_>) -> zellij_core::Result<()> {
     if target != "image" {
         hosted_options.require_no_image_args()?;
     }
-    if offline && !matches!(target, "file" | "static") {
+    if offline && !matches!(target, "portable" | "file" | "static") {
         return Err(zellij_core::Error::InvalidArgument(
-            "--offline applies to cached rich builds (--target file or static)".into(),
+            "--offline applies to portable or cached rich builds (--target file or static)".into(),
         ));
     }
     match target {
         "portable" => {
             images::require_native_options(hosted_options)?;
-            let output = pdf::build(dir, out, options, pdf)?;
+            let output = pdf::build(dir, out, options, pdf, offline)?;
             zellij_core::statusln!(
                 "  Open {} directly in your browser, or serve the folder over HTTP.",
                 output.join("index.html")

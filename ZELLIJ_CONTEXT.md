@@ -8,7 +8,27 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-24**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-24: original URL package selection — qualification in progress**
+**2026-11-24: cached PDF CLI integration — in progress**
+
+PR #252 merged as `191a882`, with the tree of tested `03d0d00`. Normal CI
+`45494370791` passes 37 jobs with one conditional skip; PDF CI `45494370827`
+passes all eight jobs without retries. Six platforms pass 120 manuscripts / 360
+passes, 272 native-matched page rasters, 78 cache scenarios and 12 cold/offline
+compiles; all runtime/source archives match. Main CI `45498740733`, base image
+`45498740771` and production docs `45498740731` also pass.
+
+Development CLI dispatch now has an explicit cached PDF backend, reusing the
+verified private Node runtime for PDF exports, builds and previews. Offline mode,
+read-only cache diagnostics, strict receipt/artifact validation and previous-output
+preservation follow the shared execution path. Six-platform acceptance uses
+temporary synthetic release-profile fixtures, never published compiler archives.
+See the [integration record](specs/zellij-cached-pdf-cli-2026-11-24.md).
+The [scoped adapter licensing decision](specs/zellij-pdf-distribution-decision-2026-11-24.md)
+requires owner approval; no license is granted yet. Final distribution packaging
+and real public-package acceptance remain. Container stays the default and rc.19
+is unchanged. Earlier browser timing findings remain separate and unresolved.
+
+**2026-11-24: original URL package selection — implemented in PR #252**
 
 PR #251 merged as `9e0b3a5`, identical in tree to tested `5d8146e`. PDF CI
 `45340856363` passes all eight jobs: six identical package/source archives,

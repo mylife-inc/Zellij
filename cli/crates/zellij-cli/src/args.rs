@@ -259,6 +259,16 @@ pub(crate) struct Cli {
     #[arg(long, global = true)]
     pub(crate) no_color: bool,
 
+    /// Optional PDF compiler (cached is in development; no public package yet).
+    #[arg(
+        long,
+        global = true,
+        value_enum,
+        env = "ZEL_PDF_BACKEND",
+        default_value = "container"
+    )]
+    pub(crate) pdf_backend: crate::pdf::Backend,
+
     /// Resolve all relative paths from this existing directory.
     #[arg(long, global = true, value_name = "DIRECTORY", value_hint = clap::ValueHint::DirPath,
         value_parser = clap::builder::NonEmptyStringValueParser::new())]
@@ -369,7 +379,7 @@ pub(crate) enum Command {
         #[arg(long)]
         target: Option<String>,
 
-        /// Build without downloading the rich renderer; requires an already populated cache.
+        /// Build without downloads; enabled cached tools must already be installed.
         #[arg(long)]
         offline: bool,
 
@@ -480,7 +490,7 @@ pub(crate) enum Command {
         /// Override selection: native portable, or cached rich file/static export.
         #[arg(long, value_parser = ["portable", "file", "static"])]
         target: Option<String>,
-        /// Require a cached rich renderer; do not download one.
+        /// Preview without downloads; enabled cached tools must already be installed.
         #[arg(long)]
         offline: bool,
         #[arg(long)]
@@ -1281,12 +1291,15 @@ pub(crate) struct PdfArgs {
     /// Owned output directory (default: pdf/ beside zel.yaml).
     #[arg(long)]
     pub out: Option<String>,
+    /// Require the verified cached PDF compiler and private runtime; never download.
+    #[arg(long)]
+    pub offline: bool,
 }
 
 /// Explicit CLI choice overrides configuration; absence preserves its default.
 #[derive(clap::Args, Debug, Default, Clone, Copy, PartialEq, Eq)]
 pub(crate) struct PdfSelection {
-    /// Generate the portable book PDF (requires a container runtime).
+    /// Generate the portable book PDF using the selected --pdf-backend.
     #[arg(long, conflicts_with = "no_pdf")]
     pub pdf: bool,
     /// Build only the website, overriding pdf.enabled for this command/session.

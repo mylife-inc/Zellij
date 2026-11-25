@@ -13,11 +13,21 @@ on:
       - cli/crates/zellij-engine/examples/pdf_process.rs
       - cli/crates/zellij-cli/examples/pdf_cache.rs
       - cli/crates/zellij-cli/src/pdf_package.rs
+      - cli/crates/zellij-cli/src/pdf.rs
+      - cli/crates/zellij-cli/src/args.rs
+      - cli/crates/zellij-cli/src/main.rs
+      - cli/crates/zellij-cli/src/preview.rs
+      - cli/crates/zellij-cli/src/doctor.rs
+      - cli/crates/zellij-cli/src/rich_build/**
+      - cli/crates/zellij-cli/src/rich_build.rs
       - cli/crates/zellij-cli/src/package_transfer.rs
       - cli/crates/zellij-cli/src/user_home.rs
       - cli/crates/zellij-docs/src/pdf.rs
       - cli/crates/zellij-docs/assets/book*.tex
       - scripts/fixtures/long-book.mjs
+      - scripts/fixtures/pdf-book/**
+      - scripts/fixtures/install-cached-renderer.mjs
+      - scripts/fixtures/build-cached-engine.mjs
 permissions:
   contents: read
 jobs:
@@ -107,6 +117,8 @@ jobs:
           python scripts/pdf-wasm/toolchain.py test-results/pdf-compact/package test-results/pdf-toolchain-distribution test-results/pdf-toolchain --version "$version"
       - name: Download, verify, cache and run the real package with an empty system PATH
         run: node --test scripts/pdf-wasm/cache.test.mjs
+      - name: Exercise installed CLI PDF commands and offline watched previews
+        run: node --test scripts/pdf-wasm/installed.test.mjs
       - name: Install maintainer PDF comparison tools
         if: matrix.runner == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends poppler-utils qpdf
@@ -134,6 +146,7 @@ jobs:
             test-results/pdf-originals/verification.json
             test-results/pdf-toolchain/verification.json
             test-results/pdf-cache/verification.json
+            test-results/pdf-installed/verification.json
           if-no-files-found: error
           retention-days: 14
       # Never upload the engine/resource bundle before redistribution review.

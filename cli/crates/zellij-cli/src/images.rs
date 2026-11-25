@@ -126,6 +126,7 @@ pub(crate) fn build_image(
                     ..Default::default()
                 },
                 None,
+                false,
             )?;
             for warning in report.warnings {
                 zellij_core::diagnosticln!("warning: {warning}");

@@ -1,10 +1,13 @@
-//! Optional, isolated LuaLaTeX execution. Never mount the source project or socket.
+//! Optional PDF execution through a verified cache or an isolated container.
 use camino::{Utf8Path, Utf8PathBuf};
 use sha2::{Digest, Sha256};
 use std::{
     fs,
     process::{Command, Stdio},
-    sync::atomic::{AtomicBool, Ordering},
+    sync::{
+        OnceLock,
+        atomic::{AtomicBool, Ordering},
+    },
     thread,
     time::{Duration, Instant},
 };
@@ -14,6 +17,19 @@ use zellij_core::{
     site::{Site, SiteInput},
 };
 use zellij_engine::Runtime;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, clap::ValueEnum)]
+pub(crate) enum Backend {
+    Cached,
+    Container,
+}
+static BACKEND: OnceLock<Backend> = OnceLock::new();
+pub(crate) fn configure(backend: Backend) {
+    let _ = BACKEND.set(backend);
+}
+pub(crate) fn selected_backend() -> Backend {
+    *BACKEND.get().unwrap_or(&Backend::Container)
+}
 
 // Official Pandoc Ubuntu variant includes LuaLaTeX and Latin Modern.
 // Multi-platform index verified 2026-11-12; keep optional and separate from engine images.
@@ -59,7 +75,7 @@ pub(crate) fn standalone(args: &crate::args::PdfArgs) -> Result<()> {
         zellij_docs::BuildOptions::default(),
         false,
     )?;
-    let report = typeset(prepared, &stop)?.publish()?;
+    let report = typeset(prepared, args.offline, &stop)?.publish()?;
     for warning in report.warnings {
         zellij_core::diagnosticln!("warning: {warning}");
     }
@@ -86,6 +102,7 @@ pub(crate) fn prepare_site(
     output: &Utf8Path,
     options: zellij_docs::BuildOptions<'_>,
     pdf: Option<bool>,
+    offline: bool,
     stop: &AtomicBool,
 ) -> Result<PreparedSite> {
     let configured = Site::load(source)?.configured;
@@ -93,7 +110,7 @@ pub(crate) fn prepare_site(
     let site = Site::load(source)?;
     let prepared = if pdf.unwrap_or(site.pdf.enabled) {
         let prepared = zellij_docs::pdf::prepare(source, output, options, true)?;
-        typeset(prepared, stop).map(PreparedSite::Pdf)
+        typeset(prepared, offline, stop).map(PreparedSite::Pdf)
     } else {
         zellij_docs::prepare(source, output, options).map(PreparedSite::Web)
     }?;
@@ -107,12 +124,13 @@ pub(crate) fn build(
     out: Option<&str>,
     options: zellij_docs::BuildOptions<'_>,
     pdf: Option<bool>,
+    offline: bool,
 ) -> Result<Utf8PathBuf> {
     let output = out
         .map(Utf8PathBuf::from)
         .map(Ok)
         .unwrap_or_else(|| zellij_docs::default_output(source))?;
-    let report = build_to(source, &output, options, pdf)?;
+    let report = build_to(source, &output, options, pdf, offline)?;
     for warning in report.warnings {
         zellij_core::diagnosticln!("warning: {warning}");
     }
@@ -124,9 +142,10 @@ pub(crate) fn build_to(
     output: &Utf8Path,
     options: zellij_docs::BuildOptions<'_>,
     pdf: Option<bool>,
+    offline: bool,
 ) -> Result<zellij_docs::BuildReport> {
     let stop = crate::preview::signals()?;
-    let prepared = prepare_site(source, output, options, pdf, &stop)?;
+    let prepared = prepare_site(source, output, options, pdf, offline, &stop)?;
     if stop.load(Ordering::Acquire) {
         return Err(failed("cancelled"));
     }
@@ -148,7 +167,7 @@ pub(crate) fn adapt_hosted_to(
     let stop = crate::preview::signals()?;
     let prepared = zellij_docs::pdf::prepare_hosted(source, output, options)?;
     let features = prepared.features.clone();
-    let prepared = typeset(prepared, &stop)?;
+    let prepared = typeset(prepared, false, &stop)?;
     if stop.load(Ordering::Acquire) {
         return Err(failed("cancelled"));
     }
@@ -168,6 +187,84 @@ pub(crate) fn adapt_hosted_to(
 }
 
 fn typeset(
+    prepared: zellij_docs::pdf::Prepared,
+    offline: bool,
+    stop: &AtomicBool,
+) -> Result<zellij_docs::pdf::Prepared> {
+    match selected_backend() {
+        Backend::Container => {
+            if offline {
+                return Err(failed("--offline PDFs require --pdf-backend cached"));
+            }
+            typeset_container(prepared, stop)
+        }
+        Backend::Cached => typeset_cached(prepared, offline, stop),
+    }
+}
+
+fn typeset_cached(
+    prepared: zellij_docs::pdf::Prepared,
+    offline: bool,
+    stop: &AtomicBool,
+) -> Result<zellij_docs::pdf::Prepared> {
+    if stop.load(Ordering::Acquire) {
+        return Err(failed("cancelled"));
+    }
+    let base = std::env::var("ZEL_PDF_BASE_URL").unwrap_or_else(|_| {
+        format!(
+            "https://github.com/mylife-inc/releases/releases/download/zellij-v{}/",
+            env!("CARGO_PKG_VERSION")
+        )
+    });
+    let package = crate::pdf_package::obtain(&base, offline, stop, true)?;
+    let node = crate::rich_build::private_node(offline, stop)?;
+    let temp = tempfile::Builder::new()
+        .prefix(".zel-pdf-cached-")
+        .tempdir_in(
+            prepared
+                .destination
+                .parent()
+                .ok_or_else(|| failed("PDF output has no parent directory"))?,
+        )?;
+    let root =
+        Utf8Path::from_path(temp.path()).ok_or_else(|| failed("temporary path is not UTF-8"))?;
+    let input = root.join("input");
+    fs::create_dir(&input)?;
+    files::write_files(
+        &input,
+        &prepared
+            .source
+            .files
+            .iter()
+            .map(|(p, b)| (p.as_path(), b.as_slice()))
+            .collect::<Vec<_>>(),
+        false,
+    )?;
+    let output = root.join("compiled");
+    zellij_core::statusln!("  PDF: verified cached LuaHBTeX compiler");
+    let proof = zellij_engine::pdf_runner::run(
+        zellij_engine::pdf_runner::Runner {
+            node: &node,
+            script: &package.script(),
+            bundle: &package.resources(),
+        },
+        input.as_std_path(),
+        output.as_std_path(),
+        stop,
+        Default::default(),
+        |_| Ok(()),
+    )?;
+    let log = regular(&output.join("book.log"), 8 * 1024 * 1024)?;
+    let pdf = regular(&output.join("book.pdf"), 128 * 1024 * 1024)?;
+    let toolchain = serde_json::json!({"backend":"luahbtex-wasm", "toolchain_version":env!("CARGO_PKG_VERSION"),
+        "toolchain_manifest_sha256":package.manifest_sha256, "source_archive":package.source_archive,
+        "engine_release":proof["engineRelease"], "resource_lock_sha256":proof["resourceLockSha256"],
+        "format_sha256":proof["formatSha256"], "font_metadata_sha256":proof["fontMetadataSha256"],
+        "node":proof["execution"]["node"]});
+    finish(prepared, log, pdf, toolchain, stop)
+}
+
+fn typeset_container(
     prepared: zellij_docs::pdf::Prepared,
     stop: &AtomicBool,
 ) -> Result<zellij_docs::pdf::Prepared> {
@@ -281,6 +378,23 @@ fn typeset(
         return Err(failed("cancelled"));
     }
     let log = regular(&prepared.destination.join("book.log"), 8 * 1024 * 1024)?;
+    let pdf = regular(&prepared.destination.join("book.pdf"), 128 * 1024 * 1024)?;
+    finish(
+        prepared,
+        log,
+        pdf,
+        serde_json::json!({"backend":"lualatex", "toolchain_image": IMAGE}),
+        stop,
+    )
+}
+
+fn finish(
+    prepared: zellij_docs::pdf::Prepared,
+    log: Vec<u8>,
+    pdf: Vec<u8>,
+    toolchain: serde_json::Value,
+    stop: &AtomicBool,
+) -> Result<zellij_docs::pdf::Prepared> {
     let text = String::from_utf8_lossy(&log);
     for marker in [
         "Missing character:",
@@ -302,7 +416,6 @@ fn typeset(
             )));
         }
     }
-    let pdf = regular(&prepared.destination.join("book.pdf"), 128 * 1024 * 1024)?;
     if !pdf.starts_with(b"%PDF-") || !pdf.windows(5).rev().take(1024).any(|w| w == b"%%EOF") {
         return Err(failed("invalid or incomplete PDF"));
     }
@@ -329,7 +442,11 @@ fn typeset(
     )?;
     fs::write(prepared.destination.join("book.pdf"), &pdf)?;
     fs::write(prepared.destination.join("build.log"), log)?;
-    let receipt = serde_json::json!({"schema_version":1,"backend":"lualatex","template":prepared.source.template,"toolchain_image":IMAGE,"revision":prepared.source.revision,"settings":prepared.source.settings,"pdf_sha256":format!("{:x}",Sha256::digest(&pdf))});
+    let mut receipt = serde_json::json!({"schema_version":1,"template":prepared.source.template,"revision":prepared.source.revision,"settings":prepared.source.settings,"pdf_sha256":format!("{:x}",Sha256::digest(&pdf))});
+    receipt
+        .as_object_mut()
+        .unwrap()
+        .extend(toolchain.as_object().unwrap().clone());
     fs::write(
         prepared.destination.join("pdf.json"),
         serde_json::to_vec_pretty(&receipt).map_err(|e| failed(e.to_string()))?,
