@@ -127,7 +127,7 @@ test('published acceptance validates version input and checks the immutable tag 
     assert.equal(source.with.path, 'release-source');
     assert.equal(source.with['persist-credentials'], false);
     assert.ok(job.steps.indexOf(validate) < job.steps.indexOf(source));
-    const run = job.steps.find(step => /check-published-(release|images|next-pdf|websites|cached-pdf)\.mjs/.test(step.run ?? ''));
+    const run = job.steps.find(step => /^node .*check-published-(release|images|next-pdf|websites|cached-pdf)\.mjs/.test(step.run ?? ''));
     assert.equal(run['working-directory'], source.with.path);
     assert.match(run.run, /^node \.\.\/scripts\/check-published-(?:release|images|next-pdf|websites|cached-pdf)\.mjs$/);
   }

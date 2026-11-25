@@ -53,6 +53,7 @@ cold PDF, complete source transfer, offline PDF-enabled build and rich
 groups also pass, including corruption/output preservation and watched offline
 previews. The 52 Python regressions, six transfer regression groups, 19 targeted
 Rust PDF tests, workflow lint, formatting and 59-route documentation validation pass.
+All 41 release-policy/download regressions pass with the new public acceptance job.
 The reviewed runtime is 11,792,851 bytes; matching sources are 430,327,849 bytes.
 Exact hashes and receipts are in [local evidence](evidence/zellij-rc20-cached-pdf-local-2026-11-24.json).
 
