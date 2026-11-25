@@ -54,7 +54,8 @@ jobs:
       - name: Validate published version
         run: >-
           node --input-type=module -e "import { releasePolicy } from './scripts/release-policy.mjs'; releasePolicy(process.env.VERSION);"
-      - uses: actions/checkout@v7
+      - name: Check out the released source
+        uses: actions/checkout@v7
         with:
           ref: refs/tags/${{ env.VERSION }}
           path: release-source
@@ -69,7 +70,7 @@ jobs:
       - name: Install public CLI and verify complete compiler/source downloads
         if: steps.capability.outputs.available == 'true'
         working-directory: release-source
-        run: node scripts/check-published-cached-pdf.mjs
+        run: node ../scripts/check-published-cached-pdf.mjs
       - uses: actions/upload-artifact@v7
         if: always() && steps.capability.outputs.available == 'true'
         with:
