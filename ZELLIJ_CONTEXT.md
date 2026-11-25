@@ -8,6 +8,18 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-25**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-25: rc.21 publication follow-up — in progress**
+
+PR #257 merged as `0adba60`, tree-identical to the 53-check passing `f00aca6`.
+Production docs and base images passed. Main CI then failed one Mac Vercel
+deadline assertion; the actual error was not captured. A controlled stalled-body
+fixture reproduces a missing timeout diagnosis, now corrected without exposing
+response data or retrying deployment creation. Two hundred local runs did not
+reproduce the original intermittent assertion, so its exact cause remains
+unproven. See [the release and timeout record](specs/zellij-rc21-release-2026-11-25.md).
+Rc.20 remains the public/installed candidate until the rc.21 publication gates
+and public-download checks complete.
+
 **2026-11-25: short workflows and use-case Quickstart — rc.21 source**
 
 Implementation commit: `98a2cff`. The user requested shorter PDF and other long recipes, plus detailed book and
