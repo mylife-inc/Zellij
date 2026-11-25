@@ -121,3 +121,10 @@ found that the separate 100-chapter acceptance driver still inherited the new
 cached default. It attempted to download an unpublished rc.21 asset and failed
 before typesetting. That driver now explicitly selects `container`, like the
 other container comparison suites. Default cached coverage remains separate.
+
+The cached matrix then found the same implicit selection in its optional Linux
+container-baseline comparison driver (`scripts/pdf-wasm/check.mjs`), after real
+cached-package acceptance had passed. This comparison now explicitly selects
+the independent container compiler, even if the caller sets a cached environment
+default. The complete script invocation audit includes standalone PDF/export,
+configured builds, previews, image delivery and the baseline comparison.
