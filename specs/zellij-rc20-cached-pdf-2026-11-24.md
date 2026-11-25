@@ -1,7 +1,9 @@
 # Rc.20 cached PDF release preparation
 
-Status: implementation and local verification complete; hosted gates and
-publication pending. Rc.19 remains published.
+Status updated 25 November: rc.20 is published and all 55 release jobs pass.
+Six public cached-PDF jobs verify both repositories and all eight actual channel
+upgrades pass. Revised guides await pull-request checks and automatic production
+publication. Container remains the default.
 
 ## Behavior
 
@@ -57,7 +59,41 @@ All 41 release-policy/download regressions pass with the new public acceptance j
 The reviewed runtime is 11,792,851 bytes; matching sources are 430,327,849 bytes.
 Exact hashes and receipts are in [local evidence](evidence/zellij-rc20-cached-pdf-local-2026-11-24.json).
 
-Hosted checks and publication remain. The first new fixture selected the
+The first new fixture selected the
 portable `product-docs` template and correctly failed the rich-output assertion;
 it now uses `product-studio` and passes. The rejected run is not counted as
 real-renderer acceptance.
+
+## Published qualification
+
+PR #255 merged as `65249fa7b685879538bfcc4719414e90d15b176e`, tree-identical to
+tested `0396005`. Regular CI `45561362507` passes 37 jobs and PDF CI `45561362593`
+passes nine; documentation validation also passes. Post-merge main CI, base
+images and documentation runs `45564988471`, `45564988493` and `45564988393` pass.
+
+Release `45565105796` passes 55 jobs with one conditional skip. Attempt 1 stops
+at a Windows source-acquisition timeout (`curl` exit 28 for the pinned original
+`amsmath.tar.xz`); an independent cold download matches its original SHA-512.
+Only the failed job and its dependents are retried. Attempt 2 passes without
+changing the tag, sources, archive hashes or qualification gates. The failure
+log and retry identity are retained in the evidence.
+
+Both `mylife-inc/Zellij` and `mylife-inc/releases` publish 46 assets with matching
+names, sizes and digests. The six public PDF jobs install each repository's CLI,
+verify complete corresponding sources and compare runtime/source receipts.
+All twelve receipts match the reviewed pair. Independent Intel Mac acceptance
+repeats both repositories; the installed default-location CLI also builds cold
+and offline with default download URLs and an empty PATH.
+
+The revised guides pass a local production build and browser preservation:
+59 routes, 282 original headings, 82 compatibility mappings and 29 byte-identical
+images, with no captured errors after hydration. An initial local preparation
+failure came from absent workspace dependencies; the successful check uses the
+locked dependency tree and a rebuilt engine.
+
+Homebrew commit `feb88a6` and Scoop commit `05b8843` adopt the exact recipes
+generated from the published checksum inventory. All eight actual rc.19-to-rc.20
+upgrades, ownership checks, portable builds and uninstall cases pass in runs
+`45574903028` and `45574914352`. Earlier release assets remain intact.
+The [publication evidence](evidence/zellij-rc20-release-2026-11-25.json) retains
+the package identities, public receipts, local checks and per-job upgrade proofs.

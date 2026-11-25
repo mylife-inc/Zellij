@@ -3,7 +3,7 @@ title: zel build
 description: Build a rich double-click website, portable Markdown documentation, a hosted export, or a container image.
 ---
 
-<Callout type="tip" title="Available in candidate 0.2.0-rc.19">
+<Callout type="tip" title="Available in candidate 0.2.0-rc.20">
 The portable target runs entirely inside `zel`. It needs no Docker, Node, or
 network connection. Rich `file` and `static` targets download a verified renderer
 once; only image builds require a container builder. Use `zel list targets` to inspect the available outputs and prerequisites.
@@ -77,7 +77,7 @@ local images, bundled fonts, syntax highlighting, and all 15 Zellij themes work
 without an HTTP server. Content and ordinary navigation remain available with
 JavaScript disabled; search and theme controls need JavaScript.
 
-Candidate rc.19 can build a [book manuscript](/cli/books) with the same
+Candidate rc.20 can build a [book manuscript](/cli/books) with the same
 command. Its manifest defines front matter, parts, chapters and appendices; the
 export includes a publication record. Optional [PDF publishing](/cli/books#optional-pdf-export-current-source) is also available.
 
@@ -327,13 +327,12 @@ then run with `--offline`. `zel doctor` reports the cache location and readiness
 without downloading anything. A CLI upgrade uses its own versioned cache;
 an older cached engine is never silently substituted.
 
-**Next candidate (implemented in source):** Ctrl-C also cancels a stalled first
+Candidate rc.20 also lets Ctrl-C cancel a stalled first
 download and removes its temporary download/build files while preserving the
 previous site. Cache checks reject unlisted files/directories, missing entries
 and links/junctions. A damaged cache is left intact for inspection: remove only
 the affected version/platform directory reported by `zel doctor`, then retry
-online. `--offline` does not repair or replace a damaged cache. These additions
-are not included in the published rc.19 binary.
+online. `--offline` does not repair or replace a damaged cache.
 
 Packages cover x64 and ARM64 macOS, Windows and GNU/Linux. The CLI's Linux
 build baseline is Ubuntu 22.04/glibc 2.35; Alpine/musl is not supported. The
@@ -503,7 +502,7 @@ or start a local container runtime.
 
 ## Image build arguments
 
-For `build --target image` (also `b --target image`), candidate rc.19 accepts
+For `build --target image` (also `b --target image`), candidate rc.20 accepts
 repeatable `--build-arg NAME=VALUE`. Static-folder and portable HTML builds reject
 it before output or runtime work. Prefer `zel ni --build-arg
 NODE_OPTIONS=--max-old-space-size=4096` for the short image form. See
@@ -519,6 +518,9 @@ reserved names, generated Dockerfiles and limitations.
 For a portable book, `zel build --pdf` also generates a
 LuaLaTeX PDF and download links before publishing either output. Saved
 `pdf.enabled: true` selects this for ordinary builds; `--no-pdf` requests a web-only
-build. `--pdf` and `--no-pdf` apply to the portable target. See
+build. `--pdf` and `--no-pdf` apply to the portable target. Add
+`--pdf-backend cached` for the optional verified compiler/private Node download;
+then `--offline` reuses both cached packages. The default PDF backend remains
+`container`. See
 [book PDF export](/cli/books#optional-pdf-export-current-source) for prerequisites
 and the first print template’s supported subset.

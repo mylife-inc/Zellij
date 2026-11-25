@@ -5,8 +5,41 @@ tests only. Keep third-party project identities, local case studies and delivery
 details out of tracked files, pull requests, release notes, logs and artifacts.
 External test projects are not Zellij deliverables or product backlog.
 
-Last refreshed: **2026-11-24**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-25**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
+
+**2026-11-25: rc.20 optional cached PDF — published**
+
+PR #255 merged as `65249fa`, tree-identical to tested `0396005`. Regular CI
+`45561362507` passes 37 jobs with one conditional skip; PDF CI `45561362593`
+passes nine jobs. Post-merge CI `45564988471`, base images `45564988493` and
+documentation `45564988393` pass. Both release repositories offer 46 matching
+assets, including the 11,792,851-byte compiler and its separate 430,327,849-byte
+matching-source archive. The tag remains fixed at `65249fa`.
+
+All six public cached-PDF jobs verify both repositories, complete source
+downloads, the real compiler/renderer pair and offline book/rich builds with
+an empty PATH. Independent Mac acceptance repeats both public downloads. The
+installed CLI also passes cold and offline PDF builds using the default resource
+home and download URLs. The first tagged Windows qualification attempt timed
+out fetching an original source archive; its targeted retry passed unchanged.
+Keep that transport failure in the release evidence.
+
+Release run `45565105796` completes with 55 passing jobs and one conditional
+skip. All eight actual rc.19-to-rc.20 upgrades pass in Homebrew `45574903028`
+and Scoop `45574914352`. The local standalone installation is rc.20 under
+`~/Dev/config/zellij/bin`; its existing compatibility symlink remains usable.
+The revised guides pass a production build and 59-route browser preservation.
+See [the publication evidence](specs/evidence/zellij-rc20-release-2026-11-25.json)
+for exact receipts, channel commits and the guide-publication checkpoint.
+
+Use `--pdf-backend cached` or `ZEL_PDF_BACKEND=cached` for the new backend.
+The default remains `container` in rc.20. A subsequent default change must
+update generated CI, explicit container acceptance and immutable book-template
+versions together. Optional Next development packages remain separate work;
+image operations still require a builder. Historical browser timing findings,
+external provider verification and catalog approval remain separate.
+See [the release record](specs/zellij-rc20-cached-pdf-2026-11-24.md).
 
 **2026-11-24: rc.20 cached PDF release preparation — in progress**
 

@@ -6,14 +6,19 @@ The [validation record](zellij-cached-static-validation-2026-11-21.md),
 [release evidence](evidence/zellij-rc18-release-2026-11-21.json) distinguish
 source, public-package and publication acceptance. The wrapper source package
 ships in rc.19 with public and channel acceptance passed; see the
-[22 November record](zellij-cached-editable-sources-2026-11-22.md). PDF and Next
-development packages remain proposed work. The original opportunity review used
+[22 November record](zellij-cached-editable-sources-2026-11-22.md). The optional
+cached PDF package ships in rc.20; Next development packages remain proposed work.
+The original opportunity review used
 `dbdf4fc` plus rc.17 version preparation; rc.17 itself remains unchanged.
 
-PDF implementation groundwork now has an
+PDF implementation started with an
 [offline WebAssembly feasibility probe](zellij-cached-pdf-feasibility-2026-11-22.md).
-It is not wired into the released CLI; optional packaging, complete resource and
-license provenance, isolation qualification and installed acceptance remain open.
+PR #255 (`65249fa`) ships the reviewed runtime/source pair and installed CLI
+integration. Six-platform public acceptance checks both repositories, full source
+downloads and real offline PDF/rich builds. Select `--pdf-backend cached` in rc.20;
+`container` remains the default. A later default transition needs generated-CI
+coverage and new versions of the book templates. See the
+[rc.20 record](zellij-rc20-cached-pdf-2026-11-24.md).
 
 ## Existing behavior
 
@@ -41,7 +46,7 @@ rendering dependencies.
 | 2 — released in rc.18 | `build --target static`, `view --target static`, build/watch and static-site deployment build steps | Extended cached renderer with a supported HTTP export mode | Preserve actual hosted routing, base paths, metadata, 404 behavior, search, no-JavaScript output and asset URLs. Do not silently replace the Next export contract with file-oriented link rewriting. |
 | 2, downstream — released in rc.18 | Netlify, Cloudflare Pages, GitHub Pages, S3 and supported static Vercel deployments; corresponding generated CI | Same HTTP export plus existing native provider clients | Native HTTPS upload adapters already exist; the shared rich-site build now uses the cache. Test the build/protocol boundary with repository-owned fixtures; live provider acceptance remains separately deferred. |
 | 3 — released in rc.19 | Default `eject` and engine selection for `new app` | Separate versioned wrapper sources plus built engine package | The source update removes default stopped-container extraction using a separate verified archive while preserving vendoring, features, starter content and staged-path checks. The compiled renderer remains separate from the editable-source distribution. Explicit custom `--image` extraction must retain its image semantics; running the extracted Next app still needs its development toolchain. |
-| 4 | `pdf`, `build --pdf`, configured PDF preview/book exports | Optional platform-specific LuaLaTeX/typesetting package and supported fonts/packages | Preserve the publication model, index, references, languages and appearance. Match current LuaLaTeX capabilities, failure preservation, cancellation, resource limits and isolation; a different TeX engine is not an automatic drop-in replacement. |
+| 4 — opt-in release in rc.20 | `pdf`, `build --pdf`, configured PDF preview/book exports | Optional reviewed LuaHBTeX WebAssembly compiler, fonts and resources; reuses the renderer's private Node | Released public packages preserve the supported print contract and offline/cancellation/output-preservation checks. Select `--pdf-backend cached`; container remains the default. The next default transition must update generated CI, explicit container tests and versioned book-template instructions. |
 | 5 | Rich Next.js `dev` and editable wrapper workflows | Optional larger Node/Next/dependency package | Preserve actual Next development behavior and custom app support. `view --watch` already offers a lighter native preview. Arbitrary custom dependencies require their own resolution and cannot be inferred from a fixed template bundle. |
 | Retain builder | `image static`, `image next`, image publishing and image-based Fly/Railway delivery | Rendering may reuse caches, but images still need a builder | A downloaded renderer does not build an OCI image or start a daemon. Removing the local builder would be a separate remote-builder or native-image-building feature. |
 
@@ -112,6 +117,8 @@ package milestone below the PDF work in the priority table.
 - `cli/crates/zellij-cli/src/source_package.rs`: versioned source retrieval, file inventory/integrity, offline reuse and staged publication.
 - `scripts/package-editable-sources.mjs` and `check-editable-sources.mjs`: universal source packaging and six-platform installed-wrapper acceptance.
 - `cli/crates/zellij-cli/src/development.rs`: rich Next development server.
-- `cli/crates/zellij-cli/src/pdf.rs`: isolated LuaLaTeX execution.
+- `cli/crates/zellij-cli/src/pdf.rs` and `pdf_package.rs`: container/cached PDF dispatch, reviewed package integrity and private Node reuse.
+- `scripts/pdf-wasm/`: isolated GPL-2.0-only adapter, original component review, source correspondence and paired release packaging.
+- `scripts/check-published-cached-pdf.mjs` and `verify-pdf-release.mjs`: public native installs, complete source transfers and compiler/renderer/offline acceptance.
 - `engine/packages/zellij/src/offline/standalone.ts`: existing build/check entry point.
 - `scripts/build-standalone-engine.mjs` and `package-standalone-engine.mjs`: compilation and per-platform runtime packaging.

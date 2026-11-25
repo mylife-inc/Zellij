@@ -1,0 +1,1638 @@
+{
+  "date": "2026-11-25",
+  "version": "v0.2.0-rc.20",
+  "status": "rc.20 published, all 55 release jobs and eight actual channel upgrades passed, local CLI installed and verified; revised guides await pull-request checks and production publication.",
+  "source": {
+    "pr": 255,
+    "testedHead": "0396005fb55fd30d05a0ed28fc8b98471134c991",
+    "merge": "65249fa7b685879538bfcc4719414e90d15b176e",
+    "mergeTreeMatchesTestedHead": true,
+    "checks": {
+      "ci": {
+        "id": 45561362507,
+        "head_sha": "0396005fb55fd30d05a0ed28fc8b98471134c991",
+        "run_attempt": 1,
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45561362507",
+        "created_at": "2026-11-25T06:32:30Z",
+        "updated_at": "2026-11-25T06:58:12Z"
+      },
+      "pdf": {
+        "id": 45561362593,
+        "head_sha": "0396005fb55fd30d05a0ed28fc8b98471134c991",
+        "run_attempt": 1,
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45561362593",
+        "created_at": "2026-11-25T06:32:30Z",
+        "updated_at": "2026-11-25T06:59:22Z"
+      },
+      "docs": {
+        "id": 45561362493,
+        "head_sha": "0396005fb55fd30d05a0ed28fc8b98471134c991",
+        "run_attempt": 1,
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45561362493",
+        "created_at": "2026-11-25T06:32:30Z",
+        "updated_at": "2026-11-25T06:34:14Z"
+      }
+    },
+    "pdfParity": {
+      "schemaVersion": 1,
+      "publicDownloadVerified": false,
+      "redistributionReviewComplete": true,
+      "platforms": [
+        "linux-x64",
+        "linux-arm64",
+        "darwin-x64",
+        "darwin-arm64",
+        "win32-x64",
+        "win32-arm64"
+      ],
+      "cacheScenarios": 78,
+      "compilations": 12,
+      "installedCliScenarios": 24,
+      "realRendererCompilerPlatforms": 6,
+      "completeSourceTransfers": 6,
+      "archive": {
+        "name": "zel-pdf-qualification-v0.2.0-rc.20.tar.gz",
+        "bytes": 11630471,
+        "sha256": "08c8a8cf60d85599f70b72dd1b0d10421a1907a251aa91460ad62537be2092f6"
+      },
+      "manifestSha256": "d866b5895679d5fcb1d2874b86102a280ada6a8cc0a1ef804f1c16bd995e6cfa",
+      "sourceArchive": {
+        "name": "experimental-pdf-sources.tar.gz",
+        "bytes": 430154086,
+        "sha256": "7e5d004e375a86d7b7a79b5a9e25eea959d9e222b05c28517e348dcb266fd061"
+      },
+      "sourceManifestSha256": "95e219ac2ec1394cbe3ff907e8efcf27da128b95669c3269e2e0d00abca52158",
+      "reviewed": {
+        "schemaVersion": 1,
+        "version": "0.2.0-rc.20",
+        "redistributionReviewComplete": true,
+        "published": false,
+        "reviewSha256": "ff93454483cf313555a1d490f48dbe5f680e93dda7a5b84fe44cc32b620b6db3",
+        "runtime": {
+          "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+          "bytes": 11792851,
+          "sha256": "f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+        },
+        "source": {
+          "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+          "bytes": 430327849,
+          "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+        },
+        "sourceManifestSha256": "ae5fc1c908e1d3c4082ec94e1eb8fe1d39a11db930d64f44749409f2967445b3"
+      }
+    }
+  },
+  "release": {
+    "run": 45565105796,
+    "tag": "v0.2.0-rc.20",
+    "defaultPdfBackend": "container",
+    "retainedFailure": {
+      "job": 139040535392,
+      "attempt": 1,
+      "stage": "Acquire original pinned sources before packaging",
+      "reason": "curl exit 28 fetching amsmath.tar.xz",
+      "archiveUrl": "https://texlive.info/tlnet-archive/2026/08/26/tlnet/archive/amsmath.tar.xz",
+      "logSha256": "5bc681cbb76ee1fed8bb2c3aa1fa851825090030719da676195b438093d13c02",
+      "independentColdDownloadMatchedPinnedSha512": true,
+      "retryJob": 139056939676,
+      "retryConclusion": "success"
+    },
+    "parity": {
+      "schemaVersion": 1,
+      "publicDownloadVerified": false,
+      "redistributionReviewComplete": true,
+      "platforms": [
+        "linux-x64",
+        "linux-arm64",
+        "darwin-x64",
+        "darwin-arm64",
+        "win32-x64",
+        "win32-arm64"
+      ],
+      "cacheScenarios": 78,
+      "compilations": 12,
+      "installedCliScenarios": 24,
+      "realRendererCompilerPlatforms": 6,
+      "completeSourceTransfers": 6,
+      "archive": {
+        "name": "zel-pdf-qualification-v0.2.0-rc.20.tar.gz",
+        "bytes": 11630471,
+        "sha256": "08c8a8cf60d85599f70b72dd1b0d10421a1907a251aa91460ad62537be2092f6"
+      },
+      "manifestSha256": "d866b5895679d5fcb1d2874b86102a280ada6a8cc0a1ef804f1c16bd995e6cfa",
+      "sourceArchive": {
+        "name": "experimental-pdf-sources.tar.gz",
+        "bytes": 430154086,
+        "sha256": "7e5d004e375a86d7b7a79b5a9e25eea959d9e222b05c28517e348dcb266fd061"
+      },
+      "sourceManifestSha256": "95e219ac2ec1394cbe3ff907e8efcf27da128b95669c3269e2e0d00abca52158",
+      "reviewed": {
+        "schemaVersion": 1,
+        "version": "0.2.0-rc.20",
+        "redistributionReviewComplete": true,
+        "published": false,
+        "reviewSha256": "ff93454483cf313555a1d490f48dbe5f680e93dda7a5b84fe44cc32b620b6db3",
+        "runtime": {
+          "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+          "bytes": 11792851,
+          "sha256": "f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+        },
+        "source": {
+          "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+          "bytes": 430327849,
+          "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+        },
+        "sourceManifestSha256": "ae5fc1c908e1d3c4082ec94e1eb8fe1d39a11db930d64f44749409f2967445b3"
+      }
+    },
+    "publicCachedPdf": [
+      {
+        "version": "v0.2.0-rc.20",
+        "target": "aarch64-apple-darwin",
+        "reports": [
+          {
+            "repository": "mylife-inc/Zellij",
+            "base": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.20",
+            "verification": {
+              "schemaVersion": 1,
+              "version": "0.2.0-rc.20",
+              "platform": "darwin-arm64",
+              "publicDownloadVerified": true,
+              "realRenderer": true,
+              "emptyPath": true,
+              "offlinePdfAndRichBuilds": true,
+              "privateNodeReused": true,
+              "manifestSha256": "c312c55689300f6450bf62601d4f52d9e7214a6db428e303597f01a670cfda1a",
+              "runtime": {
+                "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+                "sha256": "f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+              },
+              "source": {
+                "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+                "bytes": 430327849,
+                "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+              },
+              "sourceManifestSha256": "ae5fc1c908e1d3c4082ec94e1eb8fe1d39a11db930d64f44749409f2967445b3",
+              "sourceBytesVerified": true
+            }
+          },
+          {
+            "repository": "mylife-inc/releases",
+            "base": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.20",
+            "verification": {
+              "schemaVersion": 1,
+              "version": "0.2.0-rc.20",
+              "platform": "darwin-arm64",
+              "publicDownloadVerified": true,
+              "realRenderer": true,
+              "emptyPath": true,
+              "offlinePdfAndRichBuilds": true,
+              "privateNodeReused": true,
+              "manifestSha256": "c312c55689300f6450bf62601d4f52d9e7214a6db428e303597f01a670cfda1a",
+              "runtime": {
+                "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+                "sha256": "f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+              },
+              "source": {
+                "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+                "bytes": 430327849,
+                "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+              },
+              "sourceManifestSha256": "ae5fc1c908e1d3c4082ec94e1eb8fe1d39a11db930d64f44749409f2967445b3",
+              "sourceBytesVerified": true
+            }
+          }
+        ]
+      },
+      {
+        "version": "v0.2.0-rc.20",
+        "target": "aarch64-pc-windows-msvc",
+        "reports": [
+          {
+            "repository": "mylife-inc/Zellij",
+            "base": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.20",
+            "verification": {
+              "schemaVersion": 1,
+              "version": "0.2.0-rc.20",
+              "platform": "win-arm64",
+              "publicDownloadVerified": true,
+              "realRenderer": true,
+              "emptyPath": true,
+              "offlinePdfAndRichBuilds": true,
+              "privateNodeReused": true,
+              "manifestSha256": "c312c55689300f6450bf62601d4f52d9e7214a6db428e303597f01a670cfda1a",
+              "runtime": {
+                "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+                "sha256": "f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+              },
+              "source": {
+                "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+                "bytes": 430327849,
+                "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+              },
+              "sourceManifestSha256": "ae5fc1c908e1d3c4082ec94e1eb8fe1d39a11db930d64f44749409f2967445b3",
+              "sourceBytesVerified": true
+            }
+          },
+          {
+            "repository": "mylife-inc/releases",
+            "base": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.20",
+            "verification": {
+              "schemaVersion": 1,
+              "version": "0.2.0-rc.20",
+              "platform": "win-arm64",
+              "publicDownloadVerified": true,
+              "realRenderer": true,
+              "emptyPath": true,
+              "offlinePdfAndRichBuilds": true,
+              "privateNodeReused": true,
+              "manifestSha256": "c312c55689300f6450bf62601d4f52d9e7214a6db428e303597f01a670cfda1a",
+              "runtime": {
+                "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+                "sha256": "f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+              },
+              "source": {
+                "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+                "bytes": 430327849,
+                "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+              },
+              "sourceManifestSha256": "ae5fc1c908e1d3c4082ec94e1eb8fe1d39a11db930d64f44749409f2967445b3",
+              "sourceBytesVerified": true
+            }
+          }
+        ]
+      },
+      {
+        "version": "v0.2.0-rc.20",
+        "target": "aarch64-unknown-linux-gnu",
+        "reports": [
+          {
+            "repository": "mylife-inc/Zellij",
+            "base": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.20",
+            "verification": {
+              "schemaVersion": 1,
+              "version": "0.2.0-rc.20",
+              "platform": "linux-arm64",
+              "publicDownloadVerified": true,
+              "realRenderer": true,
+              "emptyPath": true,
+              "offlinePdfAndRichBuilds": true,
+              "privateNodeReused": true,
+              "manifestSha256": "c312c55689300f6450bf62601d4f52d9e7214a6db428e303597f01a670cfda1a",
+              "runtime": {
+                "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+                "sha256": "f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+              },
+              "source": {
+                "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+                "bytes": 430327849,
+                "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+              },
+              "sourceManifestSha256": "ae5fc1c908e1d3c4082ec94e1eb8fe1d39a11db930d64f44749409f2967445b3",
+              "sourceBytesVerified": true
+            }
+          },
+          {
+            "repository": "mylife-inc/releases",
+            "base": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.20",
+            "verification": {
+              "schemaVersion": 1,
+              "version": "0.2.0-rc.20",
+              "platform": "linux-arm64",
+              "publicDownloadVerified": true,
+              "realRenderer": true,
+              "emptyPath": true,
+              "offlinePdfAndRichBuilds": true,
+              "privateNodeReused": true,
+              "manifestSha256": "c312c55689300f6450bf62601d4f52d9e7214a6db428e303597f01a670cfda1a",
+              "runtime": {
+                "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+                "sha256": "f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+              },
+              "source": {
+                "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+                "bytes": 430327849,
+                "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+              },
+              "sourceManifestSha256": "ae5fc1c908e1d3c4082ec94e1eb8fe1d39a11db930d64f44749409f2967445b3",
+              "sourceBytesVerified": true
+            }
+          }
+        ]
+      },
+      {
+        "version": "v0.2.0-rc.20",
+        "target": "x86_64-apple-darwin",
+        "reports": [
+          {
+            "repository": "mylife-inc/Zellij",
+            "base": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.20",
+            "verification": {
+              "schemaVersion": 1,
+              "version": "0.2.0-rc.20",
+              "platform": "darwin-x64",
+              "publicDownloadVerified": true,
+              "realRenderer": true,
+              "emptyPath": true,
+              "offlinePdfAndRichBuilds": true,
+              "privateNodeReused": true,
+              "manifestSha256": "c312c55689300f6450bf62601d4f52d9e7214a6db428e303597f01a670cfda1a",
+              "runtime": {
+                "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+                "sha256": "f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+              },
+              "source": {
+                "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+                "bytes": 430327849,
+                "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+              },
+              "sourceManifestSha256": "ae5fc1c908e1d3c4082ec94e1eb8fe1d39a11db930d64f44749409f2967445b3",
+              "sourceBytesVerified": true
+            }
+          },
+          {
+            "repository": "mylife-inc/releases",
+            "base": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.20",
+            "verification": {
+              "schemaVersion": 1,
+              "version": "0.2.0-rc.20",
+              "platform": "darwin-x64",
+              "publicDownloadVerified": true,
+              "realRenderer": true,
+              "emptyPath": true,
+              "offlinePdfAndRichBuilds": true,
+              "privateNodeReused": true,
+              "manifestSha256": "c312c55689300f6450bf62601d4f52d9e7214a6db428e303597f01a670cfda1a",
+              "runtime": {
+                "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+                "sha256": "f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+              },
+              "source": {
+                "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+                "bytes": 430327849,
+                "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+              },
+              "sourceManifestSha256": "ae5fc1c908e1d3c4082ec94e1eb8fe1d39a11db930d64f44749409f2967445b3",
+              "sourceBytesVerified": true
+            }
+          }
+        ]
+      },
+      {
+        "version": "v0.2.0-rc.20",
+        "target": "x86_64-pc-windows-msvc",
+        "reports": [
+          {
+            "repository": "mylife-inc/Zellij",
+            "base": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.20",
+            "verification": {
+              "schemaVersion": 1,
+              "version": "0.2.0-rc.20",
+              "platform": "win-x64",
+              "publicDownloadVerified": true,
+              "realRenderer": true,
+              "emptyPath": true,
+              "offlinePdfAndRichBuilds": true,
+              "privateNodeReused": true,
+              "manifestSha256": "c312c55689300f6450bf62601d4f52d9e7214a6db428e303597f01a670cfda1a",
+              "runtime": {
+                "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+                "sha256": "f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+              },
+              "source": {
+                "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+                "bytes": 430327849,
+                "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+              },
+              "sourceManifestSha256": "ae5fc1c908e1d3c4082ec94e1eb8fe1d39a11db930d64f44749409f2967445b3",
+              "sourceBytesVerified": true
+            }
+          },
+          {
+            "repository": "mylife-inc/releases",
+            "base": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.20",
+            "verification": {
+              "schemaVersion": 1,
+              "version": "0.2.0-rc.20",
+              "platform": "win-x64",
+              "publicDownloadVerified": true,
+              "realRenderer": true,
+              "emptyPath": true,
+              "offlinePdfAndRichBuilds": true,
+              "privateNodeReused": true,
+              "manifestSha256": "c312c55689300f6450bf62601d4f52d9e7214a6db428e303597f01a670cfda1a",
+              "runtime": {
+                "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+                "sha256": "f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+              },
+              "source": {
+                "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+                "bytes": 430327849,
+                "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+              },
+              "sourceManifestSha256": "ae5fc1c908e1d3c4082ec94e1eb8fe1d39a11db930d64f44749409f2967445b3",
+              "sourceBytesVerified": true
+            }
+          }
+        ]
+      },
+      {
+        "version": "v0.2.0-rc.20",
+        "target": "x86_64-unknown-linux-gnu",
+        "reports": [
+          {
+            "repository": "mylife-inc/Zellij",
+            "base": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.20",
+            "verification": {
+              "schemaVersion": 1,
+              "version": "0.2.0-rc.20",
+              "platform": "linux-x64",
+              "publicDownloadVerified": true,
+              "realRenderer": true,
+              "emptyPath": true,
+              "offlinePdfAndRichBuilds": true,
+              "privateNodeReused": true,
+              "manifestSha256": "c312c55689300f6450bf62601d4f52d9e7214a6db428e303597f01a670cfda1a",
+              "runtime": {
+                "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+                "sha256": "f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+              },
+              "source": {
+                "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+                "bytes": 430327849,
+                "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+              },
+              "sourceManifestSha256": "ae5fc1c908e1d3c4082ec94e1eb8fe1d39a11db930d64f44749409f2967445b3",
+              "sourceBytesVerified": true
+            }
+          },
+          {
+            "repository": "mylife-inc/releases",
+            "base": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.20",
+            "verification": {
+              "schemaVersion": 1,
+              "version": "0.2.0-rc.20",
+              "platform": "linux-x64",
+              "publicDownloadVerified": true,
+              "realRenderer": true,
+              "emptyPath": true,
+              "offlinePdfAndRichBuilds": true,
+              "privateNodeReused": true,
+              "manifestSha256": "c312c55689300f6450bf62601d4f52d9e7214a6db428e303597f01a670cfda1a",
+              "runtime": {
+                "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+                "sha256": "f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+              },
+              "source": {
+                "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+                "bytes": 430327849,
+                "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+              },
+              "sourceManifestSha256": "ae5fc1c908e1d3c4082ec94e1eb8fe1d39a11db930d64f44749409f2967445b3",
+              "sourceBytesVerified": true
+            }
+          }
+        ]
+      }
+    ],
+    "repositories": [
+      {
+        "id": 457808212,
+        "tag_name": "v0.2.0-rc.20",
+        "html_url": "https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.20",
+        "published_at": "2026-11-25T08:03:59Z",
+        "prerelease": true,
+        "draft": false,
+        "assets": [
+          {
+            "id": 790642202,
+            "name": "install.ps1",
+            "size": 7573,
+            "digest": "sha256:f652f0ac06bf1794be6f48c32a22e8d0a78fece873f6b1d53102ed16069a07a1"
+          },
+          {
+            "id": 790642214,
+            "name": "install.sh",
+            "size": 13685,
+            "digest": "sha256:fdaea859ada3b454522a2413dc5d7e59908cf6d506e24457e93cd8925a3297a0"
+          },
+          {
+            "id": 790642217,
+            "name": "SHA256SUMS",
+            "size": 2690,
+            "digest": "sha256:f5d4b2e8e1e6fd947517d9b14d9e5774080be8baee6890f5ac7c7f1cec7c1d35"
+          },
+          {
+            "id": 790642198,
+            "name": "template-api-platform-0.1.2.tar.gz",
+            "size": 6135,
+            "digest": "sha256:15121abc9fe6f4c11230d17b9d02bc7f4250b31d1692e975da19b140664c0504"
+          },
+          {
+            "id": 790642206,
+            "name": "template-book-classic-0.2.0.tar.gz",
+            "size": 4394,
+            "digest": "sha256:70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+          },
+          {
+            "id": 790642211,
+            "name": "template-book-study-0.1.0.tar.gz",
+            "size": 3845,
+            "digest": "sha256:0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"
+          },
+          {
+            "id": 790642219,
+            "name": "template-book-technical-0.1.0.tar.gz",
+            "size": 3959,
+            "digest": "sha256:8d350a0072bfb36f44edfb3f10f5961f3edf7d715eeb3641a2bc2bb1e4fbcf26"
+          },
+          {
+            "id": 790642212,
+            "name": "template-creative-studio-0.1.3.tar.gz",
+            "size": 6191,
+            "digest": "sha256:e54f2905adc90a58ad8a9b725101a78cfdf06ca2b668075d0a242ab27a4ee4dd"
+          },
+          {
+            "id": 790642189,
+            "name": "template-product-docs-0.1.0.tar.gz",
+            "size": 1297,
+            "digest": "sha256:f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+          },
+          {
+            "id": 790642204,
+            "name": "template-product-launch-0.1.3.tar.gz",
+            "size": 6396,
+            "digest": "sha256:f7d446e59fb21bb8f5bce71382d666a2c7ee2d982b3027c265de73109b4fce40"
+          },
+          {
+            "id": 790642200,
+            "name": "template-product-studio-0.1.2.tar.gz",
+            "size": 2792,
+            "digest": "sha256:bad023420061d2f3bc051dcfc732d6aec3120af297544cb58d82631ab12393a1"
+          },
+          {
+            "id": 790642199,
+            "name": "template-software-platform-0.1.3.tar.gz",
+            "size": 6282,
+            "digest": "sha256:5412e9735419813ee519b68d3e5c8fdd314f0cb49c88472a9de8fdb8ac6a16ba"
+          },
+          {
+            "id": 790642208,
+            "name": "templates-catalog.json",
+            "size": 9537,
+            "digest": "sha256:5868facf09a9fc422d0a0aa1c21c90cb587be98d69b32ec124d4e51ae9491a7e"
+          },
+          {
+            "id": 790642197,
+            "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+            "size": 430327849,
+            "digest": "sha256:c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+          },
+          {
+            "id": 790642187,
+            "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz.sha256",
+            "size": 102,
+            "digest": "sha256:f8ed7b2976e1e6662093b803c672c9e656946a70409429f2a8e7687e78fae773"
+          },
+          {
+            "id": 790642210,
+            "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+            "size": 11792851,
+            "digest": "sha256:f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+          },
+          {
+            "id": 790642203,
+            "name": "zel-pdf-v0.2.0-rc.20.tar.gz.sha256",
+            "size": 94,
+            "digest": "sha256:5a3b6d14fc2d37270c7468ac121bc095b682400a62f90c296ec0931d673f5265"
+          },
+          {
+            "id": 790642209,
+            "name": "zel-renderer-v0.2.0-rc.20-darwin-arm64.tar.gz",
+            "size": 46744028,
+            "digest": "sha256:85711e705ecf47ff55f55c171fbb10ec2f6cba255eed4c5870795be525e0e2e3"
+          },
+          {
+            "id": 790642182,
+            "name": "zel-renderer-v0.2.0-rc.20-darwin-arm64.tar.gz.sha256",
+            "size": 112,
+            "digest": "sha256:ce54ce126c017b94d3cd1ef178843493afef165b354e094f0aeecf2b2673e42b"
+          },
+          {
+            "id": 790642196,
+            "name": "zel-renderer-v0.2.0-rc.20-darwin-x64.tar.gz",
+            "size": 48103232,
+            "digest": "sha256:ac5ee0b94cf6abcbd35691d95eda1adf9fcc9cd9fc2e7b397af5ae8723a8cb8e"
+          },
+          {
+            "id": 790642185,
+            "name": "zel-renderer-v0.2.0-rc.20-darwin-x64.tar.gz.sha256",
+            "size": 110,
+            "digest": "sha256:e7eb5ce4fcb2825077a47f74053fe40f9b4c0f3521aef8b13df50da373db951c"
+          },
+          {
+            "id": 790642205,
+            "name": "zel-renderer-v0.2.0-rc.20-linux-arm64.tar.gz",
+            "size": 51818597,
+            "digest": "sha256:f72c2ae68df7e758df70a8ce6b6318c49394a278db6de9c8aa47e31652b3ae04"
+          },
+          {
+            "id": 790642181,
+            "name": "zel-renderer-v0.2.0-rc.20-linux-arm64.tar.gz.sha256",
+            "size": 111,
+            "digest": "sha256:1c91b41710f6250c5a3ec93f0c62d44d92592e3c052f39e7c3bda00a7de7e751"
+          },
+          {
+            "id": 790642193,
+            "name": "zel-renderer-v0.2.0-rc.20-linux-x64.tar.gz",
+            "size": 52133835,
+            "digest": "sha256:3d2974dacd1be4e3a96b9f37b66b76299126c661f9101023b0ecc6ee9d4c2b63"
+          },
+          {
+            "id": 790642184,
+            "name": "zel-renderer-v0.2.0-rc.20-linux-x64.tar.gz.sha256",
+            "size": 109,
+            "digest": "sha256:046c3c631b92742a0580d66bf11dbe2381db1121ebbe3edc3389d61ef41dc047"
+          },
+          {
+            "id": 790642218,
+            "name": "zel-renderer-v0.2.0-rc.20-win-arm64.tar.gz",
+            "size": 38273967,
+            "digest": "sha256:b6d8bb69aa07cee9566449f4292ca2a4126eb4d69902c06d40dc62186b97b85b"
+          },
+          {
+            "id": 790642177,
+            "name": "zel-renderer-v0.2.0-rc.20-win-arm64.tar.gz.sha256",
+            "size": 109,
+            "digest": "sha256:426c64d5ff314e02b444c1588d78555a8515efa7365b822f875f51a1426be386"
+          },
+          {
+            "id": 790642195,
+            "name": "zel-renderer-v0.2.0-rc.20-win-x64.tar.gz",
+            "size": 42326451,
+            "digest": "sha256:ceeecc265e82db42137b0bde1ea0e0ed3c3229b8b566217ab256bd44d5de4621"
+          },
+          {
+            "id": 790642183,
+            "name": "zel-renderer-v0.2.0-rc.20-win-x64.tar.gz.sha256",
+            "size": 107,
+            "digest": "sha256:0ce8da45c76490b9dbdedadefbff9f3b44558b39f75f81b35002eae0ec79b017"
+          },
+          {
+            "id": 790642194,
+            "name": "zel-sources-v0.2.0-rc.20.tar.gz",
+            "size": 8184288,
+            "digest": "sha256:57bd4ad1682ba60a0424bfc46eaa374866b17f83fa4e2fe441d8d65ce7ac5abe"
+          },
+          {
+            "id": 790642186,
+            "name": "zel-sources-v0.2.0-rc.20.tar.gz.sha256",
+            "size": 98,
+            "digest": "sha256:7e1769debe0c699f217996ded4b857c6392f39fe51181291e80268b156e2f0c1"
+          },
+          {
+            "id": 790642180,
+            "name": "zel-v0.2.0-rc.20-aarch64-apple-darwin.tar.gz",
+            "size": 10008383,
+            "digest": "sha256:3a7b15738006a733bf9d5098347d395e6665fb1b429700f84cfa4765dc1bae6e"
+          },
+          {
+            "id": 790642190,
+            "name": "zel-v0.2.0-rc.20-aarch64-apple-darwin.tar.gz.sha256",
+            "size": 111,
+            "digest": "sha256:4082cb21428188a65da6f06791636dd6a4ca83f17fead706fb89597174480f0e"
+          },
+          {
+            "id": 790642201,
+            "name": "zel-v0.2.0-rc.20-aarch64-pc-windows-msvc.zip",
+            "size": 10421084,
+            "digest": "sha256:ed561c18d2362a4500c81bd26d38ea34f3ec87ac0cd42b00f5226998d3044c0a"
+          },
+          {
+            "id": 790642170,
+            "name": "zel-v0.2.0-rc.20-aarch64-pc-windows-msvc.zip.sha256",
+            "size": 111,
+            "digest": "sha256:4e995c50befc892cba003ee124defbef3a7e934c9a8855e3842edc524395c88b"
+          },
+          {
+            "id": 790642173,
+            "name": "zel-v0.2.0-rc.20-aarch64-unknown-linux-gnu.tar.gz",
+            "size": 10253622,
+            "digest": "sha256:bd58888cd0468adc2e753a78cba29760fb55f0ed09c489134f1d446f18d7c92f"
+          },
+          {
+            "id": 790642176,
+            "name": "zel-v0.2.0-rc.20-aarch64-unknown-linux-gnu.tar.gz.sha256",
+            "size": 116,
+            "digest": "sha256:faf4c7d54ab78852cb3323a07dd768598a60e7d5030adb18fe75472e5d9143ab"
+          },
+          {
+            "id": 790642171,
+            "name": "zel-v0.2.0-rc.20-x86_64-apple-darwin.tar.gz",
+            "size": 10106390,
+            "digest": "sha256:31bb6ec01e4e0dc58a40235d46c2b2917ac79b65a98ac42f3925406d1a543cc0"
+          },
+          {
+            "id": 790642164,
+            "name": "zel-v0.2.0-rc.20-x86_64-apple-darwin.tar.gz.sha256",
+            "size": 110,
+            "digest": "sha256:8cc79310a719d7e552a5d34a29ba7d0dabf4ad268541cc83704bb94c41932ffd"
+          },
+          {
+            "id": 790642192,
+            "name": "zel-v0.2.0-rc.20-x86_64-pc-windows-msvc.zip",
+            "size": 10595009,
+            "digest": "sha256:cbdfe7b603f51f9b052f8707b0f83e348ba60c4d946926012200ab46c821fcee"
+          },
+          {
+            "id": 790642165,
+            "name": "zel-v0.2.0-rc.20-x86_64-pc-windows-msvc.zip.sha256",
+            "size": 110,
+            "digest": "sha256:bffd85976cd386f3d3506c52744b9cf649a8ff966cf022ff7e7c3f451101dc2b"
+          },
+          {
+            "id": 790642175,
+            "name": "zel-v0.2.0-rc.20-x86_64-unknown-linux-gnu.tar.gz",
+            "size": 10399624,
+            "digest": "sha256:06cfa87f74bb73e0e2f923071413816adf2b9541f1f4ae7c52eb674d60ac9ee3"
+          },
+          {
+            "id": 790642174,
+            "name": "zel-v0.2.0-rc.20-x86_64-unknown-linux-gnu.tar.gz.sha256",
+            "size": 115,
+            "digest": "sha256:db4d9ecb39344e119a9b744f3ee0e2f5aac127b2f4b4ed5cb84702f0f120b53b"
+          },
+          {
+            "id": 790642169,
+            "name": "zel-winget-v0.2.0-rc.20.zip",
+            "size": 1647,
+            "digest": "sha256:4f705f6fd1e9d7ce56d0f0d16bb73d7ac7313f8ed3e7488a1c5d8bb1a770eec1"
+          },
+          {
+            "id": 790642172,
+            "name": "zel.json",
+            "size": 1526,
+            "digest": "sha256:927f0a930b519983279eaaff788a66fc85f769dedc4677e76f73863c1577671e"
+          },
+          {
+            "id": 790642163,
+            "name": "zel.rb",
+            "size": 2388,
+            "digest": "sha256:97e663374703b2918524e3dab7fb3026b132266396c3f2cac5aa282cda1b59a5"
+          }
+        ]
+      },
+      {
+        "id": 457808440,
+        "tag_name": "zellij-v0.2.0-rc.20",
+        "html_url": "https://github.com/mylife-inc/releases/releases/tag/zellij-v0.2.0-rc.20",
+        "published_at": "2026-11-25T08:04:15Z",
+        "prerelease": true,
+        "draft": false,
+        "assets": [
+          {
+            "id": 790643033,
+            "name": "install.ps1",
+            "size": 7573,
+            "digest": "sha256:f652f0ac06bf1794be6f48c32a22e8d0a78fece873f6b1d53102ed16069a07a1"
+          },
+          {
+            "id": 790643031,
+            "name": "install.sh",
+            "size": 13685,
+            "digest": "sha256:fdaea859ada3b454522a2413dc5d7e59908cf6d506e24457e93cd8925a3297a0"
+          },
+          {
+            "id": 790643025,
+            "name": "SHA256SUMS",
+            "size": 2690,
+            "digest": "sha256:f5d4b2e8e1e6fd947517d9b14d9e5774080be8baee6890f5ac7c7f1cec7c1d35"
+          },
+          {
+            "id": 790643027,
+            "name": "template-api-platform-0.1.2.tar.gz",
+            "size": 6135,
+            "digest": "sha256:15121abc9fe6f4c11230d17b9d02bc7f4250b31d1692e975da19b140664c0504"
+          },
+          {
+            "id": 790643022,
+            "name": "template-book-classic-0.2.0.tar.gz",
+            "size": 4394,
+            "digest": "sha256:70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+          },
+          {
+            "id": 790643023,
+            "name": "template-book-study-0.1.0.tar.gz",
+            "size": 3845,
+            "digest": "sha256:0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"
+          },
+          {
+            "id": 790643034,
+            "name": "template-book-technical-0.1.0.tar.gz",
+            "size": 3959,
+            "digest": "sha256:8d350a0072bfb36f44edfb3f10f5961f3edf7d715eeb3641a2bc2bb1e4fbcf26"
+          },
+          {
+            "id": 790643030,
+            "name": "template-creative-studio-0.1.3.tar.gz",
+            "size": 6191,
+            "digest": "sha256:e54f2905adc90a58ad8a9b725101a78cfdf06ca2b668075d0a242ab27a4ee4dd"
+          },
+          {
+            "id": 790643019,
+            "name": "template-product-docs-0.1.0.tar.gz",
+            "size": 1297,
+            "digest": "sha256:f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+          },
+          {
+            "id": 790643005,
+            "name": "template-product-launch-0.1.3.tar.gz",
+            "size": 6396,
+            "digest": "sha256:f7d446e59fb21bb8f5bce71382d666a2c7ee2d982b3027c265de73109b4fce40"
+          },
+          {
+            "id": 790643024,
+            "name": "template-product-studio-0.1.2.tar.gz",
+            "size": 2792,
+            "digest": "sha256:bad023420061d2f3bc051dcfc732d6aec3120af297544cb58d82631ab12393a1"
+          },
+          {
+            "id": 790643020,
+            "name": "template-software-platform-0.1.3.tar.gz",
+            "size": 6282,
+            "digest": "sha256:5412e9735419813ee519b68d3e5c8fdd314f0cb49c88472a9de8fdb8ac6a16ba"
+          },
+          {
+            "id": 790643017,
+            "name": "templates-catalog.json",
+            "size": 9537,
+            "digest": "sha256:5868facf09a9fc422d0a0aa1c21c90cb587be98d69b32ec124d4e51ae9491a7e"
+          },
+          {
+            "id": 790643021,
+            "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+            "size": 430327849,
+            "digest": "sha256:c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+          },
+          {
+            "id": 790643000,
+            "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz.sha256",
+            "size": 102,
+            "digest": "sha256:f8ed7b2976e1e6662093b803c672c9e656946a70409429f2a8e7687e78fae773"
+          },
+          {
+            "id": 790643010,
+            "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+            "size": 11792851,
+            "digest": "sha256:f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+          },
+          {
+            "id": 790643029,
+            "name": "zel-pdf-v0.2.0-rc.20.tar.gz.sha256",
+            "size": 94,
+            "digest": "sha256:5a3b6d14fc2d37270c7468ac121bc095b682400a62f90c296ec0931d673f5265"
+          },
+          {
+            "id": 790643018,
+            "name": "zel-renderer-v0.2.0-rc.20-darwin-arm64.tar.gz",
+            "size": 46744028,
+            "digest": "sha256:85711e705ecf47ff55f55c171fbb10ec2f6cba255eed4c5870795be525e0e2e3"
+          },
+          {
+            "id": 790643007,
+            "name": "zel-renderer-v0.2.0-rc.20-darwin-arm64.tar.gz.sha256",
+            "size": 112,
+            "digest": "sha256:ce54ce126c017b94d3cd1ef178843493afef165b354e094f0aeecf2b2673e42b"
+          },
+          {
+            "id": 790643012,
+            "name": "zel-renderer-v0.2.0-rc.20-darwin-x64.tar.gz",
+            "size": 48103232,
+            "digest": "sha256:ac5ee0b94cf6abcbd35691d95eda1adf9fcc9cd9fc2e7b397af5ae8723a8cb8e"
+          },
+          {
+            "id": 790643016,
+            "name": "zel-renderer-v0.2.0-rc.20-darwin-x64.tar.gz.sha256",
+            "size": 110,
+            "digest": "sha256:e7eb5ce4fcb2825077a47f74053fe40f9b4c0f3521aef8b13df50da373db951c"
+          },
+          {
+            "id": 790643015,
+            "name": "zel-renderer-v0.2.0-rc.20-linux-arm64.tar.gz",
+            "size": 51818597,
+            "digest": "sha256:f72c2ae68df7e758df70a8ce6b6318c49394a278db6de9c8aa47e31652b3ae04"
+          },
+          {
+            "id": 790643014,
+            "name": "zel-renderer-v0.2.0-rc.20-linux-arm64.tar.gz.sha256",
+            "size": 111,
+            "digest": "sha256:1c91b41710f6250c5a3ec93f0c62d44d92592e3c052f39e7c3bda00a7de7e751"
+          },
+          {
+            "id": 790643028,
+            "name": "zel-renderer-v0.2.0-rc.20-linux-x64.tar.gz",
+            "size": 52133835,
+            "digest": "sha256:3d2974dacd1be4e3a96b9f37b66b76299126c661f9101023b0ecc6ee9d4c2b63"
+          },
+          {
+            "id": 790643006,
+            "name": "zel-renderer-v0.2.0-rc.20-linux-x64.tar.gz.sha256",
+            "size": 109,
+            "digest": "sha256:046c3c631b92742a0580d66bf11dbe2381db1121ebbe3edc3389d61ef41dc047"
+          },
+          {
+            "id": 790643011,
+            "name": "zel-renderer-v0.2.0-rc.20-win-arm64.tar.gz",
+            "size": 38273967,
+            "digest": "sha256:b6d8bb69aa07cee9566449f4292ca2a4126eb4d69902c06d40dc62186b97b85b"
+          },
+          {
+            "id": 790643002,
+            "name": "zel-renderer-v0.2.0-rc.20-win-arm64.tar.gz.sha256",
+            "size": 109,
+            "digest": "sha256:426c64d5ff314e02b444c1588d78555a8515efa7365b822f875f51a1426be386"
+          },
+          {
+            "id": 790643009,
+            "name": "zel-renderer-v0.2.0-rc.20-win-x64.tar.gz",
+            "size": 42326451,
+            "digest": "sha256:ceeecc265e82db42137b0bde1ea0e0ed3c3229b8b566217ab256bd44d5de4621"
+          },
+          {
+            "id": 790643003,
+            "name": "zel-renderer-v0.2.0-rc.20-win-x64.tar.gz.sha256",
+            "size": 107,
+            "digest": "sha256:0ce8da45c76490b9dbdedadefbff9f3b44558b39f75f81b35002eae0ec79b017"
+          },
+          {
+            "id": 790643001,
+            "name": "zel-sources-v0.2.0-rc.20.tar.gz",
+            "size": 8184288,
+            "digest": "sha256:57bd4ad1682ba60a0424bfc46eaa374866b17f83fa4e2fe441d8d65ce7ac5abe"
+          },
+          {
+            "id": 790642987,
+            "name": "zel-sources-v0.2.0-rc.20.tar.gz.sha256",
+            "size": 98,
+            "digest": "sha256:7e1769debe0c699f217996ded4b857c6392f39fe51181291e80268b156e2f0c1"
+          },
+          {
+            "id": 790642993,
+            "name": "zel-v0.2.0-rc.20-aarch64-apple-darwin.tar.gz",
+            "size": 10008383,
+            "digest": "sha256:3a7b15738006a733bf9d5098347d395e6665fb1b429700f84cfa4765dc1bae6e"
+          },
+          {
+            "id": 790642996,
+            "name": "zel-v0.2.0-rc.20-aarch64-apple-darwin.tar.gz.sha256",
+            "size": 111,
+            "digest": "sha256:4082cb21428188a65da6f06791636dd6a4ca83f17fead706fb89597174480f0e"
+          },
+          {
+            "id": 790643004,
+            "name": "zel-v0.2.0-rc.20-aarch64-pc-windows-msvc.zip",
+            "size": 10421084,
+            "digest": "sha256:ed561c18d2362a4500c81bd26d38ea34f3ec87ac0cd42b00f5226998d3044c0a"
+          },
+          {
+            "id": 790642998,
+            "name": "zel-v0.2.0-rc.20-aarch64-pc-windows-msvc.zip.sha256",
+            "size": 111,
+            "digest": "sha256:4e995c50befc892cba003ee124defbef3a7e934c9a8855e3842edc524395c88b"
+          },
+          {
+            "id": 790642994,
+            "name": "zel-v0.2.0-rc.20-aarch64-unknown-linux-gnu.tar.gz",
+            "size": 10253622,
+            "digest": "sha256:bd58888cd0468adc2e753a78cba29760fb55f0ed09c489134f1d446f18d7c92f"
+          },
+          {
+            "id": 790642995,
+            "name": "zel-v0.2.0-rc.20-aarch64-unknown-linux-gnu.tar.gz.sha256",
+            "size": 116,
+            "digest": "sha256:faf4c7d54ab78852cb3323a07dd768598a60e7d5030adb18fe75472e5d9143ab"
+          },
+          {
+            "id": 790642990,
+            "name": "zel-v0.2.0-rc.20-x86_64-apple-darwin.tar.gz",
+            "size": 10106390,
+            "digest": "sha256:31bb6ec01e4e0dc58a40235d46c2b2917ac79b65a98ac42f3925406d1a543cc0"
+          },
+          {
+            "id": 790642997,
+            "name": "zel-v0.2.0-rc.20-x86_64-apple-darwin.tar.gz.sha256",
+            "size": 110,
+            "digest": "sha256:8cc79310a719d7e552a5d34a29ba7d0dabf4ad268541cc83704bb94c41932ffd"
+          },
+          {
+            "id": 790642992,
+            "name": "zel-v0.2.0-rc.20-x86_64-pc-windows-msvc.zip",
+            "size": 10595009,
+            "digest": "sha256:cbdfe7b603f51f9b052f8707b0f83e348ba60c4d946926012200ab46c821fcee"
+          },
+          {
+            "id": 790642984,
+            "name": "zel-v0.2.0-rc.20-x86_64-pc-windows-msvc.zip.sha256",
+            "size": 110,
+            "digest": "sha256:bffd85976cd386f3d3506c52744b9cf649a8ff966cf022ff7e7c3f451101dc2b"
+          },
+          {
+            "id": 790642999,
+            "name": "zel-v0.2.0-rc.20-x86_64-unknown-linux-gnu.tar.gz",
+            "size": 10399624,
+            "digest": "sha256:06cfa87f74bb73e0e2f923071413816adf2b9541f1f4ae7c52eb674d60ac9ee3"
+          },
+          {
+            "id": 790643008,
+            "name": "zel-v0.2.0-rc.20-x86_64-unknown-linux-gnu.tar.gz.sha256",
+            "size": 115,
+            "digest": "sha256:db4d9ecb39344e119a9b744f3ee0e2f5aac127b2f4b4ed5cb84702f0f120b53b"
+          },
+          {
+            "id": 790642989,
+            "name": "zel-winget-v0.2.0-rc.20.zip",
+            "size": 1647,
+            "digest": "sha256:4f705f6fd1e9d7ce56d0f0d16bb73d7ac7313f8ed3e7488a1c5d8bb1a770eec1"
+          },
+          {
+            "id": 790642985,
+            "name": "zel.json",
+            "size": 1526,
+            "digest": "sha256:927f0a930b519983279eaaff788a66fc85f769dedc4677e76f73863c1577671e"
+          },
+          {
+            "id": 790642986,
+            "name": "zel.rb",
+            "size": 2388,
+            "digest": "sha256:97e663374703b2918524e3dab7fb3026b132266396c3f2cac5aa282cda1b59a5"
+          }
+        ]
+      }
+    ],
+    "publicPdfPairIdentityMatchedAllPlatforms": true,
+    "jobs": [
+      {
+        "databaseId": 139056939525,
+        "name": "pdf / Compile PDF companion renderer",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056939525"
+      },
+      {
+        "databaseId": 139056939676,
+        "name": "pdf / Offline LuaHBTeX (windows-latest)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056939676"
+      },
+      {
+        "databaseId": 139056940269,
+        "name": "Image none \u00b7 arm64",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056940269"
+      },
+      {
+        "databaseId": 139056941477,
+        "name": "Image all \u00b7 amd64",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056941477"
+      },
+      {
+        "databaseId": 139056941903,
+        "name": "Image maths \u00b7 amd64",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056941903"
+      },
+      {
+        "databaseId": 139056942027,
+        "name": "pdf / Offline LuaHBTeX (macos-15-intel)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056942027"
+      },
+      {
+        "databaseId": 139056942201,
+        "name": "binaries / Compile shared rich renderer",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056942201"
+      },
+      {
+        "databaseId": 139056942259,
+        "name": "pdf / Offline LuaHBTeX (ubuntu-24.04-arm)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056942259"
+      },
+      {
+        "databaseId": 139056942263,
+        "name": "Image diagrams \u00b7 amd64",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056942263"
+      },
+      {
+        "databaseId": 139056942316,
+        "name": "binaries / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056942316"
+      },
+      {
+        "databaseId": 139056942451,
+        "name": "Image all \u00b7 arm64",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056942451"
+      },
+      {
+        "databaseId": 139056942595,
+        "name": "binaries / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056942595"
+      },
+      {
+        "databaseId": 139056942868,
+        "name": "pdf / Offline LuaHBTeX (windows-11-arm)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056942868"
+      },
+      {
+        "databaseId": 139056942890,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056942890"
+      },
+      {
+        "databaseId": 139056942904,
+        "name": "Publish image none",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056942904"
+      },
+      {
+        "databaseId": 139056942947,
+        "name": "binaries / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056942947"
+      },
+      {
+        "databaseId": 139056942955,
+        "name": "binaries / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056942955"
+      },
+      {
+        "databaseId": 139056942971,
+        "name": "Publish image maths",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056942971"
+      },
+      {
+        "databaseId": 139056942994,
+        "name": "pdf / Offline LuaHBTeX (macos-latest)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056942994"
+      },
+      {
+        "databaseId": 139056943004,
+        "name": "winget / WinGet binary (${{ matrix.target }})",
+        "conclusion": "skipped",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056943004"
+      },
+      {
+        "databaseId": 139056943041,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056943041"
+      },
+      {
+        "databaseId": 139056943197,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056943197"
+      },
+      {
+        "databaseId": 139056943308,
+        "name": "Publish image diagrams",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056943308"
+      },
+      {
+        "databaseId": 139056943344,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056943344"
+      },
+      {
+        "databaseId": 139056943645,
+        "name": "Publish image all",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056943645"
+      },
+      {
+        "databaseId": 139056944021,
+        "name": "winget / WinGet lifecycle (x86_64-pc-windows-msvc)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056944021"
+      },
+      {
+        "databaseId": 139056944061,
+        "name": "winget / WinGet lifecycle (aarch64-pc-windows-msvc)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056944061"
+      },
+      {
+        "databaseId": 139056981035,
+        "name": "binaries / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056981035"
+      },
+      {
+        "databaseId": 139056984763,
+        "name": "Verify",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056984763"
+      },
+      {
+        "databaseId": 139056985784,
+        "name": "pdf / Offline LuaHBTeX (ubuntu-latest)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056985784"
+      },
+      {
+        "databaseId": 139056986431,
+        "name": "pdf / PDF source correspondence",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056986431"
+      },
+      {
+        "databaseId": 139056987043,
+        "name": "Image diagrams \u00b7 arm64",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056987043"
+      },
+      {
+        "databaseId": 139056987686,
+        "name": "Image none \u00b7 amd64",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056987686"
+      },
+      {
+        "databaseId": 139056992023,
+        "name": "binaries / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056992023"
+      },
+      {
+        "databaseId": 139056993242,
+        "name": "Documentation site",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139056993242"
+      },
+      {
+        "databaseId": 139057001123,
+        "name": "Image maths \u00b7 arm64",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139057001123"
+      },
+      {
+        "databaseId": 139063909455,
+        "name": "pdf / PDF package and source parity",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139063909455"
+      },
+      {
+        "databaseId": 139064007348,
+        "name": "Publish the release",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139064007348"
+      },
+      {
+        "databaseId": 139064472780,
+        "name": "Verify published artifacts / Published install (x86_64-apple-darwin)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139064472780"
+      },
+      {
+        "databaseId": 139064472850,
+        "name": "Verify published artifacts / Published images (ubuntu-24.04-arm)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139064472850"
+      },
+      {
+        "databaseId": 139064472856,
+        "name": "Verify published artifacts / Published cached PDF (aarch64-pc-windows-msvc)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139064472856"
+      },
+      {
+        "databaseId": 139064472859,
+        "name": "Verify published artifacts / Published install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139064472859"
+      },
+      {
+        "databaseId": 139064472867,
+        "name": "Verify published artifacts / Published cached PDF (aarch64-apple-darwin)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139064472867"
+      },
+      {
+        "databaseId": 139064472879,
+        "name": "Verify published artifacts / Published cached PDF (aarch64-unknown-linux-gnu)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139064472879"
+      },
+      {
+        "databaseId": 139064472883,
+        "name": "Verify published artifacts / Published cached PDF (x86_64-pc-windows-msvc)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139064472883"
+      },
+      {
+        "databaseId": 139064472903,
+        "name": "Verify published artifacts / Published cached PDF (x86_64-unknown-linux-gnu)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139064472903"
+      },
+      {
+        "databaseId": 139064472914,
+        "name": "Verify published artifacts / Published install (x86_64-pc-windows-msvc)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139064472914"
+      },
+      {
+        "databaseId": 139064472919,
+        "name": "Verify published artifacts / Published images (ubuntu-latest)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139064472919"
+      },
+      {
+        "databaseId": 139064472935,
+        "name": "Verify published artifacts / Published Next PDF / Next PDF (ubuntu-24.04-arm)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139064472935"
+      },
+      {
+        "databaseId": 139064472962,
+        "name": "Verify published artifacts / Published cached PDF (x86_64-apple-darwin)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139064472962"
+      },
+      {
+        "databaseId": 139064472971,
+        "name": "Verify published artifacts / Published websites / Websites (ubuntu-24.04-arm)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139064472971"
+      },
+      {
+        "databaseId": 139064473063,
+        "name": "Verify published artifacts / Published install (aarch64-pc-windows-msvc)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139064473063"
+      },
+      {
+        "databaseId": 139064473073,
+        "name": "Verify published artifacts / Published install (aarch64-apple-darwin)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139064473073"
+      },
+      {
+        "databaseId": 139064473133,
+        "name": "Verify published artifacts / Published install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139064473133"
+      },
+      {
+        "databaseId": 139064473134,
+        "name": "Verify published artifacts / Published Next PDF / Next PDF (ubuntu-latest)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139064473134"
+      },
+      {
+        "databaseId": 139064473426,
+        "name": "Verify published artifacts / Published websites / Websites (ubuntu-latest)",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45565105796/job/139064473426"
+      }
+    ],
+    "conclusion": "success",
+    "attempt": 2
+  },
+  "postMerge": {
+    "ci": {
+      "run": 45564988471,
+      "conclusion": "success"
+    },
+    "images": {
+      "run": 45564988493,
+      "conclusion": "success"
+    },
+    "docs": {
+      "run": 45564988393,
+      "conclusion": "success"
+    }
+  },
+  "boundaries": [
+    "Container remains the default PDF backend in rc.20.",
+    "Historical browser timing findings remain unresolved.",
+    "External provider and package-catalog acceptance remain separate.",
+    "No releases or package versions retired by this increment."
+  ],
+  "documentationLocal": {
+    "strictDeepRoutes": 59,
+    "productionBuild": true,
+    "preservation": {
+      "originalRoutes": 46,
+      "addedRoutes": 13,
+      "originalHeadingIds": 282,
+      "compatibilityMappings": 82,
+      "byteIdenticalImages": 29,
+      "capturedBrowserErrors": 0
+    },
+    "logs": {
+      "build": "05ce688aa4f80ab82cb1809a43d73a8bfff51f204e862300c7e0501a47632fc0",
+      "browser": "faef7dedd8b0d60363117cb2a641ae3245576aee6fe7fa9eaa85bdedb149ddd8"
+    },
+    "setup": "Initial preparation failed because the checkout lacked node_modules; restored locked dependencies and rebuilt the engine before the successful build and browser acceptance."
+  },
+  "localPublicPdf": {
+    "version": "v0.2.0-rc.20",
+    "target": "x86_64-apple-darwin",
+    "reports": [
+      {
+        "repository": "mylife-inc/Zellij",
+        "base": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.20",
+        "verification": {
+          "schemaVersion": 1,
+          "version": "0.2.0-rc.20",
+          "platform": "darwin-x64",
+          "publicDownloadVerified": true,
+          "realRenderer": true,
+          "emptyPath": true,
+          "offlinePdfAndRichBuilds": true,
+          "privateNodeReused": true,
+          "manifestSha256": "c312c55689300f6450bf62601d4f52d9e7214a6db428e303597f01a670cfda1a",
+          "runtime": {
+            "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+            "sha256": "f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+          },
+          "source": {
+            "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+            "bytes": 430327849,
+            "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+          },
+          "sourceManifestSha256": "ae5fc1c908e1d3c4082ec94e1eb8fe1d39a11db930d64f44749409f2967445b3",
+          "sourceBytesVerified": true
+        }
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "base": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.20",
+        "verification": {
+          "schemaVersion": 1,
+          "version": "0.2.0-rc.20",
+          "platform": "darwin-x64",
+          "publicDownloadVerified": true,
+          "realRenderer": true,
+          "emptyPath": true,
+          "offlinePdfAndRichBuilds": true,
+          "privateNodeReused": true,
+          "manifestSha256": "c312c55689300f6450bf62601d4f52d9e7214a6db428e303597f01a670cfda1a",
+          "runtime": {
+            "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+            "sha256": "f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+          },
+          "source": {
+            "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+            "bytes": 430327849,
+            "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+          },
+          "sourceManifestSha256": "ae5fc1c908e1d3c4082ec94e1eb8fe1d39a11db930d64f44749409f2967445b3",
+          "sourceBytesVerified": true
+        }
+      }
+    ]
+  },
+  "localInstalled": {
+    "version": "zel 0.2.0-rc.20",
+    "location": "~/Dev/config/zellij/bin/zel",
+    "compatibilitySymlink": "~/.local/bin/zel",
+    "defaultHome": "~/Dev/config/zellij",
+    "explicitHomeOverride": false,
+    "downloadUrlOverrides": false,
+    "emptyPath": true,
+    "initialCache": {
+      "pdf": false,
+      "renderer": false
+    },
+    "coldAndOfflineBuildsPassed": true,
+    "pdfSha256": "8806add00f81d873c1ee590a6d45396bdd9ba79a45bce210efccdff92575f1d6",
+    "receipt": {
+      "backend": "luahbtex-wasm",
+      "engine_release": "2026-f5d94438a7c75a23",
+      "font_metadata_sha256": "b3461a143b5c86c01a244182d820e58bf3c44301414bb024db3e6cc543677616",
+      "format_sha256": "d94612e32609313f591f7e39d7cae4a94e9cd2a284781db279befcec14a5adfd",
+      "node": "v24.22.3",
+      "pdf_sha256": "8806add00f81d873c1ee590a6d45396bdd9ba79a45bce210efccdff92575f1d6",
+      "resource_lock_sha256": "c3444b5b472e2bc4feffd6bd4f64ca9352ef60629752e14af3a172fbb871874f",
+      "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+      "schema_version": 1,
+      "settings": {
+        "enabled": true,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "source_archive": {
+        "bytes": 430327849,
+        "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+        "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+      },
+      "template": "classic-v1",
+      "toolchain_manifest_sha256": "c312c55689300f6450bf62601d4f52d9e7214a6db428e303597f01a670cfda1a",
+      "toolchain_version": "0.2.0-rc.20"
+    }
+  },
+  "channels": {
+    "homebrew": {
+      "repository": "mylife-inc/homebrew-tap",
+      "commit": "feb88a679afca272a0d287070bf0c580baf25fcf",
+      "previousCommit": "52d2b0c278f131afbdaeff9628d0915f310d600e",
+      "upgradeRun": 45574903028,
+      "conclusion": "success",
+      "proof": [
+        {
+          "job": 139070395454,
+          "name": "Install, upgrade and uninstall (ubuntu-24.04-arm)",
+          "conclusion": "success",
+          "upgradeFrom": "0.2.0-rc.19",
+          "upgradeTo": "0.2.0-rc.20",
+          "logSha256": "fc52e5f95410c0e0f85efbc450a6d2d5d2815b16748455a87100fc36f7db9332"
+        },
+        {
+          "job": 139070395803,
+          "name": "Install, upgrade and uninstall (macos-15)",
+          "conclusion": "success",
+          "upgradeFrom": "0.2.0-rc.19",
+          "upgradeTo": "0.2.0-rc.20",
+          "logSha256": "5b874f634aaa89ab1ca957768c24011a03fd591d785886f9811d486003ec34f3"
+        },
+        {
+          "job": 139070395846,
+          "name": "Install, upgrade and uninstall (ubuntu-latest)",
+          "conclusion": "success",
+          "upgradeFrom": "0.2.0-rc.19",
+          "upgradeTo": "0.2.0-rc.20",
+          "logSha256": "0bfc05a26b73f5f3db960f1b01dfedbaf91ce0c83051169a17b00f216a951b36"
+        },
+        {
+          "job": 139070396135,
+          "name": "Install, upgrade and uninstall (macos-15-intel)",
+          "conclusion": "success",
+          "upgradeFrom": "0.2.0-rc.19",
+          "upgradeTo": "0.2.0-rc.20",
+          "logSha256": "e1910ffdee96be6a58817245d8a137c74e9714eb16a3c98b3e0635676a8ef892"
+        }
+      ]
+    },
+    "scoop": {
+      "repository": "mylife-inc/scoop-bucket",
+      "commit": "05b884327d96d4d92d652b8841a4fc687ed3cec2",
+      "previousCommit": "8742825474475b63e0629a0c8f96b5ef49cc4047",
+      "upgradeRun": 45574914352,
+      "conclusion": "success",
+      "proof": [
+        {
+          "job": 139070406239,
+          "name": "Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success",
+          "upgradeFrom": "0.2.0-rc.19",
+          "upgradeTo": "0.2.0-rc.20",
+          "logSha256": "3ee36fd462e13c75f5b4295a430b5bf104e3584128694de25a133859a434e82d"
+        },
+        {
+          "job": 139070406640,
+          "name": "Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success",
+          "upgradeFrom": "0.2.0-rc.19",
+          "upgradeTo": "0.2.0-rc.20",
+          "logSha256": "27fab8c083f67543a8b52ab5b093df5fff515cd5643bbd2ada3584130ae52aff"
+        },
+        {
+          "job": 139070406703,
+          "name": "Scoop (x86_64-pc-windows-msvc, pwsh)",
+          "conclusion": "success",
+          "upgradeFrom": "0.2.0-rc.19",
+          "upgradeTo": "0.2.0-rc.20",
+          "logSha256": "b6d4f6e9fe57a933b3c4a2981afb091142b1b919aaf70fc0877f4729b2cf0b73"
+        },
+        {
+          "job": 139070406772,
+          "name": "Scoop (aarch64-pc-windows-msvc, pwsh)",
+          "conclusion": "success",
+          "upgradeFrom": "0.2.0-rc.19",
+          "upgradeTo": "0.2.0-rc.20",
+          "logSha256": "55c8bce03e075e971294d5a4cbd8e7dc9ca96c6f27a52b045cb72dfb797cd047"
+        }
+      ]
+    }
+  },
+  "documentation": {
+    "state": "Local production build and browser preservation passed; pull-request checks and production deployment follow this evidence checkpoint."
+  }
+}
