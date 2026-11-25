@@ -162,7 +162,7 @@ try {
   // Exercise the bundled book users actually create, as well as the richer
   // adapter fixture below. Captures/receipts are retained for visual review.
   const starter=path.join(root,'classic');
-  run(['create',starter,'-t','book-classic@0.2.0','--offline']);
+  run(['create',starter,'-t','book-classic@0.3.0','--offline']);
   run(['pdf',starter,'--check']);
   run(['build',starter,'--pdf']);
   const starterPrint=path.join(starter,'site/_zellij/pdf');

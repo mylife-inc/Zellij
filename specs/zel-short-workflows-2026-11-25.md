@@ -108,3 +108,10 @@ preservation covers 46 original plus 15 added routes, 282 original heading IDs,
 hydration errors. Six failure-detection regressions and 20 release-policy checks
 also pass. Hosted CI supplies separate exact-commit cross-platform evidence.
 A passing candidate is not a claim of zero possible bugs.
+
+PR #257's first hosted run found a remaining `book-classic@0.2.0` pin in the
+container PDF acceptance script after this change moved the bundled starter to
+0.3.0. The Docker ARM and Podman jobs failed at template creation after their
+earlier technical/study typesetting checks. The script now selects 0.3.0; the
+historical archive remains unchanged. Hosted verification is repeated on the
+corrected head rather than treating those failures as compiler regressions.
