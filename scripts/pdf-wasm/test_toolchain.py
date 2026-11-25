@@ -67,7 +67,7 @@ class ToolchainTest(unittest.TestCase):
         self.assertEqual((output / "keep").read_text(), "authored")
         self.assertFalse(list(self.root.glob(".pdf-toolchain-*")))
 
-    def source_fixture(self):
+    def source_fixture(self, released=False):
         source = self.root / "source"
         source.mkdir()
         selected = t.s.read_json(t.HERE / "distribution-inputs.json")["buildFiles"]
@@ -75,13 +75,44 @@ class ToolchainTest(unittest.TestCase):
             t.d.write_bytes(source, "scripts/pdf-wasm/" + name, (t.HERE / name).read_bytes())
         t.d.write_bytes(source, "notices/original.txt", b"unchanged notice")
         files = [t.d.file_record(p, p.relative_to(source).as_posix()) for p in sorted(source.rglob("*")) if p.is_file()]
-        manifest = t.s.encoded({"files": files})
+        metadata = {}
+        if released:
+            decision = (t.HERE / "distribution-review.json").read_bytes()
+            t.d.write_bytes(source, "notices/DISTRIBUTION-REVIEW.json", decision)
+            files.append(t.d.file_record(source / "notices/DISTRIBUTION-REVIEW.json", "notices/DISTRIBUTION-REVIEW.json"))
+            metadata = {"releaseVersion": "1.2.3", "reviewSha256": t.s.digest(decision)}
+        manifest = t.s.encoded({"files": files, **metadata})
         t.d.write_bytes(source, "SOURCE-MANIFEST.json", manifest)
-        record, _ = t.d.archive(source, self.root / "experimental-pdf-sources.tar.gz")
-        report = {"redistributionReviewComplete": False, "sources": {"archive": record},
-                  "sourceManifestSha256": t.s.digest(manifest)}
+        name = "zel-pdf-sources-v1.2.3.tar.gz" if released else "experimental-pdf-sources.tar.gz"
+        record, _ = t.d.archive(source, self.root / name)
+        report = {"redistributionReviewComplete": released, "sources": {"archive": record},
+                  "sourceManifestSha256": t.s.digest(manifest), **metadata}
         t.d.write_bytes(self.root, "verification.json", t.s.encoded(report))
         return report
+
+    def test_release_profile_verifies_real_review_and_rejects_identity_changes(self):
+        report = self.source_fixture(True)
+        actual, _ = t.qualified_sources(self.root, True)
+        self.assertEqual(actual, report)
+        for field, value in (("redistributionReviewComplete", False), ("releaseVersion", "../escape"),
+                             ("reviewSha256", "c" * 64)):
+            (self.root / "verification.json").write_bytes(t.s.encoded({**report, field: value}))
+            with self.assertRaises(ValueError):
+                t.qualified_sources(self.root, True)
+        (self.root / "verification.json").write_bytes(t.s.encoded(report))
+        import review
+        with patch.object(review, "BOUND_FILES", review.BOUND_FILES + ("README.md",)):
+            with self.assertRaisesRegex(ValueError, "review is stale"):
+                t.qualified_sources(self.root, True)
+
+    def test_release_package_requires_matching_version_and_source_profile(self):
+        report = {**self.report, "releaseVersion": "1.2.3"}
+        with patch.object(t, "collect", return_value=(report, self.files)):
+            with self.assertRaisesRegex(ValueError, "versions differ"):
+                t.package(None, None, self.root / "out", "1.2.4", True)
+        self.source_fixture()
+        with self.assertRaisesRegex(ValueError, "review state"):
+            t.qualified_sources(self.root, True)
 
     def test_original_source_archive_is_verified_and_stale_recipes_rejected(self):
         report = self.source_fixture()

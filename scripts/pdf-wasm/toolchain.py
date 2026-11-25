@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Assemble a versioned, self-contained PDF qualification package; never publish.
+"""Assemble a versioned, self-contained PDF package; never publish.
 
 The optional compiler has no Node binary or source tarball inside it. Its
 manifest binds the separate corresponding-source archive by size and SHA-256.
-Adapter licensing is scoped and approved; final compiler distribution review remains open.
+Release profiles require the exact checked-in distribution review and sources.
 """
 import argparse
 import json
@@ -22,12 +22,18 @@ RUNNER_FILES = ("bundle.mjs", "font-inputs.json", "format-inputs.json", "lock.js
                 "pass.mjs", "probe.mjs", "process.mjs")
 
 
-def qualified_sources(root):
+def qualified_sources(root, released=False):
     """Verify the source archive itself, not only a neighboring receipt/tree."""
     report = s.read_json(root / "verification.json")
-    s.require(report["redistributionReviewComplete"] is False, "Unexpected distribution review state")
+    s.require(report["redistributionReviewComplete"] is released, "Unexpected distribution review state")
+    if released:
+        s.require(isinstance(report.get("releaseVersion"), str)
+                  and re.fullmatch(r"\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?", report["releaseVersion"]),
+                  "Invalid source release version")
     record = report["sources"]["archive"]
-    s.require(record["name"] == "experimental-pdf-sources.tar.gz", "Unexpected source archive")
+    source_name = (f"zel-pdf-sources-v{report['releaseVersion']}.tar.gz" if released
+                   else "experimental-pdf-sources.tar.gz")
+    s.require(record["name"] == source_name, "Unexpected source archive")
     archive = root / record["name"]
     s.require(d.file_record(archive, archive.name) == record, "Source archive changed")
     with tarfile.open(archive, "r:gz") as tar:
@@ -36,6 +42,13 @@ def qualified_sources(root):
         manifest_bytes = tar.extractfile(member).read()
     s.require(s.digest(manifest_bytes) == report["sourceManifestSha256"], "Source manifest changed")
     manifest = json.loads(manifest_bytes)
+    if released:
+        import review
+        decision = s.read_json(HERE / "distribution-review.json")
+        s.require(report["reviewSha256"] == manifest["reviewSha256"] == s.digest(s.encoded(decision))
+                  and manifest["releaseVersion"] == report["releaseVersion"], "Release review identity differs")
+        current = {**decision["inputs"], "files": {n: s.digest((HERE / n).read_bytes()) for n in review.BOUND_FILES}}
+        review.validate(decision, current)
     records = manifest["files"] + [{"name": "SOURCE-MANIFEST.json", "bytes": len(manifest_bytes),
                                    "sha256": s.digest(manifest_bytes)}]
     d.verify_archive(archive, records)
@@ -51,11 +64,13 @@ def qualified_sources(root):
         s.require(file.is_file() and not file.is_symlink(), "Nonregular build source")
         s.require(selected.get("scripts/pdf-wasm/" + name) == file.read_bytes(),
                   f"Source archive is stale: {name}")
+    if released:
+        s.require(selected.get("notices/DISTRIBUTION-REVIEW.json") == s.encoded(decision), "Release review notice differs")
     return report, selected
 
 
-def collect(resources, distribution):
-    report, original = qualified_sources(distribution)
+def collect(resources, distribution, released=False):
+    report, original = qualified_sources(distribution, released)
     expected = compact.expected_manifest(s.read_json(HERE / "lock.json"),
                                          s.read_json(HERE / "format-inputs.json"),
                                          s.read_json(HERE / "font-inputs.json"))
@@ -76,13 +91,16 @@ def collect(resources, distribution):
     return report, files
 
 
-def package(resources, distribution, output, version):
+def package(resources, distribution, output, version, released=False):
     s.require(re.fullmatch(r"\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?", version), "Invalid toolchain version")
     s.require(not output.exists() and not output.is_symlink(), "Toolchain output already exists")
-    report, files = collect(resources, distribution)
+    report, files = collect(resources, distribution, released)
+    if released:
+        s.require(report["releaseVersion"] == version, "Runtime/source versions differ")
     files = dict(files)
-    manifest = {"format": 1, "kind": "experimental-pdf-toolchain", "version": version,
-                "redistribution_review_complete": False, "node_major": 24,
+    manifest = {"format": 2 if released else 1,
+                "kind": "zellij-pdf-toolchain" if released else "experimental-pdf-toolchain", "version": version,
+                "redistribution_review_complete": released, "node_major": 24,
                 "source_archive": report["sources"]["archive"],
                 "source_manifest_sha256": report["sourceManifestSha256"],
                 "files": {n: {"bytes": len(b), "sha256": s.digest(b)} for n, b in sorted(files.items())}}
@@ -94,10 +112,10 @@ def package(resources, distribution, output, version):
         root.mkdir()
         for name, data in files.items():
             d.write_bytes(root, name, data)
-        archive, entries = d.archive(root, stage / f"zel-pdf-qualification-v{version}.tar.gz")
+        archive, entries = d.archive(root, stage / f"zel-pdf{'' if released else '-qualification'}-v{version}.tar.gz")
         d.write_bytes(stage, archive["name"] + ".sha256",
                       f"{archive['sha256']}  {archive['name']}\n".encode())
-        result = {"schemaVersion": 1, "experimental": True, "redistributionReviewComplete": False,
+        result = {"schemaVersion": 1, "experimental": not released, "redistributionReviewComplete": released,
                   "version": version, "archive": archive, "files": len(entries),
                   "uncompressedBytes": sum(e["bytes"] for e in entries),
                   "manifestSha256": s.digest(files["manifest.json"]),
@@ -110,7 +128,7 @@ def package(resources, distribution, output, version):
     finally:
         if stage.exists():
             shutil.rmtree(stage)
-    print(f"PDF qualification package: {archive['bytes']} bytes; not published")
+    print(f"PDF {'reviewed' if released else 'qualification'} package: {archive['bytes']} bytes; not published")
     return result
 
 
@@ -120,5 +138,6 @@ if __name__ == "__main__":
     parser.add_argument("distribution", type=Path)
     parser.add_argument("output", type=Path)
     parser.add_argument("--version", required=True)
+    parser.add_argument("--released", action="store_true", help="require reviewed, matching release-profile sources")
     args = parser.parse_args()
-    package(args.resources, args.distribution, args.output, args.version)
+    package(args.resources, args.distribution, args.output, args.version, args.released)

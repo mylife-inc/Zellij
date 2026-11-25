@@ -11,6 +11,8 @@
     "compact.test.mjs",
     "distribution-inputs.json",
     "distribution-notices.md",
+    "distribution-review.json",
+    "distribution-review.md",
     "distribution-sources.md",
     "distribution.py",
     "download.mjs",
@@ -35,6 +37,14 @@
     "process.mjs",
     "process.test.mjs",
     "receipts.mjs",
+    "release-notices.md",
+    "release-sources.md",
+    "release.py",
+    "relink-evidence.json",
+    "relink-link-inputs.txt",
+    "relink-proof.patch",
+    "relink.mjs",
+    "review.py",
     "rust-process.test.mjs",
     "source-policy.json",
     "sources.lock.json",
@@ -44,11 +54,12 @@
     "test_font_sources.py",
     "test_format_sources.py",
     "test_originals.py",
+    "test_release.py",
     "test_sources.py",
     "test_toolchain.py",
     "toolchain.py"
   ],
   "reviewItems": [
-    "Finish the engine/component distribution review and publish the exact matching source archive alongside any eventual runtime release."
+    "Qualification-profile archives are not release assets; use release.py to require the exact reviewed inputs and matching source pair."
   ]
 }

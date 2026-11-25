@@ -219,9 +219,18 @@ def archive(root, output):
     return file_record(output, output.name), files
 
 
-def assemble(cache, output):
+def assemble(cache, output, version=None):
     s.require(not output.exists() and not output.is_symlink(), "Distribution output already exists")
+    s.require(version is None or re.fullmatch(r"\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?", version),
+              "Invalid distribution version")
     merged, upstream, matched, notices, engine, engine_notices, ec, ec_receipts = verified_inputs(cache)
+    decision, registry = None, None
+    if version is not None:
+        import review
+        decision, extra_notices, registry = review.check(cache, merged, notices, engine_notices)
+        engine_notices = {**engine_notices, **extra_notices}
+    source_name = f"zel-pdf-sources-v{version}.tar.gz" if version else "experimental-pdf-sources.tar.gz"
+    released = version is not None
     originals, original_receipts = complete_originals(cache, merged["packages"])
     recipe = s.read_json(HERE / "distribution-inputs.json")
     selected = recipe["buildFiles"]
@@ -252,43 +261,55 @@ def assemble(cache, output):
         write_bytes(notice_root, "ZELLIJ-ADAPTER-NOTICE.txt", build_files["NOTICE"])
         write_bytes(notice_root, "ZELLIJ-PDF-ADAPTER-LICENSE.txt", build_files["LICENSE"])
         write_bytes(notice_root, "ZELLIJ-PDF-ADAPTER-SCOPE.md", build_files["LICENSE-SCOPE.md"])
+        if released:
+            write_bytes(notice_root, "DISTRIBUTION-REVIEW.json", s.encoded(decision))
+            write_bytes(notice_root, "DISTRIBUTION-REVIEW.md", build_files["distribution-review.md"])
+            write_bytes(notice_root, "ORIGINAL-ENGINE-COMPONENTS.json", registry)
+            write_bytes(notice_root, "ENGINE-SELECTION.json", s.encoded(decision["inputs"]["engineSelection"]))
         for name, data in ec.items():
             write_bytes(notice_root, "originals/ec/" + name, data)
         for name, data in originals.items():
             write_bytes(notice_root, name, data)
-        index = {"schemaVersion": 1, "experimental": True, "redistributionReviewComplete": False,
-                 "sourceArchive": "experimental-pdf-sources.tar.gz", "engine": engine,
+        index = {"schemaVersion": 1, "experimental": not released, "redistributionReviewComplete": released,
+                 "sourceArchive": source_name, "engine": engine,
                  "packages": merged["packages"], "notices": notice_records, "completeEcDistribution": ec_receipts,
-                 "completeOriginals": original_receipts, "reviewItems": recipe["reviewItems"]}
+                 "completeOriginals": original_receipts, "reviewItems": [] if released else recipe["reviewItems"]}
+        if released:
+            index["sourceDownload"] = f"https://github.com/mylife-inc/releases/releases/download/zellij-v{version}/{source_name}"
+            index["sourceMirror"] = f"https://github.com/mylife-inc/Zellij/releases/download/v{version}/{source_name}"
         write_bytes(notice_root, "NOTICES.json", s.encoded(index))
-        write_bytes(notice_root, "README.md", build_files["distribution-notices.md"])
+        write_bytes(notice_root, "README.md", build_files["release-notices.md" if released else "distribution-notices.md"])
         for name, entry in sorted(upstream.items()):
             # Validate the exact bytes being copied, including inputs changed
             # after correspondence checking. A failed build leaves no output.
             write_bytes(source_root, "upstream/" + name, s.verified(cache / name, entry))
         for name, data in build_files.items():
             write_bytes(source_root, "scripts/pdf-wasm/" + name, data)
-        write_bytes(source_root, "README.md", build_files["distribution-sources.md"])
+        write_bytes(source_root, "README.md", build_files["release-sources.md" if released else "distribution-sources.md"])
         for file in notice_root.rglob("*"):
             if file.is_file():
                 write_bytes(source_root, "notices/" + file.relative_to(notice_root).as_posix(), file.read_bytes())
         source_files = [file_record(p, p.relative_to(source_root).as_posix())
                         for p in sorted(source_root.rglob("*"), key=lambda p: p.relative_to(source_root).as_posix())
                         if p.is_file()]
-        manifest = {"schemaVersion": 1, "experimental": True, "redistributionReviewComplete": False,
+        manifest = {"schemaVersion": 1, "experimental": not released, "redistributionReviewComplete": released,
                     "sourceLocks": {n: s.digest(build_files[n]) for n in LOCKS},
-                    "matchedOriginals": matched, "files": source_files, "reviewItems": recipe["reviewItems"]}
+                    "matchedOriginals": matched, "files": source_files, "reviewItems": index["reviewItems"]}
+        if released:
+            manifest.update(releaseVersion=version, reviewSha256=s.digest(s.encoded(decision)))
         write_bytes(source_root, "SOURCE-MANIFEST.json", s.encoded(manifest))
         notice_archive, notice_files = archive(notice_root, stage / "experimental-pdf-notices.tar.gz")
-        source_archive, all_source_files = archive(source_root, stage / "experimental-pdf-sources.tar.gz")
-        report = {"schemaVersion": 1, "experimental": True, "redistributionReviewComplete": False,
+        source_archive, all_source_files = archive(source_root, stage / source_name)
+        report = {"schemaVersion": 1, "experimental": not released, "redistributionReviewComplete": released,
                   "sourceLocks": manifest["sourceLocks"], "packageCount": len(merged["packages"]),
                   "matchedOriginals": len(matched), "upstreamInputs": len(upstream),
                   "noticeCount": len(notice_records), "completeEcFiles": len(ec_receipts),
                   "completeOriginalFiles": len(original_receipts),
                   "notices": {"archive": notice_archive, "files": len(notice_files)},
                   "sources": {"archive": source_archive, "files": len(all_source_files)},
-                  "sourceManifestSha256": s.digest(s.encoded(manifest)), "reviewItems": recipe["reviewItems"]}
+                  "sourceManifestSha256": s.digest(s.encoded(manifest)), "reviewItems": index["reviewItems"]}
+        if released:
+            report.update(releaseVersion=version, reviewSha256=manifest["reviewSha256"])
         write_bytes(stage, "verification.json", s.encoded(report))
         s.require(not output.exists() and not output.is_symlink(), "Distribution output appeared")
         stage.rename(output)
@@ -303,5 +324,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("cache", type=Path)
     parser.add_argument("output", type=Path)
+    parser.add_argument("--version", help="assemble reviewed release-profile sources for this version; never publish")
     args = parser.parse_args()
-    assemble(args.cache, args.output)
+    assemble(args.cache, args.output, args.version)

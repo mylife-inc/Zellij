@@ -2,7 +2,10 @@
 
 Status: the owner approved the PDF-only licensing scope on 24 November 2026.
 The scoped grant is applied in `scripts/pdf-wasm/LICENSE-SCOPE.md` and `LICENSE`.
-Final component review, relink qualification and compiler publication remain open.
+The original decision left component review, relink qualification and compiler
+publication open. The [subsequent packaging record](zellij-pdf-release-packaging-2026-11-24.md)
+records the completed relink and exact component review. Compiler publication
+and public-download acceptance remain separate, unfinished gates.
 
 ## Verified boundary
 
@@ -15,7 +18,9 @@ instructions. The separate clean Linux amd64 build recorded in
 [PR #244](https://github.com/mylife-inc/Zellij/pull/244) reproduces the selected
 JS and Wasm bytes exactly. The source verifier's `rebuildVerified: false` means
 that verifier does not execute a compiler; it does not negate the separate
-rebuild. A modified-library relink test remains unqualified. The upstream
+rebuild. A modified-library relink test was unqualified at this decision point;
+the subsequent record retains the patch, link trace and successful execution.
+The upstream
 manifest retains its own development-status wording; Zellij does not edit it or
 claim upstream promotion.
 

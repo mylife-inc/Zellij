@@ -797,8 +797,10 @@ The development CLI also has a cached PDF backend. It shares the rich renderer's
 verified private Node runtime and stores the optional compiler under
 `$ZELLIJ_HOME/cache/pdf/` (default `~/Dev/config/zellij/cache/pdf/`). Its installed
 command acceptance covers PDF exports, builds and watched offline previews with
-an empty system PATH. **The compiler package is not published yet**: distribution
-review and public-package acceptance remain open. The default and
+an empty system PATH. The component review and paired runtime/source packager are
+implemented; command tests use the actual reviewed compiler package with a
+renderer fixture. **The compiler package is not published yet**: release and
+public-download acceptance remain open. The default and
 released rc.19 PDF instructions above still use the container backend. The
 development `--pdf-backend cached` selector is for maintainer qualification until
 the matching release packages are available.

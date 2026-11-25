@@ -245,6 +245,14 @@ jobs:
     permissions:
       contents: read
 
+  pdf:
+    needs: verify
+    uses: ./.github/workflows/pdf-wasm-probe.yml
+    permissions:
+      contents: read
+    with:
+      release_assets: true
+
   winget:
     needs: binaries
     uses: ./.github/workflows/winget.yml
@@ -280,7 +288,7 @@ jobs:
   # ------------------------------------------------------------------ publish
   publish:
     name: Publish the release
-    needs: [verify, manifests, binaries, docs, scoop, winget]
+    needs: [verify, manifests, binaries, docs, scoop, winget, pdf]
     outputs:
       shared: ${{ steps.destinations.outputs.shared }}
 
@@ -294,11 +302,11 @@ jobs:
     # `raw.githubusercontent.com/…/install.sh` returning 404.
     #
     # `always()` keeps the ordering and drops the image gate. Verification,
-    # binaries, documentation, Scoop and WinGet lifecycle checks must all succeed.
+    # binaries, documentation, PDF/source parity, Scoop and WinGet checks must all succeed.
     # Failed, cancelled or skipped manager checks prevent publication. A broken image
     # variant is visible on its own job and does not deserve to withhold the
     # thing people actually run.
-    if: ${{ always() && needs.verify.result == 'success' && needs.binaries.result == 'success' && needs.docs.result == 'success' && needs.scoop.result == 'success' && needs.winget.result == 'success' }}
+    if: ${{ always() && needs.verify.result == 'success' && needs.binaries.result == 'success' && needs.docs.result == 'success' && needs.scoop.result == 'success' && needs.winget.result == 'success' && needs.pdf.result == 'success' }}
 
     runs-on: ubuntu-latest
 
@@ -344,6 +352,11 @@ jobs:
       - uses: actions/download-artifact@v8
         with:
           name: editable-sources
+          path: artifacts
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: pdf-release-assets
           path: artifacts
 
       # The installer is an artefact too. Publishing it beside the binaries

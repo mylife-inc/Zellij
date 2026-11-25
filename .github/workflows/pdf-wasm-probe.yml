@@ -1,5 +1,10 @@
 name: Cached PDF feasibility
 on:
+  workflow_call:
+    inputs:
+      release_assets:
+        type: boolean
+        default: false
   workflow_dispatch:
   pull_request:
     paths:
@@ -117,6 +122,7 @@ jobs:
           python scripts/pdf-wasm/distribution.py "$RUNNER_TEMP/pdf-format-sources" test-results/pdf-toolchain-distribution
           version=$(python -c "import tomllib; print(tomllib.load(open('cli/Cargo.toml', 'rb'))['workspace']['package']['version'])")
           python scripts/pdf-wasm/toolchain.py test-results/pdf-compact/package test-results/pdf-toolchain-distribution test-results/pdf-toolchain --version "$version"
+          python scripts/pdf-wasm/release.py "$RUNNER_TEMP/pdf-format-sources" test-results/pdf-compact/package test-results/pdf-release --version "$version"
       - name: Download, verify, cache and run the real package with an empty system PATH
         run: node --test scripts/pdf-wasm/cache.test.mjs
       - name: Exercise installed CLI PDF commands and offline watched previews
@@ -149,9 +155,20 @@ jobs:
             test-results/pdf-toolchain/verification.json
             test-results/pdf-cache/verification.json
             test-results/pdf-installed/verification.json
+            test-results/pdf-release/verification.json
+            test-results/pdf-release/toolchain/verification.json
           if-no-files-found: error
           retention-days: 14
-      # Never upload the engine/resource bundle before redistribution review.
+      - name: Retain the exact paired assets for a gated release caller
+        if: inputs.release_assets && matrix.runner == 'ubuntu-latest'
+        uses: actions/upload-artifact@v7
+        with:
+          name: pdf-release-assets
+          path: test-results/pdf-release/artifacts/*
+          if-no-files-found: error
+          retention-days: 7
+      # Ordinary PR checks publish receipts only. The release caller additionally
+      # requires source replay, all six platforms and parity before publication.
 
   sources:
     name: PDF source correspondence
@@ -174,14 +191,20 @@ jobs:
           python scripts/pdf-wasm/font_sources.py fetch "${{ runner.temp }}/pdf-source-cache"
       - name: Package original notices and self-contained sources (private qualification only)
         run: python scripts/pdf-wasm/distribution.py "${{ runner.temp }}/pdf-source-cache" test-results/pdf-source-distribution
+      - name: Independently build reviewed matching sources
+        run: |
+          version=$(python -c "import tomllib; print(tomllib.load(open('cli/Cargo.toml', 'rb'))['workspace']['package']['version'])")
+          python scripts/pdf-wasm/distribution.py "${{ runner.temp }}/pdf-source-cache" test-results/pdf-reviewed-source-distribution --version "$version"
       - name: Replay source checks using only the packaged programs and upstream files
         env:
           PYTHONDONTWRITEBYTECODE: '1'
         run: |
-          root="$PWD/test-results/pdf-source-distribution/sources"
+          root="$PWD/test-results/pdf-reviewed-source-distribution/sources"
           python "$root/scripts/pdf-wasm/sources.py" verify "$root/upstream" test-results/pdf-distribution-replay/runtime
           python "$root/scripts/pdf-wasm/format_sources.py" prepare "$root/upstream" test-results/pdf-distribution-replay/format-inputs
           python "$root/scripts/pdf-wasm/font_sources.py" prepare "$root/upstream" test-results/pdf-distribution-replay/font-inputs
+          python "$root/scripts/pdf-wasm/review.py" "$root/upstream" test-results/pdf-distribution-replay/review-inputs.json
+          python -c "import json; from pathlib import Path; root=Path('$root'); assert json.loads((root/'scripts/pdf-wasm/distribution-review.json').read_text())['inputs'] == json.loads(Path('test-results/pdf-distribution-replay/review-inputs.json').read_text())"
       - uses: actions/upload-artifact@v7
         with:
           name: pdf-source-correspondence
@@ -194,7 +217,13 @@ jobs:
           path: test-results/pdf-source-distribution/verification.json
           if-no-files-found: error
           retention-days: 14
-      # Keep source archives, notices and engine/data binaries out of artifacts.
+      - uses: actions/upload-artifact@v7
+        with:
+          name: pdf-reviewed-distribution-receipt
+          path: test-results/pdf-reviewed-source-distribution/verification.json
+          if-no-files-found: error
+          retention-days: 14
+      # Keep source archives, notices and engine/data binaries out of PR artifacts.
 
   package-parity:
     name: PDF package and source parity
@@ -214,6 +243,10 @@ jobs:
         with:
           name: pdf-distribution-receipt
           path: test-results/pdf-package-source-receipt
+      - uses: actions/download-artifact@v8
+        with:
+          name: pdf-reviewed-distribution-receipt
+          path: test-results/pdf-reviewed-package-source-receipt
       - run: node scripts/pdf-wasm/receipts.mjs
       - uses: actions/upload-artifact@v7
         with:

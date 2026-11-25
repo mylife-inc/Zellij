@@ -1,6 +1,5 @@
-// Private contract fixture only: it deliberately simulates distribution review.
-// It does not approve publication or promote qualification archives and must
-// never be uploaded. The CLI default remains the container until release.
+// Real reviewed PDF package, served locally; renderer shell remains a fixture.
+// Public-download acceptance is separate. The CLI default remains container.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { execFileSync, spawn } from 'node:child_process';
@@ -14,10 +13,11 @@ import { installCachedRenderer } from '../fixtures/install-cached-renderer.mjs';
 
 const repo = process.cwd();
 const zel = path.join(repo, `cli/target/debug/zel${process.platform === 'win32' ? '.exe' : ''}`);
-const packageRoot = path.resolve(process.env.ZEL_PDF_TOOLCHAIN ?? 'test-results/pdf-toolchain');
+const packageRoot = path.resolve(process.env.ZEL_PDF_RELEASE_TOOLCHAIN ?? 'test-results/pdf-release/toolchain');
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const json = async p => JSON.parse(await readFile(p, 'utf8'));
-const version = (await json(path.join(packageRoot, 'verification.json'))).version;
+const packageReceipt = await json(path.join(packageRoot, 'verification.json'));
+const version = packageReceipt.version;
 const platform = `${process.platform === 'win32' ? 'win' : process.platform}-${process.arch}`;
 const root = await mkdtemp(path.join(os.tmpdir(), 'zel-pdf-installed-'));
 const home = path.join(root, 'home café 日本');
@@ -69,20 +69,22 @@ async function checksum(file) { await writeFile(file + '.sha256', `${hash(await 
 async function fixture() {
   await mkdir(emptyPath); await mkdir(archiveRoot);
   await cp(path.join(repo, 'scripts/fixtures/pdf-book'), site, { recursive: true });
-  const compiler = path.join(root, 'compiler');
-  await cp(path.join(packageRoot, 'package'), compiler, { recursive: true });
-  const manifest = await json(path.join(compiler, 'manifest.json'));
-  Object.assign(manifest, { format: 2, kind: 'zellij-pdf-toolchain', redistribution_review_complete: true });
-  manifest.source_archive.name = `zel-pdf-sources-v${version}.tar.gz`;
-  for (const name of ['DISTRIBUTION-REVIEW.json']) {
-    const relative = 'notices/' + name;
-    const data = Buffer.from('TEST FIXTURE ONLY: simulated review; no license or publication permission.\n');
-    await writeFile(path.join(compiler, relative), data);
-    manifest.files[relative] = { bytes: data.length, sha256: hash(data) };
-  }
-  await writeFile(path.join(compiler, 'manifest.json'), JSON.stringify(manifest));
-  const pdfArchive = path.join(archiveRoot, `zel-pdf-v${version}.tar.gz`);
-  archive(compiler, pdfArchive); await checksum(pdfArchive);
+  const manifestBytes = await readFile(path.join(packageRoot, 'package/manifest.json'));
+  const manifest = JSON.parse(manifestBytes);
+  assert.equal(manifest.format, 2);
+  assert.equal(manifest.kind, 'zellij-pdf-toolchain');
+  assert.equal(manifest.redistribution_review_complete, true);
+  assert.equal(packageReceipt.redistributionReviewComplete, true);
+  assert.equal(hash(manifestBytes), packageReceipt.manifestSha256);
+  assert.deepEqual(manifest.source_archive, packageReceipt.sourceArchive);
+  assert.equal(manifest.source_archive.name, `zel-pdf-sources-v${version}.tar.gz`);
+  assert.equal(packageReceipt.archive.name, `zel-pdf-v${version}.tar.gz`);
+  const archiveBytes = await readFile(path.join(packageRoot, packageReceipt.archive.name));
+  assert.equal(archiveBytes.length, packageReceipt.archive.bytes);
+  assert.equal(hash(archiveBytes), packageReceipt.archive.sha256);
+  await writeFile(path.join(archiveRoot, packageReceipt.archive.name), archiveBytes);
+  await cp(path.join(packageRoot, packageReceipt.archive.name + '.sha256'),
+    path.join(archiveRoot, packageReceipt.archive.name + '.sha256'));
   const cache = await installCachedRenderer(zel, path.join(root, 'renderer'), path.join(repo, 'scripts/fixtures/build-cached-engine.mjs'));
   const rendererArchive = path.join(archiveRoot, `zel-renderer-v${version}-${platform}.tar.gz`);
   archive(path.join(cache, `${version}-${platform}`), rendererArchive); await checksum(rendererArchive);
@@ -124,7 +126,7 @@ test('installed CLI uses cached PDF execution and its verified private Node', { 
     assert(requests.some(p => p.includes('/renderer/')));
     const receipt = await json(path.join(site, 'pdf/pdf.json'));
     assert.equal(receipt.backend, 'luahbtex-wasm');
-    assert.equal(receipt.toolchain_manifest_sha256, hash(Buffer.from(JSON.stringify(manifest))));
+    assert.equal(receipt.toolchain_manifest_sha256, packageReceipt.manifestSha256);
     assert.equal(receipt.pdf_sha256, hash(await readFile(path.join(site, 'pdf/book.pdf'))));
     assert.equal(receipt.node, process.version);
     assert.equal(receipt.engine_release, '2026-f5d94438a7c75a23');
@@ -182,7 +184,9 @@ test('installed CLI uses cached PDF execution and its verified private Node', { 
     passed++;
   });
   assert.equal(passed, 4, 'Do not emit a passing receipt for failed subtests');
-  const evidence = { schemaVersion: 1, fixtureOnly: true, releaseApproved: false,
+  const evidence = { schemaVersion: 1, compilerReviewComplete: true, rendererFixtureOnly: true,
+    publicDownloadVerified: false, archive: packageReceipt.archive, sourceArchive: packageReceipt.sourceArchive,
+    manifestSha256: packageReceipt.manifestSha256,
     platform: `${process.platform}-${process.arch}`, cases: passed, emptyPath: true,
     privateNodeReused: true, coldRequests: requests.length, offlineWatchRebuilt: true };
   await mkdir(path.join(repo, 'test-results/pdf-installed'), { recursive: true });

@@ -8,7 +8,30 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-24**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-24: cached PDF CLI integration — in progress**
+**2026-11-24: reviewed PDF runtime/source packaging — in progress**
+
+PR #253 merged as `f8578e5`, identical in tree to tested `9498a75`. Normal CI
+`45535195352` passes 37 jobs with one conditional skip; PDF CI `45535195306`
+passes all eight jobs without retries. Post-merge main CI `45538460837`, base
+images `45538460744` and production docs `45538460646` all pass. The retained
+Intel Mac timeout and historical browser timing findings remain unexplained.
+
+The scoped PDF adapter licensing approval is applied. A network-disabled
+modified-library rebuild executes kpathsea, Graphite2 and zziplib markers on all
+three successful typesetting passes; the exact patch, linker trace and portable
+verification script are retained. The component review binds original resources,
+65 source packages, selected linked components and original notices. Packaging
+now pairs a reviewed runtime with its exact separate source archive and checksums.
+Installed CLI acceptance uses those real compiler bytes; its renderer remains a
+fixture. The release workflow gates publication on six-platform and source parity.
+See [the packaging record](specs/zellij-pdf-release-packaging-2026-11-24.md).
+Local verification passes 52 Python regressions, all four installed-command groups,
+offline source/review replay, workflow lint and documentation validation. The real
+runtime is 11,792,847 bytes; sources are a separate 430,327,686-byte archive. Hosted
+cross-platform verification and eventual public-download acceptance remain.
+Container stays the default; rc.19 and public compiler availability are unchanged.
+
+**2026-11-24: cached PDF CLI integration — implemented in PR #253**
 
 PR #252 merged as `191a882`, with the tree of tested `03d0d00`. Normal CI
 `45494370791` passes 37 jobs with one conditional skip; PDF CI `45494370827`

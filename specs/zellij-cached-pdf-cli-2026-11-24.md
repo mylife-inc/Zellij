@@ -119,7 +119,21 @@ retained by both qualification archives and checked by the source-package tests.
 The runtime fixture simulates only distribution review, preserving the actual
 adapter license. No compiler package is published by this approval.
 
-## Remaining release work
+## Subsequent packaging work
+
+PR #253 merged as `f8578e5` with the tree of `9498a75`. Final normal CI
+`45535195352` passes 37 jobs with one conditional skip; final PDF CI `45535195306`
+passes all eight jobs without retries. Post-merge CI, base images and docs pass
+in `45538460837`, `45538460744` and `45538460646`. The timeout above remains
+unexplained; later success does not establish its cause.
+
+The [packaging increment](zellij-pdf-release-packaging-2026-11-24.md) completes the
+modified-library relink evidence and component review, introduces the paired
+release packager and replaces the simulated compiler fixture with the actual
+reviewed package. The earlier fixture and policy descriptions above are retained
+as the implementation history.
+
+## Remaining release work at the integration milestone
 
 With the scoped licensing decision approved, finish the exact component/source review
 and implement paired runtime/source release packaging. Then qualify real public

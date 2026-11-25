@@ -1,0 +1,62 @@
+--- a/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/wasm-build/build-luatex.sh
++++ b/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/wasm-build/build-luatex.sh
+@@ -202,7 +202,7 @@
+ # grow it on demand. Qualify changes against existing formats (optimization policy).
+ LUATEX_LINK_FLAGS=(
+   -sALLOW_MEMORY_GROWTH=1 -sMODULARIZE=0 -sINVOKE_RUN=0 -sSTACK_SIZE=33554432
+-  -sEXPORTED_FUNCTIONS='["_compileLaTeX","_compileFormat","_main","_setMainEntry","_setPreviewPageLimit","_malloc","_free"]'
++  -sEXPORTED_FUNCTIONS='["_zellijRelinkProof","_compileLaTeX","_compileFormat","_main","_setMainEntry","_setPreviewPageLimit","_malloc","_free"]'
+   -sEXPORTED_RUNTIME_METHODS='["cwrap","FS","UTF8ToString","stringToUTF8","lengthBytesUTF8","intArrayFromString"]'
+   -sINITIAL_MEMORY=134217728
+   -sMEMORY_GROWTH_GEOMETRIC_STEP=0.05 -sMEMORY_GROWTH_GEOMETRIC_CAP=16777216
+--- a/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/wasm-build/luatex-entry.c
++++ b/source/wasmtex/a97db8a62ed86b118bcfcc8784b7752aa8e988ac/wasm-build/luatex-entry.c
+@@ -55,3 +55,16 @@
+     };
+     return main(4, argv);
+ }
++
++/* Private qualification only: call the three modified libraries after linking. */
++extern const char *kpathsea_version_string;
++extern void gr_engine_version(int *, int *, int *);
++extern char *zzip_strerror(int);
++int zellijRelinkProof(void) {
++    int major = 0, minor = 0, patch = 0, result = 0;
++    gr_engine_version(&major, &minor, &patch);
++    if (strstr(kpathsea_version_string, "ZEL_RELINK_KPATHSEA")) result |= 1;
++    if (major == 1 && minor == 3 && patch == 77) result |= 2;
++    if (!strcmp(zzip_strerror(0), "ZEL_RELINK_ZZIPLIB")) result |= 4;
++    return result;
++}
+--- a/source/texlive/libs/graphite2/graphite2-src/src/gr_font.cpp
++++ b/source/texlive/libs/graphite2/graphite2-src/src/gr_font.cpp
+@@ -36,7 +36,7 @@
+ {
+     if (nMajor) *nMajor = GR2_VERSION_MAJOR;
+     if (nMinor) *nMinor = GR2_VERSION_MINOR;
+-    if (nBugFix) *nBugFix = GR2_VERSION_BUGFIX;
++    if (nBugFix) *nBugFix = 77; /* private compatible-ABI relink proof */
+ }
+ 
+ gr_font* gr_make_font(float ppm/*pixels per em*/, const gr_face *face)
+--- a/source/texlive/texk/kpathsea/version.c
++++ b/source/texlive/texk/kpathsea/version.c
+@@ -20,7 +20,7 @@
+ 
+ #include <kpathsea/version.h>
+ 
+-const char *kpathsea_version_string = KPSEVERSION;
++const char *kpathsea_version_string = KPSEVERSION " ZEL_RELINK_KPATHSEA";
+ 
+ /* If you are redistributing a modified version of the original
+    distribution, please change this address here, among many other
+--- a/source/texlive/libs/zziplib/zziplib-src/zzip/err.c
++++ b/source/texlive/libs/zziplib/zziplib-src/zzip/err.c
+@@ -52,6 +52,7 @@
+ zzip_char_t *
+ zzip_strerror(int errcode)
+ {
++    if (errcode == 0) return "ZEL_RELINK_ZZIPLIB";
+     if (errcode < ZZIP_ERROR && errcode > ZZIP_ERROR - 32)
+     {
+         struct errlistentry *err = errlist;

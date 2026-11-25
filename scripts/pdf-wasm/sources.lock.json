@@ -4,6 +4,14 @@
   "redistributionReviewComplete": false,
   "resolvedItems": [
     {
+      "item": "Complete the final component/font redistribution review and matching source arrangement.",
+      "evidence": "The 2026-11-24 distribution-review.json binds exact original resources, component notices and scoped adapter terms. Release packaging requires matching source beside the runtime; publication and public-download acceptance remain separate gates."
+    },
+    {
+      "item": "Preserve the complete EC font distribution and qualify modified-library relinking.",
+      "evidence": "The distribution packager verifies every original EC manifest entry. PR #253 records a network-disabled modified-library rebuild, executed markers for kpathsea/Graphite2/zziplib and three successful typesetting passes; the exact patch and evidence are retained alongside the source recipe."
+    },
+    {
       "item": "Complete clean engine rebuild qualification against receipt-bound outputs.",
       "evidence": "PR #244: clean engine rebuild matches the locked JS/Wasm outputs; PR #245: independent format rebuild on all six targets. The earlier combined rebuild/relink wording was too broad: PR #244 explicitly leaves modified-library relink qualification open."
     },
@@ -17,7 +25,7 @@
     }
   ],
   "runtimeLockSha256": "8c748563406d4843574f152d128791fd9de4c7e22a04cba8945c9a0b72014efa",
-  "policySha256": "884d1b708f7c87c0ca29a0e76679c15efbf652d2cb2a93e0b2b4164e780cbe39",
+  "policySha256": "fb32044709664feacb187b86ac30deb542c86ef6f068b43d1d5a8b4cecd307e5",
   "metadata": [
     {
       "name": "texlive-provenance.json",
@@ -913,7 +921,8 @@
       },
       "noticePaths": [
         "texmf-dist/tex/generic/config/language.dat",
-        "texmf-dist/tex/generic/config/language.us"
+        "texmf-dist/tex/generic/config/language.us",
+        "texmf-dist/tex/generic/hyphen/hyphen.tex"
       ],
       "archives": [
         {
@@ -970,7 +979,9 @@
       },
       "noticePaths": [
         "texmf-dist/doc/generic/hyph-utf8/languages/es/README",
-        "texmf-dist/source/generic/hyph-utf8/languages/es/README"
+        "texmf-dist/source/generic/hyph-utf8/languages/es/README",
+        "texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-es.tex",
+        "texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-es.tex"
       ],
       "archives": [
         {
@@ -4286,9 +4297,5 @@
       }
     }
   ],
-  "openItems": [
-    "Preserve the complete EC font distribution required by copyrite.txt in any eventual redistribution.",
-    "Complete the final component/font redistribution review and supply matching source with any release.",
-    "Qualify modified-library relinking separately from the already completed clean engine rebuild."
-  ]
+  "openItems": []
 }
