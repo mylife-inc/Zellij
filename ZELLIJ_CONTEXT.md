@@ -8,7 +8,26 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-24**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-24: reviewed PDF runtime/source packaging — in progress**
+**2026-11-24: rc.20 cached PDF release preparation — in progress**
+
+PR #254 merged as `67a411e`, tree-identical to tested `0d83284`. Regular CI
+`45548294602` passes 37 jobs with one conditional skip; PDF CI `45548294563`
+passes all eight jobs on the first attempt. Post-merge main CI `45552922780`,
+base images `45552922767` and production docs `45552922736` pass.
+
+Rc.20 keeps `container` as the default and offers `--pdf-backend cached`
+explicitly. Before publishing, the new acceptance pairs the actual compiler
+with the actual renderer/private Node, checks complete matching sources, and
+builds PDF and rich web outputs offline with an empty PATH. A separate native
+six-platform public-install job checks both release repositories after publication.
+Only successful public-download acceptance can qualify a later default change.
+See [the release preparation record](specs/zellij-rc20-cached-pdf-2026-11-24.md).
+Local real-renderer/compiler acceptance, complete source transfer, all four
+installed-command groups, 52 Python regressions, six transfer regression groups,
+19 Rust PDF tests and documentation/workflow validation pass.
+Rc.19 remains the published candidate until the new release gates finish.
+
+**2026-11-24: reviewed PDF runtime/source packaging — implemented in PR #254**
 
 PR #253 merged as `f8578e5`, identical in tree to tested `9498a75`. Normal CI
 `45535195352` passes 37 jobs with one conditional skip; PDF CI `45535195306`
@@ -28,7 +47,8 @@ See [the packaging record](specs/zellij-pdf-release-packaging-2026-11-24.md).
 Local verification passes 52 Python regressions, all four installed-command groups,
 offline source/review replay, workflow lint and documentation validation. The real
 runtime is 11,792,847 bytes; sources are a separate 430,327,686-byte archive. Hosted
-cross-platform verification and eventual public-download acceptance remain.
+cross-platform verification subsequently passed as recorded above; eventual
+public-download acceptance remains.
 Container stays the default; rc.19 and public compiler availability are unchanged.
 
 **2026-11-24: cached PDF CLI integration — implemented in PR #253**

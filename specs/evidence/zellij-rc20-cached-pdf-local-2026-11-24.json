@@ -1,0 +1,75 @@
+{
+  "date": "2026-11-24",
+  "version": "v0.2.0-rc.20",
+  "status": "local qualification only; not yet published",
+  "pair": {
+    "schemaVersion": 1,
+    "version": "0.2.0-rc.20",
+    "redistributionReviewComplete": true,
+    "published": false,
+    "reviewSha256": "ff93454483cf313555a1d490f48dbe5f680e93dda7a5b84fe44cc32b620b6db3",
+    "runtime": {
+      "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+      "bytes": 11792851,
+      "sha256": "f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+    },
+    "source": {
+      "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+      "bytes": 430327849,
+      "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+    },
+    "sourceManifestSha256": "ae5fc1c908e1d3c4082ec94e1eb8fe1d39a11db930d64f44749409f2967445b3"
+  },
+  "localRealPackages": {
+    "schemaVersion": 1,
+    "version": "0.2.0-rc.20",
+    "platform": "darwin-x64",
+    "publicDownloadVerified": false,
+    "realRenderer": true,
+    "emptyPath": true,
+    "offlinePdfAndRichBuilds": true,
+    "privateNodeReused": true,
+    "manifestSha256": "c312c55689300f6450bf62601d4f52d9e7214a6db428e303597f01a670cfda1a",
+    "runtime": {
+      "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+      "sha256": "f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+    },
+    "source": {
+      "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+      "bytes": 430327849,
+      "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+    },
+    "sourceManifestSha256": "ae5fc1c908e1d3c4082ec94e1eb8fe1d39a11db930d64f44749409f2967445b3",
+    "sourceBytesVerified": true
+  },
+  "installedCli": {
+    "schemaVersion": 1,
+    "compilerReviewComplete": true,
+    "rendererFixtureOnly": true,
+    "publicDownloadVerified": false,
+    "archive": {
+      "name": "zel-pdf-v0.2.0-rc.20.tar.gz",
+      "bytes": 11792851,
+      "sha256": "f8bd374edccfef50e0c9d4b25ee28f15b3985ff418fbb53c67acdd3dba9a8252"
+    },
+    "sourceArchive": {
+      "name": "zel-pdf-sources-v0.2.0-rc.20.tar.gz",
+      "bytes": 430327849,
+      "sha256": "c134e90974fca9de4419b141c2dfad6f401ed2ebb014d4a74f2a944ba10329da"
+    },
+    "manifestSha256": "c312c55689300f6450bf62601d4f52d9e7214a6db428e303597f01a670cfda1a",
+    "platform": "darwin-x64",
+    "cases": 4,
+    "emptyPath": true,
+    "privateNodeReused": true,
+    "coldRequests": 4,
+    "offlineWatchRebuilt": true
+  },
+  "localChecks": {
+    "pythonRegressions": 52,
+    "transferRegressionGroups": 6,
+    "rustPdfTests": 19,
+    "docsRoutes": 59,
+    "workflowLint": true
+  }
+}

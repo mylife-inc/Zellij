@@ -25,6 +25,58 @@ permissions:
   contents: read
 
 jobs:
+  cached-pdf:
+    name: Published cached PDF (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-22.04, target: x86_64-unknown-linux-gnu }
+          - { os: ubuntu-22.04-arm, target: aarch64-unknown-linux-gnu }
+          - { os: macos-15-intel, target: x86_64-apple-darwin }
+          - { os: macos-15, target: aarch64-apple-darwin }
+          - { os: windows-2022, target: x86_64-pc-windows-msvc }
+          - { os: windows-11-arm, target: aarch64-pc-windows-msvc }
+    env:
+      VERSION: ${{ inputs.version || github.ref_name }}
+      TARGET: ${{ matrix.target }}
+      RELEASE_REPOSITORY: ${{ github.repository }}
+      SHARED_RELEASE: ${{ inputs.shared }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.22.3
+      - name: Validate published version
+        run: >-
+          node --input-type=module -e "import { releasePolicy } from './scripts/release-policy.mjs'; releasePolicy(process.env.VERSION);"
+      - uses: actions/checkout@v7
+        with:
+          ref: refs/tags/${{ env.VERSION }}
+          path: release-source
+          persist-credentials: false
+      - name: Check whether the release offers cached PDF packages
+        id: capability
+        shell: bash
+        run: |
+          if test -f release-source/scripts/check-published-cached-pdf.mjs; then
+            echo 'available=true' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Install public CLI and verify complete compiler/source downloads
+        if: steps.capability.outputs.available == 'true'
+        working-directory: release-source
+        run: node scripts/check-published-cached-pdf.mjs
+      - uses: actions/upload-artifact@v7
+        if: always() && steps.capability.outputs.available == 'true'
+        with:
+          name: published-cached-pdf-${{ matrix.target }}
+          path: release-source/test-results/pdf-public-packages
+          if-no-files-found: warn
+
   native:
     name: Published install (${{ matrix.target }})
     runs-on: ${{ matrix.os }}
