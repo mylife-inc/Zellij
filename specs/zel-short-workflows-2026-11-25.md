@@ -1,6 +1,6 @@
 # Short everyday workflows and use-case Quickstart
 
-Status: implemented in rc.21 source; published rc.20 keeps its previous defaults.
+Status: implemented in `98a2cff` for rc.21 source; published rc.20 keeps its previous defaults.
 This is a follow-up to the dated CLI contract, not a rewrite of its audit history.
 
 ## Product decision

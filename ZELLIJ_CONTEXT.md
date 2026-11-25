@@ -10,7 +10,7 @@ Last refreshed: **2026-11-25**. Initial review baseline: local `main` at
 
 **2026-11-25: short workflows and use-case Quickstart — rc.21 source**
 
-The user requested shorter PDF and other long recipes, plus detailed book and
+Implementation commit: `98a2cff`. The user requested shorter PDF and other long recipes, plus detailed book and
 website-template Quickstarts. `zel pdf` retains PDF-only output but now selects
 the verified cache by default. New shared-handler presets are `bp` (build with
 PDF), `bs` (HTTP static build), `vw` (watched preview) and `lint` (deep/strict
