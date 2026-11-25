@@ -482,14 +482,12 @@ fn deadline_stops_polling_without_recreating_deployment() {
     let mut client = server.client();
     client.timeout = Duration::from_millis(150);
     client.poll_interval = Duration::from_millis(40);
-    assert!(
-        client
-            .deploy(&target(false), root(&tmp))
-            .err()
-            .unwrap()
-            .to_string()
-            .contains("timed out")
-    );
+    let error = client
+        .deploy(&target(false), root(&tmp))
+        .err()
+        .unwrap()
+        .to_string();
+    assert!(error.contains("timed out"), "{error}");
     assert_eq!(
         server
             .requests
@@ -500,6 +498,69 @@ fn deadline_stops_polling_without_recreating_deployment() {
             .count(),
         1
     );
+}
+#[test]
+fn response_body_deadline_is_reported_without_echoing_partial_bytes() {
+    let error = incomplete_response_error(true);
+    assert!(
+        error.contains("deployment status: response read timed out"),
+        "{error}"
+    );
+    assert!(
+        !error.contains("PRIVATE") && !error.contains("fixture-token"),
+        "{error}"
+    );
+}
+#[test]
+fn truncated_response_is_not_misreported_as_a_timeout() {
+    let error = incomplete_response_error(false);
+    assert!(
+        error.contains("deployment status: could not read response"),
+        "{error}"
+    );
+    assert!(
+        !error.contains("timed out")
+            && !error.contains("PRIVATE")
+            && !error.contains("fixture-token"),
+        "{error}"
+    );
+}
+fn incomplete_response_error(stall: bool) -> String {
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let address = format!("http://{}/", listener.local_addr().unwrap());
+    let (release, stalled) = std::sync::mpsc::channel();
+    let worker = thread::spawn(move || {
+        let (mut socket, _) = listener.accept().unwrap();
+        socket
+            .set_read_timeout(Some(Duration::from_secs(5)))
+            .unwrap();
+        assert_eq!(read_request(&socket).unwrap().unwrap().method, "GET");
+        socket.write_all(b"HTTP/1.1 200 Fixture\r\nContent-Length: 100\r\nConnection: close\r\n\r\nPRIVATE fixture-token").unwrap();
+        socket.flush().unwrap();
+        // Keep the response incomplete until the client returns; a bounded
+        // guard releases the fixture even if the client deadline regresses.
+        if stall {
+            stalled.recv_timeout(Duration::from_secs(5)).unwrap();
+        }
+    });
+    let client = Client::new(
+        &address,
+        "fixture-token",
+        None,
+        Duration::from_secs(1),
+        Duration::ZERO,
+    )
+    .unwrap();
+    let result = client.send(
+        client.request(Method::GET, &["v13", "deployments", "dpl_123"]),
+        "deployment status",
+        Instant::now() + Duration::from_secs(1),
+    );
+    if stall {
+        release.send(()).unwrap();
+    }
+    worker.join().unwrap();
+    result.unwrap_err().to_string()
 }
 #[test]
 fn portable_delivery_preserves_authored_files_and_previous_output() {
