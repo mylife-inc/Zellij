@@ -12,7 +12,8 @@ const output = path.resolve('test-results/pdf/long-book');
 mkdirSync(path.dirname(output), { recursive: true });
 try {
   writeLongBook(source);
-  execFileSync(binary, ['pdf', source, '--out', output], { stdio: 'pipe', timeout: 600_000 });
+  // This comparison suite runs against the isolated container compiler.
+  execFileSync(binary, ['pdf', source, '--pdf-backend', 'container', '--out', output], { stdio: 'pipe', timeout: 600_000 });
   const pdf = path.join(output, 'book.pdf');
   execFileSync('qpdf', ['--check', pdf]);
   const text = execFileSync('pdftotext', ['-layout', pdf, '-'], { encoding: 'utf8', maxBuffer: 4 * 1024 * 1024 });

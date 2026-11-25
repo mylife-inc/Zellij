@@ -1,5 +1,5 @@
 // Real reviewed PDF package, served locally; renderer shell remains a fixture.
-// Public-download acceptance is separate. The CLI default remains container.
+// Public-download acceptance is separate; this suite explicitly selects cached PDF.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { execFileSync, spawn } from 'node:child_process';

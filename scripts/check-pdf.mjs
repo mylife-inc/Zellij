@@ -1,3 +1,5 @@
+// This suite deliberately exercises the optional container compiler.
+process.env.ZEL_PDF_BACKEND = 'container';
 // Real toolchain acceptance runs only on hosted native Linux runners.
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync, spawn } from 'node:child_process';
@@ -160,7 +162,7 @@ try {
   // Exercise the bundled book users actually create, as well as the richer
   // adapter fixture below. Captures/receipts are retained for visual review.
   const starter=path.join(root,'classic');
-  run(['create',starter,'-t','book-classic@0.2.0','--offline']);
+  run(['create',starter,'-t','book-classic@0.3.0','--offline']);
   run(['pdf',starter,'--check']);
   run(['build',starter,'--pdf']);
   const starterPrint=path.join(starter,'site/_zellij/pdf');

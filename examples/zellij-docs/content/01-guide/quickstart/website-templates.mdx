@@ -1,0 +1,194 @@
+---
+title: Create a website from a template
+description: Start with a complete product or documentation website, customize its sections, and generate a rich double-click edition.
+---
+
+**You will create:** a complete website from an editable starter, with a landing
+page, navigation, guide pages, theme controls and local artwork. Its generated
+rich edition opens by double-clicking `index.html`.
+
+Only `zel` is required. First use downloads a verified renderer and private
+runtime into `$ZELLIJ_HOME` (default `~/Dev/config/zellij`). You do not need to
+install Docker, Node.js or Python.
+
+<Callout type="info" title="Version of the short recipes">
+`zel lint`, `zel vw` and `zel bs` are in the upcoming rc.21 source. With published
+rc.20, use `zel check --deep --strict`, `zel view --watch` and
+`zel build --target static` respectively. Creation and `zel b` work in both.
+See [installation](/guide/quickstart#install-zel) for the published version.
+</Callout>
+
+## 1. Pick the website you want to start with
+
+```sh
+zel templates
+zel templates show product-launch
+```
+
+| Template | Design and content |
+| --- | --- |
+| `product-launch` | Large product imagery, Cupertino typography, gradient reveals and a media accordion |
+| `product-studio` | A restrained product introduction with hero, bento cards and a guide |
+| `software-platform` | A dark software interface, connected workflow and documentation |
+| `creative-studio` | Editorial portfolio, serif headings and project studies |
+| `api-platform` | Kie-inspired theme, model cards, pricing, integration steps and FAQ |
+| `product-docs` | A compact portable Markdown handbook with a reading layout |
+
+The rich templates are original designs with local sample artwork. They use
+product storytelling patterns; they do not copy another company's logos, prose
+or website. The catalog also contains [book templates](/guide/quickstart/books).
+
+## 2. Create and build
+
+From the parent directory where you want your new site:
+
+```sh
+zel create my-website -t product-launch --name "Orbit"
+cd my-website
+zel lint
+zel b
+```
+
+The commands also work in Windows PowerShell. `-t` means `--template`.
+Creation is native and uses the bundled template catalog, including offline.
+Choose a new or empty destination; creation never replaces an existing website.
+
+Double-click **`site/index.html`**. Navigation, rich sections, theme controls
+and bundled assets work without an HTTP server. Keep the whole `site/` folder
+together when moving it. The first validation/build may download the renderer;
+`zel b --offline` uses the verified cache afterward.
+
+## 3. Know which files to edit
+
+```text
+my-website/
+  zel.yaml
+  README.md
+  .zel-template.json
+  content/
+    site.yaml
+    menu.yaml
+    pages.yaml
+    sections/
+    01-guide/
+    assets/
+  site/                    generated output
+```
+
+| File or folder | What to change |
+| --- | --- |
+| `zel.yaml` | Source/output configuration and optional saved delivery settings |
+| `content/site.yaml` | Site identity, product logo, company branding and theme |
+| `content/menu.yaml` | Top navigation and menu-drawer items |
+| `content/pages.yaml` | Page routes and the ordered sections displayed on each page |
+| `content/sections/` | Headlines, cards, images, buttons and section layouts |
+| `content/01-guide/` | Markdown/MDX documentation and `_sidebar.yaml` reading order |
+| `content/assets/` | Your local logos, illustrations, photographs and other assets |
+
+`--name` changes the starter's declared site identity. Replace fictional names,
+prices, testimonials and claims throughout the sample prose too. Edit source
+files, then rebuild; edits under generated `site/` are replaced on the next build.
+`.zel-template.json` records where the starter came from and never overwrites
+your later edits.
+
+## 4. Customize the look and content
+
+Open the existing hero YAML under `content/sections/` and edit its headline,
+description and button destinations. Keep its current field names as a working
+example. Replace local artwork under `content/assets/` and update its references.
+Do the same for the remaining sections listed in `content/pages.yaml`.
+
+To discover another section's supported fields:
+
+```sh
+zel sections
+zel ex hero
+zel presets
+zel themes
+```
+
+The [section catalog](/sections) and [composition guide](/sections/compose)
+explain layout, typography, themes and supported scroll effects. The compose
+section supports documented blocks and effects; it is not an unrestricted web
+programming language.
+
+Choose a theme in the existing `content/site.yaml`, and follow the
+[branding and menu guide](/guide/menu) to configure the optional company logo
+at the far left, the product-home logo, centered navigation and right-side tools.
+The template's own README and sample guide explain its particular layout.
+
+## 5. Write and preview the documentation
+
+Edit the sample `.mdx` files under `content/01-guide/`. For a new guide page,
+create another file in that folder with frontmatter and ordinary Markdown:
+
+```mdx
+---
+title: Installation
+description: Get the product ready for your first project.
+---
+
+# Installation
+
+Write the product's real installation steps here.
+```
+
+Add `installation` beside the other page entries in that folder's existing
+`_sidebar.yaml`. Use code fences or inline code for literal braces and angle
+brackets: guide pages are MDX, so those characters can otherwise start code.
+See [guide folders](/guide/guide-folders) for groups, order and nested pages.
+
+```sh
+zel vw
+```
+
+The browser opens after a successful build. Edits rebuild the output and refresh
+the preview; validation errors appear in the terminal and preserve the previous
+successful output. Press Ctrl-C to stop. Use `zel vw --offline` when the renderer
+is already cached, or `zel s` to serve an existing output without rebuilding.
+
+## 6. Generate the edition you need
+
+```sh
+zel lint
+zel b
+```
+
+The default rich build writes the double-click edition to `site/`. Zip that
+whole directory for offline distribution. Users unzip it and open `index.html`;
+they do not need the CLI or a web server to read it.
+
+For an HTTP-only static host, choose a separate output so your offline edition
+stays available:
+
+```sh
+zel bs --out site-http
+zel s site-http
+```
+
+`bs` means `build --target static`. Open the printed localhost URL for this
+edition; it requires HTTP. Deploy commands select the appropriate HTTP export
+automatically, so you do not need to pre-build it yourself.
+
+For example, after configuring an existing Netlify project and its access token:
+
+```sh
+zel netlify --site YOUR_PROJECT_ID
+```
+
+Review the returned draft URL, then add `--prod` only when ready to publish.
+See [deployment](/cli/deploy) and [CI](/cli/ci) for credentials and automation.
+`zel si` and `zel ni` package static or Next websites into images when a
+container builder is available; it is optional for the workflows above.
+
+## 7. Keep commands short inside a repository
+
+The folder containing `zel.yaml` can have any name. Inside it, omit the path:
+`zel b`, `zel vw`, `zel lint`. From elsewhere, provide it explicitly:
+`zel b docs/product-guide`.
+
+If your repository follows the default `docs/zellij/zel.yaml` convention, those
+same bare commands work from the repository root. Output is `docs/zellij/site/`.
+Use [saved settings and shortcuts](/cli/shortcuts) to avoid repeating destinations
+and common options. Website templates do not enable book PDF; use the
+[book walkthrough](/guide/quickstart/books) for a manuscript and print edition.

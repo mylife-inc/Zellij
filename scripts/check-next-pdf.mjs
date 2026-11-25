@@ -1,3 +1,5 @@
+// This suite deliberately exercises the optional container compiler.
+process.env.ZEL_PDF_BACKEND = 'container';
 // Hosted CI only: build, publish, pull and serve complete PDF-enabled Next books.
 import assert from 'node:assert/strict';
 import { writeLanguageBook, normalizedPrintText, requiredPrintTerms } from './fixtures/book-languages.mjs';

@@ -13,7 +13,8 @@ fn command(root: &Path) -> Command {
             format!("{}:/usr/bin:/bin", root.join("bin").display()),
         )
         .env("DOCKER_HOST", "unix:///fake-zellij.sock")
-        .env("ZELLIJ_IMAGE", "fixture/base:test");
+        .env("ZELLIJ_IMAGE", "fixture/base:test")
+        .env("ZEL_PDF_BACKEND", "container");
     for key in [
         "DOCKER_CONTEXT",
         "CONTAINER_HOST",

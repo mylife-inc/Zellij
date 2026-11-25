@@ -56,8 +56,8 @@ try {
     base = `http://127.0.0.1:${server.address().port}`;
   }
   const env = { ...process.env, PATH: path.join(root, 'empty'), ZELLIJ_HOME: home,
-    ZEL_PDF_BACKEND: 'cached', ZEL_PDF_BASE_URL: base, ZEL_ENGINE_BASE_URL: base };
-  for (const name of ['GH_TOKEN', 'GITHUB_TOKEN', 'ZEL_ENGINE_CACHE', 'NODE_OPTIONS', 'NODE_PATH', 'ZEL_INSECURE_SKIP_CHECKSUM']) delete env[name];
+    ZEL_PDF_BASE_URL: base, ZEL_ENGINE_BASE_URL: base };
+  for (const name of ['ZEL_PDF_BACKEND', 'GH_TOKEN', 'GITHUB_TOKEN', 'ZEL_ENGINE_CACHE', 'NODE_OPTIONS', 'NODE_PATH', 'ZEL_INSECURE_SKIP_CHECKSUM']) delete env[name];
   await mkdir(env.PATH);
   async function run(args, offline = false) {
     return new Promise((resolve, reject) => {
@@ -95,7 +95,7 @@ try {
   }
   const pair = await verifyPdfRelease({ base, manifest });
   const beforeOffline = requests.length;
-  await run(['build', book, '--pdf', '--offline'], true);
+  await run(['bp', book, '--offline'], true);
   const printed = path.join(book, 'site/_zellij/pdf');
   const built = await json(path.join(printed, 'pdf.json'));
   assert.equal(built.revision, (await json(path.join(book, 'site/_zellij/book.json'))).revision);

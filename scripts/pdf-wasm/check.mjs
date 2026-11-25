@@ -46,7 +46,9 @@ async function check(name, manuscript) {
   }
   if (process.env.ZEL_PDF_PROBE_BASELINE === '1') {
     const baseline = path.join(artifacts, name + '-native');
-    execFileSync(zel, ['pdf', manuscript, '--out', baseline], { stdio: 'pipe', timeout: 600_000 });
+    // Keep the independent comparison on the container compiler even when the
+    // CLI defaults (or the calling environment) select the cached Wasm backend.
+    execFileSync(zel, ['pdf', manuscript, '--pdf-backend', 'container', '--out', baseline], { stdio: 'pipe', timeout: 600_000 });
     result.comparison = compare(path.join(baseline, 'book.pdf'), path.join(artifacts, name, 'book.pdf'));
     if (name === 'link-layout') {
       const annotations = execFileSync('pdfinfo', ['-url', path.join(output, 'book.pdf')], { encoding: 'utf8', timeout: 30_000 });

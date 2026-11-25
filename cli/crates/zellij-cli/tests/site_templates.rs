@@ -137,7 +137,7 @@ fn book_starter_has_shared_publication_and_opt_in_print_without_tools() {
             "create",
             "book",
             "-t",
-            "book-classic@0.2.0",
+            "book-classic@0.3.0",
             "--name",
             "A writer's journey",
             "--set",
@@ -166,7 +166,11 @@ fn book_starter_has_shared_publication_and_opt_in_print_without_tools() {
     assert!(!root.join("book/site/_zellij/pdf").exists());
     assert!(root.join("book/site/assets/wave.png").is_file());
     let home = fs::read(root.join("book/site/index.html")).unwrap();
-    let failure = run(root, &["build", "book", "--pdf"], 4);
+    let failure = run(
+        root,
+        &["build", "book", "--pdf", "--pdf-backend", "container"],
+        4,
+    );
     let diagnostic = String::from_utf8_lossy(&failure.stderr);
     assert!(
         diagnostic.contains("PDF requires a running"),

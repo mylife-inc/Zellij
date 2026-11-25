@@ -41,14 +41,51 @@ Current source also supports `zel nd --full` for a complete section example site
 `zel ns hero --set 'headline=Hello'` for scripts. See [section authoring](/cli/new#interactive-authoring).
 These additions are included in candidate `0.2.0-rc.20`.
 
+## Common workflows in rc.21 source
+
+Rc.21 makes the verified cached PDF compiler the default. Inside a book folder,
+`zel pdf` is enough for `pdf/book.pdf`; `zel bp` produces the website with its PDF
+at `site/_zellij/pdf/book.pdf`. On published rc.20, use
+`zel pdf --pdf-backend cached` or `zel build --pdf --pdf-backend cached`.
+An explicit `--pdf-backend container` or `ZEL_PDF_BACKEND=container` still selects
+the container compiler. `--pdf-backend` takes precedence over that environment setting.
+
+| Full command | New short preset | Result |
+| --- | --- | --- |
+| `zel build --pdf` | `zel bp` | Website and PDF from the same manuscript |
+| `zel build --target static` | `zel bs` | Rich HTTP static export |
+| `zel view --watch` | `zel vw` | Build, serve, open and refresh after edits |
+| `zel check --deep --strict` | `zel lint` | Thorough validation that fails on warnings |
+
+These are built-in presets for existing commands. They accept the same site
+selection and applicable options, and use the same handlers. `zel bp --no-pdf`
+and `zel bs --target file` are errors because they contradict the chosen preset.
+Repeating its implied option, such as `zel bp --pdf`, is harmless. The ordinary
+`b`, `c` and `v` aliases retain their previous meanings.
+
+```sh
+zel create my-book -t book-technical
+cd my-book
+zel pdf
+zel bp --offline
+zel vw --no-pdf
+```
+
+The offline build above assumes a successful first PDF build. Plain `zel b`
+also includes PDF when `pdf.enabled: true` is saved in `zel.yaml`.
+See the [book walkthrough](/guide/quickstart/books) or
+[website-template walkthrough](/guide/quickstart/website-templates).
+
 ## Available names
 
-Every row accepts exactly the same arguments and options through either name.
+The aliases below accept exactly the same arguments and options through either name.
 Defaults, validation, JSON support, runtime requirements, and exit status are
 the same. Command names in help and usage messages reflect the form requested.
 
 | Full command | Shortcut |
 | --- | --- |
+| `zel new site` | `zel create` |
+| `zel export pdf` | `zel pdf` |
 | `zel new portable` | `zel init` |
 | `zel new docs` | `zel nd` |
 | `zel new app` | `zel na` |
@@ -58,6 +95,7 @@ the same. Command names in help and usage messages reflect the form requested.
 | `zel new project` | `zel npr` |
 | `zel explain` | `zel ex` |
 | `zel list sections` | `zel sections` |
+| `zel list presets` | `zel presets` |
 | `zel list themes` | `zel themes` |
 | `zel list formats` | `zel formats` |
 | `zel list targets` | `zel targets` |
@@ -75,6 +113,12 @@ the same. Command names in help and usage messages reflect the form requested.
 | `zel image dockerfile` | `zel idf` |
 | `zel publish` | `zel pub` |
 | `zel deploy netlify` | `zel netlify` |
+| `zel deploy cloudflare` | `zel cf` |
+| `zel deploy vercel` | `zel vc` |
+| `zel deploy github-pages` | `zel ghp` |
+| `zel deploy s3` | `zel s3` |
+| `zel deploy fly` | `zel fly` |
+| `zel deploy railway` | `zel rw` |
 | `zel completions` | `zel comp` |
 
 `zel ci run` dispatches an existing workflow. Its original spelling,
@@ -120,7 +164,7 @@ by default and `--prod` for live publication.
 equivalent to `zel ci init github --site-root <site>`, using saved settings. It writes local files by default; `--provision`
 explicitly uploads the selected provider's token. See [CI](/cli/ci) for the compatible release
 pin required while the current public binary is older than this contract.
-`na` creates editable hosted wrappers with a built local engine package; see
+`na` creates editable hosted wrappers using verified downloaded sources by default; see
 [`zel new app`](/cli/new#zel-new-app-dir) for content selection and prerequisites.
 
 Conversion shortcuts preserve the legacy raw-content default. Add `--layout site`
@@ -162,3 +206,17 @@ See [setup and upload behavior](/cli/deploy#aws-s3).
 `zel create [dir] -t <template>` is the short form of
 `zel new site [dir] --template <template>`. See [templates](/cli/templates);
 these additions are included in candidate `0.2.0-rc.20`.
+
+## Keep paths and options out of everyday commands
+
+Run inside the folder containing `zel.yaml`, or keep the conventional
+`docs/zellij/zel.yaml` path and run from the repository root. Both allow `zel b`,
+`zel pdf`, `zel vw` and `zel lint` without a folder argument. A differently named
+folder works with an explicit path: `zel bp docs/my-book`.
+
+Use `-t` for template selection. Save supported `pdf`, `image`, `publish` and
+`ci` settings in `zel.yaml`; then use `zel b`, `zel si`, `zel ni`, `zel pub` or
+`zel ci` without repeating them. `--prod` and credential/provisioning choices
+remain explicit where required. Commands already short, such as `fmt`, `watch`,
+`dev`, `ship` and `pull`, keep their names. Use `zel comp` to generate completion
+for command names, options and supported values.

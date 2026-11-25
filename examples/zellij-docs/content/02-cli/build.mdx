@@ -3,6 +3,14 @@ title: zel build
 description: Build a rich double-click website, portable Markdown documentation, a hosted export, or a container image.
 ---
 
+<Callout type="info" title="PDF shortcuts and cached default in rc.21 source">
+Current source adds `zel bp` for website plus PDF and selects the cached compiler
+by default for `zel pdf` and PDF-enabled builds. Published rc.20 still needs
+`--pdf-backend cached`. The [book Quickstart](/guide/quickstart/books) gives both
+forms and explains output locations, editing and offline reuse.
+</Callout>
+
+
 <Callout type="tip" title="Available in candidate 0.2.0-rc.20">
 The portable target runs entirely inside `zel`. It needs no Docker, Node, or
 network connection. Rich `file` and `static` targets download a verified renderer
@@ -520,7 +528,7 @@ LuaLaTeX PDF and download links before publishing either output. Saved
 `pdf.enabled: true` selects this for ordinary builds; `--no-pdf` requests a web-only
 build. `--pdf` and `--no-pdf` apply to the portable target. Add
 `--pdf-backend cached` for the optional verified compiler/private Node download;
-then `--offline` reuses both cached packages. The default PDF backend remains
-`container`. See
+then `--offline` reuses both cached packages. Rc.20 defaults to `container`;
+rc.21 source defaults to `cached` and accepts `zel bp` for the combined build. See
 [book PDF export](/cli/books#optional-pdf-export-current-source) for prerequisites
 and the first print template’s supported subset.

@@ -28,7 +28,7 @@ pub(crate) fn configure(backend: Backend) {
     let _ = BACKEND.set(backend);
 }
 pub(crate) fn selected_backend() -> Backend {
-    *BACKEND.get().unwrap_or(&Backend::Container)
+    *BACKEND.get().unwrap_or(&Backend::Cached)
 }
 
 // Official Pandoc Ubuntu variant includes LuaLaTeX and Latin Modern.

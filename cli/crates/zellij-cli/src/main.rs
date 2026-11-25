@@ -65,7 +65,7 @@ fn main() {
                 | Command::List(_)
                 | Command::Explain { .. }
                 | Command::Detect { .. }
-                | Command::Check { .. }
+                | Command::Check(args::CheckArgs { .. })
                 | Command::Doctor { .. }
                 | Command::Version
                 | Command::Templates(_)
@@ -97,13 +97,13 @@ fn main() {
         Command::Explain { ref section_type } => explain(section_type, cli.json),
         Command::Context { ref file } => write_context(file.as_deref(), cli.json),
         Command::Detect { ref dir } => detect(dir, cli.json),
-        Command::Check {
+        Command::Check(args::CheckArgs {
             ref dir,
             ref target,
             offline,
             deep,
             strict,
-        } => validation::check(
+        }) => validation::check(
             dir.as_ref(),
             target.as_deref(),
             zellij_engine::CheckOptions { deep, strict },
@@ -145,7 +145,7 @@ fn main() {
             port,
             ref base_path,
         } => preview::serve(dir.as_ref(), port, base_path),
-        Command::View {
+        Command::View(args::ViewArgs {
             ref dir,
             ref target,
             offline,
@@ -158,7 +158,7 @@ fn main() {
             ref browser,
             watch,
             pdf,
-        } => preview::view(
+        }) => preview::view(
             dir.as_ref(),
             preview::ViewOptions {
                 target: target.as_deref(),
@@ -178,7 +178,7 @@ fn main() {
         Command::Export { ref format } => match format {
             args::ExportFormat::Pdf(options) => pdf::standalone(options),
         },
-        Command::Build {
+        Command::Build(args::BuildArgs {
             pdf,
             offline,
             ref dir,
@@ -190,7 +190,7 @@ fn main() {
             ref name,
             ref theme,
             ref overrides,
-        } => build_dispatch(BuildInvocation {
+        }) => build_dispatch(BuildInvocation {
             dir: dir.as_ref(),
             target: target.as_deref(),
             out: out.as_deref(),

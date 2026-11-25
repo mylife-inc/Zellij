@@ -8,6 +8,26 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-25**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-25: short workflows and use-case Quickstart — rc.21 source**
+
+Implementation commit: `98a2cff`. The user requested shorter PDF and other long recipes, plus detailed book and
+website-template Quickstarts. `zel pdf` retains PDF-only output but now selects
+the verified cache by default. New shared-handler presets are `bp` (build with
+PDF), `bs` (HTTP static build), `vw` (watched preview) and `lint` (deep/strict
+validation). Generated CI preserves older pins' container requirements and uses
+cached PDF for rc.21 or later. Container acceptance opts in explicitly. Book
+starter README changes use new immutable versions with CLI rc.21 minima.
+See [the audit and implementation record](specs/zel-short-workflows-2026-11-25.md).
+These changes are not yet a published release; public guides retain rc.20
+installation commands and clearly mark rc.21 short recipes with old equivalents.
+
+The prior guide update PR #256 merged as `b9f23ea`, identical in tree to tested
+`539d6b1`; PR CI `45577816156` and docs `45577816193` passed. Production docs
+`45581948168` and base images `45581948169` passed. Main CI `45581948158` initially
+failed because GitHub never assigned the macOS ARM Homebrew runner (capacity
+annotations, no test steps). Its targeted retry passed unchanged. Preserve this
+infrastructure event separately from the historical browser timing findings.
+
 **2026-11-25: rc.20 optional cached PDF — published**
 
 PR #255 merged as `65249fa`, tree-identical to tested `0396005`. Regular CI

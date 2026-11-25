@@ -8,13 +8,13 @@ fn command(root: &Path) -> Command {
     let mut c = Command::new(env!("CARGO_BIN_EXE_zel"));
     c.current_dir(root)
         .env("PATH", root.join("bin"))
-        .env_remove("ZEL_PDF_BACKEND")
+        .env("ZEL_PDF_BACKEND", "container")
         .env("DOCKER_HOST", "unix:///fixture.sock")
         .env("CONTAINER_HOST", "unix:///fixture-other.sock");
     c
 }
 #[test]
-fn cached_pdf_preflight_is_read_only_and_offline_never_falls_back_to_container() {
+fn default_cached_pdf_preflight_is_read_only_and_offline_never_falls_back_to_container() {
     let tmp = tempfile::tempdir().unwrap();
     let root = tmp.path();
     site(root);
@@ -29,7 +29,7 @@ fn cached_pdf_preflight_is_read_only_and_offline_never_falls_back_to_container()
         command(root)
             .env("ZELLIJ_HOME", &home)
             .env_remove("ZEL_ENGINE_CACHE")
-            .env("ZEL_PDF_BACKEND", "cached")
+            .env_remove("ZEL_PDF_BACKEND")
             .args(args)
             .output()
             .unwrap()
@@ -44,7 +44,11 @@ fn cached_pdf_preflight_is_read_only_and_offline_never_falls_back_to_container()
     assert!(run(&["pdf", "--check", "--offline"]).status.success());
     assert!(run(&["build", "--no-pdf", "--offline"]).status.success());
     let before = fs::read(root.join("site/index.html")).unwrap();
-    for args in [vec!["pdf", "--offline"], vec!["build", "--offline"]] {
+    for args in [
+        vec!["pdf", "--offline"],
+        vec!["build", "--offline"],
+        vec!["bp", "--offline"],
+    ] {
         let result = run(&args);
         assert!(!result.status.success(), "{result:?}");
         assert!(String::from_utf8_lossy(&result.stderr).contains("compiler is not cached"));
