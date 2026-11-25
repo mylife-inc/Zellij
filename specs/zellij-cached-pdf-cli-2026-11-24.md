@@ -88,6 +88,13 @@ completion label. PR #244 proves the clean compiler build but explicitly does
 not qualify modified-library relinking. The policy now retains that distinction
 and lists the relink exercise as outstanding; the actual hashes are unchanged.
 
+The initial exact-head PDF run `45530308441` at `5711954` rejects stale source
+inventories before typesetting: the policy clarification also changes the
+generated inventory's review fields and policy hash. Regeneration from the
+verified original inputs changes only `openItems`, `resolvedItems` and
+`policySha256` in the three source locks. Package/resource bytes, upstream hashes
+and verification guards remain unchanged. The initial failure is retained.
+
 ## Remaining release work
 
 Resolve the scoped licensing decision, finish the exact component/source review
