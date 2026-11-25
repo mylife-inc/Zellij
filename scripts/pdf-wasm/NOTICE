@@ -1,3 +1,7 @@
+Zellij-authored PDF adapter work is Copyright (c) 2026 Shebka, licensed under
+GPL-2.0-only. See LICENSE and LICENSE-SCOPE.md. The original third-party notice
+below remains in effect for its covered material.
+
 Resource resolution and TeX configuration in pass.mjs follow the WasmTex
 LuaHBTeX controller at commit 1334ff2f6df172fbbb2dfee11dfafebc8b921817:
 https://github.com/corca-ai/wasmtex/blob/1334ff2f6df172fbbb2dfee11dfafebc8b921817/wasm-build/luatex-worker.js

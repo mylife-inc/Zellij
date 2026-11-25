@@ -4,6 +4,11 @@ This directory is a **private qualification artifact**, not a released toolchain
 It changes no third-party license and does not declare redistribution review
 complete. The installed zel CLI does not download or use it.
 
+ZELLIJ-PDF-ADAPTER-LICENSE.txt and ZELLIJ-PDF-ADAPTER-SCOPE.md preserve the owner's
+approved GPL-2.0-only grant for Shebka's original PDF adapter work. The original
+upstream MIT notice remains in ZELLIJ-ADAPTER-NOTICE.txt. This grant does not change
+the Rust CLI, website engine or other Zellij source licenses.
+
 NOTICES.json maps every collected notice to its original upstream path, source
 archive and exact bytes. The licenses directory preserves those bytes unchanged;
 identical notices may share a hash-named file. Package licence identifiers are
@@ -29,4 +34,4 @@ later 3.4 component with ambiguous version wording is not included; its earlier
 qualification history is preserved in the project audit records. This selection
 does not edit an original notice or claim to clarify the later release's terms.
 NOTICES.json records the outstanding final distribution review. Completing this
-directory does not finish CLI integration or public-package acceptance.
+directory does not finish public-package acceptance.

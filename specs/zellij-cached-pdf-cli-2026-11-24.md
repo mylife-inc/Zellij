@@ -3,7 +3,7 @@
 Status: development integration, not a published compiler package. Released
 rc.19 and the current default still use the container backend. The
 [scoped adapter licensing decision](zellij-pdf-distribution-decision-2026-11-24.md)
-and final distribution review remain pending.
+is approved and applied; final distribution review remains pending.
 
 ## Command behavior
 
@@ -66,8 +66,9 @@ an empty system PATH. Its four scenario groups cover:
    after an authored Markdown edit.
 
 The loopback server deliberately supplies a **synthetic release-profile fixture**.
-Its simulated review/license entries grant no permissions and are never published
-or uploaded. Only the verification receipt leaves the runner. Six-platform CI
+Its simulated review entry does not authorize compiler distribution; the actual
+approved adapter license and original third-party notices are retained. The
+fixture archive is never published or uploaded. Only the verification receipt leaves the runner. Six-platform CI
 runs the same installed-command checks alongside qualification/source/package
 parity; the parity job requires all six receipts. This is implementation
 acceptance, not verification of a public release download.
@@ -95,9 +96,32 @@ verified original inputs changes only `openItems`, `resolvedItems` and
 `policySha256` in the three source locks. Package/resource bytes, upstream hashes
 and verification guards remain unchanged. The initial failure is retained.
 
+Normal CI `45530964794` at `013dc78` passes all 37 jobs with one conditional skip;
+Showcase reports 552 passed, 169 conditional skips and no flaky results. Docs
+validation `45530964705` passes. PDF run `45530964691` passes source correspondence
+and five complete platform jobs, but the Intel Mac cache harness stops a cold
+acquisition/compile at its 45-second acceptance deadline before the installed
+CLI tests. The failure captured no phase data and does not establish a compiler
+defect or prove a scheduling cause. Local phase instrumentation then measures
+about 25 seconds cold and 20 seconds offline, both producing equivalent PDFs.
+
+The harness now retains acquisition/verification/pass timings and uses the same
+120-second compilation allowance as installed-command acceptance. Read-only
+checks retain their 45-second bound; compiler limits (120 seconds per pass,
+600 seconds overall), negative deadline tests and cancellation checks are
+unchanged. The complete CI job gets 45 minutes for cold Rust compilation, full
+source packaging and the expanded suite. The original timeout remains recorded;
+later success is not proof of its underlying host timing cause.
+
+The owner subsequently approved the PDF-only GPL-2.0-only scope. The exact GNU
+license text, separate scope/copyright file and original MIT attribution are now
+retained by both qualification archives and checked by the source-package tests.
+The runtime fixture simulates only distribution review, preserving the actual
+adapter license. No compiler package is published by this approval.
+
 ## Remaining release work
 
-Resolve the scoped licensing decision, finish the exact component/source review
+With the scoped licensing decision approved, finish the exact component/source review
 and implement paired runtime/source release packaging. Then qualify real public
 downloads, switch the default only when those packages are available, and ship a
 new candidate with matching documentation. No release flag, source grant or

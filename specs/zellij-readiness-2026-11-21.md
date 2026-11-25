@@ -75,7 +75,8 @@ and notice packages, and 120 manuscripts across six native targets (PR #252).
 The [24 November CLI integration](zellij-cached-pdf-cli-2026-11-24.md) connects
 the opt-in cached backend and private Node to installed commands. Its synthetic
 release-profile acceptance does not authorize distribution; the
-[scoped licensing decision](zellij-pdf-distribution-decision-2026-11-24.md) is pending.
+[scoped licensing decision](zellij-pdf-distribution-decision-2026-11-24.md) is approved
+and applied to the isolated adapter; component/relink and public-package acceptance remain.
 The [source-backed roadmap](zellij-cached-toolchains-2026-11-21.md) records their
 scope and acceptance requirements. Priorities 1–2 (static validation and HTTP
 export/deployment builds) are complete in rc.18; priority 3 (editable sources)

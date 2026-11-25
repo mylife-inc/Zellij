@@ -250,6 +250,8 @@ def assemble(cache, output):
                                        "archive": item.get("archive", merged["engineSource"]["name"]),
                                        "bytes": len(data), "sha256": s.digest(data)})
         write_bytes(notice_root, "ZELLIJ-ADAPTER-NOTICE.txt", build_files["NOTICE"])
+        write_bytes(notice_root, "ZELLIJ-PDF-ADAPTER-LICENSE.txt", build_files["LICENSE"])
+        write_bytes(notice_root, "ZELLIJ-PDF-ADAPTER-SCOPE.md", build_files["LICENSE-SCOPE.md"])
         for name, data in ec.items():
             write_bytes(notice_root, "originals/ec/" + name, data)
         for name, data in originals.items():

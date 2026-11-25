@@ -1,6 +1,6 @@
-// Private contract fixture only: it deliberately simulates a reviewed manifest.
-// It grants no license, does not promote qualification archives, and must never
-// be uploaded. The installed CLI's default remains the container until release.
+// Private contract fixture only: it deliberately simulates distribution review.
+// It does not approve publication or promote qualification archives and must
+// never be uploaded. The CLI default remains the container until release.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { execFileSync, spawn } from 'node:child_process';
@@ -74,7 +74,7 @@ async function fixture() {
   const manifest = await json(path.join(compiler, 'manifest.json'));
   Object.assign(manifest, { format: 2, kind: 'zellij-pdf-toolchain', redistribution_review_complete: true });
   manifest.source_archive.name = `zel-pdf-sources-v${version}.tar.gz`;
-  for (const name of ['ZELLIJ-PDF-ADAPTER-LICENSE.txt', 'DISTRIBUTION-REVIEW.json']) {
+  for (const name of ['DISTRIBUTION-REVIEW.json']) {
     const relative = 'notices/' + name;
     const data = Buffer.from('TEST FIXTURE ONLY: simulated review; no license or publication permission.\n');
     await writeFile(path.join(compiler, relative), data);

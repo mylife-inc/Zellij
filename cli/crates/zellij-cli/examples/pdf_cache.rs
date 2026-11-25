@@ -10,6 +10,7 @@ mod user_home;
 use std::{
     path::PathBuf,
     sync::{Arc, atomic::AtomicBool},
+    time::Instant,
 };
 fn main() {
     if let Err(error) = execute() {
@@ -18,6 +19,16 @@ fn main() {
     }
 }
 fn execute() -> zellij_core::Result<()> {
+    let started = Instant::now();
+    let trace = std::env::var_os("ZEL_PDF_CACHE_TEST_TRACE").is_some();
+    let phase = |label: &str| {
+        if trace {
+            eprintln!(
+                "PDF cache phase: {} ms {label}",
+                started.elapsed().as_millis()
+            );
+        }
+    };
     let args = std::env::args_os().skip(1).collect::<Vec<_>>();
     if args.len() != 5 {
         return Err(zellij_core::Error::InvalidArgument(
@@ -44,12 +55,14 @@ fn execute() -> zellij_core::Result<()> {
     let signal_stop = stop.clone();
     ctrlc::set_handler(move || signal_stop.store(true, std::sync::atomic::Ordering::Release))
         .map_err(|e| zellij_core::Error::InvalidArgument(e.to_string()))?;
+    phase("acquisition started");
     let package = pdf_package::obtain(
         args[0].to_str().unwrap_or(""),
         mode != "online",
         &stop,
         false,
     )?;
+    phase("cache verified");
     if mode != "inspect" {
         zellij_engine::pdf_runner::run(
             zellij_engine::pdf_runner::Runner {
@@ -61,8 +74,17 @@ fn execute() -> zellij_core::Result<()> {
             &PathBuf::from(&args[4]),
             &stop,
             zellij_engine::pdf_runner::Options::default(),
-            |_| Ok(()),
+            |event| {
+                use zellij_engine::pdf_runner::Event;
+                match event {
+                    Event::Ready { .. } => phase("compiler ready"),
+                    Event::Pass { pass, .. } => phase(&format!("pass {pass} started")),
+                    Event::Complete { .. } => phase("compiler complete"),
+                }
+                Ok(())
+            },
         )?;
+        phase("artifacts verified");
     }
     println!(
         "{}",

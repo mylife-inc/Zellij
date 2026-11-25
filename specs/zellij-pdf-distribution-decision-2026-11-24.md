@@ -1,7 +1,8 @@
 # Optional PDF distribution decision — 24 November 2026
 
-Status: concrete licensing proposal; owner approval pending. This file grants no
-license and does not permit publication of the experimental compiler package.
+Status: the owner approved the PDF-only licensing scope on 24 November 2026.
+The scoped grant is applied in `scripts/pdf-wasm/LICENSE-SCOPE.md` and `LICENSE`.
+Final component review, relink qualification and compiler publication remain open.
 
 ## Verified boundary
 
@@ -21,27 +22,33 @@ claim upstream promotion.
 The Zellij JavaScript adapter directly loads the compiler and supplies its Wasm
 imports, virtual filesystem and worker/process boundary. The Rust CLI launches
 that separate process and exchanges generated files and bounded protocol events.
-The existing `scripts/pdf-wasm/NOTICE` grants upstream MIT permissions only; it
-is not an explicit license for all newly written Zellij adapter code.
+Before this decision, `scripts/pdf-wasm/NOTICE` preserved upstream MIT permissions
+without an explicit license for all newly written Zellij adapter work. The new
+scoped grant adds that permission while preserving the original upstream notice.
 
-## Proposed owner decision
+## Approved owner decision
 
-License **Zellij-authored files under `scripts/pdf-wasm/` only** under
+The owner approved licensing **Zellij-authored files under `scripts/pdf-wasm/` only** under
 GPL-2.0-only, with copyright attributed to Shebka. This includes the isolated
 JavaScript runner, maintainer build/verification tools, tests and accompanying
-original documentation/metadata. Retain all existing upstream notices and terms;
-this proposal does not relicense third-party material. Add an explicit scoped
-license and copyright notice to that directory and preserve it in the runtime
-and corresponding-source packages.
+original documentation/metadata. Existing upstream notices and terms remain;
+the grant does not relicense third-party material. The directory now contains an
+explicit scoped copyright notice and the unmodified GNU GPLv2 text. Both are
+preserved in the qualification runtime and corresponding-source packages.
+
+The license text is copied verbatim from
+[GNU's GPLv2 text](https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt): 17,984
+bytes, SHA-256 `edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6`.
+The copyright/scope statement is separate, so the GNU license text is unmodified.
 
 Root project terms, Rust crates, website engine, content/templates and other
 files remain unchanged. The public source required for this adapter and its
 third-party compiler must remain accessible alongside the corresponding runtime
 releases even if the remainder of Zellij later moves to a private or sealed
 repository. Existing copies cannot have their granted GPL permissions withdrawn.
-No licensing change is applied until the owner approves this specific scope.
+The approved grant is limited to this specific scope. Root license metadata is unchanged.
 
-## Distribution arrangement after approval
+## Distribution arrangement before publication
 
 - Publish the exact matching source archive beside each optional runtime on the
   same GitHub release, with hashes and a versioned source link in the runtime's

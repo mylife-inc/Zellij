@@ -9,7 +9,7 @@ its pinned container for PDF. Ordinary rich web builds use the cached renderer.
 The probe prepares 287 hash-pinned resources from the upstream engine release,
 an immutable TeX mirror and independently pinned original archives. It then compiles
 generated Zellij print inputs without a network resolver, container, system TeX,
-curl, Python or npm packages. The maintainer invokes Node 24 explicitly here; a
+curl, Python or npm packages. The maintainer invokes Node 24 explicitly here; the
 development CLI integration reuses the verified private Node in the renderer
 cache rather than asking users to install Node or download a second copy.
 
@@ -21,10 +21,17 @@ With an empty system PATH it checks cold download, native compatibility checking
 offline cache misses, `export pdf`, `build --pdf`, output preservation and a
 watched offline `view`. Only its verification receipt may be uploaded. Never
 publish these temporary fixture archives or treat their simulated review flag
-as licensing approval. The ordinary qualification package/cache remains separate.
+as compiler distribution approval. The ordinary qualification package/cache remains separate.
+
+Shebka's original work in this directory is licensed under GPL-2.0-only, as
+approved by the owner on 24 November 2026. See [LICENSE-SCOPE.md](LICENSE-SCOPE.md)
+and [LICENSE](LICENSE); the upstream MIT notice remains in [NOTICE](NOTICE).
+The Rust CLI, website engine and other directories retain their existing terms.
+The source/runtime qualification packages preserve these files. This scoped
+grant does not complete third-party component review or approve compiler publication.
 
 See the [CLI integration record](../../specs/zellij-cached-pdf-cli-2026-11-24.md)
-and the [pending distribution decision](../../specs/zellij-pdf-distribution-decision-2026-11-24.md).
+and the [distribution decision](../../specs/zellij-pdf-distribution-decision-2026-11-24.md).
 
 ## Run
 

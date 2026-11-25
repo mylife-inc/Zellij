@@ -3,7 +3,7 @@
 
 The optional compiler has no Node binary or source tarball inside it. Its
 manifest binds the separate corresponding-source archive by size and SHA-256.
-Redistribution review and the scoped adapter licensing decision remain incomplete.
+Adapter licensing is scoped and approved; final compiler distribution review remains open.
 """
 import argparse
 import json

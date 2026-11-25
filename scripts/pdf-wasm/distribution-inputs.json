@@ -1,6 +1,8 @@
 {
   "schemaVersion": 1,
   "buildFiles": [
+    "LICENSE",
+    "LICENSE-SCOPE.md",
     "NOTICE",
     "README.md",
     "bundle.mjs",

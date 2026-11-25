@@ -1,7 +1,8 @@
 # Optional PDF toolchain — original sources and rebuild inputs
 
-This is a private qualification archive. It is not a CLI installation package,
-does not grant new licenses and does not declare release review complete.
+This is a private qualification archive. It is not a CLI installation package
+and does not declare release review complete. It preserves the approved scoped
+adapter license and the original third-party component licenses.
 
 SOURCE-MANIFEST.json inventories every packaged file by path, size and SHA-256.
 It binds the runtime, format and font input locks and records their matched

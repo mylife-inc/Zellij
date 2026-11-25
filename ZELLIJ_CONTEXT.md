@@ -23,8 +23,9 @@ read-only cache diagnostics, strict receipt/artifact validation and previous-out
 preservation follow the shared execution path. Six-platform acceptance uses
 temporary synthetic release-profile fixtures, never published compiler archives.
 See the [integration record](specs/zellij-cached-pdf-cli-2026-11-24.md).
-The [scoped adapter licensing decision](specs/zellij-pdf-distribution-decision-2026-11-24.md)
-requires owner approval; no license is granted yet. Final distribution packaging
+The owner approved the [scoped adapter licensing decision](specs/zellij-pdf-distribution-decision-2026-11-24.md):
+Shebka-authored `scripts/pdf-wasm/` files now use GPL-2.0-only; the root package,
+Rust crates and website engine retain their existing terms. Final distribution packaging
 and real public-package acceptance remain. Container stays the default and rc.19
 is unchanged. Earlier browser timing findings remain separate and unresolved.
 

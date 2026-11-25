@@ -213,6 +213,7 @@ fn validate_files(root: &Path, stop: &AtomicBool, released: bool) -> Result<Veri
     if released {
         for required in [
             "notices/ZELLIJ-PDF-ADAPTER-LICENSE.txt",
+            "notices/ZELLIJ-PDF-ADAPTER-SCOPE.md",
             "notices/DISTRIBUTION-REVIEW.json",
             "notices/originals/url/tex/latex/url/url.sty",
             "notices/originals/url/doc/latex/url/url.tex",
@@ -559,6 +560,7 @@ mod tests {
         manifest["source_archive"]["name"] = json!(format!("zel-pdf-sources-v{VERSION}.tar.gz"));
         let required = [
             "notices/ZELLIJ-PDF-ADAPTER-LICENSE.txt",
+            "notices/ZELLIJ-PDF-ADAPTER-SCOPE.md",
             "notices/DISTRIBUTION-REVIEW.json",
             "notices/originals/url/tex/latex/url/url.sty",
             "notices/originals/url/doc/latex/url/url.tex",

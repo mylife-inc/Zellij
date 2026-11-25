@@ -29,6 +29,9 @@ for (const [runner, platform] of matrix) {
   assert.equal(cache.manifestSha256, toolchain.manifestSha256);
   assert.deepEqual(cache.archive, toolchain.archive);
   assert.deepEqual(cache.sourceArchive, toolchain.sourceArchive);
+  for (const key of ['coldMs', 'offlineMs']) {
+    assert(Number.isInteger(cache.timings?.[key]) && cache.timings[key] > 0, `Missing ${key} timing on ${platform}`);
+  }
   assert.equal(installed.platform, platform);
   assert.equal(installed.fixtureOnly, true);
   assert.equal(installed.releaseApproved, false);
