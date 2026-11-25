@@ -115,3 +115,9 @@ container PDF acceptance script after this change moved the bundled starter to
 earlier technical/study typesetting checks. The script now selects 0.3.0; the
 historical archive remains unchanged. Hosted verification is repeated on the
 corrected head rather than treating those failures as compiler regressions.
+
+The next run completed the main and multilingual container PDF checks, then
+found that the separate 100-chapter acceptance driver still inherited the new
+cached default. It attempted to download an unpublished rc.21 asset and failed
+before typesetting. That driver now explicitly selects `container`, like the
+other container comparison suites. Default cached coverage remains separate.
