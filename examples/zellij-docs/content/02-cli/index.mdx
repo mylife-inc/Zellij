@@ -25,15 +25,15 @@ There is a well-known terminal multiplexer called Zellij whose binary is
 
 ## Installing
 
-[Candidate 0.2.0-rc.20](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.20)
+[Candidate 0.2.0-rc.21](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.21)
 targets GNU/Linux, macOS and Windows on x64 and ARM64. Check the release page
 for publication status, pinned installers, package checksums and release notes.
-This reference covers candidate `0.2.0-rc.20`, including separate company branding,
+This reference covers candidate `0.2.0-rc.21`, including separate company branding,
 preview upgrades, versioned templates and matching default engine versions. Pre-1.0 installation uses
 explicit candidates; obsolete distributions are retired after their replacements
 are verified.
 
-Candidate rc.20 fixes desktop menu resize restoration so it respects a newer
+Candidate rc.21 fixes desktop menu resize restoration so it respects a newer
 keyboard-focus or pointer choice. It includes composition presets, book publication, optional PDF
 build/preview/delivery and book-classic 0.2.0, plus shared equation/statement
 references, numeric citations, glossary and index. Multilingual print, print
@@ -62,8 +62,9 @@ The tap README identifies its currently published version. Until 1.0, the formul
 clearly labels development previews. It installs Bash, Zsh and Fish completions
 and verifies archive checksums. No Node or container runtime is installed for
 portable web-only documentation. Rich builds download a private renderer on
-first use. Image builds, hosted Next development and optional PDF
-typesetting require a supported container runtime.
+first use. Optional PDF generation downloads its compiler and reuses the private
+runtime by default. Image builds, hosted Next development and explicitly selected
+container PDF require a supported container runtime.
 Use Homebrew to update a Homebrew installation; `zel upgrade` detects its
 ownership marker and prints the correct command without changing any files.
 
@@ -79,7 +80,7 @@ scoop update
 scoop update zel
 ```
 
-The bucket publishes candidate `0.2.0-rc.20` for native x64 and ARM64, with
+The bucket publishes candidate `0.2.0-rc.21` for native x64 and ARM64, with
 checksum-pinned archives. It uses Scoop's command shim and does not install
 Node, a container runtime or a shell profile. Portable web-only builds need
 none of those dependencies. Remove the package with `scoop uninstall zel`.
@@ -92,8 +93,8 @@ for the tested Windows versions, shells and update boundaries.
 
 ### WinGet status
 
-Candidate rc.20 includes verified native x64/ARM64 WinGet manifests in
-`zel-winget-v0.2.0-rc.20.zip` on the release page. It preserves WinGet ownership
+Candidate rc.21 includes verified native x64/ARM64 WinGet manifests in
+`zel-winget-v0.2.0-rc.21.zip` on the release page. It preserves WinGet ownership
 during updates. Publishing the manifest bundle is separate from acceptance
 into Microsoft's community catalog. The rc.15 [catalog submission](https://github.com/microsoft/winget-pkgs/pull/484934) is under review;
 `winget install --id Shebka.Zel --exact` is not yet an available installation
@@ -101,7 +102,7 @@ method. Use Scoop or the pinned standalone installer below.
 
 ### Native archives and installers
 
-Candidate rc.20 implements every registered command family. Imports cover
+Candidate rc.21 implements every registered command family. Imports cover
 MkDocs, Docusaurus, VitePress, Jekyll, Hugo and Sphinx within their documented
 declarative subsets. Deployment supports Netlify, Cloudflare Pages, Vercel,
 GitHub Pages, S3, existing Fly web apps, Railway image services and image
@@ -117,15 +118,15 @@ for current evidence. Command availability does not promise full source-tool
 plugin/theme compatibility or support for an unlisted provider.
 
 ```bash title="terminal"
-curl -fsSL https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.20/install.sh -o install.sh
-ZEL_VERSION=v0.2.0-rc.20 ZEL_RELEASE_BASE_URL=https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.20 sh ./install.sh
+curl -fsSL https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21/install.sh -o install.sh
+ZEL_VERSION=v0.2.0-rc.21 ZEL_RELEASE_BASE_URL=https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.21 sh ./install.sh
 ```
 
 Or download the archive for your platform, verify it against its `.sha256`, and
 put `zel` on your PATH. See [the Quickstart](/guide/quickstart) for the detail.
 
 For Windows, use the candidate release page's pinned PowerShell instructions.
-They download its attached `install.ps1` and select version `v0.2.0-rc.20` and
+They download its attached `install.ps1` and select version `v0.2.0-rc.21` and
 that release's asset directory. The installer supports
 Windows PowerShell 5.1 and PowerShell 7, selects x64 or ARM64, verifies the
 checksum and executable version, and installs into
@@ -152,10 +153,10 @@ The default container image matches the CLI version. To explicitly select an
 image for this session's container operations:
 
 ```bash
-export ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base:0.2.0-rc.20
+export ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base:0.2.0-rc.21
 ```
 
-In PowerShell, use `$env:ZELLIJ_IMAGE = 'ghcr.io/mylife-inc/zellij-base:0.2.0-rc.20'`.
+In PowerShell, use `$env:ZELLIJ_IMAGE = 'ghcr.io/mylife-inc/zellij-base:0.2.0-rc.21'`.
 Image tags omit the version's leading `v`; candidates do not update `latest`.
 Rich file/static build, check and preview use their verified renderer cache,
 independently of `ZELLIJ_IMAGE`.
@@ -179,7 +180,7 @@ independently of `ZELLIJ_IMAGE`.
   </Card>
 </CardGrid>
 
-Candidate rc.20 includes template browsing and `zel create`. See
+Candidate rc.21 includes template browsing and `zel create`. See
 [templates](/cli/templates) for offline starters, exact revisions and local catalogs.
 
 ## The whole surface
@@ -217,7 +218,7 @@ Candidate rc.20 includes template browsing and `zel create`. See
 | [`zel completions`](/cli/completions) | Generate shell completion scripts; shortcut `comp` | **Available** |
 
 <Callout type="info" title="Source and release versions">
-Rows marked **Available** are included in candidate `0.2.0-rc.20`. A command's page records its
+Rows marked **Available** are included in candidate `0.2.0-rc.21`. A command's page records its
 supported renderers, providers and options; availability does not imply every
 historical proposal is implemented. Stable `0.1.3` does not include the full table.
 </Callout>
@@ -309,7 +310,7 @@ Hosted `dev` and `build --target image` run the Next.js engine in a container
 from a public image. Rich `build` defaults to the downloaded `file` renderer;
 explicit `--target static` uses the same cache for HTTP output.
 
-In candidate rc.20, rich `check`, `watch`, `view` and `view --watch` also
+In candidate rc.21, rich `check`, `watch`, `view` and `view --watch` also
 default to that cached renderer. `--offline` requires an existing cache.
 Both `--target file` and `--target static` use the verified cache.
 Portable `build`, `check`, `watch`, `dev` and `view` run
@@ -319,7 +320,7 @@ publication uses the container runtime. Static Netlify, Cloudflare Pages,
 Vercel, GitHub Pages and S3 deployment uses native uploads after either a native
 portable build or a cached rich build.
 
-Candidate rc.20 also generates default `eject` and `new app` wrappers from a
+Candidate rc.21 also generates default `eject` and `new app` wrappers from a
 separate [editable-source cache](/cli/eject#cached-sources-and-offline-use), with
 no container or Node/npm needed for generation. Explicit image ejection retains
 its selected-container behavior; running an editable Next app needs Node/npm.

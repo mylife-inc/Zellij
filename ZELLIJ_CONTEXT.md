@@ -8,7 +8,7 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-25**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-25: rc.21 publication follow-up — in progress**
+**2026-11-25: rc.21 publication follow-up — published**
 
 PR #257 merged as `0adba60`, tree-identical to the 53-check passing `f00aca6`.
 Production docs and base images passed. Main CI then failed one Mac Vercel
@@ -17,10 +17,24 @@ fixture reproduces a missing timeout diagnosis, now corrected without exposing
 response data or retrying deployment creation in `08a0b28`. Two hundred local runs did not
 reproduce the original intermittent assertion, so its exact cause remains
 unproven. See [the release and timeout record](specs/zellij-rc21-release-2026-11-25.md).
-Rc.20 remains the public/installed candidate until the rc.21 publication gates
-and public-download checks complete.
+PR #258 merged as `cd7608e`, tree-identical to tested `178c8e0`. All 37 PR and
+37 post-merge CI jobs pass. The immutable rc.21 tag stays at `cd7608e`; release
+run `45707661537` passes all 55 jobs on its first attempt, including six native
+public installations, six complete public cached-PDF checks and both Linux image
+architectures. Both repositories have 46 matching assets. Independent Mac
+verification checks both public repositories, and the installed rc.21 passes
+cold and offline PDF, rich file and HTTP builds with an empty PATH, the default
+resource home and public download URLs.
 
-**2026-11-25: short workflows and use-case Quickstart — rc.21 source**
+Homebrew and Scoop now carry the exact verified recipes; all eight actual
+rc.20-to-rc.21 upgrades pass. The new book template identities are recorded
+without changing older archives. Local published-guide validation and production
+build pass; browser preservation checks 61 routes, 282 original heading IDs,
+82 compatibility mappings and 29 original images without captured browser errors.
+The guide pull request and automatic production deployment follow this checkpoint.
+See [publication evidence](specs/evidence/zellij-rc21-release-2026-11-25.json).
+
+**2026-11-25: short workflows and use-case Quickstart — shipped in rc.21**
 
 Implementation commit: `98a2cff`. The user requested shorter PDF and other long recipes, plus detailed book and
 website-template Quickstarts. `zel pdf` retains PDF-only output but now selects
@@ -30,8 +44,9 @@ validation). Generated CI preserves older pins' container requirements and uses
 cached PDF for rc.21 or later. Container acceptance opts in explicitly. Book
 starter README changes use new immutable versions with CLI rc.21 minima.
 See [the audit and implementation record](specs/zel-short-workflows-2026-11-25.md).
-These changes are not yet a published release; public guides retain rc.20
-installation commands and clearly mark rc.21 short recipes with old equivalents.
+The refreshed guides use the released shortcuts, cached PDF default and rc.21
+installation commands. The detailed book and website-template Quickstarts
+cover creating, editing, validating, previewing and exporting each kind of site.
 
 The prior guide update PR #256 merged as `b9f23ea`, identical in tree to tested
 `539d6b1`; PR CI `45577816156` and docs `45577816193` passed. Production docs

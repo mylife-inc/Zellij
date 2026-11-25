@@ -63,7 +63,7 @@ and no browser library. They work offline with JavaScript disabled. Enable
 runtime. Diagram source stays readable without JavaScript; Mermaid grammar errors
 are reported in the browser, while native checks validate input limits.
 
-[Candidate 0.2.0-rc.20](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.20)
+[Candidate 0.2.0-rc.21](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.21)
 provides native x64 and ARM64 downloads for GNU/Linux, macOS and Windows, with
 pinned shell/PowerShell installers and checksums. Homebrew installation is
 `brew install mylife-inc/tap/zel`. Windows users can install through the owned
@@ -83,16 +83,14 @@ Rich HTTP `--target static` builds use the same downloaded renderer as `file`. S
 versions, commands and limits.
 
 `zel create my-book -t book-classic` creates a complete manuscript with a cover,
-preface, part, chapters and appendix. `zel build my-book --pdf` optionally adds
-a LuaLaTeX PDF and download link. Add `--pdf-backend cached` to generate it with
-the verified downloaded compiler/private Node, without installed Docker, Node,
-Python or TeX. The container backend remains the default in rc.20.
-Current rc.21 source makes the cached compiler the default: use `zel pdf` for
-PDF only, or `zel bp` for the website and PDF together. `zel bs` selects an HTTP
+preface, part, chapters and appendix. `zel pdf my-book` generates a PDF only;
+`zel bp my-book` builds the website with a PDF download. Both use the verified
+cached compiler/private Node by default, without installed Docker, Node, Python
+or TeX. `--pdf-backend container` retains the separate container toolchain. `zel bs` selects an HTTP
 static export, `zel vw` previews edits, and `zel lint` runs deep/strict validation.
 See the detailed [book Quickstart](examples/zellij-docs/content/01-guide/quickstart/books.mdx)
 and [website-template Quickstart](examples/zellij-docs/content/01-guide/quickstart/website-templates.mdx),
-which also give equivalent commands for the published rc.20 CLI.
+for step-by-step creation, editing, validation, previewing and sharing.
 PDF is off by default. Choose `book-technical` for mathematics and proofs or
 `book-study` for passages and commentary. All three editions coordinate web/print
 layouts. Print supports English, French, German and Spanish LTR and Arabic RTL,
@@ -126,8 +124,8 @@ creative-studio use version 0.1.3 with corrected inline authoring guides.
 Product-studio and api-platform retain version 0.1.2; previously published
 archives remain unchanged.
 
-The [candidate notes](specs/releases/v0.2.0-rc.20.md) describe the optional cached PDF
-compiler and its separately downloadable matching sources. Cached editable sources
+The [candidate notes](specs/releases/v0.2.0-rc.21.md) describe the short workflows,
+cached PDF default and separately downloadable compiler sources. Cached editable sources
 for default `eject` and `new app`, rich HTTP/file builds, validation and preview
 remain included.
 Wrapper generation needs only `zel`; running an editable Next app needs Node/npm. WinGet ownership protection and the x64/ARM64 manifest bundle remain
@@ -223,7 +221,7 @@ deployed.
 
 [`cli/`](cli) is `zel`: one native binary for scaffolding a content folder,
 converting one from another documentation tool, validating it, building it and
-shipping it. Candidate rc.20 builds rich double-click websites with a downloaded,
+shipping it. Candidate rc.21 builds rich double-click websites with a downloaded,
 verified renderer cached separately from the small CLI: no Docker, Node.js, npm
 or Python installation is required. `zel build` selects this for rich sites;
 `zel build --offline` requires the matching cache to be present. Explicit
@@ -231,7 +229,7 @@ or Python installation is required. `zel build` selects this for rich sites;
 their container workflow. Commands that describe Zellij's content
 model read the schema compiled into the native binary.
 
-Candidate rc.20 also uses the cached renderer for rich `zel check`,
+Candidate rc.21 also uses the cached renderer for rich `zel check`,
 `zel watch`, `zel view` and `zel view --watch`. These commands accept
 `--offline` for both `file` and `static`. Static deployment builds and optional
 import validation also reuse the cache.

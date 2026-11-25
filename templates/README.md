@@ -1,19 +1,19 @@
 # Zellij template catalog
 
 This is the authored source for the catalog bundled in `zel` and attached to
-CLI releases. It is independent of `examples/`. The rc.20 catalog contains nine
+CLI releases. It is independent of `examples/`. The rc.21 catalog contains nine
 starters. The five existing starters are:
 `product-docs` (portable handbook), `product-studio` (hosted product landing page),
 `book-classic` (portable book publication with optional LuaLaTeX PDF),
 `book-technical` (mathematics and proofs) and `book-study` (passages and commentary).
-The latter two start at template version 0.1.0 and require CLI/engine rc.8 or
-later. They set `book.edition` for coordinated
+The latter two use template version 0.2.0 with CLI rc.21 instructions; their
+manuscript format requires engine rc.8 or later. They set `book.edition` for coordinated
 web/print layouts and include citations, glossary and index examples. No artwork,
 font or runtime dependency is added.
 Product-docs remains at template version 0.1.0. Product-studio 0.1.2 requires
-CLI rc.14 and documents standalone rich building, validation and live preview. Book-classic 0.2.0
-requires CLI/engine 0.2.0-rc.6 and replaces the earlier reading-only starter in
-the bundled catalog; previously published 0.1.0 archives remain immutable.
+CLI rc.14 and documents standalone rich building, validation and live preview.
+Book-classic 0.3.0 requires CLI rc.21 for its short recipes; its manuscript format
+needs engine rc.6 or later. Previous archive identities remain immutable.
 
 The catalog also includes three website starters introduced in rc.9 at template version 0.1.0:
 
@@ -27,7 +27,7 @@ These are original designs with local SVG art, not copies of Apple, Linear,
 Stripe or another company's assets. They use the existing engine sections;
 no React, external fonts, tracking, image services or new dependencies are added.
 Their released 0.1.3 revisions require CLI rc.14 and retain the bento heading contrast fix.
-Included in rc.20, they correct inline guide instructions for standalone
+Included in rc.21, they correct inline guide instructions for standalone
 building, checking and previewing. Existing released 0.1.2 archive bytes are
 unchanged. Their READMEs
 cover rich `check`, `watch`, `view` and `view --watch` using the cached renderer.
@@ -42,7 +42,7 @@ All three have rich double-click output, optional HTTP viewing, light/dark theme
 controls, an editable second landing page and a customization guide. They do not
 configure PDF output. Creation works offline; builds reuse a renderer downloaded
 once and need no separately installed Docker, Node.js, npm or Python. Explicit
-HTTP static exports share that cache in rc.20; hosted `zel dev` still uses a
+HTTP static exports share that cache in rc.21; hosted `zel dev` still uses a
 container. Real signup, purchase and contact services belong
 to the author's product. The sample buttons point to functioning local pages.
 Earlier published identities retain their original bytes; README updates use new versions.
@@ -146,6 +146,6 @@ at the far right. The mobile header uses the complete navigation drawer.
 `api-platform` uses the `kie` theme, with a wide introduction, pricing,
 model cards, integration steps and a code example. Its four pages and original
 SVG artwork use no remote assets or services. Its current 0.1.2 revision requires
-CLI rc.14; the design uses features introduced in engine rc.10. The rc.20 catalog
+CLI rc.14; the design uses features introduced in engine rc.10. The rc.21 catalog
 includes nine starters. New template versions update build instructions without
 rewriting older archive identities. The API, plans and product names are fictional examples.

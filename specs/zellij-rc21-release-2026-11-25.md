@@ -1,6 +1,7 @@
 # Rc.21 release preparation and timeout follow-up
 
-Status: preparing the candidate; rc.20 remains published and installed.
+Status: rc.21 is published and installed; channel upgrades pass. Revised guides
+pass local checks and are ready for pull-request validation and publication.
 
 ## Short workflow checkpoint
 
@@ -54,3 +55,31 @@ runtime and corresponding sources from both release repositories before
 promoting the installation channels, updating the local CLI and changing the
 guides from upcoming to released rc.21. Keep publication receipts and actual
 rc.20-to-rc.21 channel-upgrade evidence distinct from source tests.
+
+## Publication result
+
+PR #258 merged as `cd7608e`, matching the tested tree at `178c8e0`. PR CI
+`45703096716` and post-merge CI `45707147021` each pass all 37 jobs without
+reruns. Base images `45707147017` pass. The annotated release tag remains fixed
+at that merge. Release `45707661537` completes with 55 passing jobs and one
+conditional skip on its first attempt.
+
+Both public repositories expose 46 matching assets. The six public PDF jobs
+verify actual compiler/renderer bytes and the complete matching source archive;
+all six native installation jobs and both Linux image architectures pass.
+Independent Mac checks repeat both public repositories. The installed standalone
+CLI also passes cold/default-home and offline PDF, rich file and HTTP builds
+with an empty PATH. Default PDF now uses the verified cache; explicit container
+selection remains supported and ordinary builds still opt in to PDF.
+
+Homebrew and Scoop use the exact public recipes, and all eight actual
+rc.20-to-rc.21 upgrades pass. Three new immutable book archive identities are
+registered from their verified public catalog. No prior releases or images were
+retired. Compiler source and notices retain their distribution obligations.
+
+The revised guides and use-case Quickstarts pass strict validation, a production
+build and browser preservation across 61 routes, 282 original headings,
+82 compatibility mappings and 29 unchanged images with no captured browser
+errors. Their pull request and automatic production deployment follow this
+checkpoint. Exact hashes, run IDs and upgrade logs are in the
+[publication evidence](evidence/zellij-rc21-release-2026-11-25.json).
