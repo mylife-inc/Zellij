@@ -46,7 +46,7 @@ the same resource home at runtime. Build output remains in the chosen project;
 temporary staging is cleaned up. Docker, Homebrew and Scoop retain their own
 image/package stores.
 
-Starting with candidate rc.19, default `zel eject` and `zel new app` download
+Starting with candidate rc.20, default `zel eject` and `zel new app` download
 editable sources into `cache/sources/<CLI-version>/`. Their `--offline` option
 requires an already verified cache. Each generated app receives its own
 `vendor/zellij` copy; editing or installing that app does not modify the cache.
@@ -130,7 +130,7 @@ legacy roots, explicit `.` retains the old content-discovery order.
 
 ## Book manuscripts
 
-Candidate rc.19 accepts an optional [versioned book manifest](/cli/books)
+Candidate rc.20 accepts an optional [versioned book manifest](/cli/books)
 in portable `zel.yaml`. It owns the reading order instead of `nav` and supplies
 title, authors, language, cover, parts and chapters. Existing documentation
 without `book` keeps its navigation behavior.
@@ -444,7 +444,7 @@ saved plan as `zel pub`. `--to netlify` cannot replace a saved image-push intent
 ## Shared CLI defaults
 
 The site layout, build/preview settings, image publication, static delivery,
-and saved `ci` settings are implemented in source. See [`zel ci`](/cli/ci) for
+and saved `ci` settings are included in rc.20. See [`zel ci`](/cli/ci) for
 `system`, `branch`, `workflow`, `zel-version`, `triggers`, `tags`, `schedules` and
 `production`. CI settings require `version: 1`; they are shared by both renderers.
 `convert`/`migrate --layout site` create this layout; `ship` also saves the selected
@@ -455,7 +455,7 @@ also implemented. See [deployment](/cli/deploy) for all seven provider adapters
 and their supported destination types.
 
 [Shortcuts](/cli/shortcuts) for working commands and
-[shell completions](/cli/completions) are implemented in source. They use the
+[shell completions](/cli/completions) are included in rc.20. They use the
 same configuration and defaults as the full command names.
 
 The [full CLI contract](https://github.com/mylife-inc/Zellij/blob/main/specs/zel-cli-contract-2026-10-18.md)

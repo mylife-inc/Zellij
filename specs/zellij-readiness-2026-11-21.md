@@ -1,6 +1,18 @@
 # Zellij readiness — 21 November 2026
 
-Updated 22 November: the published candidate is **v0.2.0-rc.19**, source
+Updated 25 November: the published candidate is **v0.2.0-rc.20**, source
+`65249fa`. All 55 release jobs pass, including six native public installations
+and six cached-PDF jobs checking both release repositories. Both repositories
+offer 46 matching assets. Independent public Mac checks and installed cold/offline
+builds using the default resource home pass. Use `--pdf-backend cached` to make
+PDFs without installed Docker, Node, Python or TeX; `container` remains the
+default. All eight actual rc.19-to-rc.20 Homebrew/Scoop upgrades pass.
+See the [rc.20 release record](zellij-rc20-cached-pdf-2026-11-24.md) and
+[publication evidence](evidence/zellij-rc20-release-2026-11-25.json).
+The first Windows qualification attempt had an original-source download timeout;
+its targeted retry passed unchanged. This is not a zero-bug or stable-1.0 claim.
+
+Previous 22 November checkpoint: the published candidate was **v0.2.0-rc.19**, source
 `3d3b426`. All 37 required source jobs, 40 release jobs and eight actual
 Homebrew/Scoop rc.18-to-rc.19 upgrades pass. Both public repositories have 42
 matching assets; independent public Mac checks and the installed empty-PATH
@@ -18,13 +30,13 @@ and [HTTP export](zellij-cached-http-export-2026-11-21.md) cache migrations now 
 | Area | Current state | Remaining boundary or task |
 | --- | --- | --- |
 | Documented CLI command families | Implemented, with native tests and the recorded release acceptance. | Provider-specific live behavior and external runners require separate acceptance. |
-| Rich websites | File and HTTP static build, check, watch and view share the verified cached renderer. First use downloads it; later operations support `--offline`. Native static deployment builds and optional import validation use the same cache. No user-installed Docker, Node or Python is required for these web rendering operations. | Default editable wrapper generation now also uses a verified source cache. Running Next apps, explicit image extraction, container images and PDF retain their documented prerequisites. |
-| Documentation and publishing | rc.19 guides and generated consumers pass their seven targeted gates; the diagnostic follow-up also passes Engine. PR #240 merges as `9e7c58e`; automatic production `45010872211` and nine live-page hydration/content checks pass. Refreshed fixture images pass fresh-pull HTTP/health/nonroot inspection. | Keep prerequisites and version pins current. The retained browser timing finding remains unresolved despite these passing gates. |
+| Rich websites | File and HTTP static build, check, watch and view share the verified cached renderer. First use downloads it; later operations support `--offline`. Native static deployment builds and optional import validation use the same cache. No user-installed Docker, Node or Python is required for these web rendering operations. | Default editable wrapper generation also uses a verified source cache. Running Next apps, explicit image extraction and container images retain their documented prerequisites. PDF has a separate opt-in cached backend in rc.20. |
+| Documentation and publishing | rc.20 guides document cached PDF and retain the default-container boundary. Local production build and browser preservation pass all 59 routes, 282 original heading IDs, 82 compatibility mappings and 29 original images without captured hydration errors. | Complete the automatic production deployment after guide review. Keep prerequisites and version pins current. Historical browser timing findings remain unresolved. |
 | Branding, menus and themes | Separate company/product branding, centered navigation, full-width desktop panels, mobile drilldown, responsive theme colors and the Kie theme are implemented. | Kie is an inspected design interpretation; blocked live reference access did not establish a 100% pixel-identical clone. |
 | Composer and templates | Responsive nested layouts, supported media/semantic/interactive nodes, bounded scroll effects, eight inline built-in section types, nine editable presets and nine website/book starters are implemented. | Three website starters ship corrected inline guides at template version 0.1.3 in rc.16, while prior 0.1.2 archive bytes remain unchanged. The composer is bounded; arbitrary executable components, arbitrary section embedding and unrestricted animation timelines are not promised. |
-| Books and PDF | Shared publication model, technical/study editions, equations/statements, numeric citations, glossary/index, print styling, Arabic RTL and French/German/Spanish print are implemented. | Arbitrary citation styles/BibTeX, unrestricted font inventories and broader format fidelity are separate expansion requests. Existing PDF generation uses its external toolchain. |
-| Installation | Public rc.19 packages cover six native targets. Tagged source packages pass real installed-wrapper builds on every target; independent public Mac and installed empty-PATH source-cache acceptance pass. All eight actual rc.18-to-rc.19 Homebrew/Scoop upgrades pass. | rc.19 retains ownership protection and native x64/ARM64 WinGet manifests. The last recorded Microsoft PR #484934 checkpoint has a passing CLA and requests moderator approval; catalog acceptance remains separate. |
-| Retention | The 20 November rc.12 retirement is complete and recorded in its dated evidence. No releases or image versions are retired during rc.19 publication. | Preserve rc.11/rc.13 compatibility pins, rc.14 WinGet upgrade fixtures and rc.15 catalog submission and rc.18 channel upgrade tests until their dependencies are deliberately retired. Do not reuse completed deletion plans. |
+| Books and PDF | Shared publication model, technical/study editions, references, citations, glossary/index, print styling and supported Latin/Arabic print are implemented. Rc.20 adds a verified optional compiler under `ZELLIJ_HOME/cache/pdf`, reusing private Node. Public acceptance verifies complete matching sources and offline PDF/rich builds on six targets. | Container remains the default; a future default change needs generated-CI coverage and new book-template versions. Arbitrary citation styles/BibTeX, unrestricted font inventories and broader format fidelity remain expansion requests. |
+| Installation | Public rc.20 packages pass all six native installation jobs and independent Mac acceptance. Homebrew and Scoop recipes match the release's verified checksums; all eight actual rc.19-to-rc.20 upgrades and lifecycle checks pass. | Ownership protection and native WinGet manifests remain included; Microsoft catalog approval stays separate. |
+| Retention | The 20 November rc.12 retirement is complete and recorded in its dated evidence. No releases or image versions are retired during rc.20 publication. The compiler's matching source archive and notices remain available with the runtime. | Preserve existing compatibility/catalog fixtures and rc.19 channel-upgrade inputs until their dependencies are deliberately retired. Do not reuse completed deletion plans. |
 | Live providers and generated runners | Adapters and build/protocol harnesses exist. Earlier live Netlify, Cloudflare, GitHub Pages and Railway checks have their recorded evidence. | Fly, S3 and actual GitLab/CircleCI runner acceptance stay at the end by user instruction. Vercel remains explicitly deferred after payment was required. |
 
 The cached-renderer current-page defect found during rc.18 is corrected
@@ -62,14 +74,14 @@ real rc.14 archives; retain them until that dependency is deliberately migrated.
 
 The versioned editable wrapper/engine source package for default `eject` and
 `new app` is published and verified in rc.19.
-Optional LuaLaTeX and Next development packages follow.
+The optional cached LuaHBTeX package now ships in rc.20; Next development
+packages remain a separate opportunity.
 The [22 November PDF feasibility work](zellij-cached-pdf-feasibility-2026-11-22.md)
 adds an offline Wasm probe and fixes a Colima generated-input share defect in
 source (`0619869`). Sixteen local manuscripts pass, and the initial six-platform
 probe verifies 96 cases and 145 native/Wasm page comparisons. Ten regressions
 cover the hardened prototype (`43b8c12`); PR #242 records its current checks.
-This does not change the released PDF prerequisite. Optional package/license
-completeness and public-package acceptance remain open. Subsequent qualification
+That initial probe did not change the released PDF prerequisite. Subsequent qualification
 includes strict process supervision, complete cache validation, original source
 and notice packages, and 120 manuscripts across six native targets (PR #252).
 The [24 November CLI integration](zellij-cached-pdf-cli-2026-11-24.md) connects
@@ -78,13 +90,15 @@ release-profile acceptance does not authorize distribution; the
 [scoped licensing decision](zellij-pdf-distribution-decision-2026-11-24.md) is approved
 and applied to the isolated adapter. PR #254 (`67a411e`) completes the reviewed
 component/relink evidence and paired runtime/source packaging; its eight PDF
-jobs and 37 regular jobs pass. Rc.20 preparation adds real-renderer integration
-and complete source-download acceptance on all six platforms. Publication and
-public-package verification remain; container stays the default in rc.20.
+jobs and 37 regular jobs pass. PR #255 (`65249fa`) adds real-renderer integration
+and complete source-download acceptance on all six platforms. Rc.20 publishes
+the reviewed runtime/source pair; all six public cached-PDF jobs check both
+repositories successfully. Container stays the default in rc.20.
 The [source-backed roadmap](zellij-cached-toolchains-2026-11-21.md) records their
 scope and acceptance requirements. Priorities 1–2 (static validation and HTTP
 export/deployment builds) are complete in rc.18; priority 3 (editable sources)
-is complete in rc.19. Images still need a builder;
+is complete in rc.19; priority 4 (optional cached PDF) ships in rc.20, with its
+default transition still separate. Images still need a builder;
 explicit custom-image extraction must preserve its selected-image behavior.
 Investigate any original timing recurrence using retained diagnostics. Catalog
 review and deferred external acceptance remain separate from this work.

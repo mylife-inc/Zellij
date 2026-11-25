@@ -5,8 +5,8 @@ description: Diagnose site settings, rich renderer readiness and required contai
 
 <div id="what-it-is-for" className="zellij-legacy-anchor" />
 
-<Callout type="tip" title="Available in candidate 0.2.0-rc.19">
-Site-aware diagnostics and JSON reports are included in candidate `0.2.0-rc.19`. Deployment credentials and
+<Callout type="tip" title="Available in candidate 0.2.0-rc.20">
+Site-aware diagnostics and JSON reports are included in candidate `0.2.0-rc.20`. Deployment credentials and
 remote services are not checked.
 </Callout>
 
@@ -23,16 +23,21 @@ preview port. Rich sites report their standalone
 renderer version, platform, cache path and whether an initial download is needed.
 Doctor verifies an existing cache but never downloads or executes it.
 
-**Next candidate (implemented in source):** the check also rejects unlisted
+Candidate rc.20 also rejects unlisted
 files/directories and links/junctions, and reports the affected cache directory
 on failure. It leaves that directory intact; remove only the affected
 version/platform directory, then run a rich build or check online to download
-it again. These additions are not included in the published rc.19 binary.
+it again.
 
 The renderer cache defaults to `$ZELLIJ_HOME/cache/engines`, with
 `ZELLIJ_HOME` defaulting to `~/Dev/config/zellij`. `ZEL_ENGINE_CACHE` takes
 precedence for this cache only. The reported path makes a changed resource
 home visible before the first download. See [directory configuration](/cli/config#zellij-home).
+
+For a PDF-enabled portable book, `zel doctor my-book --pdf-backend cached`
+reports the PDF compiler and private renderer cache readiness without downloading
+or running either. A cold cache reports `download_required`; missing or damaged
+files are diagnosed before a build. Cache entries are tied to the CLI version.
 
 ## Site selection
 
@@ -60,13 +65,13 @@ not write configuration, generate output, pull images or start services.
 
 ## Which commands need a runtime?
 
-Candidate rc.19 uses a verified downloaded renderer for both rich web targets.
+Candidate rc.20 uses a verified downloaded renderer for both rich web targets.
 
 | Operation | Container runtime required? |
 | --- | --- |
 | Portable web-only `build` / `view`, `check`, `pdf --check` and static-file `serve` | No |
 | Rich `build`, `check`, `watch`, `view` / `view --watch`, with `file` or `static` | No; downloads a private renderer once, then uses the verified cache; supports `--offline` |
-| Portable book PDF generation | Yes; `--pdf` or saved `pdf.enabled: true` opts in |
+| Portable book PDF generation | Default `container`: yes. `--pdf-backend cached`: no; downloads verified compiler/private Node once and supports `--offline`. PDF remains opt-in. |
 | Scaffolding, `explain`, `list`, `context`, `detect`, conversion without validation | No |
 | `migrate` / `convert --validate` | No; their final rich check uses the cached renderer |
 | `publish --dry-run` | No; resolves a plan without validation or credential checks |
@@ -152,17 +157,18 @@ image without a runtime.
 A failed inspection is reported as not pulled; a timeout or an unavailable
 inspection is reported as unknown. This check never pulls an image.
 
-The default tag matches the CLI version: `ghcr.io/mylife-inc/zellij-base:0.2.0-rc.19`
+The default tag matches the CLI version: `ghcr.io/mylife-inc/zellij-base:0.2.0-rc.20`
 for this release. Override it when your
 organisation mirrors the image internally:
 
 ```bash title="terminal"
-ZELLIJ_IMAGE=registry.internal/zellij-base:0.2.0-rc.19 zel doctor
+ZELLIJ_IMAGE=registry.internal/zellij-base:0.2.0-rc.20 zel doctor
 ```
 
-The first container operation may download an absent image. Hosted builds also
-install app dependencies, so a local base image alone does not guarantee an
-offline build.
+The first container operation may download an absent image. Container-based
+Next development and image builds also install app dependencies, so a local
+base image alone does not guarantee an offline build. Rich `file` and `static`
+builds use the verified renderer cache and support `--offline`.
 
 <div id="exit-code" className="zellij-legacy-anchor" />
 
@@ -174,12 +180,18 @@ offline build.
 `config` (null for inferred settings), `layout` (`versioned` or `legacy`),
 `renderer`, `content`, `output`, and `preview_port`.
 
-Runtime status is `not_required` for portable sites, `not_checked` when site
-configuration fails first, `available`, or `unavailable`. An available runtime
+Runtime status is `not_required` for portable web-only sites, rich sites and
+cached PDF builds; otherwise it is `not_checked` when site configuration fails
+first, `available`, or `unavailable`. An available runtime
 includes `program`, `version` and a redacted `endpoint`. Image inspection reports
 `reference` and status `local`, `not_pulled`, or `unknown`; `image` is null when
 not inspected. `error` is null on success, otherwise an object with `kind`
 (`configuration` or `runtime`) and `message`.
+
+Rich sites include a `rich_engine` cache report. A PDF-enabled portable book
+using the cached backend also includes `pdf_backend: "cached"`, `pdf_engine`
+and `rich_engine`. These report cache paths, versions and readiness without
+downloading or executing the packages; `image` is null for this backend.
 
 | Exit code | Meaning |
 | --- | --- |
@@ -198,7 +210,7 @@ report starts and keep the CLI's ordinary stderr diagnostics.
 
 ## Housekeeping
 
-These commands are available in candidate `0.2.0-rc.19`. Stable `0.1.3` predates
+These commands are available in candidate `0.2.0-rc.20`. Stable `0.1.3` predates
 them; use the candidate's [pinned installation instructions](/cli).
 
 | Command | Purpose |
@@ -225,7 +237,10 @@ replacing the executable. `zel --version` retains its compact binary version.
 ## PDF preflight
 
 When a portable book explicitly sets `pdf.enabled: true`, `doctor` checks its
-print settings and the selected runtime's user mapping. It reports the pinned
-PDF toolchain image without inspecting, pulling or running it. JSON adds the
-resolved `site.pdf` settings. `zel pdf --check` separately validates manuscript
-compatibility without a runtime; actual typesetting is needed to verify layout.
+print settings. With the default `container` backend, it checks the selected
+runtime's user mapping and reports the pinned PDF image without inspecting,
+pulling or running it. With `--pdf-backend cached`, it checks the compiler and
+private Node caches without probing a container runtime. JSON includes the
+resolved `site.pdf` settings and the selected backend's diagnostics.
+`zel pdf --check` separately validates manuscript compatibility without a
+runtime; actual typesetting is needed to verify layout.
