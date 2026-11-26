@@ -1,7 +1,7 @@
 {
   "date": "2026-11-25",
   "version": "v0.2.0-rc.24",
-  "status": "published-public-download-qualification-in-progress",
+  "status": "published-release-qualified-channel-upgrades-running",
   "source": {
     "head": "a3933b62b6cb382a2c21b769db8b6674db335211",
     "pr": 262,
@@ -823,6 +823,503 @@
         "version": "0.1.3",
         "sha256": "61407682a63600d07320a8df7584671136e4d2d1103008bc798164feb3bfdedb"
       }
+    ],
+    "publicCachedPdf": [
+      {
+        "job": 139831260330,
+        "platform": "win-x64",
+        "verifiedRepositories": 2,
+        "fullMatchingSources": true,
+        "offlinePdfAndRichBuilds": true
+      },
+      {
+        "job": 139831260337,
+        "platform": "darwin-arm64",
+        "verifiedRepositories": 2,
+        "fullMatchingSources": true,
+        "offlinePdfAndRichBuilds": true
+      },
+      {
+        "job": 139831260456,
+        "platform": "linux-arm64",
+        "verifiedRepositories": 2,
+        "fullMatchingSources": true,
+        "offlinePdfAndRichBuilds": true
+      },
+      {
+        "job": 139831260499,
+        "platform": "linux-x64",
+        "verifiedRepositories": 2,
+        "fullMatchingSources": true,
+        "offlinePdfAndRichBuilds": true
+      },
+      {
+        "job": 139831260526,
+        "platform": "darwin-x64",
+        "verifiedRepositories": 2,
+        "fullMatchingSources": true,
+        "offlinePdfAndRichBuilds": true
+      },
+      {
+        "job": 139831260527,
+        "platform": "win-arm64",
+        "verifiedRepositories": 2,
+        "fullMatchingSources": true,
+        "offlinePdfAndRichBuilds": true
+      }
+    ],
+    "status": "completed",
+    "conclusion": "success",
+    "runAttempt": 1,
+    "successfulJobs": 55,
+    "conditionalSkips": [
+      "winget / WinGet binary (${{ matrix.target }})"
+    ],
+    "jobs": [
+      {
+        "job": 139811545691,
+        "name": "Verify",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814605436,
+        "name": "Documentation site",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814605685,
+        "name": "pdf / Compile PDF companion renderer",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814605709,
+        "name": "Image maths \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814605732,
+        "name": "binaries / Compile shared rich renderer",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814605754,
+        "name": "Image none \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814605757,
+        "name": "Image all \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814605758,
+        "name": "pdf / PDF source correspondence",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814605771,
+        "name": "Image diagrams \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814605817,
+        "name": "Image maths \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814605837,
+        "name": "Image diagrams \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814605891,
+        "name": "Image none \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814605929,
+        "name": "Image all \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814872450,
+        "name": "Publish image maths",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814872454,
+        "name": "Publish image diagrams",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814872523,
+        "name": "Publish image all",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814872590,
+        "name": "Publish image none",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814950197,
+        "name": "pdf / Offline LuaHBTeX (macos-15-intel)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814950255,
+        "name": "pdf / Offline LuaHBTeX (windows-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814950267,
+        "name": "pdf / Offline LuaHBTeX (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814950273,
+        "name": "pdf / Offline LuaHBTeX (windows-11-arm)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814950343,
+        "name": "pdf / Offline LuaHBTeX (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139814950373,
+        "name": "pdf / Offline LuaHBTeX (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139815153088,
+        "name": "binaries / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139815153108,
+        "name": "binaries / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139815153168,
+        "name": "binaries / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139815153174,
+        "name": "binaries / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139815153201,
+        "name": "binaries / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139815153215,
+        "name": "binaries / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139828113192,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139828113231,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139828113242,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139828113268,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139828113859,
+        "name": "winget / WinGet lifecycle (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139828113925,
+        "name": "winget / WinGet lifecycle (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139828116292,
+        "name": "winget / WinGet binary (${{ matrix.target }})",
+        "conclusion": "skipped"
+      },
+      {
+        "job": 139829832949,
+        "name": "pdf / PDF package and source parity",
+        "conclusion": "success"
+      },
+      {
+        "job": 139830633360,
+        "name": "Publish the release",
+        "conclusion": "success"
+      },
+      {
+        "job": 139831260286,
+        "name": "Verify published artifacts / Published images (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139831260288,
+        "name": "Verify published artifacts / Published images (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139831260330,
+        "name": "Verify published artifacts / Published cached PDF (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139831260337,
+        "name": "Verify published artifacts / Published cached PDF (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139831260365,
+        "name": "Verify published artifacts / Published install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139831260413,
+        "name": "Verify published artifacts / Published install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139831260420,
+        "name": "Verify published artifacts / Published install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139831260430,
+        "name": "Verify published artifacts / Published install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139831260456,
+        "name": "Verify published artifacts / Published cached PDF (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139831260458,
+        "name": "Verify published artifacts / Published websites / Websites (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139831260460,
+        "name": "Verify published artifacts / Published websites / Websites (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139831260492,
+        "name": "Verify published artifacts / Published Next PDF / Next PDF (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139831260495,
+        "name": "Verify published artifacts / Published Next PDF / Next PDF (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139831260499,
+        "name": "Verify published artifacts / Published cached PDF (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139831260508,
+        "name": "Verify published artifacts / Published install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139831260526,
+        "name": "Verify published artifacts / Published cached PDF (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139831260527,
+        "name": "Verify published artifacts / Published cached PDF (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139831261268,
+        "name": "Verify published artifacts / Published install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      }
+    ],
+    "publicNative": [
+      {
+        "job": 139831260365,
+        "name": "Verify published artifacts / Published install (aarch64-unknown-linux-gnu)",
+        "verifiedRepositories": 2,
+        "cachedDevelopment": [
+          {
+            "platform": "linux-arm64",
+            "cachedNextDev": true,
+            "systemTools": false,
+            "coldDownloads": 0,
+            "offlineRestart": true,
+            "editRecovery": true,
+            "portReleased": true,
+            "sessionsRemoved": true
+          },
+          {
+            "platform": "linux-arm64",
+            "cachedNextDev": true,
+            "systemTools": false,
+            "coldDownloads": 0,
+            "offlineRestart": true,
+            "editRecovery": true,
+            "portReleased": true,
+            "sessionsRemoved": true
+          }
+        ]
+      },
+      {
+        "job": 139831260413,
+        "name": "Verify published artifacts / Published install (x86_64-unknown-linux-gnu)",
+        "verifiedRepositories": 2,
+        "cachedDevelopment": [
+          {
+            "platform": "linux-x64",
+            "cachedNextDev": true,
+            "systemTools": false,
+            "coldDownloads": 0,
+            "offlineRestart": true,
+            "editRecovery": true,
+            "portReleased": true,
+            "sessionsRemoved": true
+          },
+          {
+            "platform": "linux-x64",
+            "cachedNextDev": true,
+            "systemTools": false,
+            "coldDownloads": 0,
+            "offlineRestart": true,
+            "editRecovery": true,
+            "portReleased": true,
+            "sessionsRemoved": true
+          }
+        ]
+      },
+      {
+        "job": 139831260420,
+        "name": "Verify published artifacts / Published install (aarch64-pc-windows-msvc)",
+        "verifiedRepositories": 2,
+        "cachedDevelopment": [
+          {
+            "platform": "win-arm64",
+            "cachedNextDev": true,
+            "systemTools": false,
+            "coldDownloads": 0,
+            "offlineRestart": true,
+            "editRecovery": true,
+            "portReleased": true,
+            "sessionsRemoved": true
+          },
+          {
+            "platform": "win-arm64",
+            "cachedNextDev": true,
+            "systemTools": false,
+            "coldDownloads": 0,
+            "offlineRestart": true,
+            "editRecovery": true,
+            "portReleased": true,
+            "sessionsRemoved": true
+          }
+        ]
+      },
+      {
+        "job": 139831260430,
+        "name": "Verify published artifacts / Published install (x86_64-apple-darwin)",
+        "verifiedRepositories": 2,
+        "cachedDevelopment": [
+          {
+            "platform": "darwin-x64",
+            "cachedNextDev": true,
+            "systemTools": false,
+            "coldDownloads": 0,
+            "offlineRestart": true,
+            "editRecovery": true,
+            "portReleased": true,
+            "sessionsRemoved": true
+          },
+          {
+            "platform": "darwin-x64",
+            "cachedNextDev": true,
+            "systemTools": false,
+            "coldDownloads": 0,
+            "offlineRestart": true,
+            "editRecovery": true,
+            "portReleased": true,
+            "sessionsRemoved": true
+          }
+        ]
+      },
+      {
+        "job": 139831260508,
+        "name": "Verify published artifacts / Published install (x86_64-pc-windows-msvc)",
+        "verifiedRepositories": 2,
+        "cachedDevelopment": [
+          {
+            "platform": "win-x64",
+            "cachedNextDev": true,
+            "systemTools": false,
+            "coldDownloads": 0,
+            "offlineRestart": true,
+            "editRecovery": true,
+            "portReleased": true,
+            "sessionsRemoved": true
+          },
+          {
+            "platform": "win-x64",
+            "cachedNextDev": true,
+            "systemTools": false,
+            "coldDownloads": 0,
+            "offlineRestart": true,
+            "editRecovery": true,
+            "portReleased": true,
+            "sessionsRemoved": true
+          }
+        ]
+      },
+      {
+        "job": 139831261268,
+        "name": "Verify published artifacts / Published install (aarch64-apple-darwin)",
+        "verifiedRepositories": 2,
+        "cachedDevelopment": [
+          {
+            "platform": "darwin-arm64",
+            "cachedNextDev": true,
+            "systemTools": false,
+            "coldDownloads": 0,
+            "offlineRestart": true,
+            "editRecovery": true,
+            "portReleased": true,
+            "sessionsRemoved": true
+          },
+          {
+            "platform": "darwin-arm64",
+            "cachedNextDev": true,
+            "systemTools": false,
+            "coldDownloads": 0,
+            "offlineRestart": true,
+            "editRecovery": true,
+            "portReleased": true,
+            "sessionsRemoved": true
+          }
+        ]
+      }
     ]
   },
   "retainedFindings": {
@@ -846,5 +1343,150 @@
     "localValidatedGuideCommit": "5c9f79816956e3f06c932f8900ccd58412770cd7",
     "liveSourceRecoveryBoundaryClarified": true
   },
-  "updated": "2026-11-26"
+  "updated": "2026-11-26",
+  "independentMac": {
+    "verifiedAt": "2026-11-26T10:13:35.544241+00:00",
+    "version": "v0.2.0-rc.24",
+    "target": "x86_64-apple-darwin",
+    "repositories": [
+      "mylife-inc/Zellij",
+      "mylife-inc/releases"
+    ],
+    "conclusion": "success",
+    "logSha256": "585592ced704593ffb0f40277787e9c41b8f2ba8b628dd2ea44f6c40714f5497",
+    "receipts": [
+      {
+        "standaloneAuthoring": true,
+        "check": true,
+        "watch": true,
+        "view": true,
+        "recovery": true,
+        "cancellation": true,
+        "prefixPinned": true,
+        "legacyDiscovery": true,
+        "browserEngines": 0,
+        "systemTools": false
+      },
+      {
+        "platform": "darwin-x64",
+        "initialDownloads": 0,
+        "pages": 16,
+        "completeStarterPages": 28,
+        "cachedOfflineBuild": true,
+        "cachedHttpBuild": true,
+        "failedBuildPreservedSite": true,
+        "tamperRejected": true,
+        "unlistedCacheEntriesRejected": true,
+        "cancelledAcquisitions": 0,
+        "routeTraversalRejected": true,
+        "metadataOverrides": true,
+        "systemTools": false
+      },
+      {
+        "editableSources": true,
+        "version": "0.2.0-rc.24",
+        "toolFreeGeneration": true,
+        "offlineReuse": true,
+        "copiedEngine": true,
+        "gitMetadataPreserved": true,
+        "cacheIntegrity": true,
+        "failedDownloads": false,
+        "cancellation": false,
+        "installedWrapper": false
+      },
+      {
+        "platform": "darwin-x64",
+        "cachedNextDev": true,
+        "systemTools": false,
+        "coldDownloads": 0,
+        "offlineRestart": true,
+        "editRecovery": true,
+        "portReleased": true,
+        "sessionsRemoved": true
+      },
+      {
+        "standaloneAuthoring": true,
+        "check": true,
+        "watch": true,
+        "view": true,
+        "recovery": true,
+        "cancellation": true,
+        "prefixPinned": true,
+        "legacyDiscovery": true,
+        "browserEngines": 0,
+        "systemTools": false
+      },
+      {
+        "platform": "darwin-x64",
+        "initialDownloads": 0,
+        "pages": 16,
+        "completeStarterPages": 28,
+        "cachedOfflineBuild": true,
+        "cachedHttpBuild": true,
+        "failedBuildPreservedSite": true,
+        "tamperRejected": true,
+        "unlistedCacheEntriesRejected": true,
+        "cancelledAcquisitions": 0,
+        "routeTraversalRejected": true,
+        "metadataOverrides": true,
+        "systemTools": false
+      },
+      {
+        "editableSources": true,
+        "version": "0.2.0-rc.24",
+        "toolFreeGeneration": true,
+        "offlineReuse": true,
+        "copiedEngine": true,
+        "gitMetadataPreserved": true,
+        "cacheIntegrity": true,
+        "failedDownloads": false,
+        "cancellation": false,
+        "installedWrapper": false
+      },
+      {
+        "platform": "darwin-x64",
+        "cachedNextDev": true,
+        "systemTools": false,
+        "coldDownloads": 0,
+        "offlineRestart": true,
+        "editRecovery": true,
+        "portReleased": true,
+        "sessionsRemoved": true
+      }
+    ],
+    "containerPdfMatrixEnabled": false
+  },
+  "channels": {
+    "upgradeFrom": "v0.2.0-rc.21",
+    "homebrew": {
+      "repository": "mylife-inc/homebrew-tap",
+      "previousCommit": "235220b1e12faf87a47c3c6be040de3926ca80d8",
+      "commit": "1325f888a9be2788125300efd1adc352b9ad08e0",
+      "upgradeRun": 45800173733,
+      "status": "running"
+    },
+    "scoop": {
+      "repository": "mylife-inc/scoop-bucket",
+      "previousCommit": "127de966dc473bde6f5e339207e443998392fd47",
+      "commit": "cc249aa51c4a95dbe3778c07b3123be20b75d55f",
+      "upgradeRun": 45800212328,
+      "status": "running"
+    }
+  },
+  "localInstalled": {
+    "version": "v0.2.0-rc.24",
+    "upgradeFrom": "v0.2.0-rc.21",
+    "path": "$ZELLIJ_HOME/bin/zel",
+    "defaultHome": "~/Dev/config/zellij",
+    "acceptance": "running"
+  },
+  "retirement": {
+    "performed": false,
+    "preserveFailedCandidateTags": [
+      "v0.2.0-rc.22",
+      "v0.2.0-rc.23"
+    ],
+    "preservePreviousUpgradeInputs": true,
+    "preserveMatchingCompilerSources": true
+  }
 }
