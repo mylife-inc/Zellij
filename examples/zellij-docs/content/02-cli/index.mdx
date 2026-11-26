@@ -65,8 +65,9 @@ clearly labels development previews. It installs Bash, Zsh and Fish completions
 and verifies archive checksums. No Node or container runtime is installed for
 portable web-only documentation. Rich builds download a private renderer on
 first use. Optional PDF generation downloads its compiler and reuses the private
-runtime by default. Image builds, hosted Next development and explicitly selected
-container PDF require a supported container runtime.
+runtime by default. Hosted Next development downloads a separate verified
+dependency package and reuses the private runtime. Image builds and explicitly
+selected container development/PDF require a supported container runtime.
 Use Homebrew to update a Homebrew installation; `zel upgrade` detects its
 ownership marker and prints the correct command without changing any files.
 
