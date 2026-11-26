@@ -355,7 +355,99 @@
     "run": 45791545516,
     "tag": "v0.2.0-rc.24",
     "commit": "2c3b7daa3be5b0f218b4584a8074e77b4f25d848",
-    "url": "https://github.com/mylife-inc/Zellij/actions/runs/45791545516"
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/45791545516",
+    "native": [
+      {
+        "job": 139815153088,
+        "cachedDevelopment": {
+          "platform": "win-arm64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": false,
+        "realWindowsLockAcceptance": false
+      },
+      {
+        "job": 139815153108,
+        "cachedDevelopment": {
+          "platform": "darwin-x64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": false,
+        "realWindowsLockAcceptance": false
+      },
+      {
+        "job": 139815153168,
+        "cachedDevelopment": {
+          "platform": "linux-arm64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": false,
+        "realWindowsLockAcceptance": false
+      },
+      {
+        "job": 139815153174,
+        "cachedDevelopment": {
+          "platform": "darwin-arm64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": false,
+        "realWindowsLockAcceptance": false
+      },
+      {
+        "job": 139815153201,
+        "cachedDevelopment": {
+          "platform": "linux-x64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": true,
+        "realWindowsLockAcceptance": false
+      },
+      {
+        "job": 139815153215,
+        "cachedDevelopment": {
+          "platform": "win-x64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": true,
+        "realWindowsLockAcceptance": true
+      }
+    ]
   },
   "retainedFindings": {
     "rc22": "specs/evidence/zellij-rc22-release-2026-11-25.json",
