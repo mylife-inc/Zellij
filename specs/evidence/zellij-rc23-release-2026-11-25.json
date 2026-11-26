@@ -1,0 +1,278 @@
+{
+  "date": "2026-11-25",
+  "version": "v0.2.0-rc.23",
+  "status": "tagged-release-blocked-by-development-test-race-and-windows-file-lock",
+  "source": {
+    "head": "54251255d05038e8525c7e1a9c170365b3bde1bc",
+    "pr": 261,
+    "ci": {
+      "run": 45769701271,
+      "conclusion": "success",
+      "head": "54251255d05038e8525c7e1a9c170365b3bde1bc",
+      "successfulJobs": 37,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/45769701271"
+    },
+    "pdf": {
+      "run": 45769701357,
+      "conclusion": "success",
+      "head": "54251255d05038e8525c7e1a9c170365b3bde1bc",
+      "successfulJobs": 9,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/45769701357"
+    },
+    "docs": 45769701259,
+    "merge": "120cea98b2a9c8b296233134a145494c174ff174",
+    "mergeTreeMatchesTestedHead": true,
+    "native": [
+      {
+        "job": 139739459010,
+        "cachedDevelopment": {
+          "platform": "linux-x64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": true
+      },
+      {
+        "job": 139739459125,
+        "cachedDevelopment": {
+          "platform": "darwin-arm64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": false
+      },
+      {
+        "job": 139739459138,
+        "cachedDevelopment": {
+          "platform": "win-arm64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": false
+      },
+      {
+        "job": 139739459147,
+        "cachedDevelopment": {
+          "platform": "linux-arm64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": false
+      },
+      {
+        "job": 139739459166,
+        "cachedDevelopment": {
+          "platform": "darwin-x64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": false
+      },
+      {
+        "job": 139739459239,
+        "cachedDevelopment": {
+          "platform": "win-x64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": true
+      }
+    ],
+    "postMergeDuplicateCi": {
+      "run": 45773987959,
+      "cancellationRequested": true,
+      "reason": "Identical tree already passed 37 source CI and nine PDF jobs; release workflow repeats its own gates. No failures observed before cancellation.",
+      "conclusion": "cancelled"
+    },
+    "postMergeDocumentation": {
+      "run": 45773987813,
+      "conclusion": "success",
+      "scope": "Source-candidate guides; final rc.23 installation guides are not published yet."
+    },
+    "postMergeImages": {
+      "run": 45773987846,
+      "conclusion": "success"
+    }
+  },
+  "local": {
+    "pdfProcessTests": 27,
+    "regressionFailsAgainstPreviousSupervisor": true,
+    "pdfFixtures": 20,
+    "installedPdfTests": 5,
+    "systemPathEmpty": true,
+    "distributionTests": 52,
+    "releasePolicyTests": 22,
+    "templateFixtures": 9,
+    "templateIntegrationTests": 6,
+    "strictDocumentationRoutes": 61,
+    "clippyWarningsDenied": true,
+    "logs": {
+      "pdfProcess": {
+        "sha256": "bc7d564f5fc571438e5a5fdf835788835be64d510ec85c3b1338a3bedc77f143"
+      },
+      "pdfMatrix": {
+        "sha256": "ba265bc1f05c2c1882ed67b8caebf72c9f562fb2d119c884f3b6787357b65378"
+      },
+      "pairedAssets": {
+        "sha256": "0ab837fdcb5fa85a79470c0d65dda58e9e6085960679c928a028add7aba45d3c"
+      },
+      "installedPdf": {
+        "sha256": "19dd582ab101fdf38c32ba38e17d086779115768202615fd327840921406868e"
+      },
+      "distributionTests": {
+        "sha256": "c18f39cf27c1093075c040eb623961bce1208be27f36a0a92fdf4ed6e2bfd0b5"
+      },
+      "releasePolicy": {
+        "sha256": "58bedc08ff4b5f0475bbc0dfb18a50b8ef83b66a07aa006726fe94c549208825"
+      },
+      "templateIntegration": {
+        "sha256": "9b25dd0e5f9d3b08ea9dd9771815684ace184762bb1fb6e3c6bced2d4ddbb9bf"
+      },
+      "clippy": {
+        "sha256": "ade1d03d4f3f0a1af5adfd7dcf0d666b552cc1c189c272f0c2603778a608c0ca"
+      }
+    },
+    "pdfPackage": {
+      "schemaVersion": 1,
+      "version": "0.2.0-rc.23",
+      "redistributionReviewComplete": true,
+      "published": false,
+      "reviewSha256": "fca9597b064a79f59fe09172173b561a271cdd7577fc243c3d8faaf3f170e4b4",
+      "runtime": {
+        "name": "zel-pdf-v0.2.0-rc.23.tar.gz",
+        "bytes": 11793098,
+        "sha256": "e1b214a16f66c20734037c7af477b0d3ec9f53ae17e9daee6cf3c9537e62b4a9"
+      },
+      "source": {
+        "name": "zel-pdf-sources-v0.2.0-rc.23.tar.gz",
+        "bytes": 430328420,
+        "sha256": "27959ac3a09a3be6e880222e8ad73230f0133c06549087e7145072ff2a03e98e"
+      },
+      "sourceManifestSha256": "40800d0f2f95e189288b0f2b45e1d97dc4a450903b0fdfb2debc4943c80fad63"
+    }
+  },
+  "release": {
+    "run": 45774039883,
+    "tag": "v0.2.0-rc.23",
+    "commit": "120cea98b2a9c8b296233134a145494c174ff174",
+    "published": false,
+    "failures": [
+      {
+        "job": 139755977143,
+        "platform": "linux-x64",
+        "step": "Cached Next development with an empty system PATH",
+        "diagnostic": "Prepared output was visible before its valid edit reload marker committed; invalid-edit assertion compared against the previous marker.",
+        "logSha256": "0db6022286d5bdcab80fc1dccc4b4ca23a91512c66c4ef4fe6916b4c878b2103",
+        "retryPerformed": false
+      },
+      {
+        "job": 139755977358,
+        "platform": "win-x64",
+        "step": "Cached Next development with an empty system PATH",
+        "diagnostic": "Browser retained image width 160 instead of 180 after preparation failed with EPERM replacing dev-revision.json. Exact locking handle not captured.",
+        "logSha256": "ffa92411952990377160fb5bd9b07e492c048ba69820ebc43099c3f40a24782c",
+        "retryPerformed": false
+      }
+    ],
+    "conclusion": "failure",
+    "successfulJobs": 28,
+    "failedJobs": 2,
+    "skippedJobs": 4,
+    "pdf": [
+      {
+        "job": 139755637884,
+        "name": "pdf / Compile PDF companion renderer",
+        "conclusion": "success"
+      },
+      {
+        "job": 139755637993,
+        "name": "pdf / PDF source correspondence",
+        "conclusion": "success"
+      },
+      {
+        "job": 139756017000,
+        "name": "pdf / Offline LuaHBTeX (macos-15-intel)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139756017039,
+        "name": "pdf / Offline LuaHBTeX (windows-11-arm)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139756017040,
+        "name": "pdf / Offline LuaHBTeX (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139756017084,
+        "name": "pdf / Offline LuaHBTeX (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139756017121,
+        "name": "pdf / Offline LuaHBTeX (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139756017140,
+        "name": "pdf / Offline LuaHBTeX (windows-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job": 139767530591,
+        "name": "pdf / PDF package and source parity",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "retainedFindings": {
+    "failedPreviousCandidate": "specs/evidence/zellij-rc22-release-2026-11-25.json",
+    "mitigationRecord": "specs/zellij-pdf-wasm-lifetime-2026-11-25.md",
+    "originalHistoricalBrowserTimingsResolved": false
+  },
+  "publicationGuides": {
+    "status": "prepared-but-superseded-before-publication",
+    "localProductionBuild": "pass",
+    "strictValidationRoutes": 61,
+    "browserPreservation": {
+      "originalRoutes": 46,
+      "addedRoutes": 15,
+      "originalHeadingIds": 282,
+      "compatibilityMappings": 82,
+      "byteIdenticalImages": 29,
+      "capturedBrowserErrors": 0
+    },
+    "preservationLogSha256": "a749aedafbcd123bb7609df2d7a5e883592b0b1e5f765478180d745409a67430"
+  }
+}

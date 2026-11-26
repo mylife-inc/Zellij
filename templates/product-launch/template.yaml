@@ -4,7 +4,7 @@ version: 0.1.4
 title: Product launch
 description: A sculptural product launch with cinematic imagery, material details and a
   quiet editorial rhythm.
-minimum-cli: 0.2.0-rc.23
+minimum-cli: 0.2.0-rc.24
 minimum-engine: 0.2.0-rc.9
 renderer: hosted
 kind: site

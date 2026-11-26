@@ -52,6 +52,14 @@ await writeFile(path.join(content, '01-guide/_sidebar.yaml'), 'route: /manual\nn
 const md = token => `# ${token}\n\nA searchable ${token} passage.\n\n![Asset](/_zellij/assets/test.svg)\n\n$x^2$\n`;
 const doc = path.join(content, '01-guide/index.mdx');
 await writeFile(doc, md('Original'));
+let edit = 0;
+async function put(file, text) {
+  // An editor's completed save, staged outside the watched content. Truncating
+  // an MDX file in place can briefly publish an unrelated valid empty document.
+  const staged = path.join(root, `edit-${++edit}`);
+  await writeFile(staged, text);
+  await rename(staged, file);
+}
 const svg = width => `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="20"/>`;
 await writeFile(path.join(content, 'assets/test.svg'), svg(40));
 const windows = process.platform === 'win32';
@@ -118,15 +126,21 @@ try {
   await until(async () => { const r = await get('manual'); return r.ok && (await r.text()).includes('Original'); }, 'initial Next page');
   const initial = await (await get('_zellij/dev-revision.json')).json();
   assert.match(initial.session, /^zel-dev-/); assert.equal(initial.basePath, '/docs');
-  await writeFile(doc, md('Updated'));
-  await writeFile(path.join(content, 'assets/test.svg'), svg(80));
-  await until(async () => (await index()).some(e => e.text.includes('Updated')), 'search after edit');
-  await until(async () => (await (await get('_zellij/assets/test.svg')).text()).includes('width="80"'), 'asset after edit');
+  await put(doc, md('Updated'));
+  // Search and assets become visible before the final reload marker. Submit
+  // one completed edit per generation and wait for its commit before the next
+  // edit, so a legitimate late commit cannot masquerade as invalid-edit reload.
+  await until(async () => (await (await get('_zellij/dev-revision.json')).json()).revision !== initial.revision, 'completed text preparation');
+  assert((await index()).some(e => e.text.includes('Updated')), 'committed search after edit');
+  const textRevision = await (await get('_zellij/dev-revision.json')).json();
+  await put(path.join(content, 'assets/test.svg'), svg(80));
+  await until(async () => (await (await get('_zellij/dev-revision.json')).json()).revision !== textRevision.revision, 'completed asset preparation');
+  assert((await (await get('_zellij/assets/test.svg')).text()).includes('width="80"'), 'committed asset after edit');
   const good = await index(), revision = await (await get('_zellij/dev-revision.json')).json();
-  await writeFile(doc, '# Invalid\n\n<Callout>\n');
+  await put(doc, '# Invalid\n\n<Callout>\n');
   await until(() => log.includes('Preparation failed'), 'invalid edit diagnostic');
   assert.deepEqual(await index(), good); assert.deepEqual(await (await get('_zellij/dev-revision.json')).json(), revision);
-  await writeFile(doc, md('Recovered'));
+  await put(doc, md('Recovered'));
   await until(async () => (await index()).some(e => e.text.includes('Recovered')), 'recovery');
   await stop();
   console.log('Cached Next: cold startup, edits, invalid-edit recovery and shutdown passed.');
