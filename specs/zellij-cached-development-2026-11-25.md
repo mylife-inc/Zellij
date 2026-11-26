@@ -188,3 +188,20 @@ stylesheets process quickly (about 113 ms total); removing both CSS imports and
 capturing output to files still leave the request stalled. No CSS/runtime
 packaging change is justified by these results. Further probes compare a minimal
 page, application render markers and detaching Next from the parent control pipe.
+
+The copy variant also stalls and adds substantial session-copy/cleanup work;
+it is not adopted. Run `45759080848` gives the decisive comparison: a minimal
+page passes, while the instrumented full app reaches `loadSite` and then stalls
+before layout/page rendering. Disconnecting only Next's stdin makes the full
+Windows page pass in **21.9 seconds**, followed by successful shutdown and
+session cleanup. The corresponding Mac render-marker probe passes in 13.8 seconds.
+These results locate the trigger in sharing the cached launcher's live control
+pipe with Next, rather than a proven compiler or CSS defect; the precise
+upstream blocking mechanism is not established.
+
+The cached runner now opts out of stdin inheritance. It remains the sole owner
+of the Rust shutdown channel, while ordinary editable wrappers keep their
+interactive input. Next stdout/stderr and process-tree ownership are unchanged.
+The temporary diagnostic workflow, package variants and harness switches are
+removed; their commits and runs remain the evidence. Full native/browser
+acceptance, including both Windows architectures, must pass before release.

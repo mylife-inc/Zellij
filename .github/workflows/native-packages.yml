@@ -6,15 +6,7 @@ on:
       version:
         type: string
         default: workspace
-      probe:
-        type: boolean
-        default: false
   workflow_dispatch:
-    inputs:
-      probe:
-        description: Run focused Windows first-page diagnostics
-        type: boolean
-        default: false
 
 permissions:
   contents: read
@@ -53,7 +45,6 @@ jobs:
           retention-days: 14
 
   package:
-    if: ${{ !inputs.probe }}
     name: Package and install (${{ matrix.target }})
     needs: renderer
     runs-on: ${{ matrix.os }}
@@ -173,51 +164,3 @@ jobs:
           path: dist/zel-v*
           if-no-files-found: error
           retention-days: 14
-
-  probe:
-    name: Windows first-page probe (${{ matrix.variant }})
-    if: ${{ inputs.probe }}
-    needs: renderer
-    runs-on: windows-2022
-    timeout-minutes: 25
-    strategy:
-      fail-fast: false
-      matrix:
-        variant: [minimal, runtime, no-stdin]
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 24
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: x86_64-pc-windows-msvc
-      - uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: cli
-          key: release-x86_64-pc-windows-msvc
-          cache-on-failure: true
-      - run: node scripts/package-native.mjs workspace x86_64-pc-windows-msvc dist
-      - uses: actions/download-artifact@v8
-        with:
-          name: standalone-engine
-          path: dist/standalone-engine
-      - uses: actions/download-artifact@v8
-        with:
-          name: editable-sources
-          path: dist/source-packages
-      - name: Prepare verified diagnostic packages
-        shell: bash
-        env:
-          PROBE_VARIANT: ${{ matrix.variant }}
-        run: |
-          node scripts/package-standalone-engine.mjs win-x64
-          node scripts/development-runtime/prepare.mjs --check
-          npm ci --ignore-scripts --no-audit --no-fund --prefix scripts/development-runtime
-          node scripts/probe-development-package.mjs "$PROBE_VARIANT"
-      - name: Observe one uninterrupted first-page request
-        env:
-          ZEL_DEV_PROBE: 'true'
-          ZEL_DEV_PROBE_FEATURES: all
-          ZEL_DEV_PROBE_QUIET: ${{ matrix.variant == 'quiet' }}
-        run: node scripts/check-cached-development.mjs cli/target/x86_64-pc-windows-msvc/release/zel.exe

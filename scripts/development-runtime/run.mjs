@@ -36,6 +36,6 @@ if (disconnected) throw new Error('Development parent disconnected before startu
 process.stdin.resume();
 running = true;
 process.exitCode = await runDev({ appRoot: process.cwd(), contentDir: request.content },
-  ['--turbopack', '--hostname', request.host, '--port', String(request.port)]);
+  ['--turbopack', '--hostname', request.host, '--port', String(request.port)], 'ignore');
 running = false;
 process.stdin.pause();

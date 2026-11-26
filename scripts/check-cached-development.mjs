@@ -10,17 +10,10 @@ import path from 'node:path';
 import os from 'node:os';
 import { setTimeout as delay } from 'node:timers/promises';
 const repo = path.resolve(import.meta.dirname, '..');
-const probeOnly = process.env.ZEL_DEV_PROBE === 'true';
-const features = probeOnly ? (process.env.ZEL_DEV_PROBE_FEATURES ?? 'all') : 'all';
-assert(['none', 'all'].includes(features));
-const plainProbe = probeOnly && process.env.ZEL_DEV_PROBE_PLAIN === 'true';
-const quietProbe = probeOnly && process.env.ZEL_DEV_PROBE_QUIET === 'true';
-const began = Date.now();
-let diagnosticTimer;
 const binary = path.resolve(process.argv[2] ?? `cli/target/debug/zel${process.platform === 'win32' ? '.exe' : ''}`);
 const version = JSON.parse(execFileSync(binary, ['version', '--json'], { encoding: 'utf8' })).cli.version;
 const platform = `${process.platform === 'win32' ? 'win' : process.platform}-${process.arch}`;
-const root = await mkdtemp(path.join(os.tmpdir(), plainProbe ? 'zel-dev-probe-' : 'zel dev 日本 '));
+const root = await mkdtemp(path.join(os.tmpdir(), 'zel dev 日本 '));
 const downloads = new Map();
 for (const [kind, suffix] of [['renderer', `-${platform}`], ['sources', ''], ['development', `-${platform}`]]) {
   const name = `zel-${kind}-v${version}${suffix}.tar.gz`;
@@ -45,7 +38,7 @@ const artifacts = createServer(async (req, res) => {
 await new Promise(resolve => artifacts.listen(0, '127.0.0.1', resolve));
 const url = `http://127.0.0.1:${artifacts.address().port}`;
 const publicBase = process.env.ZEL_TEST_DEV_BASE_URL;
-const env = { ...process.env, PATH: path.join(root, 'empty'), ZELLIJ_HOME: path.join(root, plainProbe ? 'resources' : 'resources café'),
+const env = { ...process.env, PATH: path.join(root, 'empty'), ZELLIJ_HOME: path.join(root, 'resources café'),
   ZEL_ENGINE_BASE_URL: publicBase ?? url, ZEL_SOURCE_BASE_URL: publicBase ?? url, ZEL_DEV_BASE_URL: publicBase ?? url };
 delete env.ZEL_ENGINE_CACHE;
 delete env.ZEL_DEV_BACKEND;
@@ -85,11 +78,10 @@ async function launch(offline = false, quiet = false) {
   const reservation = reserve(); reservation.listen(0, '127.0.0.1'); await once(reservation, 'listening');
   port = reservation.address().port; await new Promise(resolve => reservation.close(resolve));
   log = '';
-  const args = ['dev', root, '--host', '127.0.0.1', '--port', String(port), '--features', features, ...(offline ? ['--offline'] : []), ...(quiet ? ['--quiet'] : [])];
+  const args = ['dev', root, '--host', '127.0.0.1', '--port', String(port), '--features', 'all', ...(offline ? ['--offline'] : []), ...(quiet ? ['--quiet'] : [])];
   child = spawn(windows ? helper : binary, windows ? [binary, ...args] : args, { env, stdio: ['pipe', 'pipe', 'pipe'] });
   done = new Promise((resolve, reject) => { child.once('error', reject); child.once('close', (code, signal) => resolve({code, signal})); });
-  const capture = data => { log += data; if (probeOnly) process.stdout.write(`[${Date.now() - began}ms] ${data}`); };
-  child.stdout.on('data', capture); child.stderr.on('data', capture);
+  child.stdout.on('data', data => log += data); child.stderr.on('data', data => log += data);
   await until(async () => quiet ? (await get('_zellij/dev-revision.json')).ok : log.includes(`Serving at http://127.0.0.1:${port}/docs/`), 'session readiness');
 }
 const get = name => fetch(`http://127.0.0.1:${port}/docs/${name}`, { signal: AbortSignal.timeout(10000) });
@@ -118,34 +110,11 @@ async function stop(assertions = true, quiet = false) {
   }), [], 'session cleanup');
 }
 try {
-  if (probeOnly) diagnosticTimer = setInterval(async () => {
-    const record = { probeOnly: true, elapsedMs: Date.now() - began, features, plainPath: plainProbe };
-    try {
-      const sessions = path.join(env.ZELLIJ_HOME, 'cache/development-sessions');
-      record.generatedEntries = {};
-      for (const session of await readdir(sessions)) record.generatedEntries[session] =
-        (await readdir(path.join(sessions, session, '.next/dev'), { recursive: true }).catch(() => [])).length;
-      if (windows) record.nodeProcesses = JSON.parse(execFileSync('powershell.exe', [
-        '-NoProfile', '-Command', 'Get-Process node -ErrorAction SilentlyContinue | Select-Object Id,CPU,WorkingSet64 | ConvertTo-Json -Compress',
-      ], { encoding: 'utf8', timeout: 10000, stdio: ['ignore','pipe','pipe'] }) || '[]');
-    } catch (error) { record.diagnosticError = error.message; }
-    console.log(JSON.stringify(record));
-  }, 30000);
   const cold = await command(['dev', root, '--offline']);
   assert.equal(cold.code, 2, cold.output); assert.match(cold.output, /not cached/);
   assert.equal(requests, 0);
-  await launch(false, quietProbe);
+  await launch();
   assert.equal(requests, publicBase ? 0 : 6, 'three verified packages downloaded once');
-  if (probeOnly) {
-    // Diagnostic only: hold one browser-like request instead of interrupting
-    // first-page compilation with the ordinary short HTTP polling deadline.
-    const requested = Date.now();
-    const response = await fetch(`http://127.0.0.1:${port}/docs/manual`, { signal: AbortSignal.timeout(180000) });
-    const body = await response.text();
-    assert.equal(response.status, 200, body.slice(0, 2000)); assert(body.includes('Original'));
-    console.log(JSON.stringify({ probeOnly: true, features, plainPath: plainProbe, firstPageMs: Date.now() - requested, totalMs: Date.now() - began }));
-    await stop(true, quietProbe);
-  } else {
   await until(async () => { const r = await get('manual'); return r.ok && (await r.text()).includes('Original'); }, 'initial Next page');
   const initial = await (await get('_zellij/dev-revision.json')).json();
   assert.match(initial.session, /^zel-dev-/); assert.equal(initial.basePath, '/docs');
@@ -218,10 +187,8 @@ try {
     const [code] = await once(browser, 'exit'); assert.equal(code, 0, 'cached development browser acceptance');
   }
   console.log(JSON.stringify({ platform, cachedNextDev: true, systemTools: false, coldDownloads: requests, offlineRestart: true, editRecovery: true, portReleased: true, sessionsRemoved: true }));
-  }
 } catch (error) { console.error(log); throw error; }
 finally {
-  clearInterval(diagnosticTimer);
   if (child) await stop(false);
   artifacts.closeAllConnections(); artifacts.close();
   if (process.env.ZEL_DEV_TEST_KEEP) console.log(`Retained ${root}`);

@@ -5,7 +5,11 @@ import { resolveContentPaths, type ZellijRuntimeOptions } from '../config/runtim
 import { watchPreparation, type PreparationWatch } from './watch-preparation';
 
 /** Own the watcher and Next process together, including failures and Ctrl-C. */
-export async function runDev(options: ZellijRuntimeOptions, nextArgs?: string[]): Promise<number> {
+export async function runDev(
+  options: ZellijRuntimeOptions,
+  nextArgs?: string[],
+  nextStdin: 'inherit' | 'ignore' = 'inherit',
+): Promise<number> {
   const { appRoot } = resolveContentPaths(options);
   // Resolve the app's installed Next; never invoke a shell or download via npx.
   const next = nextArgs === undefined ? undefined
@@ -31,7 +35,12 @@ export async function runDev(options: ZellijRuntimeOptions, nextArgs?: string[])
     watcher = await watchPreparation(options, { signal: controller.signal });
     if (controller.signal.aborted) return exitCode;
     if (next) {
-      child = spawn(process.execPath, [next, 'dev', ...nextArgs!], { cwd: appRoot, stdio: 'inherit' });
+      // A cached launcher owns stdin as its shutdown channel. Sharing that
+      // live pipe with Next stalls Windows rendering. Ordinary wrappers keep
+      // their interactive input; the cached runner explicitly disconnects it.
+      child = spawn(process.execPath, [next, 'dev', ...nextArgs!], {
+        cwd: appRoot, stdio: [nextStdin, 'inherit', 'inherit'],
+      });
       const result = await new Promise<number>((resolve, reject) => {
         child!.once('error', reject);
         child!.once('exit', (code, signal) => resolve(code ?? (signal === 'SIGINT' ? 130 : 1)));
