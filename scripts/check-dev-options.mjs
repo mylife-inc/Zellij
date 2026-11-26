@@ -32,12 +32,12 @@ async function fixture(name, renderer = 'hosted', mode = '') {
   await writeFile(path.join(folder, 'zel.yaml'), `version: 1\nrenderer: ${renderer}\n`);
   await writeFile(path.join(folder, 'content', renderer === 'hosted' ? 'site.yaml' : 'index.md'), renderer === 'hosted' ? 'name: Fixture\n' : '# Portable development\n');
   const record = path.join(folder, 'browser.txt');
-  const env = { ...process.env, ZELLIJ_DEV_FIXTURE: folder, ZELLIJ_DEV_MODE: mode, ZELLIJ_DEV_BROWSER_LOG: record };
+  const env = { ...process.env, ZEL_DEV_BACKEND: 'container', ZELLIJ_DEV_FIXTURE: folder, ZELLIJ_DEV_MODE: mode, ZELLIJ_DEV_BROWSER_LOG: record };
   const replaced = new Set(['PATH', 'DOCKER_CONTEXT', 'DOCKER_HOST', 'CONTAINER_CONNECTION', 'CONTAINER_HOST', 'CONTAINERD_ADDRESS', 'CONTAINERD_NAMESPACE']);
   for (const key of Object.keys(env)) if (replaced.has(key.toUpperCase())) delete env[key];
   Object.assign(env, { PATH: bin, CONTAINER_CONNECTION: 'zellij-dev-fixture' });
   const start = args => {
-    const invocation = ['dev', ...args];
+    const invocation = ['dev', ...(renderer === 'hosted' ? ['--dev-backend', 'container'] : ['--offline']), ...args];
     const child = spawn(windows ? consoleExe : zel, windows ? [zel, ...invocation] : invocation, { cwd: folder, env, stdio: ['pipe', 'pipe', 'pipe'] });
     const state = { child, folder, record, stdout: '', stderr: '', exit: undefined };
     child.stdout.on('data', b => state.stdout += b); child.stderr.on('data', b => state.stderr += b);

@@ -46,7 +46,7 @@ the same resource home at runtime. Build output remains in the chosen project;
 temporary staging is cleaned up. Docker, Homebrew and Scoop retain their own
 image/package stores.
 
-Starting with candidate rc.21, default `zel eject` and `zel new app` download
+Default `zel eject` and `zel new app` download
 editable sources into `cache/sources/<CLI-version>/`. Their `--offline` option
 requires an already verified cache. Each generated app receives its own
 `vendor/zellij` copy; editing or installing that app does not modify the cache.
@@ -77,6 +77,17 @@ cache path without downloading or creating it.
 
 <div id="what-it-is-really-for" className="zellij-legacy-anchor" />
 <div id="where-it-is-found" className="zellij-legacy-anchor" />
+
+### Cached Next development (rc.22 source)
+
+`zel dev` uses the optional `cache/development/<version>-<platform>/` package,
+reuses private Node from `cache/engines/`, and copies matching `cache/sources/`
+files into `cache/development-sessions/zel-dev-…`. Stopping the command removes
+its session directory. Cached packages remain verified and reusable offline.
+`ZEL_DEV_BASE_URL` selects an HTTPS mirror supplying the matching development
+archive and checksum. `ZEL_DEV_BACKEND=container` selects the explicit container
+backend; `--dev-backend` overrides that environment setting. Neither changes
+package-manager ownership of the installed `zel` executable.
 
 ## Site layout and discovery
 

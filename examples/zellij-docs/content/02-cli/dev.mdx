@@ -6,8 +6,10 @@ description: Edit portable Markdown with native preview or hosted content with N
 <div id="what-it-is-for" className="zellij-legacy-anchor" />
 
 <Callout type="tip" title="Available in source">
-Portable `dev` builds, serves and watches natively. Hosted `dev` runs the Next.js
-development engine in a container. Add `--open` to open the ready site in your
+The rc.22 source candidate runs hosted Next.js development from a verified
+optional cache, without separately installed Docker, Node.js, npm or Python.
+Published rc.21 still uses its container backend. Portable `dev` builds, serves
+and watches natively. Add `--open` to open the ready site in your
 default browser, or `--browser <executable>` to choose a browser.
 Native release packages may lag the source version.
 </Callout>
@@ -16,6 +18,8 @@ Native release packages may lag the source version.
 zel dev                         # ./zel.yaml, then ./docs/zellij/zel.yaml
 zel dev docs/manual             # a custom configured site or raw content folder
 zel dev --port 4000
+zel dev --offline               # rc.22: reuse previously downloaded packages
+zel dev --dev-backend container # rc.22: explicitly use the container engine
 zel dev --features maths
 zel dev --open
 zel dev --host localhost --browser firefox
@@ -50,12 +54,25 @@ See [editing documents](/cli/view#editing-documents) for watching and recovery l
 
 ## Hosted YAML and MDX
 
-For a hosted site, `dev` mounts the content into the container engine, validates
-it, installs the wrapper's dependencies into a reusable named volume, and runs
-Next.js development mode. It leaves no static export behind. The first run may
-need to download the engine image and dependencies; later runs reuse them.
-A usable Docker, Podman or nerdctl runtime is required. Missing prerequisites
-produce setup guidance and exit code 4; `zel` does not install or start them.
+In rc.22 source, `dev` downloads a version- and platform-matched development
+package, the editable wrapper sources and the private Node runtime. An existing
+renderer download supplies Node; it is not downloaded a second time. The CLI
+verifies the archive checksum and every extracted file before starting Next.
+No package manager runs on your machine, and authored files are not rewritten.
+
+The dependency cache lives under `$ZELLIJ_HOME/cache/development/`, with a
+separate disposable working directory in `cache/development-sessions/` for each
+server. Without `ZELLIJ_HOME`, the root is `~/Dev/config/zellij`. The first run
+requires internet access; `zel dev --offline` requires all three verified caches.
+The optional development download is larger than the normal renderer and is only
+needed for `dev`; [`zel vw`](/cli/view) remains a lighter watched static preview.
+The cached wrapper serves original image files without Next image optimization.
+
+`--dev-backend container` (or `ZEL_DEV_BACKEND=container`) retains the existing
+Docker, Podman or nerdctl backend, including an explicit `ZELLIJ_IMAGE`. It mounts
+content and installs wrapper dependencies into a reusable container volume.
+Missing prerequisites produce setup guidance and exit code 4. This backend
+cannot be combined with `--offline`; `zel` does not install or start a runtime.
 
 Hosted `dev` needs a port between 1 and 65535. For a hosted static preview with
 an automatically selected port, use `zel view --watch --port 0` instead.
@@ -70,11 +87,10 @@ Invalid edits are reported in the terminal without triggering an automatic
 reload; the open document stays visible. Correcting the content resumes
 preparation and browser reloads. Initial preparation must succeed before startup.
 Development polling uses a preparation signal created by the watcher; production
-pages do not poll. Use a current engine image or updated editable wrapper package for
-this behavior. Restart after changing
-`basePath`, wrapper configuration or installed features. Ctrl-C stops development
-and removes that session's container, retaining its reusable dependency cache.
-Use a current engine image if an older image only prepares assets at startup.
+pages do not poll. Restart after changing `basePath`, wrapper configuration or
+features. Ctrl-C stops Next and its child processes and removes the disposable
+session directory; verified downloads remain for reuse. The container backend
+removes its session container and retains its dependency volume.
 
 ### Looking at it on a phone
 
@@ -89,7 +105,7 @@ With wildcard bindings, the printed browser URL uses loopback; another device
 uses your machine's LAN address instead. The `serve` and `view` commands retain
 their loopback-only behavior.
 
-If the runtime cannot see the content mount, `zel` reports that the folder is
+With `--dev-backend container`, if the runtime cannot see the content mount, `zel` reports that the folder is
 not shared. Configure file sharing in your runtime, or move the content into an
 already shared directory. `zel doctor` helps diagnose runtime availability.
 
@@ -102,7 +118,9 @@ already shared directory. `zel doctor` helps diagnose runtime availability.
 | `--host <address>` | Bind to `localhost`, an IPv4 address or an IPv6 address | Portable: `127.0.0.1`; hosted: `0.0.0.0` |
 | `--open` | Open the ready site in the default browser | Off |
 | `--browser <executable>` | Launch this executable with the site URL; implies `--open` | System default when `--open` is used |
-| `--features <selection>` | Complete rendering selection for this session | Portable configuration or hosted engine image |
+| `--features <selection>` | Complete rendering selection for this session | Portable configuration; cached hosted: `none`; container: engine image |
+| `--dev-backend cached\|container` | Hosted development backend (rc.22 source) | `cached`, or `ZEL_DEV_BACKEND` |
+| `--offline` | Require verified cached renderer, sources and development packages (rc.22 source) | Off |
 
 The browser opens once per session. For a hosted site, `zel` waits for successful
 preparation and an HTTP response from that session, then includes the site's
@@ -111,7 +129,7 @@ or failed initial build does not open an unrelated server. A custom browser is
 an executable name or path, not a shell command with arguments; quote paths
 containing spaces. Browser-launch failure prints the URL and keeps serving.
 
-Automatic hosted opening requires a current engine image and a published port
+Automatic container opening requires a current engine image and a published port
 reachable from the machine running `zel`. With an older image or a remote runtime,
 the development server can continue running, but `zel` warns after five minutes
 if it cannot confirm the URL. Open the runtime's reachable address and your site's
@@ -127,19 +145,22 @@ including content edits and portable configuration reloads, without rewriting
 authored files. Restart with another selection to change it. Omitting the flag
 on a later command restores the usual saved settings.
 
-Hosted development applies the selection to its disposable wrapper before
-installing dependencies. Explicit selections use separate dependency caches,
-so another build with different features cannot uninstall a live session's
-packages. A current engine with explicit feature-selection support is required;
-an older engine fails with upgrade guidance. Dependency or startup failures are
-reported separately from invalid content.
+Cached hosted development defaults to `none`; use `--features all` for maths
+and Mermaid together. Its dependency package contains both optional renderers,
+so changing this selection does not require another download. Sessions share verified dependency files; generated files and feature settings
+belong to each disposable wrapper. No package manager mutates the cache. The container backend applies the selection to its
+wrapper and uses separate dependency volumes. Dependency or startup failures
+are reported separately from invalid content.
 
 <div id="when-you-have-a-wrapper-app-instead" className="zellij-legacy-anchor" />
 
 ## Editable wrapper apps
 
 An app created by [`zel new app`](/cli/new) already has a `package.json` and can
-use `npm run dev` after installing dependencies. Current wrappers use
+use `npm run dev` after installing dependencies. The cached `zel dev` command
+renders the selected documentation with Zellij's standard wrapper; it does not
+execute custom application code, plugins or arbitrary npm dependencies from an
+ejected app. Those editable-app workflows still require their own Node/npm. Current wrappers use
 `zellij dev -- --port <port>` to own the Next.js process and content watcher.
 Older wrappers using `next dev` should switch to that script or run
 `zellij prepare --watch` alongside their server.

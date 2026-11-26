@@ -11,13 +11,16 @@ import { chromium, webkit, expect } from '@playwright/test';
 import { observeThemeFonts } from './assert-theme-fonts.mjs';
 
 const repo = fileURLToPath(new URL('../', import.meta.url));
-const binary = process.argv[2] === '--container' ? path.resolve(process.argv[3]) : undefined;
+const windows = process.platform === 'win32';
+const cached = process.argv[2] === '--cached';
+const binary = cached || process.argv[2] === '--container' ? path.resolve(process.argv[3]) : undefined;
 const app = await mkdtemp(path.join(repo, '.zellij-dev-'));
 const cli = path.join(repo, 'engine/packages/zellij/bin/zellij.mjs');
 const content = path.join(app, 'authored docs');
 const prefix = '/docs';
 const browserRecord = path.join(app, 'browser.txt');
-const browserExe = path.join(app, 'browser-fixture');
+const browserExe = path.join(app, windows ? 'browser-fixture.exe' : 'browser-fixture');
+const consoleExe = path.join(app, 'console.exe');
 const env = { ...process.env, NEXT_TELEMETRY_DISABLED: '1', ZELLIJ_DEV_BROWSER_LOG: browserRecord };
 delete env.ZELLIJ_OUTPUT;
 delete env.ZELLIJ_BASE_PATH;
@@ -41,6 +44,7 @@ async function until(check, label, timeout = 30000, allowExited = false) {
 try {
   execFileSync(process.execPath, [cli, 'init', app, '--name', 'watch-fixture'], { env, stdio: 'inherit' });
   if (binary) execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/dev-browser.rs', '-o', browserExe], { stdio: 'pipe' });
+  if (binary && windows) execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/preview-console.rs', '-o', consoleExe], { stdio: 'pipe' });
   if (!binary) execFileSync(process.execPath, [cli, 'features', 'all', app], { env, stdio: 'inherit' });
   await rm(path.join(app, 'content'), { recursive: true });
   // A custom content root must reach preparation, rendering and Next config.
@@ -65,7 +69,7 @@ try {
   await new Promise((resolve, reject) => reservation.close((error) => error ? reject(error) : resolve()));
   const origin = `http://127.0.0.1:${port}${prefix}`;
   server = binary
-    ? spawn(binary, ['dev', content, '--port', String(port), '--host', '127.0.0.1', '--browser', browserExe, '--features', 'all'], { cwd: app, env, stdio: ['ignore', 'pipe', 'pipe'] })
+    ? spawn(windows ? consoleExe : binary, [...(windows ? [binary] : []), 'dev', content, '--dev-backend', cached ? 'cached' : 'container', ...(cached ? ['--offline'] : []), '--port', String(port), '--host', '127.0.0.1', '--browser', browserExe, '--features', 'all'], { cwd: app, env: cached ? { ...env, PATH: path.join(app, 'empty-path') } : env, stdio: [windows ? 'pipe' : 'ignore', 'pipe', 'pipe'] })
     : spawn(process.execPath, [cli, 'dev', '--content', './authored docs', '--', '--hostname', '0.0.0.0', '--port', String(port), ...(process.env.ZELLIJ_TEST_WEBPACK ? ['--webpack'] : [])], { cwd: app, env, stdio: ['ignore', 'pipe', 'pipe'] });
   // Wait for stdio to drain too, before asserting the final shutdown message.
   exited = once(server, 'close');
@@ -81,8 +85,10 @@ try {
     assert.equal(marker.basePath, prefix);
     await until(async () => (await readFile(browserRecord, 'utf8')) === `${origin}/\n`, 'browser opens once at the configured prefix');
     assert(log.includes(`Serving at ${origin}/`));
-    const [container] = JSON.parse(execFileSync('docker', ['inspect', containerName], { encoding: 'utf8' }));
-    assert(container.HostConfig.PortBindings['3000/tcp'].every(binding => binding.HostIp === '127.0.0.1'));
+    if (!cached) {
+      const [container] = JSON.parse(execFileSync('docker', ['inspect', containerName], { encoding: 'utf8' }));
+      assert(container.HostConfig.PortBindings['3000/tcp'].every(binding => binding.HostIp === '127.0.0.1'));
+    }
   }
   await until(async () => (await fetch(`${origin}/manual`, { signal: AbortSignal.timeout(10000) })).ok, 'first page compiles', 120000);
   const engines = binary ? { chromium } : process.env.CI ? { chromium, webkit } : { chromium };
@@ -143,8 +149,19 @@ try {
       await expect(page.locator('.zellij-mermaid svg')).toBeVisible({ timeout: 30000 });
       await expect.poll(() => page.getByAltText('Watched image').evaluate((img) => img.naturalWidth)).toBe(120);
       // Images alone must trigger a reload with a new fingerprint too.
-      await put('assets/diagram.svg', svg(160));
-      await expect.poll(() => page.getByAltText('Watched image').evaluate((img) => img.naturalWidth), { timeout: 30000 }).toBe(160);
+      for (const width of cached ? [160, 180, 200, 160] : [160]) {
+        await put('assets/diagram.svg', svg(width));
+        // Exercise requests arriving during asset-driven reloads. A development
+        // bundler must not expose a partially rewritten Next build manifest.
+        await Promise.all([
+          expect.poll(() => page.getByAltText('Watched image').evaluate((img) => img.naturalWidth), { timeout: 30000 }).toBe(width),
+          ...(cached ? [1, 2].map(async () => {
+            const response = await fetch(`${origin}/manual`, { signal: AbortSignal.timeout(30000) });
+            assert.equal(response.status, 200, 'page request during asset reload');
+            await response.text();
+          }) : []),
+        ]);
+      }
       await page.getByRole('link', { name: `Added${name}`, exact: true }).first().click();
       await expect(page.getByRole('heading', { name: `Added${name}`, exact: true })).toBeVisible();
       await page.goBack();
@@ -213,15 +230,17 @@ try {
 } finally {
   await browser?.close();
   if (server && server.exitCode === null && server.signalCode === null) {
-    // Signal only zel: it must clean up its own named container and runtime client.
-    server.kill(binary ? 'SIGINT' : 'SIGTERM');
+    // Node's Windows SIGINT kills immediately. The console helper delivers a
+    // real Ctrl-C; zel must clean up its own descendants and session/container.
+    if (binary && windows) server.stdin.end('stop\n');
+    else server.kill(binary ? 'SIGINT' : 'SIGTERM');
     let timer;
     const [code, signal] = await Promise.race([exited, new Promise((_, reject) => {
       timer = setTimeout(() => { server.kill('SIGKILL'); reject(new Error(`Dev shutdown timed out: ${log}`)); }, 10000);
     })]).finally(() => clearTimeout(timer));
     if (binary) { assert.equal(code, 0, `dev shutdown ${signal}: ${log}`); assert(log.includes('Stopped.')); }
   }
-  if (binary && containerName) {
+  if (binary && containerName && !cached) {
     await until(() => !execFileSync('docker', ['ps', '-aq', '--filter', `name=^/${containerName}$`], { encoding: 'utf8' }).trim(), 'dev removes its container', 30000, true);
   }
   if (process.env.ZELLIJ_TEST_DEV_LOG) await writeFile(process.env.ZELLIJ_TEST_DEV_LOG, log);

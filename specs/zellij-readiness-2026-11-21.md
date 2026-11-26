@@ -1,5 +1,8 @@
 # Zellij readiness — 21 November 2026
 
+Current implementation work: the [rc.22 cached Next development candidate](zellij-cached-development-2026-11-25.md)
+is under qualification. It is not yet a published release.
+
 Updated 25 November: the published candidate is **v0.2.0-rc.21**, source
 `cd7608e`. All 55 release jobs pass on their first attempt, including six native
 public installations, six cached-PDF checks against both repositories and both
@@ -11,7 +14,9 @@ all eight actual rc.20-to-rc.21 Homebrew/Scoop upgrades pass.
 `bs` builds HTTP static output, `vw` previews with watching, and `lint` performs
 deep strict validation. Updated book templates have new immutable versions.
 The revised guides pass local production build and 61-route browser preservation;
-review and automatic production publication follow this checkpoint. See the
+PR #259 merged as `0d7e3a1`; production publication `45720791311`,
+post-merge CI `45720791571` and images `45720791454` all pass. Eight public
+guide pages were checked successfully. See the
 [rc.21 release record](zellij-rc21-release-2026-11-25.md) and
 [publication evidence](evidence/zellij-rc21-release-2026-11-25.json).
 Historical browser timing findings and the exact earlier Mac deadline failure
@@ -49,7 +54,7 @@ and [HTTP export](zellij-cached-http-export-2026-11-21.md) cache migrations now 
 | --- | --- | --- |
 | Documented CLI command families | Implemented, with native tests and the recorded release acceptance. | Provider-specific live behavior and external runners require separate acceptance. |
 | Rich websites | File and HTTP static build, check, watch and view share the verified cached renderer. First use downloads it; later operations support `--offline`. Native static deployment builds and optional import validation use the same cache. No user-installed Docker, Node or Python is required for these web rendering operations. | Default editable wrapper generation also uses a verified source cache. Running Next apps, explicit image extraction and container images retain their documented prerequisites. PDF stays opt-in; rc.21 selects its separate cached compiler by default. |
-| Documentation and publishing | rc.21 guides document short workflows, cached PDF defaults and detailed book/website-template Quickstarts. Local production build and browser preservation pass all 61 routes, 282 original heading IDs, 82 compatibility mappings and 29 original images without captured hydration errors. | Complete the automatic production deployment after guide review. Keep prerequisites and version pins current. Historical browser timing findings remain unresolved. |
+| Documentation and publishing | rc.21 guides document short workflows, cached PDF defaults and detailed book/website-template Quickstarts. Local production build and browser preservation pass all 61 routes, 282 original heading IDs, 82 compatibility mappings and 29 original images without captured hydration errors. | Production publication is complete. Keep prerequisites and version pins current. Historical browser timing findings remain unresolved. |
 | Branding, menus and themes | Separate company/product branding, centered navigation, full-width desktop panels, mobile drilldown, responsive theme colors and the Kie theme are implemented. | Kie is an inspected design interpretation; blocked live reference access did not establish a 100% pixel-identical clone. |
 | Composer and templates | Responsive nested layouts, supported media/semantic/interactive nodes, bounded scroll effects, eight inline built-in section types, nine editable presets and nine website/book starters are implemented. | Three website starters ship corrected inline guides at template version 0.1.3 in rc.16, while prior 0.1.2 archive bytes remain unchanged. The composer is bounded; arbitrary executable components, arbitrary section embedding and unrestricted animation timelines are not promised. |
 | Books and PDF | Shared publication model, technical/study editions, references, citations, glossary/index, print styling and supported Latin/Arabic print are implemented. Rc.20 adds a verified optional compiler under `ZELLIJ_HOME/cache/pdf`, reusing private Node. Public acceptance verifies complete matching sources and offline PDF/rich builds on six targets. | Rc.21 selects cached PDF by default, updates generated CI and publishes new book-template versions. Explicit container selection remains available. Arbitrary citation styles/BibTeX, unrestricted font inventories and broader format fidelity remain expansion requests. |

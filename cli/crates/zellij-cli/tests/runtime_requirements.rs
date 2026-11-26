@@ -48,6 +48,34 @@ fn content(root: &Path) {
 }
 
 #[test]
+fn development_defaults_to_cache_and_explicit_backend_overrides_environment() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    content(root);
+    for explicit in [false, true] {
+        let mut cmd = command(root);
+        cmd.args(["dev", "content", "--offline"])
+            .env("ZELLIJ_HOME", root.join("resources"))
+            .env_remove("ZEL_DEV_BACKEND");
+        if explicit {
+            cmd.env("ZEL_DEV_BACKEND", "container")
+                .args(["--dev-backend", "cached"]);
+        }
+        let output = cmd.output().unwrap();
+        assert_eq!(output.status.code(), Some(2));
+        let error = String::from_utf8_lossy(&output.stderr);
+        assert!(error.contains("not cached"), "{error}");
+        assert!(!root.join("resources").exists());
+    }
+    let invalid = command(root)
+        .args(["dev", "content", "--offline", "--dev-backend", "container"])
+        .output()
+        .unwrap();
+    assert_eq!(invalid.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&invalid.stderr).contains("--offline requires the cached"));
+}
+
+#[test]
 fn legacy_dot_rich_preview_resolves_content_before_output_preflight() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();
@@ -278,8 +306,15 @@ fn container_commands_fail_with_exit_four_before_touching_content_or_output() {
     fs::write(root.join("site/index.html"), "previous export").unwrap();
     for args in [
         vec!["build", "content", "--target", "image"],
-        vec!["dev", "content"],
-        vec!["dev", "content", "--features", "all"],
+        vec!["dev", "content", "--dev-backend", "container"],
+        vec![
+            "dev",
+            "content",
+            "--dev-backend",
+            "container",
+            "--features",
+            "all",
+        ],
         vec!["image", "build", "content"],
         vec!["image", "static", "content"],
         vec!["si", "content"],

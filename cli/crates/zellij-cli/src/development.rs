@@ -1,3 +1,6 @@
+mod cached;
+mod process;
+use crate::args::DevBackend;
 use std::{
     io::Read,
     net::{IpAddr, Ipv4Addr, SocketAddr},
@@ -12,15 +15,27 @@ use zellij_core::{
 };
 use zellij_engine::{ContainerEngine, container::DevReady};
 
-pub fn run(
-    dir: Option<&SiteInput>,
-    port: Option<u16>,
-    host: Option<IpAddr>,
-    open: bool,
-    browser: Option<&str>,
-    features: Option<Features>,
-    pdf: Option<bool>,
-) -> Result<()> {
+pub struct Options<'a> {
+    pub port: Option<u16>,
+    pub host: Option<IpAddr>,
+    pub open: bool,
+    pub browser: Option<&'a str>,
+    pub features: Option<Features>,
+    pub pdf: Option<bool>,
+    pub backend: DevBackend,
+    pub offline: bool,
+}
+pub fn run(dir: Option<&SiteInput>, options: Options<'_>) -> Result<()> {
+    let Options {
+        port,
+        host,
+        open,
+        browser,
+        features,
+        pdf,
+        backend,
+        offline,
+    } = options;
     let dir = crate::select_site(dir)?;
     let site = zellij_core::site::Site::load(&dir)?;
     let port = port.unwrap_or(site.port);
@@ -29,7 +44,7 @@ pub fn run(
             Some(&dir),
             crate::preview::ViewOptions {
                 target: None,
-                offline: false,
+                offline,
                 host: host.unwrap_or(Ipv4Addr::LOCALHOST.into()),
                 out: None,
                 name: None,
@@ -43,6 +58,11 @@ pub fn run(
             },
         );
     }
+    if offline && backend == DevBackend::Container {
+        return Err(Error::InvalidArgument(
+            "--offline requires the cached development backend".into(),
+        ));
+    }
     if pdf == Some(true) {
         return Err(Error::InvalidArgument(
             "--pdf requires a portable book".into(),
@@ -52,7 +72,6 @@ pub fn run(
         return Err(Error::InvalidArgument("hosted dev requires --port 1–65535; use view --watch --port 0 for an automatically selected static preview port".into()));
     }
     let content = crate::resolve_content(&dir)?;
-    let engine = ContainerEngine::detect(None)?;
     let host = host.unwrap_or(Ipv4Addr::UNSPECIFIED.into());
     let address = zellij_core::network::browser_address(host, port);
     let origin =
@@ -64,13 +83,33 @@ pub fn run(
         .build()
         .map_err(std::io::Error::other)?;
     let stop = crate::preview::signals()?;
-    zellij_core::statusln!("  Engine   {}", engine.image());
+    zellij_core::statusln!(
+        "  Backend  {}",
+        if backend == DevBackend::Cached {
+            "verified Next development cache"
+        } else {
+            "container"
+        }
+    );
     zellij_core::statusln!("  Content  {content}");
     zellij_core::statusln!(
         "  Binding  {}. Waiting for the development server; Ctrl-C to stop.",
         SocketAddr::new(host, port)
     );
-    let mut session = engine.start_dev(&content, port, host, features)?;
+    let session = match backend {
+        DevBackend::Cached => {
+            cached::Session::start(&content, port, host, features, offline, &stop)
+                .map(Session::Cached)
+        }
+        DevBackend::Container => ContainerEngine::detect(None)?
+            .start_dev(&content, port, host, features)
+            .map(Session::Container),
+    };
+    let mut session = match session {
+        Ok(session) => session,
+        Err(_) if stop.load(Ordering::Acquire) => return Ok(()),
+        Err(error) => return Err(error),
+    };
     let mut next_probe = Instant::now();
     let deadline = Instant::now() + Duration::from_secs(300);
     let mut announced = false;
@@ -113,11 +152,36 @@ pub fn run(
             } else if Instant::now() >= deadline {
                 announced = true;
                 zellij_core::diagnosticln!(
-                    "warning: could not confirm the development URL within 5 minutes. Check the runtime output and open {origin} with your site's basePath manually. Automatic opening needs a current engine image and a published port reachable from this machine."
+                    "warning: could not confirm the development URL within 5 minutes. Check the runtime output and open {origin} with your site's basePath manually. Automatic opening needs the matching development session reachable from this machine."
                 );
             }
         }
         thread::sleep(Duration::from_millis(50));
+    }
+}
+
+enum Session {
+    Cached(cached::Session),
+    Container(zellij_engine::container::DevSession),
+}
+impl Session {
+    fn ready(&self) -> Option<DevReady> {
+        match self {
+            Self::Cached(s) => s.ready(),
+            Self::Container(s) => s.ready(),
+        }
+    }
+    fn try_wait(&mut self) -> Result<Option<()>> {
+        match self {
+            Self::Cached(s) => s.try_wait(),
+            Self::Container(s) => s.try_wait(),
+        }
+    }
+    fn stop(&mut self) {
+        match self {
+            Self::Cached(s) => s.stop(),
+            Self::Container(s) => s.stop(),
+        }
     }
 }
 

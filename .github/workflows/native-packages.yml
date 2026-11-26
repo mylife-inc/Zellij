@@ -71,6 +71,7 @@ jobs:
         with:
           workspaces: cli
           key: release-${{ matrix.target }}
+          cache-on-failure: true
       - name: Build the exact release archive and checksum
         env:
           VERSION: ${{ inputs.version || 'workspace' }}
@@ -116,6 +117,26 @@ jobs:
         with:
           name: editable-sources
           path: dist/source-packages
+      - name: Package cached Next development dependencies
+        shell: bash
+        run: |
+          node scripts/development-runtime/prepare.mjs --check
+          npm ci --ignore-scripts --no-audit --no-fund --prefix scripts/development-runtime
+          node scripts/package-development.mjs
+      - name: Cached Next development with an empty system PATH
+        env:
+          TARGET: ${{ matrix.target }}
+          ZEL_DEV_BROWSER: ${{ (matrix.target == 'x86_64-unknown-linux-gnu' || matrix.target == 'x86_64-pc-windows-msvc') && 'true' || 'false' }}
+        shell: bash
+        run: |
+          binary="cli/target/$TARGET/release/zel"
+          case "$TARGET" in *-windows-msvc) binary="$binary.exe" ;; esac
+          if [ "$ZEL_DEV_BROWSER" = true ]; then
+            npm ci
+            npm run build --workspace @shebka/zellij
+            npx playwright install --with-deps chromium
+          fi
+          node scripts/check-cached-development.mjs "$binary"
       - name: Cached editable sources and installed Next wrapper
         env:
           TARGET: ${{ matrix.target }}
@@ -125,6 +146,12 @@ jobs:
           binary="cli/target/$TARGET/release/zel"
           case "$TARGET" in *-windows-msvc) binary="$binary.exe" ;; esac
           node scripts/check-editable-sources.mjs "$binary"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: development-${{ matrix.target }}
+          path: dist/development-packages/*
+          if-no-files-found: error
+          retention-days: 14
       - uses: actions/upload-artifact@v7
         with:
           name: renderer-${{ matrix.target }}

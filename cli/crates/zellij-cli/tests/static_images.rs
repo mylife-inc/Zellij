@@ -554,7 +554,7 @@ fn hosted_dev_selects_features_before_startup_and_isolates_dependency_caches() {
         Some("diagrams,maths"),
     ] {
         let mut cmd = command(root);
-        cmd.args(["dev", "--port", "4321"]);
+        cmd.args(["dev", "--dev-backend", "container", "--port", "4321"]);
         if let Some(selection) = selection {
             cmd.args(["--features", selection]);
         }
@@ -605,7 +605,7 @@ fn hosted_dev_selects_features_before_startup_and_isolates_dependency_caches() {
         (97, "not shared"),
     ] {
         let out = command(root)
-            .args(["dev", "--features", "none"])
+            .args(["dev", "--dev-backend", "container", "--features", "none"])
             .env("FAKE_RUN_EXIT", code.to_string())
             .output()
             .unwrap();

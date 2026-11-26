@@ -16,7 +16,7 @@ fn fail(message: impl Into<String>) -> Error {
     Error::InvalidArgument(format!("Rich renderer: {}", message.into()))
 }
 
-pub(super) fn platform() -> Result<String> {
+pub(crate) fn platform() -> Result<String> {
     let os = match std::env::consts::OS {
         "macos" => "darwin",
         "windows" => "win",

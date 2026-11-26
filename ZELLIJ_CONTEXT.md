@@ -8,6 +8,30 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-25**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-25: cached Next development — implementation in progress**
+
+The rc.22 source candidate adds the optional development dependency package
+under `ZELLIJ_HOME/cache/development`, reusing renderer Node and editable
+sources. `zel dev` selects it by default; `--dev-backend container` and
+`ZEL_DEV_BACKEND=container` preserve explicit container use. `--offline` requires
+all three caches. This renders the standard documentation wrapper; arbitrary
+custom Next apps still need their own dependency/toolchain management.
+Five rich website starters also have new immutable revisions with rc.22
+requirements and corrected cache/development instructions; previous published
+archives remain unchanged.
+See [the implementation record](specs/zellij-cached-development-2026-11-25.md)
+for scope and qualification. No rc.22 release is published at this checkpoint.
+Windows diagnostics identify inherited control input as the first-page stall
+trigger; `37da78f` disconnects Next's stdin while retaining ordinary wrappers'
+interactive input. Full Mac lifecycle/browser acceptance passes. Final CI adds
+Windows x64 Chromium coverage alongside Linux; six-platform qualification is
+still required before publishing.
+
+The rc.21 guide checkpoint below is now complete: PR #259 merged as `0d7e3a1`,
+with identical tree to `e6b11b7`. PR CI `45717207977`, post-merge CI
+`45720791571`, production docs `45720791311` and images `45720791454` pass.
+Eight public guide pages were checked successfully, including hydration.
+
 **2026-11-25: rc.21 publication follow-up — published**
 
 PR #257 merged as `0adba60`, tree-identical to the 53-check passing `f00aca6`.

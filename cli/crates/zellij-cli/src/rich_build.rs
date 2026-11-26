@@ -1,6 +1,7 @@
 //! Native launcher for verified rich rendering and nonexecuting validation.
 mod cache;
 pub(crate) use cache::inspect as inspect_cache;
+pub(crate) use cache::platform;
 use camino::{Utf8Path, Utf8PathBuf};
 use std::{
     fs,

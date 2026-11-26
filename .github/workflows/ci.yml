@@ -153,6 +153,10 @@ jobs:
       - run: node --test scripts/check-dependency-audit.test.mjs
       - name: Audit production and development dependencies
         run: node scripts/check-dependency-audit.mjs
+      - name: Optional Next development dependency lock and audit
+        run: |
+          node scripts/development-runtime/prepare.mjs --check
+          npm audit --omit=dev --audit-level=low --prefix scripts/development-runtime
       - run: npm run typecheck
       - run: npm test
       - run: npm run build --workspace @shebka/zellij
