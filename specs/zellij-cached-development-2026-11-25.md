@@ -178,3 +178,13 @@ confined to the opt-in probe and never uploaded or included in releases.
 Requests are now bounded to three minutes, with normal acceptance unchanged.
 The Quickstart's final folder diagram and remaining source-candidate development
 requirements are corrected without claiming rc.22 is already published.
+
+Run `45757025081` also stalls with a common compiler root. Its first copy probe
+stops before Next because a diagnostic replacement missed CRLF; this is fixed
+and checked with a synthetic CRLF runner. Its CSS probes were not conclusive:
+one still imported font CSS, and the other accidentally bundled native addons
+by importing Tailwind directly. The corrected run `45757908338` confirms both
+stylesheets process quickly (about 113 ms total); removing both CSS imports and
+capturing output to files still leave the request stalled. No CSS/runtime
+packaging change is justified by these results. Further probes compare a minimal
+page, application render markers and detaching Next from the parent control pipe.
