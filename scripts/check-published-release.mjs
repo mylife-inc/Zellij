@@ -54,6 +54,11 @@ try {
         env: { ...env, ZEL_TEST_SOURCE_BASE_URL: result.base }, stdio: 'inherit', timeout: 600000,
       });
     }
+    if (existsSync('scripts/check-cached-development.mjs')) {
+      execFileSync(process.execPath, ['scripts/check-cached-development.mjs', binary], {
+        env: { ...env, ZEL_TEST_DEV_BASE_URL: result.base }, stdio: 'inherit', timeout: 600000,
+      });
+    }
     if (existsSync('templates/catalog.yaml')) {
       const templates = await verifyPublishedTemplates(binary, result.base, path.join(root, `templates-${source.name}`));
       if (previousTemplates) assert.deepEqual(templates, previousTemplates, 'Template archives/catalogs disagree between release repositories');

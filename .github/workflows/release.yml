@@ -356,6 +356,12 @@ jobs:
 
       - uses: actions/download-artifact@v8
         with:
+          path: artifacts
+          pattern: development-*
+          merge-multiple: true
+
+      - uses: actions/download-artifact@v8
+        with:
           name: pdf-release-assets
           path: artifacts
 

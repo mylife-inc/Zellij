@@ -4,6 +4,12 @@ use zellij_core::delivery::ImagePlatform;
 use zellij_core::features::Features;
 use zellij_core::site::SiteInput;
 
+#[derive(clap::ValueEnum, Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum DevBackend {
+    Cached,
+    Container,
+}
+
 // Each flattened shortcut declares its spelling, descriptive route, and mapping
 // once. Its argument type is also used by the descriptive command. Normalizing
 // before dispatch keeps global-option policy and all side effects identical.
@@ -361,6 +367,12 @@ pub(crate) enum Command {
         /// Override this session: maths, diagrams, maths,diagrams, all, or none.
         #[arg(long)]
         features: Option<Features>,
+        /// Use the verified cache (default), or the explicitly selected container engine.
+        #[arg(long, value_enum, env = "ZEL_DEV_BACKEND", default_value = "cached")]
+        dev_backend: DevBackend,
+        /// Require previously downloaded renderer, sources and development dependencies.
+        #[arg(long)]
+        offline: bool,
         #[command(flatten)]
         pdf: PdfSelection,
     },

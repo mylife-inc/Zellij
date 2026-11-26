@@ -2304,7 +2304,7 @@ dependencies = [
 
 [[package]]
 name = "zellij-cli"
-version = "0.2.0-rc.21"
+version = "0.2.0-rc.22"
 dependencies = [
  "base64 0.22.1",
  "blake3",
@@ -2315,6 +2315,7 @@ dependencies = [
  "ctrlc",
  "flate2",
  "hmac",
+ "libc",
  "mime_guess",
  "open",
  "pretty_yaml",
@@ -2343,7 +2344,7 @@ dependencies = [
 
 [[package]]
 name = "zellij-convert"
-version = "0.2.0-rc.21"
+version = "0.2.0-rc.22"
 dependencies = [
  "camino",
  "chrono",
@@ -2365,7 +2366,7 @@ dependencies = [
 
 [[package]]
 name = "zellij-core"
-version = "0.2.0-rc.21"
+version = "0.2.0-rc.22"
 dependencies = [
  "anstream",
  "camino",
@@ -2379,7 +2380,7 @@ dependencies = [
 
 [[package]]
 name = "zellij-docs"
-version = "0.2.0-rc.21"
+version = "0.2.0-rc.22"
 dependencies = [
  "camino",
  "futures-util",
@@ -2404,7 +2405,7 @@ dependencies = [
 
 [[package]]
 name = "zellij-engine"
-version = "0.2.0-rc.21"
+version = "0.2.0-rc.22"
 dependencies = [
  "camino",
  "serde",
@@ -2417,7 +2418,7 @@ dependencies = [
 
 [[package]]
 name = "zellij-scaffold"
-version = "0.2.0-rc.21"
+version = "0.2.0-rc.22"
 dependencies = [
  "camino",
  "regex",

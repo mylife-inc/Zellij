@@ -11,7 +11,8 @@ import { chromium, webkit, expect } from '@playwright/test';
 import { observeThemeFonts } from './assert-theme-fonts.mjs';
 
 const repo = fileURLToPath(new URL('../', import.meta.url));
-const binary = process.argv[2] === '--container' ? path.resolve(process.argv[3]) : undefined;
+const cached = process.argv[2] === '--cached';
+const binary = cached || process.argv[2] === '--container' ? path.resolve(process.argv[3]) : undefined;
 const app = await mkdtemp(path.join(repo, '.zellij-dev-'));
 const cli = path.join(repo, 'engine/packages/zellij/bin/zellij.mjs');
 const content = path.join(app, 'authored docs');
@@ -65,7 +66,7 @@ try {
   await new Promise((resolve, reject) => reservation.close((error) => error ? reject(error) : resolve()));
   const origin = `http://127.0.0.1:${port}${prefix}`;
   server = binary
-    ? spawn(binary, ['dev', content, '--port', String(port), '--host', '127.0.0.1', '--browser', browserExe, '--features', 'all'], { cwd: app, env, stdio: ['ignore', 'pipe', 'pipe'] })
+    ? spawn(binary, ['dev', content, '--dev-backend', cached ? 'cached' : 'container', ...(cached ? ['--offline'] : []), '--port', String(port), '--host', '127.0.0.1', '--browser', browserExe, '--features', 'all'], { cwd: app, env: cached ? { ...env, PATH: path.join(app, 'empty-path') } : env, stdio: ['ignore', 'pipe', 'pipe'] })
     : spawn(process.execPath, [cli, 'dev', '--content', './authored docs', '--', '--hostname', '0.0.0.0', '--port', String(port), ...(process.env.ZELLIJ_TEST_WEBPACK ? ['--webpack'] : [])], { cwd: app, env, stdio: ['ignore', 'pipe', 'pipe'] });
   // Wait for stdio to drain too, before asserting the final shutdown message.
   exited = once(server, 'close');
@@ -81,8 +82,10 @@ try {
     assert.equal(marker.basePath, prefix);
     await until(async () => (await readFile(browserRecord, 'utf8')) === `${origin}/\n`, 'browser opens once at the configured prefix');
     assert(log.includes(`Serving at ${origin}/`));
-    const [container] = JSON.parse(execFileSync('docker', ['inspect', containerName], { encoding: 'utf8' }));
-    assert(container.HostConfig.PortBindings['3000/tcp'].every(binding => binding.HostIp === '127.0.0.1'));
+    if (!cached) {
+      const [container] = JSON.parse(execFileSync('docker', ['inspect', containerName], { encoding: 'utf8' }));
+      assert(container.HostConfig.PortBindings['3000/tcp'].every(binding => binding.HostIp === '127.0.0.1'));
+    }
   }
   await until(async () => (await fetch(`${origin}/manual`, { signal: AbortSignal.timeout(10000) })).ok, 'first page compiles', 120000);
   const engines = binary ? { chromium } : process.env.CI ? { chromium, webkit } : { chromium };
@@ -221,7 +224,7 @@ try {
     })]).finally(() => clearTimeout(timer));
     if (binary) { assert.equal(code, 0, `dev shutdown ${signal}: ${log}`); assert(log.includes('Stopped.')); }
   }
-  if (binary && containerName) {
+  if (binary && containerName && !cached) {
     await until(() => !execFileSync('docker', ['ps', '-aq', '--filter', `name=^/${containerName}$`], { encoding: 'utf8' }).trim(), 'dev removes its container', 30000, true);
   }
   if (process.env.ZELLIJ_TEST_DEV_LOG) await writeFile(process.env.ZELLIJ_TEST_DEV_LOG, log);

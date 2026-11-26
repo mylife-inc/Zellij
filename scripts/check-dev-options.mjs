@@ -37,7 +37,7 @@ async function fixture(name, renderer = 'hosted', mode = '') {
   for (const key of Object.keys(env)) if (replaced.has(key.toUpperCase())) delete env[key];
   Object.assign(env, { PATH: bin, CONTAINER_CONNECTION: 'zellij-dev-fixture' });
   const start = args => {
-    const invocation = ['dev', ...args];
+    const invocation = ['dev', ...(renderer === 'hosted' ? ['--dev-backend', 'container'] : []), ...args];
     const child = spawn(windows ? consoleExe : zel, windows ? [zel, ...invocation] : invocation, { cwd: folder, env, stdio: ['pipe', 'pipe', 'pipe'] });
     const state = { child, folder, record, stdout: '', stderr: '', exit: undefined };
     child.stdout.on('data', b => state.stdout += b); child.stderr.on('data', b => state.stderr += b);

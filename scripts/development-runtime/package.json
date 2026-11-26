@@ -1,0 +1,54 @@
+{
+  "name": "zellij-development-dependencies",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Optional, separately downloaded dependencies for zel dev.",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@plausible-analytics/tracker": "0.4.6",
+    "@shikijs/rehype": "4.4.1",
+    "@shikijs/transformers": "4.4.1",
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/d3-hierarchy": "3.1.7",
+    "@types/d3-shape": "3.1.8",
+    "@types/node": "22.20.1",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "d3-hierarchy": "3.1.2",
+    "d3-shape": "3.2.0",
+    "flexsearch": "0.8.212",
+    "github-slugger": "2.0.0",
+    "hast-util-to-jsx-runtime": "2.3.6",
+    "hast-util-to-string": "3.0.1",
+    "lucide-react": "1.28.0",
+    "mermaid": "11.17.2",
+    "next": "16.4.6",
+    "next-mdx-remote": "6.0.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "rehype-mathjax": "7.1.0",
+    "rehype-slug": "6.0.0",
+    "remark-gfm": "4.0.1",
+    "remark-math": "6.0.0",
+    "remark-mdx": "3.1.1",
+    "remark-parse": "11.0.0",
+    "remark-rehype": "11.1.2",
+    "shiki": "4.4.1",
+    "tailwindcss": "4.3.3",
+    "typescript": "5.9.3",
+    "unified": "11.0.5",
+    "yaml": "2.9.0",
+    "zod": "4.6.7"
+  },
+  "overrides": {
+    "mermaid": {
+      "katex": "^0.18.2"
+    },
+    "micromark-extension-math": {
+      "katex": "^0.18.2"
+    },
+    "speech-rule-engine": {
+      "@xmldom/xmldom": "^0.9.12"
+    }
+  }
+}

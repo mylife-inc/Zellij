@@ -21,6 +21,7 @@ mod ci;
 mod cloudflare;
 mod delivery;
 mod development;
+mod development_package;
 mod doctor;
 mod eject;
 mod features;
@@ -118,14 +119,20 @@ fn main() {
             open,
             ref browser,
             pdf,
+            dev_backend,
+            offline,
         } => development::run(
             dir.as_ref(),
-            port,
-            host,
-            open,
-            browser.as_deref(),
-            features,
-            pdf.selected(),
+            development::Options {
+                port,
+                host,
+                open,
+                browser: browser.as_deref(),
+                features,
+                pdf: pdf.selected(),
+                backend: dev_backend,
+                offline,
+            },
         ),
         Command::Fmt { ref dir, check } => formatting::run(dir.as_ref(), check),
         Command::Watch {
