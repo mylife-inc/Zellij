@@ -1,10 +1,15 @@
 # Zellij readiness — 21 November 2026
 
-Updated 26 November: rc.24 source qualification passes all 37 CI and nine
-PDF jobs, including six native cached-development targets and the real Windows
-lock fixture. PR #262 merged as `2c3b7da`; its immutable tag is undergoing
-release acceptance. Installation channels and the local CLI remain rc.21 until
-public downloads pass. See [the rc.24 release record](zellij-rc24-release-2026-11-26.md).
+Updated 26 November: the published and installed candidate is **v0.2.0-rc.24**,
+source `2c3b7da`. All 55 release jobs pass on their first attempt, including six
+public native installations, six complete cached-PDF checks against both
+repositories and both Next-image PDF architectures. Both repositories contain
+58 matching assets. Independent public Mac checks and installed cold/offline
+operations with the default resource home and empty PATH pass. Homebrew and
+Scoop publish the exact verified recipes; all eight actual rc.21-to-rc.24 upgrades pass. Five new website-template identities are preserved in the ledger.
+The revised guides pass strict validation across all 61 routes and will use the
+automatic production workflow when their pull request merges. See [the rc.24
+release record](zellij-rc24-release-2026-11-26.md).
 
 Earlier implementation checkpoint: [cached Next development](zellij-cached-development-2026-11-25.md)
 and the [PDF mitigation](zellij-pdf-wasm-lifetime-2026-11-25.md) passed all
@@ -64,13 +69,13 @@ and [HTTP export](zellij-cached-http-export-2026-11-21.md) cache migrations now 
 | Area | Current state | Remaining boundary or task |
 | --- | --- | --- |
 | Documented CLI command families | Implemented, with native tests and the recorded release acceptance. | Provider-specific live behavior and external runners require separate acceptance. |
-| Rich websites | File and HTTP static build, check, watch and view share the verified cached renderer. First use downloads it; later operations support `--offline`. Native static deployment builds and optional import validation use the same cache. No user-installed Docker, Node or Python is required for these web rendering operations. | Default editable wrapper generation also uses a verified source cache. Running Next apps, explicit image extraction and container images retain their documented prerequisites. PDF stays opt-in; rc.21 selects its separate cached compiler by default. |
-| Documentation and publishing | rc.21 guides document short workflows, cached PDF defaults and detailed book/website-template Quickstarts. Local production build and browser preservation pass all 61 routes, 282 original heading IDs, 82 compatibility mappings and 29 original images without captured hydration errors. | Production publication is complete. Keep prerequisites and version pins current. Historical browser timing findings remain unresolved. |
+| Rich websites and development | File/HTTP static build, check, watch and view share the verified renderer cache. Static deployment builds and optional import validation reuse it. Rc.24 adds cached `zel dev`, reusing private Node and matching sources; cold/offline acceptance passes on six targets. These operations need no separately installed Docker, Node/npm or Python. | Custom Next apps, explicit image extraction and container image operations retain their documented prerequisites. Development has its own optional dependency download. PDF remains opt-in and uses the separate cached compiler by default. |
+| Documentation and publishing | Rc.24 guides retain short workflows and book/website-template Quickstarts, adding cached development and accurate prerequisites. The prepared guide build preserves 61 routes, 282 original heading IDs, 82 compatibility mappings and 29 original images; the latest wording also passes strict validation. | The production workflow repeats preservation against the exact merged guide source. Keep prerequisites and version pins current. Historical browser timing findings remain unresolved. |
 | Branding, menus and themes | Separate company/product branding, centered navigation, full-width desktop panels, mobile drilldown, responsive theme colors and the Kie theme are implemented. | Kie is an inspected design interpretation; blocked live reference access did not establish a 100% pixel-identical clone. |
 | Composer and templates | Responsive nested layouts, supported media/semantic/interactive nodes, bounded scroll effects, eight inline built-in section types, nine editable presets and nine website/book starters are implemented. | Three website starters ship corrected inline guides at template version 0.1.3 in rc.16, while prior 0.1.2 archive bytes remain unchanged. The composer is bounded; arbitrary executable components, arbitrary section embedding and unrestricted animation timelines are not promised. |
 | Books and PDF | Shared publication model, technical/study editions, references, citations, glossary/index, print styling and supported Latin/Arabic print are implemented. Rc.20 adds a verified optional compiler under `ZELLIJ_HOME/cache/pdf`, reusing private Node. Public acceptance verifies complete matching sources and offline PDF/rich builds on six targets. | Rc.21 selects cached PDF by default, updates generated CI and publishes new book-template versions. Explicit container selection remains available. Arbitrary citation styles/BibTeX, unrestricted font inventories and broader format fidelity remain expansion requests. |
-| Installation | Public rc.21 packages pass all six native installation jobs and independent Mac acceptance. Homebrew and Scoop recipes match the release's verified checksums; all eight actual rc.20-to-rc.21 upgrades and lifecycle checks pass. | Ownership protection and native WinGet manifests remain included; Microsoft catalog approval stays separate. |
-| Retention | The 20 November rc.12 retirement is complete and recorded in its dated evidence. No releases or image versions are retired during rc.20 or rc.21 publication. The compiler's matching source archive and notices remain available with the runtime. | Preserve existing compatibility/catalog fixtures and rc.20 channel-upgrade inputs until their dependencies are deliberately retired. Do not reuse completed deletion plans. |
+| Installation | Public rc.24 packages pass all six native installation jobs and independent Mac acceptance. The installed default-home cold/offline checks pass. Homebrew and Scoop recipes match the release's verified checksums; all eight actual rc.21-to-rc.24 upgrades and lifecycle checks pass. | Ownership protection and native WinGet manifests remain included; Microsoft catalog approval stays separate. |
+| Retention | The 20 November rc.12 retirement is complete and recorded in its dated evidence. No releases or image versions are retired during rc.24 publication. Rc.22/rc.23 tags and failure records remain immutable. Matching compiler sources and notices stay available with the runtime. | Preserve compatibility/catalog fixtures and rc.21 channel-upgrade inputs until their dependencies are deliberately retired. Do not reuse completed deletion plans. |
 | Live providers and generated runners | Adapters and build/protocol harnesses exist. Earlier live Netlify, Cloudflare, GitHub Pages and Railway checks have their recorded evidence. | Fly, S3 and actual GitLab/CircleCI runner acceptance stay at the end by user instruction. Vercel remains explicitly deferred after payment was required. |
 
 The cached-renderer current-page defect found during rc.18 is corrected
@@ -108,8 +113,9 @@ real rc.14 archives; retain them until that dependency is deliberately migrated.
 
 The versioned editable wrapper/engine source package for default `eject` and
 `new app` is published and verified in rc.19.
-The optional cached LuaHBTeX package now ships in rc.20; Next development
-packages remain a separate opportunity.
+The optional cached LuaHBTeX package first shipped in rc.20; cached Next
+development now ships in rc.24. The isolated PDF process also retains the
+scoped Wasm code-GC mitigation described in its dated qualification record.
 The [22 November PDF feasibility work](zellij-cached-pdf-feasibility-2026-11-22.md)
 adds an offline Wasm probe and fixes a Colima generated-input share defect in
 source (`0619869`). Sixteen local manuscripts pass, and the initial six-platform

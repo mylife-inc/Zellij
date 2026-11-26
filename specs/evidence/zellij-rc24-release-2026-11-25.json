@@ -1,7 +1,7 @@
 {
   "date": "2026-11-25",
   "version": "v0.2.0-rc.24",
-  "status": "published-release-qualified-channel-upgrades-running",
+  "status": "released-installed-channels-verified-guides-prepared",
   "source": {
     "head": "a3933b62b6cb382a2c21b769db8b6674db335211",
     "pr": 262,
@@ -1328,7 +1328,7 @@
     "originalHistoricalBrowserTimingsResolved": false
   },
   "publicationGuides": {
-    "status": "prepared-not-published",
+    "status": "pre-merge-qualification-record",
     "localProductionBuild": "pass",
     "strictValidationRoutes": 61,
     "browserPreservation": {
@@ -1341,7 +1341,13 @@
     },
     "preservationLogSha256": "a749aedafbcd123bb7609df2d7a5e883592b0b1e5f765478180d745409a67430",
     "localValidatedGuideCommit": "5c9f79816956e3f06c932f8900ccd58412770cd7",
-    "liveSourceRecoveryBoundaryClarified": true
+    "liveSourceRecoveryBoundaryClarified": true,
+    "finalStrictValidation": {
+      "sourceGuideCommit": "f4993439dc4c455efe323c634e26e0e44558440d",
+      "routes": 61,
+      "logSha256": "c668b3e8ace7266ec41a741ee7ecb8262aa33e15b937e1b8cec6de70100f0163"
+    },
+    "productionMechanism": "The documentation workflow validates the exact merged guide source, publishes automatically from main and records its deployment receipt in GitHub Actions."
   },
   "updated": "2026-11-26",
   "independentMac": {
@@ -1463,14 +1469,106 @@
       "previousCommit": "235220b1e12faf87a47c3c6be040de3926ca80d8",
       "commit": "1325f888a9be2788125300efd1adc352b9ad08e0",
       "upgradeRun": 45800173733,
-      "status": "running"
+      "status": "completed",
+      "conclusion": "success",
+      "runAttempt": 1,
+      "proof": [
+        {
+          "id": 139841061127,
+          "name": "Install, upgrade and uninstall (ubuntu-latest)",
+          "repo": "mylife-inc/homebrew-tap",
+          "upgradeFrom": "0.2.0-rc.21",
+          "upgradeTo": "0.2.0-rc.24",
+          "proofLine": "2026-11-26T10:19:55.1555866Z Verified actual CLI upgrade: 0.2.0-rc.21 to 0.2.0-rc.24"
+        },
+        {
+          "id": 139841061623,
+          "name": "Install, upgrade and uninstall (macos-15-intel)",
+          "repo": "mylife-inc/homebrew-tap",
+          "upgradeFrom": "0.2.0-rc.21",
+          "upgradeTo": "0.2.0-rc.24",
+          "proofLine": "2026-11-26T10:20:44.2918560Z Verified actual CLI upgrade: 0.2.0-rc.21 to 0.2.0-rc.24"
+        },
+        {
+          "id": 139841061687,
+          "name": "Install, upgrade and uninstall (ubuntu-24.04-arm)",
+          "repo": "mylife-inc/homebrew-tap",
+          "upgradeFrom": "0.2.0-rc.21",
+          "upgradeTo": "0.2.0-rc.24",
+          "proofLine": "2026-11-26T10:19:48.2804808Z Verified actual CLI upgrade: 0.2.0-rc.21 to 0.2.0-rc.24"
+        },
+        {
+          "id": 139841061707,
+          "name": "Install, upgrade and uninstall (macos-15)",
+          "repo": "mylife-inc/homebrew-tap",
+          "upgradeFrom": "0.2.0-rc.21",
+          "upgradeTo": "0.2.0-rc.24",
+          "proofLine": "2026-11-26T10:25:03.2311300Z Verified actual CLI upgrade: 0.2.0-rc.21 to 0.2.0-rc.24"
+        }
+      ],
+      "pushRuns": [
+        {
+          "conclusion": "cancelled",
+          "databaseId": 45800175561,
+          "event": "push",
+          "headSha": "1325f888a9be2788125300efd1adc352b9ad08e0",
+          "status": "completed",
+          "url": "https://github.com/mylife-inc/homebrew-tap/actions/runs/45800175561"
+        }
+      ]
     },
     "scoop": {
       "repository": "mylife-inc/scoop-bucket",
       "previousCommit": "127de966dc473bde6f5e339207e443998392fd47",
       "commit": "cc249aa51c4a95dbe3778c07b3123be20b75d55f",
       "upgradeRun": 45800212328,
-      "status": "running"
+      "status": "completed",
+      "conclusion": "success",
+      "runAttempt": 1,
+      "proof": [
+        {
+          "id": 139841184389,
+          "name": "Scoop (aarch64-pc-windows-msvc, pwsh)",
+          "repo": "mylife-inc/scoop-bucket",
+          "upgradeFrom": "0.2.0-rc.21",
+          "upgradeTo": "0.2.0-rc.24",
+          "proofLine": "2026-11-26T10:20:58.1234453Z Verified actual CLI upgrade: 0.2.0-rc.21 to 0.2.0-rc.24"
+        },
+        {
+          "id": 139841184401,
+          "name": "Scoop (x86_64-pc-windows-msvc, pwsh)",
+          "repo": "mylife-inc/scoop-bucket",
+          "upgradeFrom": "0.2.0-rc.21",
+          "upgradeTo": "0.2.0-rc.24",
+          "proofLine": "2026-11-26T10:20:18.8592077Z Verified actual CLI upgrade: 0.2.0-rc.21 to 0.2.0-rc.24"
+        },
+        {
+          "id": 139841184552,
+          "name": "Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+          "repo": "mylife-inc/scoop-bucket",
+          "upgradeFrom": "0.2.0-rc.21",
+          "upgradeTo": "0.2.0-rc.24",
+          "proofLine": "2026-11-26T10:20:20.6917366Z Verified actual CLI upgrade: 0.2.0-rc.21 to 0.2.0-rc.24"
+        },
+        {
+          "id": 139841184037,
+          "name": "Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+          "repo": "mylife-inc/scoop-bucket",
+          "upgradeFrom": "0.2.0-rc.21",
+          "upgradeTo": "0.2.0-rc.24",
+          "proofLine": "2026-11-26T10:26:34.7494167Z Verified actual CLI upgrade: 0.2.0-rc.21 to 0.2.0-rc.24"
+        }
+      ],
+      "pushRuns": [
+        {
+          "conclusion": "cancelled",
+          "databaseId": 45800211813,
+          "event": "push",
+          "headSha": "cc249aa51c4a95dbe3778c07b3123be20b75d55f",
+          "status": "completed",
+          "url": "https://github.com/mylife-inc/scoop-bucket/actions/runs/45800211813"
+        }
+      ]
     }
   },
   "localInstalled": {
@@ -1478,7 +1576,35 @@
     "upgradeFrom": "v0.2.0-rc.21",
     "path": "$ZELLIJ_HOME/bin/zel",
     "defaultHome": "~/Dev/config/zellij",
-    "acceptance": "running"
+    "acceptance": "success",
+    "receipt": {
+      "version": "0.2.0-rc.24",
+      "home": "~/Dev/config/zellij",
+      "emptySystemPath": true,
+      "resourceHomeOverride": false,
+      "downloadUrlOverrides": false,
+      "cachesBefore": {
+        "engines": false,
+        "sources": false,
+        "development": false,
+        "pdf": false
+      },
+      "commands": [
+        "create",
+        "dev",
+        "dev --offline",
+        "lint",
+        "b",
+        "bs",
+        "create",
+        "pdf",
+        "pdf",
+        "bp"
+      ],
+      "developmentSessionsRemoved": true,
+      "previewPortsReleased": true
+    },
+    "logSha256": "2869b3b4f6265d4f1ee2de4be447d03984e09447022fe9fe4b9bcb9aaae7b7a4"
   },
   "retirement": {
     "performed": false,

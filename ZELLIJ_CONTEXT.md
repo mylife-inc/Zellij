@@ -8,6 +8,36 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-26**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-26: rc.24 published; cached development qualified**
+
+PR #262 merged as `2c3b7da`, tree-identical to `a3933b6`. Immutable rc.24
+passes all 55 release jobs on the first attempt, including six public native
+installations, six complete cached-PDF checks against both repositories and
+both Next-image PDF architectures. Both repositories contain 58 matching
+assets. Independent Mac verification of both public repositories passes.
+The installed rc.24 passes cold and offline development, validation, rich file
+and HTTP builds, PDF-only and combined web/PDF builds with an empty PATH,
+the default resource home and public URLs. All four caches were initially absent.
+Normal shell invocation through the existing compatibility shim resolves rc.24.
+
+Homebrew and Scoop carry the exact verified recipes and updated prerequisites;
+all eight actual rc.21-to-rc.24 upgrades pass on their first attempt. Five new website-template
+identities are recorded from verified public archives; previous bytes stay fixed.
+The revised guides pass strict validation across 61 routes. Their production
+workflow validates preservation and deploys the merged source automatically;
+this record is prepared before that documentation pull request is merged.
+See [rc.24 release evidence](specs/evidence/zellij-rc24-release-2026-11-25.json)
+and [the release record](specs/zellij-rc24-release-2026-11-26.md).
+
+`zel dev` now uses a separate verified dependency package under `ZELLIJ_HOME`,
+reusing private Node and matching sources. It supports offline reuse without
+separately installed Docker, Node/npm or Python. Custom Next apps and explicit
+container operations retain their own toolchain requirements. Windows sharing
+lock handling and the committed-edit acceptance boundary are fixed in `288913c`;
+browser CI setup allowance is `a3933b6`. The bounded PDF mitigation is `5425125`.
+The earlier rc.22/rc.23 failures and historical browser findings remain recorded;
+this checkpoint does not declare stable 1.0 or zero bugs.
+
 **2026-11-26: rc.24 source qualified and tagged; release acceptance running**
 
 PR #262 merged as `2c3b7da`, with a tree identical to tested `a3933b6`.

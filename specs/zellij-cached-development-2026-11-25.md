@@ -1,15 +1,16 @@
 # Cached Next development — 25 November 2026
 
-Current status, 26 November: rc.24 source qualified on all six native targets;
-37 source CI jobs and nine PDF jobs pass. PR #262 merged as `2c3b7da`, with
-the tested tree, and the immutable rc.24 tag is undergoing release acceptance.
-Rc.21 remains installed and in installation channels. See [the rc.24 record](zellij-rc24-release-2026-11-26.md).
+Current status, 26 November: rc.24 is published at immutable `2c3b7da`.
+All 55 release jobs pass, including six public native cached-development targets.
+Independent Mac checks against both repositories and the installed default-home
+cold/offline checks pass. Matching Homebrew/Scoop recipes are published; all eight actual
+rc.21-to-rc.24 upgrades pass. See [the rc.24 record](zellij-rc24-release-2026-11-26.md).
 
 Earlier status: PR #260 merged as `85cea58`, identical to qualified `1e8f437`.
 All 37 source CI jobs and nine PDF jobs pass. The tagged rc.22 release caught
 a separate Windows V8/Wasm PDF abort and did not publish CLI assets. The rc.23
 mitigation is tracked in [the PDF lifetime record](zellij-pdf-wasm-lifetime-2026-11-25.md).
-The current public/installed CLI remains rc.21. Earlier observations below are
+At that earlier checkpoint the public/installed CLI remained rc.21. Observations below are
 retained as chronological evidence, including the Windows development fix.
 
 ## Product scope

@@ -1,8 +1,10 @@
 # Rc.24 cached development release — 26 November 2026
 
-Status: tagged release qualification is running. Rc.21 remains the installed
-candidate and the published installation-channel version. Do not promote the
-prepared rc.24 installation guides until public-download acceptance succeeds.
+Status: rc.24 is published, installed locally and available through the owned
+Homebrew/Scoop channels. All 55 release jobs pass on their first attempt.
+Independent public Mac and installed default-home checks pass. All eight actual
+rc.21-to-rc.24 channel upgrades pass. The updated installation
+guides are prepared for their normal pull-request and production workflow.
 
 ## Qualified source
 
@@ -45,7 +47,7 @@ of its own, but manual navigation or an already scheduled valid reload can read
 new content errors. The guide distinguishes this behavior from `zel vw`, which
 serves completed static exports.
 
-## Retained failures and publication gate
+## Retained failures and publication evidence
 
 Rc.22's Windows PDF abort and rc.23's two development failures remain recorded.
 Neither candidate published CLI assets or advanced installation channels; their
@@ -53,9 +55,21 @@ tags stay fixed. Rc.24's initial source CI also retains two setup-related browse
 cancellations and the targeted retry: rich-file acceptance passed, while showcase
 again exhausted its total job limit. The revised CI completed successfully.
 
-Release `45791545516` must finish before installation-channel promotion. Its
-public assets, independent native download check, actual standalone upgrade,
-Homebrew/Scoop upgrades, template ledger and final documentation publication
-receipts belong in [the release evidence](evidence/zellij-rc24-release-2026-11-25.json).
+Release `45791545516` passes all 55 jobs, with one conditional legacy WinGet
+job skipped. Both public repositories contain 58 matching assets. Recipes and
+all nine template archives verify; five new identities join the ledger without
+changing prior archive hashes. Six public cached-PDF jobs verify both release
+repositories, full matching sources and offline PDF/rich builds. Independent
+Mac checks cover both repositories. The actual standalone upgrade then passes
+cold and offline development, validation, file/HTTP builds and PDF commands with
+an empty PATH and the default resource home. All four caches were initially
+absent. Exact receipts and channel upgrade results are retained in
+[the release evidence](evidence/zellij-rc24-release-2026-11-25.json).
+
+The updated guide source passes strict validation across 61 routes. Its prepared
+production build preserves all original routes, headings, aliases and images.
+The normal documentation workflow repeats these checks against the merged guide
+source before publishing production. This record is finalized before that
+pull request merges; consult its deployment run for the resulting publication.
 Historical browser timing findings and deferred provider/catalog verification
 remain separate; this record does not claim stable 1.0 or zero bugs.

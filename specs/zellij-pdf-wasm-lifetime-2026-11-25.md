@@ -1,10 +1,12 @@
 # PDF Wasm code lifetime — 25 November 2026
 
-Current status, 26 November: mitigation `5425125` passes all nine rc.24 source
-PDF qualification jobs and is unchanged in tagged release `45791545516`,
-which is still running. Rc.21 remains installed and in installation channels.
-Rc.22/rc.23 failures and immutable tags remain retained; neither failed
-candidate promoted CLI assets. See [the rc.24 record](zellij-rc24-release-2026-11-26.md).
+Current status, 26 November: mitigation `5425125` ships unchanged in rc.24.
+All nine source PDF jobs and all 55 tagged release jobs pass. Six public cached
+PDF targets verify both repositories, full matching sources and offline PDF/rich
+builds. The installed rc.24 also passes cold and offline PDF export with an empty
+PATH. Rc.22/rc.23 failures and immutable tags remain retained; neither failed
+candidate promoted CLI assets. This is a scoped runtime mitigation, not a claim
+of an upstream V8 fix. See [the rc.24 record](zellij-rc24-release-2026-11-26.md).
 
 ## Observed failure
 
@@ -28,7 +30,7 @@ signature during repeated Wasm instance/worker teardown on Node 24, including
 Windows and Linux. [V8's correction](https://github.com/v8/v8/commit/9b8ca54d5a)
 changes the lifetime handling of import wrappers marked for deletion. The
 [Node backport](https://github.com/nodejs/node/pull/66376) is still open at this
-checkpoint. Inspection of Node's tagged `v24.22.3` source confirms that
+25 November checkpoint. Inspection of Node's tagged `v24.22.3` source confirms that
 `WasmImportWrapperCache::MaybeGet` still increments the reference before checking
 whether the wrapper is dying.
 
