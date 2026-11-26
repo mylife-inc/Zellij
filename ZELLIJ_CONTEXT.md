@@ -16,6 +16,9 @@ sources. `zel dev` selects it by default; `--dev-backend container` and
 `ZEL_DEV_BACKEND=container` preserve explicit container use. `--offline` requires
 all three caches. This renders the standard documentation wrapper; arbitrary
 custom Next apps still need their own dependency/toolchain management.
+Five rich website starters also have new immutable revisions with rc.22
+requirements and corrected cache/development instructions; previous published
+archives remain unchanged.
 See [the implementation record](specs/zellij-cached-development-2026-11-25.md)
 for scope and qualification. No rc.22 release is published at this checkpoint.
 

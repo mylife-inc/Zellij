@@ -130,3 +130,18 @@ The manifest CRLF checks passed on both Windows targets. Native CI now exercises
 the development package before the longer independent editable-wrapper build,
 and retains Rust compilation caches after failed acceptance. All existing checks
 remain required. Windows runtime qualification is still outstanding.
+
+The source review also found obsolete container requirements in five rich
+website starter READMEs and included guides. These now describe cached HTTP
+builds and Next development at new immutable versions: product-studio and
+api-platform 0.1.3; product-launch, software-platform and creative-studio 0.1.4.
+Their minimum CLI is rc.22. Older published template identities and all book
+starter bytes remain unchanged. Template qualification accompanies this update.
+
+Local template qualification passes all six CLI integration tests and the full
+nine-starter driver: deterministic archives, local/bundled/remote parity, exact
+version selection, offline reuse and strict content validation. Previously
+published book and handbook archives match their recorded immutable hashes.
+The separate PDF qualification run `45749096450` at `e7d6a98` passes all nine
+jobs; no PDF compiler/adapter behavior is changed by the Windows tar correction
+or starter instructions.

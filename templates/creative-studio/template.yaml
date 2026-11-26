@@ -1,10 +1,10 @@
 schema: 1
 id: creative-studio
-version: 0.1.3
+version: 0.1.4
 title: Creative studio
 description: An editorial studio website with expressive typography, original project
   studies and a considered approach.
-minimum-cli: 0.2.0-rc.14
+minimum-cli: 0.2.0-rc.22
 minimum-engine: 0.2.0-rc.9
 renderer: hosted
 kind: site

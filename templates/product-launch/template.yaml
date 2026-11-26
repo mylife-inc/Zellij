@@ -1,10 +1,10 @@
 schema: 1
 id: product-launch
-version: 0.1.3
+version: 0.1.4
 title: Product launch
 description: A sculptural product launch with cinematic imagery, material details and a
   quiet editorial rhythm.
-minimum-cli: 0.2.0-rc.14
+minimum-cli: 0.2.0-rc.22
 minimum-engine: 0.2.0-rc.9
 renderer: hosted
 kind: site

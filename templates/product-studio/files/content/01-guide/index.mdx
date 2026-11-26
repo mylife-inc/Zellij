@@ -12,4 +12,24 @@ Start with `content/sections/home/hero.yaml`: write a clear headline and replace
 The home page introduces the product. This guide answers the next question.
 Add more Markdown or MDX pages here as your documentation grows.
 
+## Build and preview
+
+Run `zel b` from the folder containing `zel.yaml`, then double-click
+`site/index.html`. The first build downloads its verified renderer; later
+builds can use `zel b --offline`. Keep the complete `site/` folder together.
+
+HTTP exports also use the renderer cache: `zel bs` creates an HTTP-served
+edition, while `zel b` creates the rich double-click edition.
+
+For Next.js development, run `zel dev --open`. It downloads a separate verified
+development package, reuses private Node and wrapper sources under
+`$ZELLIJ_HOME` (default `~/Dev/config/zellij`), and reloads valid edits. No installed
+Docker, Node.js, npm or Python is needed. After the first successful run,
+`zel dev --offline --open` uses those verified packages without downloading.
+Ctrl-C stops the server and removes its temporary session; downloads remain.
+`zel vw` is the lighter watched static preview.
+
+Image commands and explicit `zel dev --dev-backend container` need a container
+builder/runtime. This template does not configure PDF output.
+
 [Return to the overview](/)

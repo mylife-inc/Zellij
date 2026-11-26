@@ -31,8 +31,20 @@ and keep the complete `site/` folder together when sharing it. HTTP preview is
 optional. Once the renderer is cached, add `--offline` to reuse it without a
 network connection.
 
-Hosted `zel dev`, explicit `zel build --target static` and hosted deployment
-commands retain their container requirements. Creation itself works offline.
-This starter does not enable book PDF output.
+Creation itself works offline.
+
+HTTP exports also use the renderer cache: `zel bs` creates an HTTP-served
+edition, while `zel b` creates the rich double-click edition.
+
+For Next.js development, run `zel dev --open`. It downloads a separate verified
+development package, reuses private Node and wrapper sources under
+`$ZELLIJ_HOME` (default `~/Dev/config/zellij`), and reloads valid edits. No installed
+Docker, Node.js, npm or Python is needed. After the first successful run,
+`zel dev --offline --open` uses those verified packages without downloading.
+Ctrl-C stops the server and removes its temporary session; downloads remain.
+`zel vw` is the lighter watched static preview.
+
+Image commands and explicit `zel dev --dev-backend container` need a container
+builder/runtime. This template does not configure PDF output.
 
 [Artwork and navigation](/guide/customize) · [Back to the website](/)
