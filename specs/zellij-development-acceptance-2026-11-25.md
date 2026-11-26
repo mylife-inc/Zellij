@@ -76,7 +76,35 @@ template identities are preserved.
 
 ## Remaining qualification
 
-The corrected native fixture must pass against the actual cached runtime,
-including Chromium; all six hosted targets and tagged public-download gates
-remain required before publishing. Documentation publication and installation
-channel promotion remain gated on that release result.
+At `288913c`, all six hosted native package jobs pass, including the corrected
+fixture, Windows/Linux Chromium and the real Windows lock test. All nine PDF
+jobs also pass in run `45778612077`. Tagged public-download gates remain required
+before publishing. Documentation and installation-channel promotion remain
+gated on that release result.
+
+## Browser job setup allowance — 26 November
+
+Source run `45778612146` initially finished with 35 successful jobs, two cancelled
+browser jobs and one conditional skip. Jobs `139768292330` (rich-file export)
+and `139768292492` (showcase) reached their 20-minute job limit after Ubuntu
+dependency installation took 1,117 and 1,034 seconds respectively. The package
+logs show slow Ubuntu mirror transfers; browser CDN downloads completed quickly.
+The actual tests were cancelled after 24 and 125 seconds, with no reported
+assertion failure. The earlier passing rc.23 source run installed the same
+browser dependencies in 38 and 34 seconds.
+
+Only those two jobs were retried on the unchanged commit. Rich-file job
+`139782381209` passed after a 343-second installation. Showcase job
+`139782380694` then reached the same job limit: setup took 1,102 seconds and
+the browser run was cancelled at case 155 of 721 without a reported assertion
+failure. Attempt two finished with 36 successful jobs, one cancellation and
+one conditional skip. Its retained log SHA-256 is
+`862d727cc26e621cf78bd20bb89fa12386fc2ed0e97a44a929356998baa71274`.
+The earlier complete showcase run needed roughly nine additional minutes for building,
+721 browser cases, deployment-prefix checks and development acceptance.
+
+The two affected overall job limits are raised from 20 to 30 minutes to allow
+both dependency setup and the complete acceptance workload. Browser assertions,
+individual test deadlines and retry settings are unchanged. This is a CI setup
+allowance, not a resolution of the retained historical browser timing findings.
+The revised workflow still needs qualification before merge and publication.

@@ -668,7 +668,9 @@ jobs:
   rich-file-export:
     name: Rich website without HTTP
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # Ubuntu browser dependency installation can consume 18 minutes by itself.
+    # Leave time for acceptance; individual browser deadlines remain unchanged.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -686,7 +688,9 @@ jobs:
   e2e:
     name: Showcase end to end
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # Include slow Ubuntu package setup plus the complete browser/dev suite.
+    # Test-level deadlines and assertions remain unchanged.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7

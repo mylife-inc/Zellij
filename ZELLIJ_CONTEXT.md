@@ -5,8 +5,22 @@ tests only. Keep third-party project identities, local case studies and delivery
 details out of tracked files, pull requests, release notes, logs and artifacts.
 External test projects are not Zellij deliverables or product backlog.
 
-Last refreshed: **2026-11-25**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-26**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
+
+**2026-11-26: rc.24 native/PDF checks passed; browser CI setup allowance**
+
+At `288913c` (PR #262), all six native package jobs and all nine PDF qualification
+jobs passed. The Windows lock fixture and Windows/Linux Chromium cached-development
+checks pass. Source CI `45778612146` completed 35 jobs successfully but cancelled
+two browser jobs at their 20-minute limit after Ubuntu dependency installation
+took 17–19 minutes. Those jobs used to install dependencies in 34–38 seconds.
+Only the two cancelled jobs were retried on the unchanged commit; rich-file
+acceptance passed, while showcase again timed out after 18m22s of setup.
+The two affected job limits are being raised to 30 minutes without changing
+browser assertions or test-level deadlines. Qualification remains incomplete;
+rc.24 has not been tagged or published, and rc.21 remains installed.
+See [the development qualification record](specs/zellij-development-acceptance-2026-11-25.md).
 
 **2026-11-25: rc.23 source qualified; release caught two development failures**
 
