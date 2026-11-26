@@ -1,7 +1,7 @@
 {
   "date": "2026-11-25",
   "version": "v0.2.0-rc.24",
-  "status": "source-qualified-release-pending",
+  "status": "tagged-release-qualification-in-progress",
   "source": {
     "head": "a3933b62b6cb382a2c21b769db8b6674db335211",
     "pr": 262,
@@ -295,7 +295,17 @@
       }
     ],
     "merge": "2c3b7daa3be5b0f218b4584a8074e77b4f25d848",
-    "mergeTreeMatchesTestedHead": true
+    "mergeTreeMatchesTestedHead": true,
+    "postMergeDuplicateCi": {
+      "run": 45791394937,
+      "conclusion": "cancelled",
+      "reason": "Identical tree already passed 37 source CI and nine PDF jobs; no failures observed before cancellation. Tagged release repeats its own qualification."
+    },
+    "postMergeDocumentation": {
+      "run": 45791394799,
+      "conclusion": "success",
+      "scope": "Source-candidate guides; rc.24 installation-guide promotion remains gated on release acceptance."
+    }
   },
   "local": {
     "writerWatcherTests": 19,
@@ -336,7 +346,11 @@
     }
   },
   "release": {
-    "published": false
+    "published": false,
+    "run": 45791545516,
+    "tag": "v0.2.0-rc.24",
+    "commit": "2c3b7daa3be5b0f218b4584a8074e77b4f25d848",
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/45791545516"
   },
   "retainedFindings": {
     "rc22": "specs/evidence/zellij-rc22-release-2026-11-25.json",
