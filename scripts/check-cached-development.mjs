@@ -139,7 +139,7 @@ try {
     // Diagnostic only: hold one browser-like request instead of interrupting
     // first-page compilation with the ordinary short HTTP polling deadline.
     const requested = Date.now();
-    const response = await fetch(`http://127.0.0.1:${port}/docs/manual`, { signal: AbortSignal.timeout(600000) });
+    const response = await fetch(`http://127.0.0.1:${port}/docs/manual`, { signal: AbortSignal.timeout(180000) });
     const body = await response.text();
     assert.equal(response.status, 200, body.slice(0, 2000)); assert(body.includes('Original'));
     console.log(JSON.stringify({ probeOnly: true, features, plainPath: plainProbe, firstPageMs: Date.now() - requested, totalMs: Date.now() - began }));

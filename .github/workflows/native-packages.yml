@@ -175,7 +175,7 @@ jobs:
           retention-days: 14
 
   probe:
-    name: Windows first-page probe (${{ matrix.features }}, ${{ matrix.paths }})
+    name: Windows first-page probe (${{ matrix.variant }})
     if: ${{ inputs.probe }}
     needs: renderer
     runs-on: windows-2022
@@ -183,10 +183,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - { features: none, paths: unicode, plain: 'false' }
-          - { features: all, paths: unicode, plain: 'false' }
-          - { features: all, paths: plain, plain: 'true' }
+        variant: [copy, root, no-css, postcss]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -211,14 +208,15 @@ jobs:
           path: dist/source-packages
       - name: Prepare verified diagnostic packages
         shell: bash
+        env:
+          PROBE_VARIANT: ${{ matrix.variant }}
         run: |
           node scripts/package-standalone-engine.mjs win-x64
           node scripts/development-runtime/prepare.mjs --check
           npm ci --ignore-scripts --no-audit --no-fund --prefix scripts/development-runtime
-          node scripts/package-development.mjs
+          node scripts/probe-development-package.mjs "$PROBE_VARIANT"
       - name: Observe one uninterrupted first-page request
         env:
           ZEL_DEV_PROBE: 'true'
-          ZEL_DEV_PROBE_FEATURES: ${{ matrix.features }}
-          ZEL_DEV_PROBE_PLAIN: ${{ matrix.plain }}
+          ZEL_DEV_PROBE_FEATURES: all
         run: node scripts/check-cached-development.mjs cli/target/x86_64-pc-windows-msvc/release/zel.exe

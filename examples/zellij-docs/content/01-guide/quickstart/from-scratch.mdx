@@ -53,8 +53,10 @@ No `package.json`, no `node_modules`, nothing to install. This folder is
 `zel new docs` writes files natively. `zel check`, `zel build` and
 `zel view --watch` acquire the verified renderer once and reuse it afterward.
 They do not need a system Node.js, Python or container installation. Rich
-`--target static` exports use the same cache. Hosted Next `zel dev` and image
-packaging are separate workflows with a container requirement.
+`--target static` exports use the same cache. Image packaging needs a container
+builder. Hosted Next `zel dev` needs a container in rc.21; the rc.22 source
+candidate adds a separate cached development package, described in
+[the development reference](/cli/dev).
 </Callout>
 
 <Callout type="tip" title="What about the Next.js app?">
@@ -217,7 +219,7 @@ separately installed Docker, Node.js or Python. The first check downloads that
 renderer; add `--offline` once it is cached. Source files remain unchanged.
 
 <Callout type="warning" title="File sharing for optional container commands">
-This applies to hosted `zel dev` and image builds/deployments. Rich validation,
+This applies to container-backed `zel dev` and image builds/deployments. Rich validation,
 file/HTTP exports and native static deployment read the local filesystem
 directly and do not need container file sharing.
 
@@ -458,12 +460,17 @@ one `zel` would have used.
 
 ```
 my-docs/
-├── site.yaml
-├── pages.yaml
-├── menu.yaml
-├── sections/home/
-├── 01-docs/
-└── assets/
+├── zel.yaml
+└── content/
+    ├── site.yaml
+    ├── pages.yaml
+    ├── menu.yaml
+    ├── sections/
+    │   ├── home/
+    │   └── pricing/
+    ├── 01-guide/
+    ├── 02-docs/
+    └── assets/
 ```
 
 A folder of text under version control, and a published site. No lockfile, no

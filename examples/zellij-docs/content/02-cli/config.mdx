@@ -46,7 +46,7 @@ the same resource home at runtime. Build output remains in the chosen project;
 temporary staging is cleaned up. Docker, Homebrew and Scoop retain their own
 image/package stores.
 
-Starting with candidate rc.21, default `zel eject` and `zel new app` download
+Default `zel eject` and `zel new app` download
 editable sources into `cache/sources/<CLI-version>/`. Their `--offline` option
 requires an already verified cache. Each generated app receives its own
 `vendor/zellij` copy; editing or installing that app does not modify the cache.

@@ -166,3 +166,15 @@ the Unicode/spaces fixture. The diagnostic-only path passes locally on Darwin
 x64 with features disabled: the uninterrupted first page takes 13.4 seconds,
 and process/session cleanup succeeds. That result validates the probe, not a
 Windows fix. No runtime code or ordinary acceptance deadline is changed.
+
+Diagnostic run `45755240637` fails all three Windows cases. With one continuous
+request, generated output and compiler CPU stop changing after the first minute;
+plain paths and disabled optional features make no difference. Node's HTTP
+client ends each request at its own five-minute header limit, before the
+diagnostic's intended ten-minute limit. This is not evidence of slow compilation
+or an automatic source-scanning loop. The next diagnostic isolates copied
+dependencies, a common Turbopack root and CSS processing; variant packages are
+confined to the opt-in probe and never uploaded or included in releases.
+Requests are now bounded to three minutes, with normal acceptance unchanged.
+The Quickstart's final folder diagram and remaining source-candidate development
+requirements are corrected without claiming rc.22 is already published.
