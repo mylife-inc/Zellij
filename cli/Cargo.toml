@@ -28,11 +28,9 @@ zellij-scaffold = { path = "crates/zellij-scaffold" }
 zellij-engine = { path = "crates/zellij-engine" }
 zellij-docs = { path = "crates/zellij-docs" }
 
-anyhow = "1"
 camino = "1"
 clap = { version = "4", features = ["derive", "env", "wrap_help"] }
 inventory = "0.3"
-miette = { version = "7", features = ["fancy"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 serde_yaml_ng = "0.10"
