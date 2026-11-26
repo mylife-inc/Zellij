@@ -235,3 +235,14 @@ invalidate the native-development qualification or justify retrying that failure
 without investigation. Rc.22's tag is not moved. No installer/channel promotion
 or release/image retirement occurred. The new website archive identities remain
 unpublished, and their minimum CLI advances to the replacement rc.23 candidate.
+
+## Published rc.24 archive measurements — 26 November
+
+The verified public inventories contain six CLI archives of 9.57–10.13 MiB,
+six renderer archives of 36.50–49.72 MiB, a shared source archive of 7.81 MiB,
+and six optional development archives of 116.29–119.79 MiB. Development reuses
+Node from the renderer; ordinary rich builds do not download these development
+archives. These are compressed download sizes, separate from extracted cache
+storage. All 58 inventory entries match between the two public repositories;
+recipe checks and all nine template archives also verify. Exact byte counts
+and hashes are in [rc.24 evidence](evidence/zellij-rc24-release-2026-11-25.json).
