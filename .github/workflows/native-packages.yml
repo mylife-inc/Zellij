@@ -183,7 +183,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        variant: [copy, root, no-css, postcss]
+        variant: [copy, no-css, postcss, quiet]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -219,4 +219,5 @@ jobs:
         env:
           ZEL_DEV_PROBE: 'true'
           ZEL_DEV_PROBE_FEATURES: all
+          ZEL_DEV_PROBE_QUIET: ${{ matrix.variant == 'quiet' }}
         run: node scripts/check-cached-development.mjs cli/target/x86_64-pc-windows-msvc/release/zel.exe

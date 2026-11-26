@@ -7,7 +7,7 @@ const repo = path.resolve(import.meta.dirname, '..');
 const runner = path.join(repo, 'scripts/development-runtime/run.mjs');
 const original = await readFile(runner, 'utf8');
 const variant = process.argv[2];
-let source = original;
+let source = original.replaceAll('\r\n', '\n');
 function replace(from, to) {
   assert(source.includes(from), `Missing diagnostic insertion: ${from}`);
   source = source.replace(from, to);
@@ -20,12 +20,20 @@ if (variant === 'copy') {
   replace('experimental: { turbopackAdditionalRoots: { zellijDependencies: { path: path.dirname(request.modules) } } },',
     "turbopack: { root: path.resolve(request.modules, '../../..') },");
 } else if (variant === 'no-css') {
-  replace('const config = {', "const layout = path.join(process.cwd(), 'src/app/layout.tsx');\nconst layoutSource = await readFile(layout, 'utf8');\nif (!layoutSource.includes(\"import '@shebka/zellij/styles.css';\")) throw new Error('CSS diagnostic insertion not found');\nawait writeFile(layout, layoutSource.replace(\"import '@shebka/zellij/styles.css';\", ''));\nconst config = {");
+  replace('const config = {', `for (const [file, statement] of [
+    ['src/app/layout.tsx', "import '@shebka/zellij/styles.css';"],
+    ['node_modules/@shebka/zellij/src/themes/fonts.ts', "import './fonts/fonts.css';"],
+  ]) {
+    const value = await readFile(file, 'utf8');
+    if (!value.includes(statement)) throw new Error('CSS diagnostic insertion not found: ' + file);
+    await writeFile(file, value.replace(statement, ''));
+  }
+const config = {`);
 } else if (variant === 'postcss') {
-  replace('const config = {', "await writeFile('postcss.config.mjs', `import tailwind from '@tailwindcss/postcss';\nexport default { plugins: { '@tailwindcss/postcss': {} } };\nconsole.log('PROBE: PostCSS config loaded');\n`);\nconst config = {");
+  replace('const config = {', "await writeFile('postcss.config.mjs', `export default { plugins: { '@tailwindcss/postcss': {} } };\nconsole.log('PROBE: PostCSS config loaded');\n`);\nconst config = {");
   // Tailwind's own timing traces contain paths and timings, never environment values.
   replace('running = true;', "process.env.DEBUG = 'tailwindcss';\nrunning = true;");
-} else throw new Error(`Unknown development probe: ${variant}`);
+} else if (variant !== 'quiet') throw new Error(`Unknown development probe: ${variant}`);
 execFileSync(process.execPath, ['--input-type=module', '--check'], { input: source, stdio: ['pipe', 'inherit', 'inherit'] });
 if (process.argv.includes('--check')) process.exit(0);
 try {

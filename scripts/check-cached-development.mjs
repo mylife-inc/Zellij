@@ -14,6 +14,7 @@ const probeOnly = process.env.ZEL_DEV_PROBE === 'true';
 const features = probeOnly ? (process.env.ZEL_DEV_PROBE_FEATURES ?? 'all') : 'all';
 assert(['none', 'all'].includes(features));
 const plainProbe = probeOnly && process.env.ZEL_DEV_PROBE_PLAIN === 'true';
+const quietProbe = probeOnly && process.env.ZEL_DEV_PROBE_QUIET === 'true';
 const began = Date.now();
 let diagnosticTimer;
 const binary = path.resolve(process.argv[2] ?? `cli/target/debug/zel${process.platform === 'win32' ? '.exe' : ''}`);
@@ -133,7 +134,7 @@ try {
   const cold = await command(['dev', root, '--offline']);
   assert.equal(cold.code, 2, cold.output); assert.match(cold.output, /not cached/);
   assert.equal(requests, 0);
-  await launch();
+  await launch(false, quietProbe);
   assert.equal(requests, publicBase ? 0 : 6, 'three verified packages downloaded once');
   if (probeOnly) {
     // Diagnostic only: hold one browser-like request instead of interrupting
@@ -143,7 +144,7 @@ try {
     const body = await response.text();
     assert.equal(response.status, 200, body.slice(0, 2000)); assert(body.includes('Original'));
     console.log(JSON.stringify({ probeOnly: true, features, plainPath: plainProbe, firstPageMs: Date.now() - requested, totalMs: Date.now() - began }));
-    await stop();
+    await stop(true, quietProbe);
   } else {
   await until(async () => { const r = await get('manual'); return r.ok && (await r.text()).includes('Original'); }, 'initial Next page');
   const initial = await (await get('_zellij/dev-revision.json')).json();
