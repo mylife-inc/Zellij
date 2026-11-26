@@ -1,13 +1,31 @@
 {
   "date": "2026-11-25",
   "version": "v0.2.0-rc.24",
-  "status": "source-qualification-in-progress",
+  "status": "source-qualified-release-pending",
   "source": {
     "head": "a3933b62b6cb382a2c21b769db8b6674db335211",
     "pr": 262,
-    "ci": 45786080712,
-    "pdf": 45786080629,
-    "docs": 45786080567,
+    "ci": {
+      "run": 45786080712,
+      "conclusion": "success",
+      "head": "a3933b62b6cb382a2c21b769db8b6674db335211",
+      "successfulJobs": 37,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/45786080712"
+    },
+    "pdf": {
+      "run": 45786080629,
+      "conclusion": "success",
+      "head": "a3933b62b6cb382a2c21b769db8b6674db335211",
+      "successfulJobs": 9,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/45786080629"
+    },
+    "docs": {
+      "run": 45786080567,
+      "conclusion": "success",
+      "head": "a3933b62b6cb382a2c21b769db8b6674db335211",
+      "successfulJobs": 1,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/45786080567"
+    },
     "initialQualification": {
       "head": "288913cb74b9b9fb42207d72ffa7e520edd27cda",
       "pr": 262,
@@ -172,7 +190,112 @@
         }
       ]
     },
-    "changeFromInitialQualification": "Only browser CI job budgets and context/evidence documentation; product code unchanged."
+    "changeFromInitialQualification": "Only browser CI job budgets and context/evidence documentation; product code unchanged.",
+    "showcase": {
+      "job": 139793061405,
+      "passed": 552,
+      "conditionalSkipped": 169,
+      "retriesReported": false,
+      "developmentBrowsers": [
+        "chromium",
+        "webkit"
+      ],
+      "allThirteenLocalThemeFontsVerified": true
+    },
+    "native": [
+      {
+        "job": 139793623803,
+        "cachedDevelopment": {
+          "platform": "linux-arm64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": false,
+        "realWindowsLockAcceptance": false
+      },
+      {
+        "job": 139793623813,
+        "cachedDevelopment": {
+          "platform": "win-arm64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": false,
+        "realWindowsLockAcceptance": false
+      },
+      {
+        "job": 139793623873,
+        "cachedDevelopment": {
+          "platform": "darwin-arm64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": false,
+        "realWindowsLockAcceptance": false
+      },
+      {
+        "job": 139793623874,
+        "cachedDevelopment": {
+          "platform": "linux-x64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": true,
+        "realWindowsLockAcceptance": false
+      },
+      {
+        "job": 139793623885,
+        "cachedDevelopment": {
+          "platform": "darwin-x64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": false,
+        "realWindowsLockAcceptance": false
+      },
+      {
+        "job": 139793623976,
+        "cachedDevelopment": {
+          "platform": "win-x64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": true,
+        "realWindowsLockAcceptance": true
+      }
+    ],
+    "merge": "2c3b7daa3be5b0f218b4584a8074e77b4f25d848",
+    "mergeTreeMatchesTestedHead": true
   },
   "local": {
     "writerWatcherTests": 19,
