@@ -232,7 +232,9 @@
       "byteIdenticalImages": 29,
       "capturedBrowserErrors": 0
     },
-    "preservationLogSha256": "a749aedafbcd123bb7609df2d7a5e883592b0b1e5f765478180d745409a67430"
+    "preservationLogSha256": "a749aedafbcd123bb7609df2d7a5e883592b0b1e5f765478180d745409a67430",
+    "localValidatedGuideCommit": "5c9f79816956e3f06c932f8900ccd58412770cd7",
+    "liveSourceRecoveryBoundaryClarified": true
   },
   "updated": "2026-11-26"
 }
