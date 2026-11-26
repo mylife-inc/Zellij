@@ -81,9 +81,13 @@ the search index, then open browser tabs reload their current URL automatically.
 Image-only edits also reload the page with updated image fingerprints. This is a
 full page reload, so transient UI such as an open search dialog is reset.
 
-Invalid edits are reported in the terminal without triggering an automatic
-reload; the open document stays visible. Correcting the content resumes
-preparation and browser reloads. Initial preparation must succeed before startup.
+When an edit fails validation, the watcher reports it in the terminal and does
+not request a reload for that edit. The existing document stays visible until
+another navigation occurs. New requests, including a reload already scheduled
+for an earlier successful edit, read live files and can show their current
+content errors. Correcting the content resumes preparation and browser reloads.
+For a preview that serves completed static exports, use [`zel vw`](/cli/view).
+Initial preparation must succeed before startup.
 Development polling uses a preparation signal created by the watcher; production
 pages do not poll. Restart after changing `basePath`, wrapper configuration or
 features. Ctrl-C stops Next and its child processes and removes the disposable
