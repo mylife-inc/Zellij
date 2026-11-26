@@ -119,3 +119,14 @@ HTTP page requests. All requests return HTTP 200, and no browser errors are
 captured. Post-change Clippy and JavaScript syntax checks pass. The revised
 local archive measures 125,407,493 bytes with 30,767 files. These results do not
 substitute for the outstanding Linux and Windows native checks.
+
+At `e7d6a98`, native CI `45749096647` passes both Linux architectures (including
+the expanded Chromium reload test on x64) and both macOS architectures. Windows x64 and ARM64
+stop during archive creation: the fail-fast Bash step selects Git's GNU tar,
+which interprets drive letters as remote hosts. The packager now explicitly
+selects Windows' native System32 tar, following the existing renderer packager.
+This is a maintainer packaging correction; consumers never need tar installed.
+The manifest CRLF checks passed on both Windows targets. Native CI now exercises
+the development package before the longer independent editable-wrapper build,
+and retains Rust compilation caches after failed acceptance. All existing checks
+remain required. Windows runtime qualification is still outstanding.

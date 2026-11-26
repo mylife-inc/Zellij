@@ -71,6 +71,7 @@ jobs:
         with:
           workspaces: cli
           key: release-${{ matrix.target }}
+          cache-on-failure: true
       - name: Build the exact release archive and checksum
         env:
           VERSION: ${{ inputs.version || 'workspace' }}
@@ -116,15 +117,6 @@ jobs:
         with:
           name: editable-sources
           path: dist/source-packages
-      - name: Cached editable sources and installed Next wrapper
-        env:
-          TARGET: ${{ matrix.target }}
-          ZEL_SOURCE_BUILD: 'true'
-        shell: bash
-        run: |
-          binary="cli/target/$TARGET/release/zel"
-          case "$TARGET" in *-windows-msvc) binary="$binary.exe" ;; esac
-          node scripts/check-editable-sources.mjs "$binary"
       - name: Package cached Next development dependencies
         shell: bash
         run: |
@@ -145,6 +137,15 @@ jobs:
             npx playwright install --with-deps chromium
           fi
           node scripts/check-cached-development.mjs "$binary"
+      - name: Cached editable sources and installed Next wrapper
+        env:
+          TARGET: ${{ matrix.target }}
+          ZEL_SOURCE_BUILD: 'true'
+        shell: bash
+        run: |
+          binary="cli/target/$TARGET/release/zel"
+          case "$TARGET" in *-windows-msvc) binary="$binary.exe" ;; esac
+          node scripts/check-editable-sources.mjs "$binary"
       - uses: actions/upload-artifact@v7
         with:
           name: development-${{ matrix.target }}

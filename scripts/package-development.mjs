@@ -11,6 +11,8 @@ const platform = `${process.platform === 'win32' ? 'win' : process.platform}-${p
 const output = path.resolve(process.argv[2] ?? 'dist/development-packages');
 const deps = path.join(repo, 'scripts/development-runtime');
 const stage = await mkdtemp(path.join(os.tmpdir(), 'zel-development-package-'));
+// Git Bash's GNU tar treats a Windows drive letter as a remote host.
+const tar = process.platform === 'win32' ? path.join(process.env.SystemRoot, 'System32/tar.exe') : 'tar';
 const sha = b => createHash('sha256').update(b).digest('hex');
 try {
   const root = path.join(stage, 'package'); await mkdir(root); await mkdir(output, { recursive: true });
@@ -52,7 +54,7 @@ try {
   await writeFile(path.join(root, 'manifest.json'), JSON.stringify({ format: 1, kind: 'next-development', version, platform, node_major: 24, files }, null, 2)+'\n');
   const archive = `zel-development-v${version}-${platform}.tar.gz`;
   await writeFile(path.join(stage, 'files.txt'), [...Object.keys(files), 'manifest.json'].join('\n')+'\n');
-  execFileSync('tar', ['-czf', path.join(output, archive), '-C', root, '-T', path.join(stage, 'files.txt')], { env: { ...process.env, COPYFILE_DISABLE: '1' } });
+  execFileSync(tar, ['-czf', path.join(output, archive), '-C', root, '-T', path.join(stage, 'files.txt')], { env: { ...process.env, COPYFILE_DISABLE: '1' } });
   const bytes = await readFile(path.join(output, archive));
   await writeFile(path.join(output, archive+'.sha256'), `${sha(bytes)}  ${archive}\n`);
   console.log(JSON.stringify({ archive, bytes: bytes.length, files: Object.keys(files).length, platform, nodeIncluded: false }));
