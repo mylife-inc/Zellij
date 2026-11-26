@@ -145,3 +145,24 @@ published book and handbook archives match their recorded immutable hashes.
 The separate PDF qualification run `45749096450` at `e7d6a98` passes all nine
 jobs; no PDF compiler/adapter behavior is changed by the Windows tar correction
 or starter instructions.
+
+At `f231e11`, both Windows archives package successfully. Native run
+`45751882986` still fails the first-page deadline on x64 and ARM64 after Next
+reports readiness; both Turbopack and the earlier Webpack runner show this
+symptom. The captured output does not yet distinguish a compiler stall, slow
+compilation, dependency-path behavior or repeated cancellation by the fixture's
+10-second HTTP polling deadline. A separate opt-in Windows probe compares
+`none`/`all` features, records CPU/generated-output progress and holds one
+uninterrupted request for at most ten minutes. Normal native qualification keeps
+its existing deadline and complete lifecycle checks; probe success alone is not
+release acceptance.
+
+PDF run `45751882812` also records an unrelated Ubuntu comparison failure:
+Docker and Podman `info` calls and the local Docker socket probe time out. The
+identical PDF behavior passed all nine jobs in `45749096450`; the failed run is
+retained, and required final qualification must still pass before publication.
+The diagnostic matrix additionally compares an ASCII path without spaces with
+the Unicode/spaces fixture. The diagnostic-only path passes locally on Darwin
+x64 with features disabled: the uninterrupted first page takes 13.4 seconds,
+and process/session cleanup succeeds. That result validates the probe, not a
+Windows fix. No runtime code or ordinary acceptance deadline is changed.
