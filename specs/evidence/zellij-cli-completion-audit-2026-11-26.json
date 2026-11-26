@@ -1,0 +1,1208 @@
+{
+  "schema": 1,
+  "date": "2026-11-26",
+  "source": "c583efbaa515b2454d683b845baf137dbfaedddc",
+  "releaseSource": "2c3b7daa3be5b0f218b4584a8074e77b4f25d848",
+  "sourceCliDiffFromRelease": false,
+  "installedVersion": "zel 0.2.0-rc.24",
+  "method": {
+    "inventory": "Recursively invoke the installed CLI with --help, following listed subcommands except synthetic help. No mutating command or provider call is executed.",
+    "optionDocumentation": "Compare distinct long-option spellings extracted from help with all public content MDX; text presence is not semantic or exhaustive behavior validation.",
+    "dispatch": "Inspect args normalization, exhaustive main dispatch, handler modules, registered-shortcut coverage and family-specific test/workflow inventory.",
+    "stubScan": "No todo! or unimplemented! macro in cli Rust source. Scaffold TODO strings and disclosed importer limitations are not stubs."
+  },
+  "helpPathCount": 82,
+  "leafHelpPathCount": 75,
+  "distinctLongOptionCount": 81,
+  "distinctLongOptions": [
+    "--asset-base-url",
+    "--assets",
+    "--base-path",
+    "--browser",
+    "--build-arg",
+    "--cache-dir",
+    "--catalog",
+    "--check",
+    "--config",
+    "--content",
+    "--count",
+    "--cwd",
+    "--deep",
+    "--deploy",
+    "--dev-backend",
+    "--dir",
+    "--docs-dir",
+    "--dry-run",
+    "--engine",
+    "--features",
+    "--force",
+    "--from",
+    "--full",
+    "--guide",
+    "--help",
+    "--highlight",
+    "--host",
+    "--image",
+    "--interactive",
+    "--json",
+    "--kind",
+    "--layout",
+    "--minimal",
+    "--name",
+    "--no-check",
+    "--no-color",
+    "--no-open",
+    "--no-pdf",
+    "--no-provision",
+    "--offline",
+    "--open",
+    "--out",
+    "--pdf",
+    "--pdf-backend",
+    "--platform",
+    "--port",
+    "--preset",
+    "--preview",
+    "--prod",
+    "--product-dir",
+    "--product-lang",
+    "--provider",
+    "--provision",
+    "--quiet",
+    "--ref",
+    "--registry",
+    "--release-base-url",
+    "--sections",
+    "--set",
+    "--set-json",
+    "--site",
+    "--site-id",
+    "--site-root",
+    "--site-url",
+    "--strict",
+    "--system",
+    "--tag",
+    "--target",
+    "--template",
+    "--theme",
+    "--tiers",
+    "--title",
+    "--to",
+    "--unset",
+    "--validate",
+    "--verbose",
+    "--version",
+    "--watch",
+    "--with-docs",
+    "--workflow",
+    "--zel-version"
+  ],
+  "optionsAbsentFromPublicMdx": [],
+  "rootHelpOptions": [
+    "--config",
+    "--cwd",
+    "--deep",
+    "--help",
+    "--json",
+    "--no-color",
+    "--pdf",
+    "--pdf-backend",
+    "--prod",
+    "--quiet",
+    "--site-root",
+    "--strict",
+    "--target",
+    "--verbose",
+    "--version",
+    "--watch"
+  ],
+  "helpPaths": [
+    {
+      "command": "<root>",
+      "children": [
+        "new",
+        "templates",
+        "explain",
+        "list",
+        "context",
+        "detect",
+        "convert",
+        "check",
+        "dev",
+        "build",
+        "export",
+        "deploy",
+        "netlify",
+        "cloudflare",
+        "vercel",
+        "github-pages",
+        "s3",
+        "fly",
+        "railway",
+        "image",
+        "ci",
+        "migrate",
+        "publish",
+        "ship",
+        "serve",
+        "view",
+        "fmt",
+        "watch",
+        "doctor",
+        "version",
+        "pull",
+        "upgrade",
+        "eject",
+        "features",
+        "completions",
+        "bp",
+        "bs",
+        "vw",
+        "lint",
+        "pdf",
+        "create",
+        "init",
+        "na",
+        "nd",
+        "ns",
+        "np",
+        "ng",
+        "npr",
+        "si",
+        "ni",
+        "ir",
+        "ip",
+        "idf",
+        "sections",
+        "presets",
+        "themes",
+        "formats",
+        "targets"
+      ],
+      "additionalOptions": [],
+      "helpSha256": "e2acba721c4bed1cd2cd54cf963ae488bd72250826525a9eae12c06d06d18d98"
+    },
+    {
+      "command": "new",
+      "children": [
+        "site",
+        "portable",
+        "app",
+        "docs",
+        "section",
+        "page",
+        "guide",
+        "project"
+      ],
+      "additionalOptions": [],
+      "helpSha256": "906b549e32a808356821db6f4b15d7da20005e28d1d42e23da9cece960fd9cef"
+    },
+    {
+      "command": "templates",
+      "children": [
+        "show"
+      ],
+      "additionalOptions": [
+        "--cache-dir",
+        "--catalog",
+        "--offline"
+      ],
+      "helpSha256": "2cc3709800b6ba2f4589eaad4c7bf92c8c23259e55229a693d004450b6b1c6f9"
+    },
+    {
+      "command": "explain",
+      "children": [],
+      "additionalOptions": [],
+      "helpSha256": "b93373f32992f6e656c0c4794b4b81f1b1b356d703f02dd2b69d5eed13c9a65a"
+    },
+    {
+      "command": "list",
+      "children": [
+        "presets",
+        "sections",
+        "themes",
+        "formats",
+        "targets"
+      ],
+      "additionalOptions": [],
+      "helpSha256": "83cacd29cfb2fbc134008666215a47a36bdf95f248afd0bee8e95736ef70de61"
+    },
+    {
+      "command": "context",
+      "children": [],
+      "additionalOptions": [],
+      "helpSha256": "bc7d5964b593e8ff1526a2bbebbd831c2dc86e81efdfae3fdfec5b64e8fe7100"
+    },
+    {
+      "command": "detect",
+      "children": [],
+      "additionalOptions": [],
+      "helpSha256": "4a833317dd202968de3dd453c0c88a97e1dc335cc791c5d998c5c99e1f30d7b3"
+    },
+    {
+      "command": "convert",
+      "children": [],
+      "additionalOptions": [
+        "--asset-base-url",
+        "--assets",
+        "--dry-run",
+        "--from",
+        "--layout",
+        "--out",
+        "--validate"
+      ],
+      "helpSha256": "296322bc68b7ce14a3c9321603074329171aeca1f17f4219bacbd7e219ada804"
+    },
+    {
+      "command": "check",
+      "children": [],
+      "additionalOptions": [
+        "--offline"
+      ],
+      "helpSha256": "7f42c8bf5f50bb57e5e60f12a24275ec335608d77cc0723fb41b681454c9b543"
+    },
+    {
+      "command": "dev",
+      "children": [],
+      "additionalOptions": [
+        "--browser",
+        "--dev-backend",
+        "--features",
+        "--host",
+        "--no-pdf",
+        "--offline",
+        "--open",
+        "--port"
+      ],
+      "helpSha256": "655171247232d1e4e3c1d3850e79bb12b94f5288de76a3419ee9858225bf3f98"
+    },
+    {
+      "command": "build",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--features",
+        "--name",
+        "--no-check",
+        "--no-pdf",
+        "--offline",
+        "--out",
+        "--platform",
+        "--site-url",
+        "--tag",
+        "--theme"
+      ],
+      "helpSha256": "10e037044ef5d1fd817ee2e8cd3324227ef04189b907d3baa1bf1a27a1285141"
+    },
+    {
+      "command": "export",
+      "children": [
+        "pdf"
+      ],
+      "additionalOptions": [],
+      "helpSha256": "ee8472c0aeec6dc4629b574c404d4936c1794a4ec3ffd9f70399c70f07df3d46"
+    },
+    {
+      "command": "deploy",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--dry-run",
+        "--features",
+        "--kind",
+        "--no-check",
+        "--platform",
+        "--site",
+        "--site-id",
+        "--site-url",
+        "--tag",
+        "--to"
+      ],
+      "helpSha256": "5af1acea2f92c55d298b2a73492f998fd56a3a59fda2624d86d3c3862aaaf1eb"
+    },
+    {
+      "command": "netlify",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--dry-run",
+        "--features",
+        "--kind",
+        "--no-check",
+        "--platform",
+        "--site",
+        "--site-id",
+        "--site-url",
+        "--tag",
+        "--to"
+      ],
+      "helpSha256": "961a4c84afed35c896c17df144b815d7f8602d0f054210c8423002b170dc3601"
+    },
+    {
+      "command": "cloudflare",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--dry-run",
+        "--features",
+        "--kind",
+        "--no-check",
+        "--platform",
+        "--site",
+        "--site-id",
+        "--site-url",
+        "--tag",
+        "--to"
+      ],
+      "helpSha256": "b56999796445124ed73f16b49e66a03dabc73157c5deb481e5ffb2ea3a1b7879"
+    },
+    {
+      "command": "vercel",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--dry-run",
+        "--features",
+        "--kind",
+        "--no-check",
+        "--platform",
+        "--site",
+        "--site-id",
+        "--site-url",
+        "--tag",
+        "--to"
+      ],
+      "helpSha256": "fc4e20632b4b959d16ac334b94dec58e17361033372aa1732954f7ee611a1103"
+    },
+    {
+      "command": "github-pages",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--dry-run",
+        "--features",
+        "--kind",
+        "--no-check",
+        "--platform",
+        "--site",
+        "--site-id",
+        "--site-url",
+        "--tag",
+        "--to"
+      ],
+      "helpSha256": "f4c6ac33208e9d56af496c8de0a776d127acd57304fa7c04539862f6e47fcc0d"
+    },
+    {
+      "command": "s3",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--dry-run",
+        "--features",
+        "--kind",
+        "--no-check",
+        "--platform",
+        "--site",
+        "--site-id",
+        "--site-url",
+        "--tag",
+        "--to"
+      ],
+      "helpSha256": "f5d68a1162c39bd91da28031e89e23b3d6919219f8346a37631b6ed8d1965bbd"
+    },
+    {
+      "command": "fly",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--dry-run",
+        "--features",
+        "--kind",
+        "--no-check",
+        "--platform",
+        "--site",
+        "--site-id",
+        "--site-url",
+        "--tag",
+        "--to"
+      ],
+      "helpSha256": "d419bd0c82e60b74806266fb9d3e52474bd7d7361cadc404369d6313f00910c9"
+    },
+    {
+      "command": "railway",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--dry-run",
+        "--features",
+        "--kind",
+        "--no-check",
+        "--platform",
+        "--site",
+        "--site-id",
+        "--site-url",
+        "--tag",
+        "--to"
+      ],
+      "helpSha256": "26147fe486d6b92275bc98fac3360f5a6ef42b415d54e657edf8501fdbf898a0"
+    },
+    {
+      "command": "image",
+      "children": [
+        "static",
+        "next",
+        "build",
+        "run",
+        "push",
+        "dockerfile"
+      ],
+      "additionalOptions": [],
+      "helpSha256": "21fd658e8966538eb67044e126c16f726903e8422b81d923399f7377986b8363"
+    },
+    {
+      "command": "ci",
+      "children": [
+        "init",
+        "run"
+      ],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--content",
+        "--deploy",
+        "--features",
+        "--force",
+        "--kind",
+        "--no-check",
+        "--no-provision",
+        "--platform",
+        "--provision",
+        "--site",
+        "--site-id",
+        "--site-url",
+        "--system",
+        "--zel-version"
+      ],
+      "helpSha256": "d88cd9b8514bb67f3a01e047b313bb4740c1a10d73b1b60e897f1bc4ade3ae89"
+    },
+    {
+      "command": "migrate",
+      "children": [],
+      "additionalOptions": [
+        "--asset-base-url",
+        "--assets",
+        "--dry-run",
+        "--from",
+        "--layout",
+        "--out",
+        "--validate"
+      ],
+      "helpSha256": "fda05e05301f8c580d0957c9855ac2775836d514bea8c9ad95260e1461ed6417"
+    },
+    {
+      "command": "publish",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--dry-run",
+        "--features",
+        "--kind",
+        "--no-check",
+        "--platform",
+        "--site",
+        "--site-id",
+        "--site-url",
+        "--tag",
+        "--to"
+      ],
+      "helpSha256": "c13ac3c95469c296113772984522fa8d447d1ba449b6825799d94f8ae06ac2e9"
+    },
+    {
+      "command": "ship",
+      "children": [],
+      "additionalOptions": [
+        "--asset-base-url",
+        "--assets",
+        "--base-path",
+        "--build-arg",
+        "--dry-run",
+        "--features",
+        "--from",
+        "--image",
+        "--kind",
+        "--no-check",
+        "--out",
+        "--platform",
+        "--provider",
+        "--site",
+        "--site-id",
+        "--site-url",
+        "--tag"
+      ],
+      "helpSha256": "60d327fe263f70c135b5120e13a835252000314ba986f1b3a406f44374a8a236"
+    },
+    {
+      "command": "serve",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--port"
+      ],
+      "helpSha256": "7f1df932c7e2a7be9801555bf706b22f51c8613e65f2304b782164043769cbb6"
+    },
+    {
+      "command": "view",
+      "children": [],
+      "additionalOptions": [
+        "--browser",
+        "--features",
+        "--name",
+        "--no-open",
+        "--no-pdf",
+        "--offline",
+        "--out",
+        "--port",
+        "--theme"
+      ],
+      "helpSha256": "c62d8759580135479035b5dd3ed37866c936a2b38d4251a9488245f294de1fc3"
+    },
+    {
+      "command": "fmt",
+      "children": [],
+      "additionalOptions": [
+        "--check"
+      ],
+      "helpSha256": "051d804d676044a85b691f31039092f793b6b1d6c75e817810ccc2f59fe1ec6b"
+    },
+    {
+      "command": "watch",
+      "children": [],
+      "additionalOptions": [
+        "--offline"
+      ],
+      "helpSha256": "e37fa7cb9ce1307a31e11344bcaff74eca533f367ee6265a77a23e9f26811211"
+    },
+    {
+      "command": "doctor",
+      "children": [],
+      "additionalOptions": [],
+      "helpSha256": "547a269e8ff5119d94e466ac510bb1f236fcf3f9f35c724685fa4ca7bb698bb5"
+    },
+    {
+      "command": "version",
+      "children": [],
+      "additionalOptions": [],
+      "helpSha256": "4ee98361563493475591ba12241d4c234814fed1c5f0f2b4ab5f929597bfd242"
+    },
+    {
+      "command": "pull",
+      "children": [],
+      "additionalOptions": [
+        "--image"
+      ],
+      "helpSha256": "e119257a10a424f680aaa08db060dfa389cdc00cfc5786dd76e6038a724023a0"
+    },
+    {
+      "command": "upgrade",
+      "children": [],
+      "additionalOptions": [
+        "--check",
+        "--force",
+        "--preview",
+        "--release-base-url"
+      ],
+      "helpSha256": "238e33a9a4d903b52fc3b7b075464f59ebe2d0012e98d5527cc24845029a0c53"
+    },
+    {
+      "command": "eject",
+      "children": [],
+      "additionalOptions": [
+        "--image",
+        "--offline",
+        "--out",
+        "--with-docs"
+      ],
+      "helpSha256": "4dfc7e07ec4f8257ca2e44bed871e19aedc7fa29108d66fc88d25597a46faa10"
+    },
+    {
+      "command": "features",
+      "children": [],
+      "additionalOptions": [],
+      "helpSha256": "a5b6cd0c7dadcb0c6fb9049a9f6f0ecb796894c92670ae7ae1c10bb79ba75e3d"
+    },
+    {
+      "command": "completions",
+      "children": [],
+      "additionalOptions": [],
+      "helpSha256": "bb8dac3536b5a2bb184d187efece62cf17f15d882483d2ce83e417ea1bc6309a"
+    },
+    {
+      "command": "bp",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--features",
+        "--name",
+        "--no-check",
+        "--no-pdf",
+        "--offline",
+        "--out",
+        "--platform",
+        "--site-url",
+        "--tag",
+        "--theme"
+      ],
+      "helpSha256": "1822a8787bbc7754b4cb49848c97b5454b5b869a6c7badd6ce996cd38255fdb3"
+    },
+    {
+      "command": "bs",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--features",
+        "--name",
+        "--no-check",
+        "--no-pdf",
+        "--offline",
+        "--out",
+        "--platform",
+        "--site-url",
+        "--tag",
+        "--theme"
+      ],
+      "helpSha256": "08930a749150e6c6909a46b4cc231db023fadffee1b86a5ce1d2b7e8fea75fd4"
+    },
+    {
+      "command": "vw",
+      "children": [],
+      "additionalOptions": [
+        "--browser",
+        "--features",
+        "--name",
+        "--no-open",
+        "--no-pdf",
+        "--offline",
+        "--out",
+        "--port",
+        "--theme"
+      ],
+      "helpSha256": "920dad506416468ca52249450c4e57ac6b73aba7a56c03939780865d22a9fddc"
+    },
+    {
+      "command": "lint",
+      "children": [],
+      "additionalOptions": [
+        "--offline"
+      ],
+      "helpSha256": "9a35a293aa54f679158ca5234e6fffdbf185436cd2e8feebb9a01392ba6182ff"
+    },
+    {
+      "command": "pdf",
+      "children": [],
+      "additionalOptions": [
+        "--check",
+        "--offline",
+        "--out"
+      ],
+      "helpSha256": "608947dcd93056bdfbb2ffda8305ae18de535bbaefcf0caaa833c2ef6d514b9c"
+    },
+    {
+      "command": "create",
+      "children": [],
+      "additionalOptions": [
+        "--cache-dir",
+        "--catalog",
+        "--name",
+        "--offline",
+        "--set",
+        "--template"
+      ],
+      "helpSha256": "e7a870f1c67dc4f42df910ad59b006d49589aecaa90b37417b6ff1fdbcfc3728"
+    },
+    {
+      "command": "init",
+      "children": [],
+      "additionalOptions": [
+        "--interactive",
+        "--minimal",
+        "--name",
+        "--theme"
+      ],
+      "helpSha256": "096be44e0e8ebc8f8dfbd840fdae2548e609579beb3baae3f2a96c2463b19f0f"
+    },
+    {
+      "command": "na",
+      "children": [],
+      "additionalOptions": [
+        "--engine",
+        "--features",
+        "--interactive",
+        "--name",
+        "--offline",
+        "--port",
+        "--with-docs"
+      ],
+      "helpSha256": "d2b2c5be861f6c4a7b1acb482b40790d50f9bc15e83ac8bc97d138e6ad97c1a2"
+    },
+    {
+      "command": "nd",
+      "children": [],
+      "additionalOptions": [
+        "--force",
+        "--full",
+        "--guide",
+        "--interactive",
+        "--minimal",
+        "--name",
+        "--theme"
+      ],
+      "helpSha256": "cac8f1e3a5ebea09add3f22b08446a15bbaf30ee3cb64211d8ab2459ceb5c17c"
+    },
+    {
+      "command": "ns",
+      "children": [],
+      "additionalOptions": [
+        "--count",
+        "--highlight",
+        "--interactive",
+        "--out",
+        "--preset",
+        "--set",
+        "--set-json",
+        "--tiers",
+        "--unset"
+      ],
+      "helpSha256": "e9ac458e9be5fbee1d4e49297cc1fbec6e3f49ff44a0ee3810125de3a34766a4"
+    },
+    {
+      "command": "np",
+      "children": [],
+      "additionalOptions": [
+        "--dir",
+        "--interactive",
+        "--sections"
+      ],
+      "helpSha256": "b8639e5432acd7c2df17b85bc64e869f8b544af755eca28a3d0208547012cc09"
+    },
+    {
+      "command": "ng",
+      "children": [],
+      "additionalOptions": [
+        "--dir",
+        "--title"
+      ],
+      "helpSha256": "68766377fe374089e36bc14e0c5603f54ab05c8695d62139ecaf70735f5b8470"
+    },
+    {
+      "command": "npr",
+      "children": [],
+      "additionalOptions": [
+        "--docs-dir",
+        "--product-dir",
+        "--product-lang"
+      ],
+      "helpSha256": "ce19458e7638124a19a65fcd728196c6d733c502cebfc9b140cac8135b1d7048"
+    },
+    {
+      "command": "si",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--features",
+        "--no-check",
+        "--platform",
+        "--site-url",
+        "--tag"
+      ],
+      "helpSha256": "142f6925bd1b197cb985c629d867f26e8a7202b022c7b89336e0907ca37af446"
+    },
+    {
+      "command": "ni",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--features",
+        "--no-check",
+        "--platform",
+        "--site-url",
+        "--tag"
+      ],
+      "helpSha256": "6df1979219752f18532ab7a3255e31142d1fba67a2c0157a34277e68d3f9b2ad"
+    },
+    {
+      "command": "ir",
+      "children": [],
+      "additionalOptions": [
+        "--port"
+      ],
+      "helpSha256": "e3b904e029b70d894f27b484f91f08bc7c9131e5aa00980602407b82338c27a5"
+    },
+    {
+      "command": "ip",
+      "children": [],
+      "additionalOptions": [
+        "--registry"
+      ],
+      "helpSha256": "924223c353f3bda9eea11c9c7718aa4c26399e0e50d608089bd1861d10d69e28"
+    },
+    {
+      "command": "idf",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--features",
+        "--kind",
+        "--no-check",
+        "--site-url"
+      ],
+      "helpSha256": "2a7287b7c920feb60a69fb4baecc4367d02f4958239b6ff654e23a0aabbf55ca"
+    },
+    {
+      "command": "sections",
+      "children": [],
+      "additionalOptions": [],
+      "helpSha256": "822d186e2cb362e7e3c9b7c5bdddbbf4d93a69bcf83867d9c407578c076232ca"
+    },
+    {
+      "command": "presets",
+      "children": [],
+      "additionalOptions": [],
+      "helpSha256": "e1d6cdf08d56602b1d095ed483576b3180c75aed3250aca9f7d2b1398e1d65e8"
+    },
+    {
+      "command": "themes",
+      "children": [],
+      "additionalOptions": [],
+      "helpSha256": "59647f45c6bce61c0d0d60cb594301f8fbda4d6a3fc11e84e46e00b652d3c25f"
+    },
+    {
+      "command": "formats",
+      "children": [],
+      "additionalOptions": [],
+      "helpSha256": "89c317d8447422264d1bcdbdfa01fb2f15b166516bf07f604cb2caeaeef2e7ce"
+    },
+    {
+      "command": "targets",
+      "children": [],
+      "additionalOptions": [],
+      "helpSha256": "ef7a9899cd13f2bb7b38359d2edbb27860dd20cc333ffa03a487fc83a062fa5c"
+    },
+    {
+      "command": "new site",
+      "children": [],
+      "additionalOptions": [
+        "--cache-dir",
+        "--catalog",
+        "--name",
+        "--offline",
+        "--set",
+        "--template"
+      ],
+      "helpSha256": "d429f26c0ced3e75b70dce40d09d2aa79652c4d4b6c64c4bfa4f52522d52b42a"
+    },
+    {
+      "command": "new portable",
+      "children": [],
+      "additionalOptions": [
+        "--interactive",
+        "--minimal",
+        "--name",
+        "--theme"
+      ],
+      "helpSha256": "8dbd1ed53e3780506ccc6dfe12dedb90c3d87519b4a1dd856ae4f037d703a2e6"
+    },
+    {
+      "command": "new app",
+      "children": [],
+      "additionalOptions": [
+        "--engine",
+        "--features",
+        "--interactive",
+        "--name",
+        "--offline",
+        "--port",
+        "--with-docs"
+      ],
+      "helpSha256": "2762377b31cbbefb7bc3cb9c037257815cadff7c2a795e230b1c44d945261aa3"
+    },
+    {
+      "command": "new docs",
+      "children": [],
+      "additionalOptions": [
+        "--force",
+        "--full",
+        "--guide",
+        "--interactive",
+        "--minimal",
+        "--name",
+        "--theme"
+      ],
+      "helpSha256": "c8ab6b7adde755b886324287806e6c97078b7327e77f5df9f51318040b4ec565"
+    },
+    {
+      "command": "new section",
+      "children": [],
+      "additionalOptions": [
+        "--count",
+        "--highlight",
+        "--interactive",
+        "--out",
+        "--preset",
+        "--set",
+        "--set-json",
+        "--tiers",
+        "--unset"
+      ],
+      "helpSha256": "0141ccc08b661d356d7f5b70da791645c688d62d7a196f020add26b4ea7e21fe"
+    },
+    {
+      "command": "new page",
+      "children": [],
+      "additionalOptions": [
+        "--dir",
+        "--interactive",
+        "--sections"
+      ],
+      "helpSha256": "bef93f23d6994ff1dfdabb3807692d9b9a4f7b6bc74f0a4f9ae4562412694016"
+    },
+    {
+      "command": "new guide",
+      "children": [],
+      "additionalOptions": [
+        "--dir",
+        "--title"
+      ],
+      "helpSha256": "36ba9efd3606083c457202894d5f626c0981e0a4afc4d08a17c8c4f902c47189"
+    },
+    {
+      "command": "new project",
+      "children": [],
+      "additionalOptions": [
+        "--docs-dir",
+        "--product-dir",
+        "--product-lang"
+      ],
+      "helpSha256": "d388cc52472393357ee4a989c89ef187124f623b69447c15f889b968c14d8847"
+    },
+    {
+      "command": "templates show",
+      "children": [],
+      "additionalOptions": [
+        "--cache-dir",
+        "--catalog",
+        "--offline"
+      ],
+      "helpSha256": "18e0b03f049eb3b8102721e3798ab0b1f84929a078586cf8f9f812c2cb03b74c"
+    },
+    {
+      "command": "list presets",
+      "children": [],
+      "additionalOptions": [],
+      "helpSha256": "aa1275c37cf3d1d7e503af4abb20df5b97f41853fdcb9a26e729cc676bbdd42c"
+    },
+    {
+      "command": "list sections",
+      "children": [],
+      "additionalOptions": [],
+      "helpSha256": "873c989a317e0f31ab3035e6d231ff9c77e36c390cf69e957a9a05cf25082a1a"
+    },
+    {
+      "command": "list themes",
+      "children": [],
+      "additionalOptions": [],
+      "helpSha256": "831e7721bd4c82435820e1a2f594bb208fd82cc85aec6baff51645b9597ba279"
+    },
+    {
+      "command": "list formats",
+      "children": [],
+      "additionalOptions": [],
+      "helpSha256": "3ade61567f0ccb737da352a8c99ff64b3b49599854a92e66cfe001e83f5481f9"
+    },
+    {
+      "command": "list targets",
+      "children": [],
+      "additionalOptions": [],
+      "helpSha256": "c42a9ae9a248ec978b37d3c051bdb1d673db45ac5886a5d4cf99a9698f928510"
+    },
+    {
+      "command": "export pdf",
+      "children": [],
+      "additionalOptions": [
+        "--check",
+        "--offline",
+        "--out"
+      ],
+      "helpSha256": "6408aaef76a9b3c0f002f3793851ee08e2acc832278390792e1c33fc91e55406"
+    },
+    {
+      "command": "image static",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--features",
+        "--no-check",
+        "--platform",
+        "--site-url",
+        "--tag"
+      ],
+      "helpSha256": "f82f80fd21c2c6ca986ebd0045894d1f0d689174fbcb100e9c2ee3a6e9a637a9"
+    },
+    {
+      "command": "image next",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--features",
+        "--no-check",
+        "--platform",
+        "--site-url",
+        "--tag"
+      ],
+      "helpSha256": "859a4659b30b1e35f0ec4b7afa7a6d575a291ef5aa638e12297dab754875aab7"
+    },
+    {
+      "command": "image build",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--features",
+        "--no-check",
+        "--platform",
+        "--site-url",
+        "--tag"
+      ],
+      "helpSha256": "6b9b62a696cc5f475b68f05621277c17edda337a8aabdb48b7974c0f3876411e"
+    },
+    {
+      "command": "image run",
+      "children": [],
+      "additionalOptions": [
+        "--port"
+      ],
+      "helpSha256": "75fd1cfb61c4bdd8a480ed3b3002a5bd3f4b69b8b8f8d4d31446b18a4312d63a"
+    },
+    {
+      "command": "image push",
+      "children": [],
+      "additionalOptions": [
+        "--registry"
+      ],
+      "helpSha256": "e23825ad51ec3664422af1111cd305d91fc5ac5970875dbb74bf1028829fc150"
+    },
+    {
+      "command": "image dockerfile",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--features",
+        "--kind",
+        "--no-check",
+        "--site-url"
+      ],
+      "helpSha256": "b3c78584e175ee244f052a418b6b619c9d154770da00dbfb4f990f85c1446d5b"
+    },
+    {
+      "command": "ci init",
+      "children": [],
+      "additionalOptions": [
+        "--base-path",
+        "--build-arg",
+        "--content",
+        "--deploy",
+        "--features",
+        "--force",
+        "--kind",
+        "--no-check",
+        "--no-provision",
+        "--platform",
+        "--provision",
+        "--site",
+        "--site-id",
+        "--site-url",
+        "--system",
+        "--zel-version"
+      ],
+      "helpSha256": "77f72517f7d09d711762decce1e9ad72780981d87c056453dd16be409b25fe88"
+    },
+    {
+      "command": "ci run",
+      "children": [],
+      "additionalOptions": [
+        "--ref",
+        "--workflow"
+      ],
+      "helpSha256": "fa4d2bbefc71c99df99006b884580b282add8bdd3a67fc8048af69104b202cb0"
+    }
+  ],
+  "tests": {
+    "workspace": {
+      "command": "cargo test --workspace --locked",
+      "passed": 863,
+      "failed": 0,
+      "ignored": 5,
+      "logSha256": "5b2e81e771d2f144cb93cb6e2aba393929078c136a771f82b12fe8e432a01c86"
+    },
+    "parserAfterHelpCorrection": {
+      "command": "cargo test --locked -p zellij-cli --bin zel args::tests",
+      "passed": 13,
+      "failed": 0,
+      "ignored": 0,
+      "logSha256": "2dac0b62477c03d11d8f2ea6eb78a3c32c8b6aec127dd20566f2e147e1be508e"
+    },
+    "format": {
+      "command": "cargo fmt --all -- --check",
+      "result": "pass"
+    },
+    "clippy": {
+      "command": "cargo clippy --workspace --all-targets --locked -- -D warnings",
+      "result": "pass",
+      "warnings": 0,
+      "logSha256": "49c55b9ea0a8a09fc6f68f5684ebd5ce252c4eb73e6216a605420d52daac81e7"
+    },
+    "correctedHelp": {
+      "command": "cargo run --locked -p zellij-cli -- --help",
+      "result": "pass",
+      "templatesMentioned": true,
+      "helpSha256": "14958d01fa53e47ae265b1b8345c7b588432a632443684d1bcf42e65d0c547da"
+    }
+  },
+  "limits": [
+    "Help coverage is not every argument-combination or semantic behavior coverage.",
+    "Five ignored hosted-cache cases are explicitly run by CI; not rerun locally here.",
+    "No new live-provider or external catalog acceptance.",
+    "No release, artifact retirement or stable 1.0 declaration.",
+    "Two original historical browser timing findings remain unresolved."
+  ],
+  "ciBeforeAudit": {
+    "qualifiedGuides": 45802055700,
+    "production": 45806880663,
+    "images": 45806880747,
+    "duplicateMainCancelled": 45806880688
+  },
+  "corrections": [
+    "Reconcile cached PDF/default/Next development milestones.",
+    "Finalize already completed rc.24 production documentation receipts.",
+    "Include templates in global --json help; execution unchanged.",
+    "Remove two unused workspace dependency declarations; member dependencies and lockfile unchanged."
+  ],
+  "fixCommit": "61bcad22bab7b42e714fa0cc90d9e65ac0f4fa7b"
+}

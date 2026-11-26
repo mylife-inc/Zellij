@@ -1,11 +1,11 @@
 # CLI completion gates — 2026-11-11
 
-**Current checkpoint — 2026-11-21:** rc.17 and production documentation are
-published. Rich file build/check/watch/view require only the CLI and its cached
-renderer. Later composer, print and template milestones supersede older open
-items below. See the [current readiness table](zellij-readiness-2026-11-21.md)
-for the remaining distribution, acceptance and investigation tasks. The
-following checkpoints and the older surface table are retained as history.
+**Current checkpoint — 2026-11-26:** rc.24, its owned installation channels and
+production documentation are published. The [source/help/test audit](zellij-cli-completion-audit-2026-11-26.md)
+finds handlers for all documented command families; it separates implemented
+scope from historical findings, optional extensions and deferred external
+acceptance. The [current readiness table](zellij-readiness-2026-11-21.md) is the
+backlog. The following checkpoints and surface table are retained as history.
 
 **Historical rc.11 distribution status — 2026-11-18.** The candidate, Homebrew,
 Scoop and verified guides are published. Documentation PR #208 merges as
@@ -371,9 +371,12 @@ configuration rather than executing another project's code. Full arbitrary
 source-generator/plugin/theme parity is outside this release's documented
 contract; unsupported cases remain disclosed rather than marked complete.
 
-## Implemented surface and verification
+## Historical implemented surface and verification — rc.8
 
-The parser, exhaustive dispatch and current command reference have handlers for
+This table records the rc.8-era evidence and prerequisites. It is not the
+current prerequisite list; consult the 26 November audit linked above.
+
+At that checkpoint the parser, exhaustive dispatch and command reference had handlers for
 every registered command family. Adding a parsed variant without dispatch fails
 compilation. A handler's existence alone does not prove every real-provider case.
 

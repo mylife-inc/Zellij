@@ -1,24 +1,20 @@
 # Cached toolchain opportunities — 21 November 2026
 
-Status: priorities 1 and 2 ship in **v0.2.0-rc.18**, source `faaee97`.
-The [validation record](zellij-cached-static-validation-2026-11-21.md),
-[HTTP record](zellij-cached-http-export-2026-11-21.md) and
-[release evidence](evidence/zellij-rc18-release-2026-11-21.json) distinguish
-source, public-package and publication acceptance. The wrapper source package
-ships in rc.19 with public and channel acceptance passed; see the
-[22 November record](zellij-cached-editable-sources-2026-11-22.md). The optional
-cached PDF package ships in rc.20; Next development packages remain proposed work.
-The original opportunity review used
-`dbdf4fc` plus rc.17 version preparation; rc.17 itself remains unchanged.
+Status refreshed **26 November 2026:** all five selected cache migrations have
+shipped. Rich validation and HTTP export ship in rc.18 (`faaee97`), editable
+sources in rc.19, optional PDF in rc.20, cached PDF as the default in rc.21,
+and stock Next development in rc.24 (`2c3b7da`). Rc.24 is published, installed
+and verified through both owned installation channels. See the
+[release record](zellij-rc24-release-2026-11-26.md) and
+[CLI completion audit](zellij-cli-completion-audit-2026-11-26.md).
+The original opportunity review used `dbdf4fc` plus rc.17 version preparation;
+immutable earlier candidates and their dated evidence remain unchanged.
 
-PDF implementation started with an
-[offline WebAssembly feasibility probe](zellij-cached-pdf-feasibility-2026-11-22.md).
-PR #255 (`65249fa`) ships the reviewed runtime/source pair and installed CLI
-integration. Six-platform public acceptance checks both repositories, full source
-downloads and real offline PDF/rich builds. Select `--pdf-backend cached` in rc.20;
-`container` remains the default. A later default transition needs generated-CI
-coverage and new versions of the book templates. See the
-[rc.20 record](zellij-rc20-cached-pdf-2026-11-24.md).
+Historical PDF sequence: the [offline feasibility probe](zellij-cached-pdf-feasibility-2026-11-22.md)
+led to PR #255 (`65249fa`) and the reviewed rc.20 runtime/source pair. Rc.20
+required `--pdf-backend cached`; the generated-CI and book-template transition
+shipped in rc.21. Rc.24 retains the isolated compiler's scoped Wasm code-GC
+mitigation (`5425125`). These milestones supersede the earlier proposals below.
 
 ## Existing behavior
 
@@ -38,7 +34,7 @@ installed CLI users. CI generation locates its repository with Git; `zel ci run`
 uses the GitHub CLI for workflow dispatch. These requirements are separate from
 rendering dependencies.
 
-## Candidate migrations
+## Migration disposition — all selected priorities released
 
 | Priority | Commands or path | Reusable artifact | Work required |
 | --- | --- | --- | --- |
@@ -46,21 +42,17 @@ rendering dependencies.
 | 2 — released in rc.18 | `build --target static`, `view --target static`, build/watch and static-site deployment build steps | Extended cached renderer with a supported HTTP export mode | Preserve actual hosted routing, base paths, metadata, 404 behavior, search, no-JavaScript output and asset URLs. Do not silently replace the Next export contract with file-oriented link rewriting. |
 | 2, downstream — released in rc.18 | Netlify, Cloudflare Pages, GitHub Pages, S3 and supported static Vercel deployments; corresponding generated CI | Same HTTP export plus existing native provider clients | Native HTTPS upload adapters already exist; the shared rich-site build now uses the cache. Test the build/protocol boundary with repository-owned fixtures; live provider acceptance remains separately deferred. |
 | 3 — released in rc.19 | Default `eject` and engine selection for `new app` | Separate versioned wrapper sources plus built engine package | The source update removes default stopped-container extraction using a separate verified archive while preserving vendoring, features, starter content and staged-path checks. The compiled renderer remains separate from the editable-source distribution. Explicit custom `--image` extraction must retain its image semantics; running the extracted Next app still needs its development toolchain. |
-| 4 — opt-in release in rc.20 | `pdf`, `build --pdf`, configured PDF preview/book exports | Optional reviewed LuaHBTeX WebAssembly compiler, fonts and resources; reuses the renderer's private Node | Released public packages preserve the supported print contract and offline/cancellation/output-preservation checks. Select `--pdf-backend cached`; container remains the default. The next default transition must update generated CI, explicit container tests and versioned book-template instructions. |
-| 5 | Rich Next.js `dev` and editable wrapper workflows | Optional larger Node/Next/dependency package | Preserve actual Next development behavior and custom app support. `view --watch` already offers a lighter native preview. Arbitrary custom dependencies require their own resolution and cannot be inferred from a fixed template bundle. |
+| 4 — released in rc.20; default since rc.21 | `pdf`, `build --pdf` / `bp`, configured PDF preview/book exports | Optional reviewed LuaHBTeX WebAssembly compiler, fonts and resources; reuses the renderer's private Node | Cached PDF is now the default. Generated CI and versioned book templates reflect that choice; explicit container tests remain. Rc.24 verifies complete matching sources and offline PDF/rich builds on all six native targets and retains the scoped compiler mitigation. |
+| 5 — released in rc.24 for stock development | Rich Next.js `dev` | Separate optional dependency package, reusing private Node and matching editable sources | Cold/offline development, edit recovery, integrity, cancellation and session/port cleanup pass on six native targets. This preserves real Next development for the stock wrapper. Arbitrary custom dependencies still require their own development toolchain; a fixed bundle cannot resolve them. `view --watch` / `vw` remains a static-export preview. |
 | Retain builder | `image static`, `image next`, image publishing and image-based Fly/Railway delivery | Rendering may reuse caches, but images still need a builder | A downloaded renderer does not build an OCI image or start a daemon. Removing the local builder would be a separate remote-builder or native-image-building feature. |
 
 ## Generated workflow comments — released in rc.19
 
-The rc.18 generated jobs correctly omit container setup for web-only builds,
-but their introductory comment still says hosted/image builds need an engine
-image. This is stale explanatory text, not an executable dependency. Update
-that banner in `cli/crates/zellij-scaffold/src/pipeline.rs` and
-`pipeline/external.rs` with the next CLI candidate, preserving Docker guidance
-for image/PDF jobs and old pins. Do not replace immutable rc.18 assets to alter
-a comment. Current public command guides describe the actual prerequisites. The next source
-candidate corrects both generators; current consumer fixtures now use rc.19
-execution pins following publication. Earlier rc.18 assets remain unchanged.
+Rc.18 jobs already omitted container setup for web-only builds, but the banner
+still mentioned an engine image. Rc.19 corrected both generators without changing
+immutable rc.18 assets. Rc.21 subsequently updated PDF defaults and generated-CI
+coverage. Current generators retain builder guidance for image operations and
+explicit container paths. No banner migration remains open.
 
 ## Implementation boundaries
 
@@ -71,10 +63,11 @@ PATH/package-manager mutations. Toolchain cache paths must remain under the
 resolved `ZELLIJ_HOME`; installed executables continue to respect Homebrew/Scoop
 ownership. Reuse the existing renderer cache for operations it already supports.
 
-A future package layout for genuinely additional tools can use
-`cache/toolchains/<tool>/<version>/<platform>/`; this is a proposal, not a path
-recognized by rc.18. Do not introduce a second Node download when the existing
-renderer runtime can safely serve the operation.
+The released layout uses capability-specific `cache/engines`, `cache/sources`,
+`cache/pdf` and `cache/development` directories. The original generic
+`cache/toolchains/<tool>/<version>/<platform>/` sketch was not adopted and is not
+an accepted configuration path. Additional tools should reuse the existing Node
+runtime when compatible.
 
 Each migration needs output-equivalence tests for its promised target, an
 empty-PATH first download, offline reuse, interrupted/corrupt downloads,
@@ -102,9 +95,9 @@ so package installation cannot mutate the shared cache. Explicit local
 Require CLI-version matching, archive and per-file integrity, portable path and
 symlink checks, offline cache use, cancellation and staged destination publication.
 Run the resulting wrapper's install/check/build outside the repository on all
-supported platforms. Removing extraction prerequisites does not yet remove
-Node/npm from running an editable Next app; that is the separate development
-package milestone below the PDF work in the priority table.
+supported platforms. Removing extraction prerequisites does not remove Node/npm from running a
+custom editable Next app. Rc.24 removes those system prerequisites for the stock
+`zel dev` workflow using its separately verified dependency package.
 
 ## Source map
 
@@ -116,7 +109,9 @@ package milestone below the PDF work in the priority table.
 - `cli/crates/zellij-cli/src/eject.rs` and `app.rs`: default cached-source wrappers, explicit stopped-image extraction and local-engine validation.
 - `cli/crates/zellij-cli/src/source_package.rs`: versioned source retrieval, file inventory/integrity, offline reuse and staged publication.
 - `scripts/package-editable-sources.mjs` and `check-editable-sources.mjs`: universal source packaging and six-platform installed-wrapper acceptance.
-- `cli/crates/zellij-cli/src/development.rs`: rich Next development server.
+- `cli/crates/zellij-cli/src/development.rs`, `development/cached.rs` and `development/process.rs`: cached/container dispatch, stock wrapper preparation, supervised Next process and cleanup.
+- `cli/crates/zellij-cli/src/development_package.rs`: optional dependency package integrity and offline retrieval.
+- `scripts/check-cached-development.mjs`: installed cold/offline development acceptance.
 - `cli/crates/zellij-cli/src/pdf.rs` and `pdf_package.rs`: container/cached PDF dispatch, reviewed package integrity and private Node reuse.
 - `scripts/pdf-wasm/`: isolated GPL-2.0-only adapter, original component review, source correspondence and paired release packaging.
 - `scripts/check-published-cached-pdf.mjs` and `verify-pdf-release.mjs`: public native installs, complete source transfers and compiler/renderer/offline acceptance.
