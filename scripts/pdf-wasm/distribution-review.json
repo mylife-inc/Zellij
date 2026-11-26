@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "decision": "reviewed-for-paired-distribution",
-  "reviewedOn": "2026-11-24",
+  "reviewedOn": "2026-11-25",
   "conditions": [
     "Publish the exact matching source archive beside every runtime, with equivalent access and checksums.",
     "Retain matching source and notices while either release repository offers the runtime, including after sealing.",
@@ -30,8 +30,8 @@
       "release-sources.md": "6c8b6726c0f79acbf43195eff6b63cd964de0e5d53524a0eadc54e9069f27c38",
       "bundle.mjs": "a77853078839417a2754100568656827f5180831cef6d93e3b66f99d4396d5ba",
       "pass.mjs": "d05abcf71de8a380d790448aec5a78d461096fe7f79e72fadf998bff606739b9",
-      "probe.mjs": "0e9fa58b844260b9ea9a17b817f305d53f3a17fae51dbe80083dc31de30734a4",
-      "process.mjs": "6c8067de050aa10b9c734c9e71a108025ec85da230e3389b9bdba50091fe5f47",
+      "probe.mjs": "1231c885c9ab1ec3ebdf9a1b24064e8bfd5d0dc43be69342274abd5abbfea3e7",
+      "process.mjs": "db9f810ca99b718bb83e6cb7318226e5d4cdcc467c3d2514d047050d91b72712",
       "compact.py": "66cd9e32f44df87c182ea5725dad92911e998f535344b1b523e7e34e744580c7",
       "distribution-inputs.json": "c2353d3b103cf405ad44b10016d1731d6c575efadfe8045ab1b7c052d27aa916",
       "distribution.py": "d574f5fb6fc4e0a1ba4de14fbc424def516c5d63bed2b212540ecc495e143f41",

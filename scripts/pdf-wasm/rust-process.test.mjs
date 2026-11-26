@@ -51,6 +51,21 @@ function fake(root, body) {
   return file;
 }
 
+test('Rust PDF process fixes Wasm code lifetime without inheriting runtime options', async () => {
+  const root = fixture();
+  try {
+    const runner = fake(root, `
+      if (JSON.stringify(process.execArgv) !== JSON.stringify(['--max-old-space-size=128', '--no-wasm-code-gc'])) {
+        throw new Error('Unexpected PDF runtime flags: ' + JSON.stringify(process.execArgv));
+      }
+      if (process.env.NODE_OPTIONS) throw new Error('Ambient runtime options escaped isolation');
+      throw new Error('Verified bounded PDF Wasm code lifetime');
+    `);
+    await assert.rejects(invoke(root, { NODE_OPTIONS: '--wasm-code-gc' }, runner), /Verified bounded PDF Wasm code lifetime/);
+    clean(root);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
 test('real Rust supervisor keeps protocol private in every presentation mode and blocks startup hooks', { timeout: 180_000 }, async () => {
   for (const options of [{}, { ZEL_PDF_TEST_QUIET: '1' }, { ZEL_PDF_TEST_NO_COLOR: '1' }, { ZEL_PDF_TEST_QUIET: '1', ZEL_PDF_TEST_NO_COLOR: '1' }]) {
     const root = fixture();

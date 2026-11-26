@@ -114,7 +114,10 @@ pub fn run(
     let result = stage.path().join("result");
     let mut command = Command::new(runner.node);
     command
-        .args(["--max-old-space-size=128"])
+        // Node 24 has a Wasm import-wrapper code-GC lifetime race (nodejs/node
+        // #66366). Keep generated Wasm code until this short-lived PDF process
+        // exits; the per-pass worker/heap limits and process deadline still apply.
+        .args(["--max-old-space-size=128", "--no-wasm-code-gc"])
         .arg(runner.script)
         .arg("--run")
         .arg(std::path::absolute(runner.bundle)?)

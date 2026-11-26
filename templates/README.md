@@ -1,7 +1,7 @@
 # Zellij template catalog
 
 This is the authored source for the catalog bundled in `zel` and attached to
-CLI releases. It is independent of `examples/`. The rc.22 source catalog contains nine
+CLI releases. It is independent of `examples/`. The rc.23 source catalog contains nine
 starters. The five existing starters are:
 `product-docs` (portable handbook), `product-studio` (hosted product landing page),
 `book-classic` (portable book publication with optional LuaLaTeX PDF),
@@ -11,7 +11,7 @@ manuscript format requires engine rc.8 or later. They set `book.edition` for coo
 web/print layouts and include citations, glossary and index examples. No artwork,
 font or runtime dependency is added.
 Product-docs remains at template version 0.1.0. Product-studio 0.1.3 requires
-CLI rc.22 and documents cached rich builds, HTTP exports and Next development.
+CLI rc.23 and documents cached rich builds, HTTP exports and Next development.
 Book-classic 0.3.0 requires CLI rc.21 for its short recipes; its manuscript format
 needs engine rc.6 or later. Previous archive identities remain immutable.
 
@@ -26,7 +26,7 @@ The catalog also includes three website starters introduced in rc.9 at template 
 These are original designs with local SVG art, not copies of Apple, Linear,
 Stripe or another company's assets. They use the existing engine sections;
 no React, external fonts, tracking, image services or new dependencies are added.
-Their 0.1.4 revisions require CLI rc.22 and document both cached HTTP exports
+Their 0.1.4 revisions require CLI rc.23 and document both cached HTTP exports
 and cached Next development, retaining the bento heading contrast fix. Their
 previously published 0.1.3 and earlier archives remain unchanged. The READMEs
 and included guides cover rich validation, building and both preview workflows.
@@ -42,7 +42,7 @@ controls, an editable second landing page and a customization guide. They do not
 configure PDF output. Creation works offline; builds reuse a renderer downloaded
 once and need no separately installed Docker, Node.js, npm or Python. Explicit
 HTTP static exports share that cache; hosted `zel dev` uses an optional cached
-development package in rc.22. Explicit container development and image operations
+development package in rc.23. Explicit container development and image operations
 retain their runtime/builder prerequisites. Real signup, purchase and contact services belong
 to the author's product. The sample buttons point to functioning local pages.
 Earlier published identities retain their original bytes; README updates use new versions.
@@ -146,6 +146,6 @@ at the far right. The mobile header uses the complete navigation drawer.
 `api-platform` uses the `kie` theme, with a wide introduction, pricing,
 model cards, integration steps and a code example. Its four pages and original
 SVG artwork use no remote assets or services. Its current 0.1.3 revision requires
-CLI rc.22; the design uses features introduced in engine rc.10. The source catalog
+CLI rc.23; the design uses features introduced in engine rc.10. The source catalog
 includes nine starters. New template versions update build instructions without
 rewriting older archive identities. The API, plans and product names are fictional examples.

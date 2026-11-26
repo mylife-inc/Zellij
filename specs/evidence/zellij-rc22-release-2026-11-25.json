@@ -1,0 +1,200 @@
+{
+  "date": "2026-11-25",
+  "version": "v0.2.0-rc.22",
+  "status": "rc.22 source passed qualification and merged, but its tagged release is blocked by a Windows x64 V8/Wasm abort. No rc.22 CLI release or install-channel promotion occurred.",
+  "source": {
+    "pr": 260,
+    "testedHead": "1e8f437844deee518f89e0c84c732199331f1515",
+    "stdinIsolationFix": "37da78fdfe56daea3ef52ddd2dfcd2f9df391be4",
+    "windowsBrowserGate": "1e8f437844deee518f89e0c84c732199331f1515",
+    "local": {
+      "rustPassed": 863,
+      "existingHostedTestsIgnored": 5,
+      "watcherTests": 10,
+      "templateFixtures": 9,
+      "templateIntegrationTests": 6,
+      "strictDocumentationRoutes": 61,
+      "clippyWarningsDenied": true,
+      "developmentDependencyAuditFindings": 0,
+      "cachedDevelopmentAndChromium": "pass"
+    },
+    "native": [
+      {
+        "job": 139710513063,
+        "logSha256": "89a3cf997971ea2ce573fb20c313a55d41baee5029c0f2c7aa39081360435d1e",
+        "cachedDevelopment": {
+          "platform": "darwin-x64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": false
+      },
+      {
+        "job": 139710513069,
+        "logSha256": "f48692b2bfba916d77887411f9bcb7fa7fbd99f7be0e25272cbf709c5488c3d6",
+        "cachedDevelopment": {
+          "platform": "linux-x64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": true
+      },
+      {
+        "job": 139710513072,
+        "logSha256": "c2892511da8d82b4d7cf2e89bccc150093a10b604c8107540e37d84a69a077b2",
+        "cachedDevelopment": {
+          "platform": "linux-arm64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": false
+      },
+      {
+        "job": 139710513094,
+        "logSha256": "0abc1e9c3646b1b7c678c7780f5aef294da1201f039f5184adab422f2d23c5ac",
+        "cachedDevelopment": {
+          "platform": "darwin-arm64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": false
+      },
+      {
+        "job": 139710513143,
+        "logSha256": "7b121be447ad0d66be2433c18d17261144a4e422cc999d325e135db28a65bdab",
+        "cachedDevelopment": {
+          "platform": "win-x64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": true
+      },
+      {
+        "job": 139710513199,
+        "logSha256": "395fa25a0be9e3651328ac43b3fe05b08a9264c3749799e5790c4d34ab07cfb0",
+        "cachedDevelopment": {
+          "platform": "win-arm64",
+          "cachedNextDev": true,
+          "systemTools": false,
+          "coldDownloads": 6,
+          "offlineRestart": true,
+          "editRecovery": true,
+          "portReleased": true,
+          "sessionsRemoved": true
+        },
+        "browserAcceptance": false
+      }
+    ],
+    "pdf": {
+      "id": 45760836480,
+      "head_sha": "1e8f437844deee518f89e0c84c732199331f1515",
+      "run_attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45760836480",
+      "created_at": "2026-11-26T05:19:29Z",
+      "updated_at": "2026-11-26T05:46:27Z"
+    },
+    "merge": "85cea58c88eca5f93b5d3c64b1932ff1153c5b84",
+    "mergeTreeMatchesTestedHead": true,
+    "ci": {
+      "id": 45760836399,
+      "head_sha": "1e8f437844deee518f89e0c84c732199331f1515",
+      "run_attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45760836399",
+      "created_at": "2026-11-26T05:19:28Z",
+      "updated_at": "2026-11-26T05:51:59Z",
+      "successfulJobs": 37
+    },
+    "postMergeDuplicateCi": {
+      "run": 45764485508,
+      "cancellationRequested": true,
+      "reason": "Identical tree already passed 37 PR CI jobs and nine PDF jobs; duplicate automatic run competed with tagged release qualification for runner capacity. No failed jobs were observed before cancellation.",
+      "successfulJobsBeforeCancellation": 9,
+      "conclusion": "cancelled"
+    },
+    "postMergeDocumentation": {
+      "run": 45764485531,
+      "conclusion": "success",
+      "scope": "Source-candidate guides; rc.22 installation draft was never published and is superseded by rc.23."
+    },
+    "postMergeImages": {
+      "run": 45764485485,
+      "conclusion": "success"
+    }
+  },
+  "retainedFindings": {
+    "record": "specs/zellij-cached-development-2026-11-25.md",
+    "windowsFirstPageTrigger": "Next inherited the cached runner shutdown-input pipe; detaching only Next stdin passes. The precise upstream blocking mechanism is not established.",
+    "previousUnrelatedPdfDockerComparisonFailure": 45751882812,
+    "originalHistoricalBrowserTimingsResolved": false
+  },
+  "release": {
+    "tag": "v0.2.0-rc.22",
+    "commit": "85cea58c88eca5f93b5d3c64b1932ff1153c5b84",
+    "run": 45764526352,
+    "published": false,
+    "failure": {
+      "job": 139724415082,
+      "platform": "windows-x64",
+      "fixture": "fr-study",
+      "node": "v24.22.3",
+      "exitCode": "0x80000003",
+      "diagnostic": "Check failed: jit_page_->allocations_.erase(addr) == 1.",
+      "logSha256": "6d945eef59976b4b5e63d4bb0bace5f6b9b911c7b6042f50e802c4c7910404f9",
+      "priorOutputPreserved": true,
+      "retryPerformed": false
+    },
+    "status": "completed",
+    "conclusion": "failure",
+    "successfulJobs": 34,
+    "skippedJobs": 4,
+    "publicReleaseAbsentInBothRepositories": true
+  },
+  "scope": {
+    "liveProviderVerification": false,
+    "externalCatalogApproval": false,
+    "releaseRetirement": false
+  },
+  "publicationGuides": {
+    "localProductionBuild": "pass",
+    "strictValidationRoutes": 61,
+    "browserPreservation": {
+      "originalRoutes": 46,
+      "addedRoutes": 15,
+      "originalHeadingIds": 282,
+      "compatibilityMappings": 82,
+      "byteIdenticalImages": 29,
+      "capturedBrowserErrors": 0
+    },
+    "initialWorktreeBuild": "Turbopack rejected dependencies linked outside its workspace root. The production workflow uses Webpack and preserved authored images; that exact path passes.",
+    "published": false
+  }
+}

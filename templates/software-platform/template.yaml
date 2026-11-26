@@ -4,7 +4,7 @@ version: 0.1.4
 title: Software platform
 description: A focused software website with a product interface, connected workflows and
   a practical guide.
-minimum-cli: 0.2.0-rc.22
+minimum-cli: 0.2.0-rc.23
 minimum-engine: 0.2.0-rc.9
 renderer: hosted
 kind: site

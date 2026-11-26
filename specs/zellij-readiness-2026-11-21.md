@@ -1,7 +1,9 @@
 # Zellij readiness — 21 November 2026
 
-Current implementation work: the [rc.22 cached Next development candidate](zellij-cached-development-2026-11-25.md)
-is under qualification. It is not yet a published release.
+Current implementation work: [cached Next development](zellij-cached-development-2026-11-25.md)
+passed six-platform source qualification, but the rc.22 release caught a Windows
+PDF runtime crash. The [rc.23 mitigation](zellij-pdf-wasm-lifetime-2026-11-25.md)
+is being qualified; rc.22 CLI assets were not published.
 
 Updated 25 November: the published candidate is **v0.2.0-rc.21**, source
 `cd7608e`. All 55 release jobs pass on their first attempt, including six native

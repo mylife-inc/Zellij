@@ -1,4 +1,5 @@
 import { Worker } from 'node:worker_threads';
+import { setFlagsFromString } from 'node:v8';
 import { mkdir, mkdtemp, lstat, writeFile, rename, rm } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import path from 'node:path';
@@ -7,6 +8,11 @@ import { loadBundle, loadInputs, lock, sha256 } from './bundle.mjs';
 async function runWorker(bundle, files, timeout, logBytes, formatEpoch, fontMetadata = false, signal) {
   if (!Number.isSafeInteger(timeout) || timeout < 1 || timeout > 120_000) throw new Error('Invalid PDF pass deadline');
   signal?.throwIfAborted();
+  // The production supervisors also set this at process startup. Direct
+  // maintainer format/font builds use the same policy before creating workers.
+  // Node 24 otherwise races Wasm import-wrapper cleanup across worker teardown
+  // (nodejs/node#66366). Do not apply this to the website renderer's process.
+  setFlagsFromString('--no-wasm-code-gc');
   const worker = new Worker(new URL('./pass.mjs', import.meta.url), {
     workerData: { bundle, files, logBytes, formatEpoch, fontMetadata }, resourceLimits: { maxOldGenerationSizeMb: 128 },
     // Do not inherit startup hooks, inspector flags or host environment into a pass.
