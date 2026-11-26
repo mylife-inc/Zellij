@@ -172,7 +172,7 @@ fn human(report: &Value) {
                     text(&report["rich_engine"]["cache"])
                 );
                 zellij_core::reportln!(
-                    "  Rich file/static builds and previews use this cache; image builds and hosted development still use a container."
+                    "  Rich file/static builds and previews use this cache. Next dev adds an optional dependency package; image builds require a builder."
                 );
             } else {
                 zellij_core::reportln!("  · not required for portable web-only sites; not probed");

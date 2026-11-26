@@ -18,7 +18,7 @@ const generated = JSON.stringify({
   license: 'UNLICENSED', dependencies, overrides: engine.overrides,
 }, null, 2) + '\n';
 const file = path.join(import.meta.dirname, 'package.json');
-if (process.argv.includes('--check')) assert.equal(await readFile(file, 'utf8'), generated, 'Regenerate and review the development dependency manifest/lock');
+if (process.argv.includes('--check')) assert.equal((await readFile(file, 'utf8')).replace(/\r\n/g, '\n'), generated, 'Regenerate and review the development dependency manifest/lock');
 else await writeFile(file, generated);
 const notices = await readFile(path.join(import.meta.dirname, 'THIRD-PARTY.md'), 'utf8');
 for (const name of ['lightningcss', 'next', 'next-mdx-remote']) {

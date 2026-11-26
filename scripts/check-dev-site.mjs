@@ -146,8 +146,19 @@ try {
       await expect(page.locator('.zellij-mermaid svg')).toBeVisible({ timeout: 30000 });
       await expect.poll(() => page.getByAltText('Watched image').evaluate((img) => img.naturalWidth)).toBe(120);
       // Images alone must trigger a reload with a new fingerprint too.
-      await put('assets/diagram.svg', svg(160));
-      await expect.poll(() => page.getByAltText('Watched image').evaluate((img) => img.naturalWidth), { timeout: 30000 }).toBe(160);
+      for (const width of cached ? [160, 180, 200, 160] : [160]) {
+        await put('assets/diagram.svg', svg(width));
+        // Exercise requests arriving during asset-driven reloads. A development
+        // bundler must not expose a partially rewritten Next build manifest.
+        await Promise.all([
+          expect.poll(() => page.getByAltText('Watched image').evaluate((img) => img.naturalWidth), { timeout: 30000 }).toBe(width),
+          ...(cached ? [1, 2].map(async () => {
+            const response = await fetch(`${origin}/manual`, { signal: AbortSignal.timeout(30000) });
+            assert.equal(response.status, 200, 'page request during asset reload');
+            await response.text();
+          }) : []),
+        ]);
+      }
       await page.getByRole('link', { name: `Added${name}`, exact: true }).first().click();
       await expect(page.getByRole('heading', { name: `Added${name}`, exact: true })).toBeVisible();
       await page.goBack();

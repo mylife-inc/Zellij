@@ -36,11 +36,6 @@ pub fn run(dir: Option<&SiteInput>, options: Options<'_>) -> Result<()> {
         backend,
         offline,
     } = options;
-    if offline && backend == DevBackend::Container {
-        return Err(Error::InvalidArgument(
-            "--offline requires the cached development backend".into(),
-        ));
-    }
     let dir = crate::select_site(dir)?;
     let site = zellij_core::site::Site::load(&dir)?;
     let port = port.unwrap_or(site.port);
@@ -62,6 +57,11 @@ pub fn run(dir: Option<&SiteInput>, options: Options<'_>) -> Result<()> {
                 pdf,
             },
         );
+    }
+    if offline && backend == DevBackend::Container {
+        return Err(Error::InvalidArgument(
+            "--offline requires the cached development backend".into(),
+        ));
     }
     if pdf == Some(true) {
         return Err(Error::InvalidArgument(

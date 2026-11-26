@@ -69,7 +69,9 @@ impl Tree {
         self.process.child.stdin.take();
         let deadline = Instant::now() + Duration::from_secs(3);
         while Instant::now() < deadline {
-            if self.process.try_wait().ok().flatten().is_some() {
+            // Intentional signal exits are not quiet-mode failures. Poll the
+            // child directly and let cancel mark the capture as finished.
+            if self.process.child.try_wait().ok().flatten().is_some() {
                 break;
             }
             thread::sleep(Duration::from_millis(20));

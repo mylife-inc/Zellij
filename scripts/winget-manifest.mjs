@@ -40,7 +40,7 @@ export function wingetManifests(tag, checksums) {
       PublisherUrl: 'https://shebka.net', PackageName: 'Zellij CLI',
       PackageUrl: 'https://zellij.shebka.net', License: 'Proprietary',
       ShortDescription: 'Build rich, offline documentation and product websites with the zel CLI.',
-      Description: `Zellij turns Markdown and YAML into documentation and product websites. Rich double-clickable sites use a verified renderer downloaded on first use and cached under ZELLIJ_HOME. Docker, Node.js and Python are not required for rich file build, check, watch or view. Container, hosted development and PDF workflows have separate prerequisites.${prerelease ? ` This is development preview ${version}.` : ''}`,
+      Description: `Zellij turns Markdown and YAML into documentation and product websites. Rich double-clickable sites use a verified renderer downloaded on first use and cached under ZELLIJ_HOME. Docker, Node.js and Python are not required for rich file build, check, watch or view. See the documentation for development, PDF and container requirements.${prerelease ? ` This is development preview ${version}.` : ''}`,
       Tags: ['documentation', 'markdown', 'static-site-generator', 'offline'],
       ReleaseNotesUrl: `https://github.com/mylife-inc/releases/releases/tag/zellij-${tag}`,
       ManifestType: 'defaultLocale', ...schema,

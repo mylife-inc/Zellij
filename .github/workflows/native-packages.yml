@@ -126,6 +126,7 @@ jobs:
           case "$TARGET" in *-windows-msvc) binary="$binary.exe" ;; esac
           node scripts/check-editable-sources.mjs "$binary"
       - name: Package cached Next development dependencies
+        shell: bash
         run: |
           node scripts/development-runtime/prepare.mjs --check
           npm ci --ignore-scripts --no-audit --no-fund --prefix scripts/development-runtime

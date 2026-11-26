@@ -217,9 +217,7 @@ fn run(options: Options<'_>) -> Result<()> {
     } else {
         zellij_core::statusln!("    zel build .");
         zellij_core::statusln!("  Then open site/index.html directly in your browser.");
-        zellij_core::statusln!(
-            "  Optional live development: zel dev . (requires a container runtime)"
-        );
+        zellij_core::statusln!("  Optional live development: zel dev .");
     }
     Ok(())
 }

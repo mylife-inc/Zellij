@@ -36,13 +36,6 @@ impl Session {
         let modules = dependencies.prepare(work.path(), stop)?;
         let modules = ordinary_path(crate::source_package::utf8(&modules)?.as_str());
         sources.copy("engine", &root.join("node_modules/@shebka/zellij"), stop)?;
-        // This is the stock documentation wrapper, not an arbitrary Next app.
-        // Serve original images in development, just as file/HTTP export does.
-        // This avoids distributing an otherwise unused native image optimizer.
-        fs::write(
-            root.join("next.config.js"),
-            "import { withZellij } from '@shebka/zellij/next-config';\nexport default withZellij({ images: { unoptimized: true } });\n",
-        )?;
         let mut manifest: serde_json::Value =
             serde_json::from_slice(&fs::read(root.join("package.json"))?)
                 .map_err(std::io::Error::other)?;
@@ -86,6 +79,12 @@ impl Session {
             .arg(root.join("run.mjs"))
             .arg(root.join("request.json"))
             .current_dir(&root)
+            // Turbopack's CSS worker resolves Node by name. Expose only the
+            // verified private runtime to descendants, never the user's tools.
+            .env(
+                "PATH",
+                ordinary_path(crate::source_package::utf8(node.parent().unwrap())?.as_str()),
+            )
             .env_remove("NODE_OPTIONS")
             .env_remove("NODE_PATH")
             .env_remove("NODE_V8_COVERAGE")

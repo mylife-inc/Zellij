@@ -74,19 +74,19 @@ async function until(check, label, timeout = 180000) {
   }
   throw new Error(`${label}: ${last ?? ''}\n${log}`);
 }
-async function launch(offline = false) {
+async function launch(offline = false, quiet = false) {
   const reservation = reserve(); reservation.listen(0, '127.0.0.1'); await once(reservation, 'listening');
   port = reservation.address().port; await new Promise(resolve => reservation.close(resolve));
   log = '';
-  const args = ['dev', root, '--host', '127.0.0.1', '--port', String(port), '--features', 'all', ...(offline ? ['--offline'] : [])];
+  const args = ['dev', root, '--host', '127.0.0.1', '--port', String(port), '--features', 'all', ...(offline ? ['--offline'] : []), ...(quiet ? ['--quiet'] : [])];
   child = spawn(windows ? helper : binary, windows ? [binary, ...args] : args, { env, stdio: ['pipe', 'pipe', 'pipe'] });
   done = new Promise((resolve, reject) => { child.once('error', reject); child.once('close', (code, signal) => resolve({code, signal})); });
   child.stdout.on('data', data => log += data); child.stderr.on('data', data => log += data);
-  await until(() => log.includes(`Serving at http://127.0.0.1:${port}/docs/`), 'session readiness');
+  await until(async () => quiet ? (await get('_zellij/dev-revision.json')).ok : log.includes(`Serving at http://127.0.0.1:${port}/docs/`), 'session readiness');
 }
 const get = name => fetch(`http://127.0.0.1:${port}/docs/${name}`, { signal: AbortSignal.timeout(10000) });
 const index = async () => (await get('_zellij/search-index.json')).json();
-async function stop(assertions = true) {
+async function stop(assertions = true, quiet = false) {
   if (!child) return;
   const active = child; child = undefined;
   if (active.exitCode === null && active.signalCode === null) {
@@ -96,7 +96,11 @@ async function stop(assertions = true) {
   const result = await Promise.race([done, new Promise((_, reject) => {
     timer = setTimeout(() => { active.kill('SIGKILL'); reject(new Error(`Shutdown timed out: ${log}`)); }, 10000);
   })]).finally(() => clearTimeout(timer));
-  if (assertions) { assert.equal(result.code, 0, log); assert(log.includes('Stopped.'), log); }
+  if (assertions) {
+    assert.equal(result.code, 0, log);
+    if (quiet) assert.equal(log, '', 'quiet cancellation must not replay ordinary Next output');
+    else assert(log.includes('Stopped.'), log);
+  }
   await until(() => new Promise(resolve => {
     const probe = reserve(); probe.once('error', () => resolve(false));
     probe.listen(port, '127.0.0.1', () => probe.close(() => resolve(true)));
@@ -152,6 +156,8 @@ try {
   assert.equal(requests, publicBase ? 0 : 6, 'offline restart makes no package requests');
   await stop();
   console.log('Cached Next: offline restart and shutdown passed.');
+  await launch(true, true); await stop(true, true);
+  console.log('Cached Next: quiet startup and intentional shutdown remain silent.');
   assert.equal(await readFile(doc, 'utf8'), md('Recovered'), 'authored content unchanged by runtime');
   const collision = createServer((req, res) => { res.end('unrelated service'); });
   await new Promise(resolve => collision.listen(0, '127.0.0.1', resolve));
