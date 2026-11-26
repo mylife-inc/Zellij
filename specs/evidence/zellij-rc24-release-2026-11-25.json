@@ -1,0 +1,72 @@
+{
+  "date": "2026-11-25",
+  "version": "v0.2.0-rc.24",
+  "status": "source-qualification-in-progress",
+  "source": {
+    "head": "288913cb74b9b9fb42207d72ffa7e520edd27cda",
+    "pr": 262,
+    "ci": 45778612146,
+    "pdf": 45778612077,
+    "docs": 45778612289
+  },
+  "local": {
+    "writerWatcherTests": 19,
+    "engineTypecheck": true,
+    "releasePolicyTests": 28,
+    "templateFixtures": 9,
+    "strictDocumentationRoutes": 61,
+    "logs": {
+      "writerWatcherTests": {
+        "sha256": "930ddedc7ae0de852e1fd62a1d07d3e204bfa137b9e90109ed96c857ec4d5944"
+      },
+      "typecheck": {
+        "sha256": "308d45116a90180019cb09524a76878e200c36c9082c4c9a78d877c3b6925018"
+      },
+      "releasePolicy": {
+        "sha256": "1cd12fd50db6f8cc24ef789ab46e650ab7ccf460d4ef8c1e17028bbc4c9da8cb"
+      },
+      "templates": {
+        "sha256": "dc456deb894104a5b6fc1b6e01bfa1f598f9b671a644356d0da7d8a7cad7baac"
+      },
+      "sourceDocumentation": {
+        "sha256": "4238485df3e50dd1ceb812e83524f55aeaf14ce349ceaa40df9c52f4a4bfde44"
+      },
+      "acceptanceCommitBoundaryMac": {
+        "sha256": "3c07e5e841785a32f21a0f2cbcdf6b228b1da84d61321f7e06fbeb39b9243dfb"
+      }
+    },
+    "acceptanceCommitBoundaryMac": {
+      "platform": "darwin-x64",
+      "systemPathEmpty": true,
+      "chromium": true,
+      "coldDownloads": 6,
+      "offlineRestart": true,
+      "editRecovery": true,
+      "portReleased": true,
+      "sessionsRemoved": true,
+      "scope": "Checks the corrected acceptance sequencing with the initial rc.24 package, before the Windows-specific writer patch; real Windows qualification is required separately."
+    }
+  },
+  "release": {
+    "published": false
+  },
+  "retainedFindings": {
+    "rc22": "specs/evidence/zellij-rc22-release-2026-11-25.json",
+    "rc23": "specs/evidence/zellij-rc23-release-2026-11-25.json",
+    "originalHistoricalBrowserTimingsResolved": false
+  },
+  "publicationGuides": {
+    "status": "prepared-not-published",
+    "localProductionBuild": "pass",
+    "strictValidationRoutes": 61,
+    "browserPreservation": {
+      "originalRoutes": 46,
+      "addedRoutes": 15,
+      "originalHeadingIds": 282,
+      "compatibilityMappings": 82,
+      "byteIdenticalImages": 29,
+      "capturedBrowserErrors": 0
+    },
+    "preservationLogSha256": "a749aedafbcd123bb7609df2d7a5e883592b0b1e5f765478180d745409a67430"
+  }
+}

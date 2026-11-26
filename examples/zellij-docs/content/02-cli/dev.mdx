@@ -5,21 +5,19 @@ description: Edit portable Markdown with native preview or hosted content with N
 
 <div id="what-it-is-for" className="zellij-legacy-anchor" />
 
-<Callout type="tip" title="Available in source">
-The rc.24 source candidate runs hosted Next.js development from a verified
-optional cache, without separately installed Docker, Node.js, npm or Python.
-Published rc.21 still uses its container backend. Portable `dev` builds, serves
+<Callout type="tip" title="Cached development in rc.24">
+Hosted Next.js development runs from a verified optional cache, without
+separately installed Docker, Node.js, npm or Python. Portable `dev` builds, serves
 and watches natively. Add `--open` to open the ready site in your
 default browser, or `--browser <executable>` to choose a browser.
-Native release packages may lag the source version.
 </Callout>
 
 ```bash title="terminal"
 zel dev                         # ./zel.yaml, then ./docs/zellij/zel.yaml
 zel dev docs/manual             # a custom configured site or raw content folder
 zel dev --port 4000
-zel dev --offline               # rc.24: reuse previously downloaded packages
-zel dev --dev-backend container # rc.24: explicitly use the container engine
+zel dev --offline               # reuse previously downloaded packages
+zel dev --dev-backend container # explicitly use the container engine
 zel dev --features maths
 zel dev --open
 zel dev --host localhost --browser firefox
@@ -54,7 +52,7 @@ See [editing documents](/cli/view#editing-documents) for watching and recovery l
 
 ## Hosted YAML and MDX
 
-In rc.24 source, `dev` downloads a version- and platform-matched development
+In rc.24, `dev` downloads a version- and platform-matched development
 package, the editable wrapper sources and the private Node runtime. An existing
 renderer download supplies Node; it is not downloaded a second time. The CLI
 verifies the archive checksum and every extracted file before starting Next.
@@ -119,8 +117,8 @@ already shared directory. `zel doctor` helps diagnose runtime availability.
 | `--open` | Open the ready site in the default browser | Off |
 | `--browser <executable>` | Launch this executable with the site URL; implies `--open` | System default when `--open` is used |
 | `--features <selection>` | Complete rendering selection for this session | Portable configuration; cached hosted: `none`; container: engine image |
-| `--dev-backend cached\|container` | Hosted development backend (rc.24 source) | `cached`, or `ZEL_DEV_BACKEND` |
-| `--offline` | Require verified cached renderer, sources and development packages (rc.24 source) | Off |
+| `--dev-backend cached\|container` | Hosted development backend | `cached`, or `ZEL_DEV_BACKEND` |
+| `--offline` | Require verified cached renderer, sources and development packages | Off |
 
 The browser opens once per session. For a hosted site, `zel` waits for successful
 preparation and an HTTP response from that session, then includes the site's
