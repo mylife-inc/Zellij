@@ -8,6 +8,19 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-26**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-26: CLI completion audit**
+
+The [current source/help/test audit](specs/zellij-cli-completion-audit-2026-11-26.md)
+finds no missing documented command family or Rust stub handler. It inventories
+82 help paths and 81 documented long-option spellings, reconciles all five cache
+milestones and records the completed final-guide publication. A source-only help
+correction (`61bcad2`) adds `templates` to the existing `--json` description and
+removes two unused workspace dependency declarations; runtime behavior and the
+lockfile are unchanged. Local verification passes 863 workspace tests, 13 focused
+parser tests, rebuilt help, formatting and Clippy. Earlier reports remain dated evidence. Historical browser timings,
+retention review and user-deferred external acceptance remain distinct; optional
+scope extensions are not silently added to the completion backlog.
+
 **2026-11-26: rc.24 published; cached development qualified**
 
 PR #262 merged as `2c3b7da`, tree-identical to `a3933b6`. Immutable rc.24
@@ -23,9 +36,13 @@ Normal shell invocation through the existing compatibility shim resolves rc.24.
 Homebrew and Scoop carry the exact verified recipes and updated prerequisites;
 all eight actual rc.21-to-rc.24 upgrades pass on their first attempt. Five new website-template
 identities are recorded from verified public archives; previous bytes stay fixed.
-The revised guides pass strict validation across 61 routes. Their production
-workflow validates preservation and deploys the merged source automatically;
-this record is prepared before that documentation pull request is merged.
+The revised guides are published: PR #263 merged as `c583efb`, tree-identical
+to qualified `b6df903`. All 37 PR CI jobs pass; the automatic production workflow
+`45806880663` verifies the merged documentation. Preservation retains 61 routes,
+282 original heading IDs, 82 compatibility mappings and 29 original images.
+Ten live guide routes pass independent HTTP/hydration checks with no captured
+browser errors. The duplicate main CI was deliberately cancelled only after
+qualified-tree equivalence and no observed failures; it is not an acceptance pass.
 See [rc.24 release evidence](specs/evidence/zellij-rc24-release-2026-11-25.json)
 and [the release record](specs/zellij-rc24-release-2026-11-26.md).
 
@@ -38,7 +55,7 @@ browser CI setup allowance is `a3933b6`. The bounded PDF mitigation is `5425125`
 The earlier rc.22/rc.23 failures and historical browser findings remain recorded;
 this checkpoint does not declare stable 1.0 or zero bugs.
 
-**2026-11-26: rc.24 source qualified and tagged; release acceptance running**
+**Earlier 2026-11-26 checkpoint: rc.24 source qualified and tagged; release acceptance running**
 
 PR #262 merged as `2c3b7da`, with a tree identical to tested `a3933b6`.
 Source CI `45786080712` passes all 37 jobs, PDF qualification `45786080629`
@@ -50,7 +67,7 @@ and published in the installation channels. Source-candidate docs and main
 images passed independently. Prepared rc.24 installation guides remain gated
 on public-download acceptance. See [the release record](specs/zellij-rc24-release-2026-11-26.md).
 
-**2026-11-26: rc.24 native/PDF checks passed; browser CI setup allowance**
+**Earlier 2026-11-26 checkpoint: rc.24 native/PDF checks passed; browser CI setup allowance**
 
 At `288913c` (PR #262), all six native package jobs and all nine PDF qualification
 jobs passed. The Windows lock fixture and Windows/Linux Chromium cached-development

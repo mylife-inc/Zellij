@@ -263,7 +263,7 @@ pub(crate) struct Cli {
     #[command(subcommand)]
     pub(crate) command: Command,
 
-    /// JSON output for context, list, explain, detect, version, doctor and check.
+    /// JSON output for context, list, explain, detect, version, doctor, check and templates.
     #[arg(long, global = true)]
     pub(crate) json: bool,
 

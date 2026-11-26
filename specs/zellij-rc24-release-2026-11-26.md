@@ -3,8 +3,8 @@
 Status: rc.24 is published, installed locally and available through the owned
 Homebrew/Scoop channels. All 55 release jobs pass on their first attempt.
 Independent public Mac and installed default-home checks pass. All eight actual
-rc.21-to-rc.24 channel upgrades pass. The updated installation
-guides are prepared for their normal pull-request and production workflow.
+rc.21-to-rc.24 channel upgrades pass. The updated installation guides are
+merged and published through the normal production workflow.
 
 ## Qualified source
 
@@ -66,10 +66,18 @@ an empty PATH and the default resource home. All four caches were initially
 absent. Exact receipts and channel upgrade results are retained in
 [the release evidence](evidence/zellij-rc24-release-2026-11-25.json).
 
-The updated guide source passes strict validation across 61 routes. Its prepared
-production build preserves all original routes, headings, aliases and images.
-The normal documentation workflow repeats these checks against the merged guide
-source before publishing production. This record is finalized before that
-pull request merges; consult its deployment run for the resulting publication.
+PR #263 merged as `c583efb`, tree-identical to tested `b6df903`. CI run
+`45802055700` passes all 37 jobs; documentation run `45802055641` preserves
+46 original plus 15 added routes, 282 original heading IDs, 82 compatibility
+mappings and 29 byte-identical original images, with no captured browser errors.
+Showcase reports 552 passes, 169 conditional skips and no retries. The duplicate
+main CI `45806880688` was cancelled after tree equivalence and absence of observed
+failures were checked; it is not counted as a passing run.
+
+Automatic production run `45806880663` publishes and verifies `c583efb` at
+`zellij.shebka.net` (26 November, 11:04:56 UTC). Ten live guide pages return
+HTTP 200, hydrate and contain the expected candidate instructions, with no
+captured browser errors. Main image run `45806880747` passes all 13 jobs.
+These completed receipts supersede this record's earlier pre-merge checkpoint.
 Historical browser timing findings and deferred provider/catalog verification
 remain separate; this record does not claim stable 1.0 or zero bugs.
