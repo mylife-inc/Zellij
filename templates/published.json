@@ -26,6 +26,11 @@
     {"id":"creative-studio","version":"0.1.3","sha256":"e54f2905adc90a58ad8a9b725101a78cfdf06ca2b668075d0a242ab27a4ee4dd"},
     {"id":"book-classic","version":"0.3.0","sha256":"78b2643a7dc7bd386e8b3459c09738a0131b8690856096b7fa87fc73f9612e54"},
     {"id":"book-technical","version":"0.2.0","sha256":"803a4a00e749dd8138781d6a46487b31addacbd6a7567626e0cd9c5aaed61e43"},
-    {"id":"book-study","version":"0.2.0","sha256":"c7eccf296906314f77bcfcddcbcc0cc70e24691820e95ceaa0ae96aaccb1be15"}
+    {"id":"book-study","version":"0.2.0","sha256":"c7eccf296906314f77bcfcddcbcc0cc70e24691820e95ceaa0ae96aaccb1be15"},
+    {"id":"product-studio","version":"0.1.3","sha256":"db431725b2be6d8668eb64fd4f110f330278378313a1b02bf50596957524f62b"},
+    {"id":"product-launch","version":"0.1.4","sha256":"b7f2d12a38466332812ada0efed4359cca3af9d7708791a37ab52cac42d33c9f"},
+    {"id":"software-platform","version":"0.1.4","sha256":"d261693c60c5425ecb34697f201868489d1ba6fc224a1e1ec76e33994126b1d1"},
+    {"id":"creative-studio","version":"0.1.4","sha256":"97a2009e4d9e43091852ad87cecf8bb37ac7f6d955c884c0ad75ce2beb6fb781"},
+    {"id":"api-platform","version":"0.1.3","sha256":"61407682a63600d07320a8df7584671136e4d2d1103008bc798164feb3bfdedb"}
   ]
 }
