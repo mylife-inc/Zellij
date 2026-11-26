@@ -519,11 +519,7 @@ mod tests {
         fs::write(out.join("run.mjs"), "session change").unwrap();
         assert_eq!(fs::read(source.join("run.mjs")).unwrap(), b"fixture");
         fs::write(source.join("run.mjs"), "cache change").unwrap();
-        assert!(
-            package
-                .prepare(&dir.path().join("changed"), &stop)
-                .is_err()
-        );
+        assert!(package.prepare(&dir.path().join("changed"), &stop).is_err());
         stop.store(true, Ordering::Release);
         assert!(
             package

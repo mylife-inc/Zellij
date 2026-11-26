@@ -29,7 +29,7 @@ const artifacts = createServer(async (req, res) => {
   if (stall && req.url.includes('/zel-development-') &&
     (stall.startsWith('checksum') === req.url.endsWith('.sha256'))) {
     stalled = true;
-    if (stall !== 'checksum-headers') { res.writeHead(200, { 'content-length': 999999 }); res.write('partial'); }
+    if (stall !== 'checksum-headers') { res.writeHead(200, { 'content-length': (await stat(file)).size }); res.write('partial'); }
     return;
   }
   try { res.writeHead(200, { 'content-length': (await stat(file)).size }); createReadStream(file).pipe(res); }
@@ -125,6 +125,7 @@ try {
   await writeFile(doc, md('Recovered'));
   await until(async () => (await index()).some(e => e.text.includes('Recovered')), 'recovery');
   await stop();
+  console.log('Cached Next: cold startup, edits, invalid-edit recovery and shutdown passed.');
   if (!publicBase) {
     const dependencies = path.join(env.ZELLIJ_HOME, 'cache/development', `${version}-${platform}`);
     const saved = path.join(root, 'saved-development'); await rename(dependencies, saved);
@@ -137,17 +138,20 @@ try {
         done = new Promise((resolve, reject) => { child.once('error', reject); child.once('close', (code, signal) => resolve({ code, signal })); });
         await until(() => stalled, `download reaches ${mode}`);
         await stop(false);
+        assert.equal((await done).code, 0, `cancelled ${mode}: ${log}`);
         assert.deepEqual(await readdir(path.dirname(dependencies)), [], `cancelled ${mode} preserves no partial package`);
         assert.doesNotMatch(log, /Serving at/);
       }
     } finally { stall = undefined; await rename(saved, dependencies); }
     requests = 6; // Ignore the three deliberately stalled cancellation fixtures.
+    console.log('Cached Next: checksum/header/archive interruption and partial-cache cleanup passed.');
   }
   await new Promise(resolve => artifacts.close(resolve));
   await launch(true);
   await until(async () => { const r = await get('manual'); return r.ok && (await r.text()).includes('Recovered'); }, 'offline cached Next page');
   assert.equal(requests, publicBase ? 0 : 6, 'offline restart makes no package requests');
   await stop();
+  console.log('Cached Next: offline restart and shutdown passed.');
   assert.equal(await readFile(doc, 'utf8'), md('Recovered'), 'authored content unchanged by runtime');
   const collision = createServer((req, res) => { res.end('unrelated service'); });
   await new Promise(resolve => collision.listen(0, '127.0.0.1', resolve));
