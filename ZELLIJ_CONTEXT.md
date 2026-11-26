@@ -8,6 +8,18 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-26**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-26: rc.24 source qualified and tagged; release acceptance running**
+
+PR #262 merged as `2c3b7da`, with a tree identical to tested `a3933b6`.
+Source CI `45786080712` passes all 37 jobs, PDF qualification `45786080629`
+passes all nine, and all six native targets pass cached development. The
+Windows real-lock fixture and Linux/Windows Chromium pass; showcase reports
+552 passes, 169 conditional skips and no retries. Immutable `v0.2.0-rc.24`
+points to the merge. Release `45791545516` is running; rc.21 remains installed
+and published in the installation channels. Source-candidate docs and main
+images passed independently. Prepared rc.24 installation guides remain gated
+on public-download acceptance. See [the release record](specs/zellij-rc24-release-2026-11-26.md).
+
 **2026-11-26: rc.24 native/PDF checks passed; browser CI setup allowance**
 
 At `288913c` (PR #262), all six native package jobs and all nine PDF qualification

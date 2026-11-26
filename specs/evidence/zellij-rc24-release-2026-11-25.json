@@ -305,6 +305,11 @@
       "run": 45791394799,
       "conclusion": "success",
       "scope": "Source-candidate guides; rc.24 installation-guide promotion remains gated on release acceptance."
+    },
+    "postMergeImages": {
+      "run": 45791394700,
+      "conclusion": "success",
+      "successfulJobs": 13
     }
   },
   "local": {

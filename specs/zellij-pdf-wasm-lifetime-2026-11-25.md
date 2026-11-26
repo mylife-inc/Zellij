@@ -1,8 +1,10 @@
 # PDF Wasm code lifetime — 25 November 2026
 
-Status: rc.23 source mitigation under qualification. The public and installed
-CLI remains rc.21. Rc.22's immutable tag and failed release are retained;
-no rc.22 CLI release or channel promotion occurred.
+Current status, 26 November: mitigation `5425125` passes all nine rc.24 source
+PDF qualification jobs and is unchanged in tagged release `45791545516`,
+which is still running. Rc.21 remains installed and in installation channels.
+Rc.22/rc.23 failures and immutable tags remain retained; neither failed
+candidate promoted CLI assets. See [the rc.24 record](zellij-rc24-release-2026-11-26.md).
 
 ## Observed failure
 

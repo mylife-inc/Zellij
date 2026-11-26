@@ -1,6 +1,12 @@
 # Zellij readiness — 21 November 2026
 
-Current implementation work: [cached Next development](zellij-cached-development-2026-11-25.md)
+Updated 26 November: rc.24 source qualification passes all 37 CI and nine
+PDF jobs, including six native cached-development targets and the real Windows
+lock fixture. PR #262 merged as `2c3b7da`; its immutable tag is undergoing
+release acceptance. Installation channels and the local CLI remain rc.21 until
+public downloads pass. See [the rc.24 release record](zellij-rc24-release-2026-11-26.md).
+
+Earlier implementation checkpoint: [cached Next development](zellij-cached-development-2026-11-25.md)
 and the [PDF mitigation](zellij-pdf-wasm-lifetime-2026-11-25.md) passed all
 37 source CI and nine PDF jobs for rc.23. Its tagged release then caught a
 [development acceptance race and Windows file lock](zellij-development-acceptance-2026-11-25.md).
