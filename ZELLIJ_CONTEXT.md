@@ -5,8 +5,42 @@ tests only. Keep third-party project identities, local case studies and delivery
 details out of tracked files, pull requests, release notes, logs and artifacts.
 External test projects are not Zellij deliverables or product backlog.
 
-Last refreshed: **2026-11-25**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-26**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
+
+**2026-11-26: rc.24 native/PDF checks passed; browser CI setup allowance**
+
+At `288913c` (PR #262), all six native package jobs and all nine PDF qualification
+jobs passed. The Windows lock fixture and Windows/Linux Chromium cached-development
+checks pass. Source CI `45778612146` completed 35 jobs successfully but cancelled
+two browser jobs at their 20-minute limit after Ubuntu dependency installation
+took 17–19 minutes. Those jobs used to install dependencies in 34–38 seconds.
+Only the two cancelled jobs were retried on the unchanged commit; rich-file
+acceptance passed, while showcase again timed out after 18m22s of setup.
+The two affected job limits are being raised to 30 minutes without changing
+browser assertions or test-level deadlines. Qualification remains incomplete;
+rc.24 has not been tagged or published, and rc.21 remains installed.
+See [the development qualification record](specs/zellij-development-acceptance-2026-11-25.md).
+
+**2026-11-25: rc.23 source qualified; release caught two development failures**
+
+PR #261 merged as `120cea9`, identical to `5425125`, after all 37 source CI
+and nine PDF jobs passed. The rc.23 tag remains at that merge. Release
+`45774039883` caught a Linux cached-development acceptance assertion: search
+and assets were already visible, but the preceding valid edit's final reload
+marker had not yet committed. The assertion saved the old marker and mistook
+its later valid commit for an invalid-edit reload. A controlled watcher barrier
+reproduces the old assertion failure; commit-based sequencing preserves the
+invalid-edit check. The correction uses atomic saves and awaits each committed
+edit independently. A separate Windows browser job caught an `EPERM` replacing
+the reload marker; the exact locking handle was not captured. Rc.24 adds bounded
+Windows sharing-lock retries to the shared prepared-file writer, preserving the
+old file without unlinking it. Seven focused tests pass; a real Windows lock
+fixture joins native CI. The watcher loop and marker format are unchanged.
+Rc.24 is being prepared;
+rc.21 remains published and installed. Never move the rc.22/rc.23 tags.
+See [the acceptance record](specs/zellij-development-acceptance-2026-11-25.md)
+and [rc.23 evidence](specs/evidence/zellij-rc23-release-2026-11-25.json).
 
 **2026-11-25: rc.22 release gate caught a PDF runtime crash; rc.23 mitigation in progress**
 
@@ -31,7 +65,7 @@ sources. It supports offline reuse and explicit container selection. Windows
 first-page stalls are corrected in `37da78f` by disconnecting only Next's stdin
 from the launcher's control pipe. Custom Next apps still need their own toolchain.
 The five new website template revisions have not been published as archives;
-their minimum CLI now points to rc.23. Previous published identities stay intact.
+their minimum CLI now points to rc.24. Previous published identities stay intact.
 See [the cached-development record](specs/zellij-cached-development-2026-11-25.md).
 
 The rc.21 guide checkpoint below is now complete: PR #259 merged as `0d7e3a1`,

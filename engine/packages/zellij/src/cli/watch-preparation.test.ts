@@ -4,6 +4,7 @@ import path from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import { afterEach, expect, it, vi } from 'vitest';
 import { snapshot, watchPreparation, type PreparationWatch } from './watch-preparation';
+import * as preparedFiles from './write-prepared-file';
 
 const roots: string[] = [];
 const watchers: PreparationWatch[] = [];
@@ -69,6 +70,60 @@ async function fixture(inAppRoot = false) {
   };
   return { appRoot, content, output, put, json, search, start, errors };
 }
+
+function holdNextRevision() {
+  const write = preparedFiles.writePreparedFile;
+  let entered = false;
+  let release!: () => void;
+  const gate = new Promise<void>((resolve) => { release = resolve; });
+  const spy = vi.spyOn(preparedFiles, 'writePreparedFile').mockImplementation(async (file, text) => {
+    if (!entered && path.basename(file) === 'dev-revision.json') {
+      entered = true;
+      await gate;
+    }
+    await write(file, text);
+  });
+  return { entered: () => entered, release, restore: () => spy.mockRestore() };
+}
+
+it('reproduces a stale acceptance marker when output visibility is mistaken for completed preparation', async () => {
+  const f = await fixture();
+  await f.start();
+  const gate = holdNextRevision();
+  try {
+    await f.put('01-guide/index.mdx', '# Updated\n\nA valid changed passage.\n');
+    await expect.poll(gate.entered).toBe(true);
+    // Exactly the old acceptance predicate: new search output is visible,
+    // but publication of this valid edit's reload marker is still pending.
+    expect(await f.search()).toContain('Updated');
+    const stale = await f.json('dev-revision.json');
+    await f.put('01-guide/index.mdx', '# Invalid\n\n<Callout>\n');
+    gate.release();
+    await expect.poll(() => f.errors.length).toBe(1);
+    expect(await f.search()).toContain('Updated');
+    expect(await f.json('dev-revision.json')).not.toEqual(stale);
+  } finally { gate.release(); gate.restore(); }
+});
+
+it('preserves the committed marker when an invalid edit follows completed preparation', async () => {
+  const f = await fixture();
+  await f.start();
+  const initial = await f.json('dev-revision.json');
+  const gate = holdNextRevision();
+  try {
+    await f.put('01-guide/index.mdx', '# Updated\n\nA valid changed passage.\n');
+    await expect.poll(gate.entered).toBe(true);
+    expect(await f.search()).toContain('Updated');
+    expect(await f.json('dev-revision.json')).toEqual(initial);
+    gate.release();
+    await expect.poll(() => f.json('dev-revision.json')).not.toEqual(initial);
+    const committed = await f.json('dev-revision.json');
+    await f.put('01-guide/index.mdx', '# Invalid\n\n<Callout>\n');
+    await expect.poll(() => f.errors.length).toBe(1);
+    expect(await f.search()).toContain('Updated');
+    expect(await f.json('dev-revision.json')).toEqual(committed);
+  } finally { gate.release(); gate.restore(); }
+});
 
 it('updates edited, added, renamed and deleted assets and canonical search routes', async () => {
   const f = await fixture();

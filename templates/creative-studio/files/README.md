@@ -21,7 +21,7 @@ All businesses, product names, interfaces and projects here are fictional
 demonstrations. This is an original design, not a copy of another brand's site.
 Replace the sample identity and content before publishing.
 
-Requires CLI rc.23 or later. `zel build` downloads a verified renderer once,
+Requires CLI rc.24 or later. `zel build` downloads a verified renderer once,
 then generates the rich website without separately installed Docker, Node.js,
 npm or Python. Double-click `site/index.html`; keep the complete `site/` folder
 together. Later builds can use `zel build --offline` with the cached renderer.

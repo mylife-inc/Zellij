@@ -135,6 +135,7 @@ jobs:
             npm ci
             npm run build --workspace @shebka/zellij
             npx playwright install --with-deps chromium
+            if [ "$RUNNER_OS" = Windows ]; then node scripts/check-prepared-file-windows.mjs; fi
           fi
           node scripts/check-cached-development.mjs "$binary"
       - name: Cached editable sources and installed Next wrapper
