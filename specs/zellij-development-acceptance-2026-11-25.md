@@ -1,8 +1,11 @@
 # Development commit boundary and Windows file locks — 25 November 2026
 
-Status: deterministic regressions pass; rc.24 corrections under
-qualification. Rc.21 remains installed and published. Rc.22 and rc.23 tags
-are retained; neither failed candidate was promoted to an installation channel.
+Current status, 26 November: fixes `288913c` and CI allowance `a3933b6`
+ship in rc.24 at immutable `2c3b7da`. All 37 source CI, nine source PDF and
+55 release jobs pass. All six tagged native packages and public installations
+pass, including tagged Windows/Linux Chromium and the real Windows lock fixture.
+Independent public Mac and installed default-home checks pass. Rc.22/rc.23
+failures and tags remain retained. See [the rc.24 record](zellij-rc24-release-2026-11-26.md).
 
 ## Observed release failure
 

@@ -63,7 +63,7 @@ and no browser library. They work offline with JavaScript disabled. Enable
 runtime. Diagram source stays readable without JavaScript; Mermaid grammar errors
 are reported in the browser, while native checks validate input limits.
 
-[Candidate 0.2.0-rc.21](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.21)
+[Candidate 0.2.0-rc.24](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.24)
 provides native x64 and ARM64 downloads for GNU/Linux, macOS and Windows, with
 pinned shell/PowerShell installers and checksums. Homebrew installation is
 `brew install mylife-inc/tap/zel`. Windows users can install through the owned
@@ -77,7 +77,9 @@ scoop install mylife-inc/zel
 Use `scoop update; scoop update zel` for that installation; `zel upgrade` preserves
 package-manager ownership. Rich `zel build` downloads and caches its renderer;
 portable web builds run natively. Neither needs installed build tools. Explicit
-image builds and Next development use the release's matching container images.
+image builds use the release's matching container images. `zel dev` downloads
+its optional development dependencies once and needs no separately installed
+Docker, Node.js, npm or Python; `zel dev --offline` reuses verified packages.
 Rich HTTP `--target static` builds use the same downloaded renderer as `file`. See the
 [native distribution contract](specs/zel-native-distribution.md) for tested OS
 versions, commands and limits.
@@ -120,12 +122,13 @@ far right. On phones, sections open their own menu view with Back and Close.
 
 The `kie` theme and `api-platform` starter are also included: `zel create my-api -t api-platform`.
 The catalog contains nine starters. Product-launch, software-platform and
-creative-studio use version 0.1.3 with corrected inline authoring guides.
-Product-studio and api-platform retain version 0.1.2; previously published
+creative-studio use version 0.1.4; product-studio and api-platform use 0.1.3.
+These revisions require rc.24 and document cached Next development; previously published
 archives remain unchanged.
 
-The [candidate notes](specs/releases/v0.2.0-rc.21.md) describe the short workflows,
-cached PDF default and separately downloadable compiler sources. Cached editable sources
+The [candidate notes](specs/releases/v0.2.0-rc.24.md) describe cached Next development,
+offline reuse and the isolated PDF runtime workaround found during release testing.
+The short workflows, cached PDF default and matching compiler sources remain available. Cached editable sources
 for default `eject` and `new app`, rich HTTP/file builds, validation and preview
 remain included.
 Wrapper generation needs only `zel`; running an editable Next app needs Node/npm. WinGet ownership protection and the x64/ARM64 manifest bundle remain
@@ -134,7 +137,9 @@ separate; a public WinGet install is not yet available.
 Standalone rich validation and live preview remain included. Downloaded resources share one home: `ZELLIJ_HOME`,
 default `~/Dev/config/zellij`. Standalone installers use its
 `bin/`; renderer, remote-template and editable-source downloads use
-`cache/engines/`, `cache/templates/` and `cache/sources/`. Homebrew and Scoop keep their own executable locations.
+`cache/engines/`, `cache/templates/` and `cache/sources/`. Optional development
+and PDF packages use `cache/development/` and `cache/pdf/`. Homebrew and Scoop
+keep their own executable locations.
 The section composer supports video, layers, semantic content, product selectors, scroll stories
 and eight reusable built-in sections. Nine editable presets are available with
 `zel presets`; generate one with `zel ns -p product-overview --out content/sections/overview.yaml`. See the
@@ -203,25 +208,31 @@ wherever they disagree.
 
 ## Using it without this repository
 
-The engine is private; the image is not. A site is built from a public base
-image that has the engine already installed, so nobody needs access to this
-source to publish documentation with it.
+Install `zel` using one of the methods above, then create a website:
 
-```bash
-docker build -f site.Dockerfile --build-arg CONTENT=docs -t my-docs .
+```sh
+zel create my-docs -t product-launch
+zel b my-docs
+zel dev my-docs --open
 ```
 
-[`docker/site.Dockerfile`](docker/site.Dockerfile) is the half that gets copied
-into another repository. It validates the content folder before building, so a
-broken link fails the build rather than shipping a dead page, and its runtime
-stage carries only the compiled site — the engine never reaches what gets
-deployed.
+The build creates `my-docs/site/index.html`, which opens directly from disk.
+The development command serves the standard Next.js wrapper and reloads edits.
+Both acquire verified packages under `ZELLIJ_HOME` and support `--offline` after
+the first downloads. No source checkout or separately installed Node.js, Docker,
+Python or npm is needed.
+
+For container delivery, `zel si my-docs` packages a static website and
+`zel ni my-docs` packages the Next wrapper. These need a container builder.
+[`docker/site.Dockerfile`](docker/site.Dockerfile) is also available for an
+existing Docker pipeline. It validates content before building, then retains
+only the compiled serving app in the final image.
 
 ## The command line
 
 [`cli/`](cli) is `zel`: one native binary for scaffolding a content folder,
 converting one from another documentation tool, validating it, building it and
-shipping it. Candidate rc.21 builds rich double-click websites with a downloaded,
+shipping it. Candidate rc.24 builds rich double-click websites with a downloaded,
 verified renderer cached separately from the small CLI: no Docker, Node.js, npm
 or Python installation is required. `zel build` selects this for rich sites;
 `zel build --offline` requires the matching cache to be present. Explicit
@@ -229,7 +240,7 @@ or Python installation is required. `zel build` selects this for rich sites;
 their container workflow. Commands that describe Zellij's content
 model read the schema compiled into the native binary.
 
-Candidate rc.21 also uses the cached renderer for rich `zel check`,
+Candidate rc.24 also uses the cached renderer for rich `zel check`,
 `zel watch`, `zel view` and `zel view --watch`. These commands accept
 `--offline` for both `file` and `static`. Static deployment builds and optional
 import validation also reuse the cache.

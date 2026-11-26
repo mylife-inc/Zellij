@@ -1,7 +1,7 @@
 # Zellij template catalog
 
 This is the authored source for the catalog bundled in `zel` and attached to
-CLI releases. It is independent of `examples/`. The rc.24 source catalog contains nine
+CLI releases. It is independent of `examples/`. The rc.24 catalog contains nine
 starters. The five existing starters are:
 `product-docs` (portable handbook), `product-studio` (hosted product landing page),
 `book-classic` (portable book publication with optional LuaLaTeX PDF),
@@ -63,8 +63,9 @@ manuscript against the native PDF adapter without running a toolchain. Enabled
 PDF settings must be disclosed by the manifest; a false print declaration fails
 before the destination is published. This capability does not enable PDF
 automatically or promise successful typesetting of arbitrary subsequent edits.
-The three print editions remain English/LTR; their optional Linux toolchain runs only
-when PDF is requested.
+The print editions support the languages and directions documented in the book
+reference, including Arabic RTL. Their optional cached compiler runs only when
+PDF is requested; the container backend remains explicitly selectable.
 
 `variables` maps names to default single-line text. `substitute` lists the exact
 files eligible for expansion. Use `{{zel.title|yaml}}` for a complete YAML scalar

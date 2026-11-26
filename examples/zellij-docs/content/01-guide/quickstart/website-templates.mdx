@@ -11,7 +11,7 @@ Only `zel` is required. First use downloads a verified renderer and private
 runtime into `$ZELLIJ_HOME` (default `~/Dev/config/zellij`). You do not need to
 install Docker, Node.js or Python.
 
-<Callout type="info" title="Use candidate rc.21 or later">
+<Callout type="info" title="Use candidate rc.24 or later">
 This walkthrough uses `zel lint`, `zel vw` and `zel bs`, alongside `zel create`
 and `zel b`. Follow [installation](/guide/quickstart#install-zel) first and
 check `zel --version`.
@@ -145,6 +145,22 @@ The browser opens after a successful build. Edits rebuild the output and refresh
 the preview; validation errors appear in the terminal and preserve the previous
 successful output. Press Ctrl-C to stop. Use `zel vw --offline` when the renderer
 is already cached, or `zel s` to serve an existing output without rebuilding.
+
+For the Next.js development wrapper, run:
+
+```sh
+zel dev --open
+# Later, after the initial downloads:
+zel dev --offline --open
+```
+
+This optional workflow downloads more dependencies than `zel vw`, but still
+needs only `zel` installed. It serves the standard wrapper directly and reloads
+content and asset edits. Press Ctrl-C to stop; the disposable session is removed
+and verified packages remain under `$ZELLIJ_HOME`. Add `--features all` when
+your guides use mathematics and Mermaid. Use `zel b` afterward to generate the
+shareable double-click edition. See [development](/cli/dev) for ports and
+custom wrapper limits.
 
 ## 6. Generate the edition you need
 

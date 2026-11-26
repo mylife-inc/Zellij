@@ -1,10 +1,16 @@
 # Cached Next development — 25 November 2026
 
-Status: PR #260 merged as `85cea58`, identical to qualified `1e8f437`.
+Current status, 26 November: rc.24 is published at immutable `2c3b7da`.
+All 55 release jobs pass, including six public native cached-development targets.
+Independent Mac checks against both repositories and the installed default-home
+cold/offline checks pass. Matching Homebrew/Scoop recipes are published; all eight actual
+rc.21-to-rc.24 upgrades pass. See [the rc.24 record](zellij-rc24-release-2026-11-26.md).
+
+Earlier status: PR #260 merged as `85cea58`, identical to qualified `1e8f437`.
 All 37 source CI jobs and nine PDF jobs pass. The tagged rc.22 release caught
 a separate Windows V8/Wasm PDF abort and did not publish CLI assets. The rc.23
 mitigation is tracked in [the PDF lifetime record](zellij-pdf-wasm-lifetime-2026-11-25.md).
-The current public/installed CLI remains rc.21. Earlier observations below are
+At that earlier checkpoint the public/installed CLI remained rc.21. Observations below are
 retained as chronological evidence, including the Windows development fix.
 
 ## Product scope
@@ -230,3 +236,14 @@ invalidate the native-development qualification or justify retrying that failure
 without investigation. Rc.22's tag is not moved. No installer/channel promotion
 or release/image retirement occurred. The new website archive identities remain
 unpublished, and their minimum CLI advances to the replacement rc.23 candidate.
+
+## Published rc.24 archive measurements — 26 November
+
+The verified public inventories contain six CLI archives of 9.57–10.13 MiB,
+six renderer archives of 36.50–49.72 MiB, a shared source archive of 7.81 MiB,
+and six optional development archives of 116.29–119.79 MiB. Development reuses
+Node from the renderer; ordinary rich builds do not download these development
+archives. These are compressed download sizes, separate from extracted cache
+storage. All 58 inventory entries match between the two public repositories;
+recipe checks and all nine template archives also verify. Exact byte counts
+and hashes are in [rc.24 evidence](evidence/zellij-rc24-release-2026-11-25.json).

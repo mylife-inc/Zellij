@@ -13,7 +13,7 @@ output locations and offline reuse. `--pdf-backend container` remains available.
 
 <Callout type="info" title="Compatible published candidate">
 The generator requires **0.2.0 or later, including release candidates**.
-Published candidate `0.2.0-rc.21` supplies its own version as the default pin, so
+Published candidate `0.2.0-rc.24` supplies its own version as the default pin, so
 `zel ci` is enough when site settings are saved. Stable `0.1.3` cannot run these
 workflows. To select another version, set `ci.zel-version` or `--zel-version`;
 its native assets and matching engine images must exist before the workflow runs.
@@ -31,7 +31,7 @@ zel ci
 zel ci docs/manual
 zel ci --system gitlab
 zel ci --system circle
-zel ci init github --site-root docs/manual --zel-version 0.2.0-rc.21
+zel ci init github --site-root docs/manual --zel-version 0.2.0-rc.24
 ```
 
 The first form selects `./zel.yaml`, then `docs/zellij/zel.yaml`, using the usual
@@ -56,7 +56,7 @@ writes `.gitlab-ci.yml`, and CircleCI writes `.circleci/config.yml`. Paths in th
 files require `--force`; symlinks and junctions in the destination are rejected.
 Generation requires Git, but no Docker, Node, cloud login or credentials.
 
-Candidate rc.21 explicitly selects Docker in generated GitHub and
+Candidate rc.24 explicitly selects Docker in generated GitHub and
 CircleCI container jobs, including older PDF pins, static
 or Next images, and combined-image publication. These jobs use
 `DOCKER_CONTEXT=default`; GitLab retains its TLS service endpoint in
@@ -66,7 +66,7 @@ failure stops the job instead of trying another runtime or image store.
 Portable web-only jobs and rich web-only jobs pinned to rc.18 or later need no
 container setup or preflight. Rich jobs download and use the matching renderer.
 Pins older than rc.18 retain container setup for rich HTTP builds. Regenerate
-workflows with rc.21, keeping your desired compatible release pin. Custom runner setups must adapt the endpoint
+workflows with rc.24, keeping your desired compatible release pin. Custom runner setups must adapt the endpoint
 and preflight together.
 See [Docker contexts](https://docs.docker.com/engine/manage-resources/contexts/).
 
@@ -86,7 +86,7 @@ ci:
   system: github
   branch: main
   workflow: docs.yml
-  zel-version: 0.2.0-rc.21
+  zel-version: 0.2.0-rc.24
   triggers: [pull_request, push, manual]
   production: false
 ```
@@ -94,7 +94,7 @@ ci:
 Then `zel ci` is enough to generate the workflow; use `--force` to replace it.
 Regenerate after changing CI or publication settings so the workflow reflects
 the selected artifacts, triggers and destinations. `--zel-version` overrides
-the saved pin. Candidate 0.2.0-rc.21 supplies its own published version as the
+the saved pin. Candidate 0.2.0-rc.24 supplies its own published version as the
 fallback pin. Versions are exact, optionally prefixed with `v`, and may include
 release-candidate suffixes. `latest` and versions before 0.2.0 are rejected.
 The installer is downloaded from that exact release; it verifies the binary's
@@ -111,14 +111,14 @@ For multiple GitHub workflows in one repository, choose a different `ci.workflow
 for each site. Current source shows that filename in the display name and derives
 the concurrency group from it, so separate sites have independent queues. The
 earlier `0.2.0-rc.1` generator used one shared display name/group;
-candidate `0.2.0-rc.21` includes this fix. Regenerate existing workflows with the corrected CLI
+candidate `0.2.0-rc.24` includes this fix. Regenerate existing workflows with the corrected CLI
 and `--force` after reviewing local customizations.
 
 Optional tag patterns and UTC schedules are independent additional triggers:
 
 ```yaml
 ci:
-  zel-version: 0.2.0-rc.21
+  zel-version: 0.2.0-rc.24
   branch: main
   triggers: [pull_request, push, manual]
   tags: ['docs-v*']
@@ -220,9 +220,9 @@ old generator's automatic-provisioning behavior at the new CLI version boundary.
 an explicit legacy raw-content folder. These overrides remain available:
 
 ```bash
-zel ci init github --content content --target static --zel-version 0.2.0-rc.21
-zel ci init github --content content --target image --zel-version 0.2.0-rc.21
-zel ci init github --content content --deploy netlify --zel-version 0.2.0-rc.21
+zel ci init github --content content --target static --zel-version 0.2.0-rc.24
+zel ci init github --content content --target image --zel-version 0.2.0-rc.24
+zel ci init github --content content --deploy netlify --zel-version 0.2.0-rc.24
 ```
 
 `--target static` generates validation and HTML builds with no publication.
@@ -248,7 +248,7 @@ without dispatching anything. That exit is not evidence of a GitHub run.
 
 `--json` is unsupported for generation and dispatch and fails before work.
 Dispatch and credential provisioning remain GitHub-only. Automatic release
-publication is separate from CI generation. GitLab/CircleCI generation is available in candidate `0.2.0-rc.21`;
+publication is separate from CI generation. GitLab/CircleCI generation is available in candidate `0.2.0-rc.24`;
 actual GitLab/CircleCI runner acceptance remains pending.
 
 
@@ -272,8 +272,8 @@ of the pinned engine image. To publish both architectures under one tag, use
 ## Freeze rendering features
 
 ```bash title="terminal"
-zel ci --features all --zel-version 0.2.0-rc.21
-zel ci --features none --zel-version 0.2.0-rc.21 --force
+zel ci --features all --zel-version 0.2.0-rc.24
+zel ci --features none --zel-version 0.2.0-rc.24 --force
 ```
 
 Generation accepts the same complete selection as build/delivery: `maths`,
@@ -317,11 +317,11 @@ the pinned release exists. Use the matching versioned engine image.
 ## Freeze hosted URL and preflight overrides
 
 ```bash
-zel ci docs/hosted --base-path /manual --site-url https://docs.example.com --zel-version 0.2.0-rc.21
+zel ci docs/hosted --base-path /manual --site-url https://docs.example.com --zel-version 0.2.0-rc.24
 zel ci docs/hosted --base-path / --no-check --force
 ```
 
-Candidate rc.21 writes these invocation settings into every verification
+Candidate rc.24 writes these invocation settings into every verification
 build and publication command, including Netlify and static/Next images. The
 workflow retains them until regenerated; `zel.yaml` remains unchanged. Omission
 when regenerating restores authored/default settings. Pure portable HTML/static
@@ -343,10 +343,10 @@ an existing workflow and does not accept these generation flags.
 ## Freeze image build arguments
 
 ```bash
-zel ci --build-arg NODE_OPTIONS=--max-old-space-size=4096 --zel-version 0.2.0-rc.21
+zel ci --build-arg NODE_OPTIONS=--max-old-space-size=4096 --zel-version 0.2.0-rc.24
 ```
 
-For image workflows, candidate rc.21 accepts the same repeatable explicit
+For image workflows, candidate rc.24 accepts the same repeatable explicit
 `NAME=VALUE` syntax as [image builds](/cli/image#image-build-arguments). The last
 value for a repeated name wins. Arguments reach verification builds and
 publication builds, including legacy `--target image`; they never reach
@@ -387,7 +387,7 @@ create a Vercel project or provision either ID. See [setup and limits](/cli/depl
 Use saved `publish.provider: github-pages` or:
 
 ```bash
-zel ci --deploy github-pages --site acme/manual --prod --zel-version 0.2.0-rc.21
+zel ci --deploy github-pages --site acme/manual --prod --zel-version 0.2.0-rc.24
 ```
 
 Pages branch publishing has no preview mode, so generation requires `--prod` or
@@ -395,7 +395,7 @@ saved `ci.production: true`. The source branch must differ from `gh-pages`.
 Prepare the existing Pages site and dedicated publishing branch as described in
 [GitHub Pages setup](/cli/deploy#github-pages). The generated workflow requires
 a compatible rc.2 or later release; it does not verify availability.
-Candidate `0.2.0-rc.21` and its matching engine images are published.
+Candidate `0.2.0-rc.24` and its matching engine images are published.
 
 Set repository secret `GITHUB_PAGES_TOKEN` to a dedicated token with Contents
 and Pages write permission on the destination. The built-in `GITHUB_TOKEN` is
@@ -415,11 +415,11 @@ ordinary verification builds still use authored or explicit build settings.
 Use saved `publish.provider: s3` or:
 
 ```bash
-zel ci --deploy s3 --site acme-docs/manual --prod --zel-version 0.2.0-rc.21
+zel ci --deploy s3 --site acme-docs/manual --prod --zel-version 0.2.0-rc.24
 ```
 
 Generation requires `--prod` or `ci.production: true` before writing the workflow.
-Candidate `0.2.0-rc.21` includes S3 support.
+Candidate `0.2.0-rc.24` includes S3 support.
 Prepare the [S3 website bucket](/cli/deploy#aws-s3) first.
 Set repository secrets `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and, for
 temporary credentials, `AWS_SESSION_TOKEN`. Set repository variables `AWS_REGION`
@@ -447,7 +447,7 @@ provisioned by this option.
 ## Fly workflows
 
 ```bash
-zel ci --deploy fly --site manual --kind next --prod --zel-version 0.2.0-rc.21
+zel ci --deploy fly --site manual --kind next --prod --zel-version 0.2.0-rc.24
 ```
 
 Saved `publish.provider: fly` and `publish.image` also work. `--kind` overrides
@@ -467,7 +467,7 @@ feature/build overrides are retained. Production intent is required, either as
 `--prod` or `ci.production: true`. See [existing-app requirements](/cli/deploy#fly).
 
 Generation requires a pinned CLI version of rc.2 or later but does not publish
-or verify it. Candidate `0.2.0-rc.21` includes Fly deployment; live Fly account
+or verify it. Candidate `0.2.0-rc.24` includes Fly deployment; live Fly account
 acceptance remains pending.
 
 
@@ -476,7 +476,7 @@ acceptance remains pending.
 Save Railway delivery settings and `image.name`, then run:
 
 ```bash title="terminal"
-zel ci --deploy railway --kind next --prod --zel-version 0.2.0-rc.21
+zel ci --deploy railway --kind next --prod --zel-version 0.2.0-rc.24
 ```
 
 The workflow uses the saved service UUID, or `RAILWAY_SERVICE_ID` from repository
@@ -496,7 +496,7 @@ public or configure supported private registry credentials on the service.
 tag. The generated workflow serializes GitHub runs on the same ref, but cannot
 lock other workflows, branches, dashboard edits or external deployers. Use one
 publisher per service and avoid concurrent changes. Generation is local and
-checks neither credentials nor release availability. Candidate `0.2.0-rc.21`
+checks neither credentials nor release availability. Candidate `0.2.0-rc.24`
 includes this adapter and the live-tested staged-patch and startup fixes.
 Static/Next live Railway acceptance
 passed on 2026-11-10. Generated workflow validation does not upgrade its pinned
@@ -504,7 +504,7 @@ CLI version automatically.
 
 ## GitLab and CircleCI
 
-Candidate `0.2.0-rc.21` includes both generators. Generation remains local: no runner,
+Candidate `0.2.0-rc.24` includes both generators. Generation remains local: no runner,
 project, credential, schedule or registry is created.
 
 ```bash
@@ -653,13 +653,13 @@ projects remain a separate acceptance step; account access is needed for those.
 ## Book PDF delivery
 
 Portable books with `pdf.enabled: true` generate the website and matching PDF
-before static deployment or static-image packaging. Candidate rc.21 also
+before static deployment or static-image packaging. Candidate rc.24 also
 supports PDF-enabled Next images.
 The Next image includes the PDF and receipt, without TeX inputs or the toolchain.
 Next-image CI requires a pin of rc.8 or later. PDF uses the cached compiler with
 rc.21-or-later pins. Older pins keep their container requirement; PDF failure
 stops delivery. Image jobs still need a container builder.
-Jobs generated for rc.21 explicitly select the cached PDF backend and omit
+Jobs generated for rc.21 or later explicitly select the cached PDF backend and omit
 PDF-only container setup. Earlier PDF pins retain their container setup.
 Generation checks compatibility but does not verify release availability. GitLab jobs that use Docker also need a shared Docker build directory.
 See [static book publication and CI](/cli/books#static-publication-and-ci) for
