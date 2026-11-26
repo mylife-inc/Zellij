@@ -3,11 +3,176 @@
   "version": "v0.2.0-rc.24",
   "status": "source-qualification-in-progress",
   "source": {
-    "head": "288913cb74b9b9fb42207d72ffa7e520edd27cda",
+    "head": "a3933b62b6cb382a2c21b769db8b6674db335211",
     "pr": 262,
-    "ci": 45778612146,
-    "pdf": 45778612077,
-    "docs": 45778612289
+    "ci": 45786080712,
+    "pdf": 45786080629,
+    "docs": 45786080567,
+    "initialQualification": {
+      "head": "288913cb74b9b9fb42207d72ffa7e520edd27cda",
+      "pr": 262,
+      "ci": 45778612146,
+      "pdf": {
+        "run": 45778612077,
+        "conclusion": "success",
+        "successfulJobs": 9
+      },
+      "docs": {
+        "run": 45778612289,
+        "conclusion": "success"
+      },
+      "infrastructureEvents": [
+        {
+          "run": 45778612146,
+          "jobs": [
+            {
+              "job": 139768292330,
+              "name": "Rich website without HTTP",
+              "dependencySetupSeconds": 1117,
+              "testSecondsBeforeCancellation": 24,
+              "logSha256": "ebeae456945e0c6f331e9c71f57b044a63e17f8d23d4f5fd5d8e2d2d9c2f0779"
+            },
+            {
+              "job": 139768292492,
+              "name": "Showcase end to end",
+              "dependencySetupSeconds": 1034,
+              "testSecondsBeforeCancellation": 125,
+              "logSha256": "61e128741f5c79c1e741195f30ea9ce81c98d05d7424b49641180345a931cb98"
+            }
+          ],
+          "diagnostic": "Ubuntu package installation consumed most of the 20-minute job limit; browser tests were cancelled without a reported assertion failure. Complete acceptance still required.",
+          "retryScope": "Only the two cancelled browser jobs, unchanged source commit.",
+          "initialRetryRequest": {
+            "accepted": false,
+            "httpStatus": 403,
+            "reason": "The workflow run containing this job is already running"
+          },
+          "firstAttempt": {
+            "successfulJobs": 35,
+            "cancelledJobs": 2,
+            "conditionalSkips": 1,
+            "conclusion": "cancelled"
+          },
+          "retry": {
+            "accepted": true,
+            "attempt": 2,
+            "jobs": [
+              139782380694,
+              139782381209
+            ],
+            "status": "completed",
+            "conclusion": "cancelled",
+            "successfulJobs": 36,
+            "cancelledJobs": 1,
+            "conditionalSkips": 1,
+            "richFile": {
+              "conclusion": "success",
+              "setupSeconds": 343
+            },
+            "showcase": {
+              "conclusion": "cancelled",
+              "setupSeconds": 1102,
+              "lastCaseStarted": 155,
+              "totalCases": 721,
+              "logSha256": "862d727cc26e621cf78bd20bb89fa12386fc2ed0e97a44a929356998baa71274"
+            }
+          }
+        }
+      ],
+      "native": [
+        {
+          "job": 139769013334,
+          "cachedDevelopment": {
+            "platform": "win-arm64",
+            "cachedNextDev": true,
+            "systemTools": false,
+            "coldDownloads": 6,
+            "offlineRestart": true,
+            "editRecovery": true,
+            "portReleased": true,
+            "sessionsRemoved": true
+          },
+          "browserAcceptance": false,
+          "realWindowsLockAcceptance": false
+        },
+        {
+          "job": 139769013350,
+          "cachedDevelopment": {
+            "platform": "darwin-x64",
+            "cachedNextDev": true,
+            "systemTools": false,
+            "coldDownloads": 6,
+            "offlineRestart": true,
+            "editRecovery": true,
+            "portReleased": true,
+            "sessionsRemoved": true
+          },
+          "browserAcceptance": false,
+          "realWindowsLockAcceptance": false
+        },
+        {
+          "job": 139769013371,
+          "cachedDevelopment": {
+            "platform": "darwin-arm64",
+            "cachedNextDev": true,
+            "systemTools": false,
+            "coldDownloads": 6,
+            "offlineRestart": true,
+            "editRecovery": true,
+            "portReleased": true,
+            "sessionsRemoved": true
+          },
+          "browserAcceptance": false,
+          "realWindowsLockAcceptance": false
+        },
+        {
+          "job": 139769013373,
+          "cachedDevelopment": {
+            "platform": "linux-arm64",
+            "cachedNextDev": true,
+            "systemTools": false,
+            "coldDownloads": 6,
+            "offlineRestart": true,
+            "editRecovery": true,
+            "portReleased": true,
+            "sessionsRemoved": true
+          },
+          "browserAcceptance": false,
+          "realWindowsLockAcceptance": false
+        },
+        {
+          "job": 139769013449,
+          "cachedDevelopment": {
+            "platform": "linux-x64",
+            "cachedNextDev": true,
+            "systemTools": false,
+            "coldDownloads": 6,
+            "offlineRestart": true,
+            "editRecovery": true,
+            "portReleased": true,
+            "sessionsRemoved": true
+          },
+          "browserAcceptance": true,
+          "realWindowsLockAcceptance": false
+        },
+        {
+          "job": 139769013460,
+          "cachedDevelopment": {
+            "platform": "win-x64",
+            "cachedNextDev": true,
+            "systemTools": false,
+            "coldDownloads": 6,
+            "offlineRestart": true,
+            "editRecovery": true,
+            "portReleased": true,
+            "sessionsRemoved": true
+          },
+          "browserAcceptance": true,
+          "realWindowsLockAcceptance": true
+        }
+      ]
+    },
+    "changeFromInitialQualification": "Only browser CI job budgets and context/evidence documentation; product code unchanged."
   },
   "local": {
     "writerWatcherTests": 19,
@@ -68,5 +233,6 @@
       "capturedBrowserErrors": 0
     },
     "preservationLogSha256": "a749aedafbcd123bb7609df2d7a5e883592b0b1e5f765478180d745409a67430"
-  }
+  },
+  "updated": "2026-11-26"
 }
