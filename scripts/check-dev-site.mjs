@@ -11,6 +11,7 @@ import { chromium, webkit, expect } from '@playwright/test';
 import { observeThemeFonts } from './assert-theme-fonts.mjs';
 
 const repo = fileURLToPath(new URL('../', import.meta.url));
+const windows = process.platform === 'win32';
 const cached = process.argv[2] === '--cached';
 const binary = cached || process.argv[2] === '--container' ? path.resolve(process.argv[3]) : undefined;
 const app = await mkdtemp(path.join(repo, '.zellij-dev-'));
@@ -18,7 +19,8 @@ const cli = path.join(repo, 'engine/packages/zellij/bin/zellij.mjs');
 const content = path.join(app, 'authored docs');
 const prefix = '/docs';
 const browserRecord = path.join(app, 'browser.txt');
-const browserExe = path.join(app, 'browser-fixture');
+const browserExe = path.join(app, windows ? 'browser-fixture.exe' : 'browser-fixture');
+const consoleExe = path.join(app, 'console.exe');
 const env = { ...process.env, NEXT_TELEMETRY_DISABLED: '1', ZELLIJ_DEV_BROWSER_LOG: browserRecord };
 delete env.ZELLIJ_OUTPUT;
 delete env.ZELLIJ_BASE_PATH;
@@ -42,6 +44,7 @@ async function until(check, label, timeout = 30000, allowExited = false) {
 try {
   execFileSync(process.execPath, [cli, 'init', app, '--name', 'watch-fixture'], { env, stdio: 'inherit' });
   if (binary) execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/dev-browser.rs', '-o', browserExe], { stdio: 'pipe' });
+  if (binary && windows) execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/preview-console.rs', '-o', consoleExe], { stdio: 'pipe' });
   if (!binary) execFileSync(process.execPath, [cli, 'features', 'all', app], { env, stdio: 'inherit' });
   await rm(path.join(app, 'content'), { recursive: true });
   // A custom content root must reach preparation, rendering and Next config.
@@ -66,7 +69,7 @@ try {
   await new Promise((resolve, reject) => reservation.close((error) => error ? reject(error) : resolve()));
   const origin = `http://127.0.0.1:${port}${prefix}`;
   server = binary
-    ? spawn(binary, ['dev', content, '--dev-backend', cached ? 'cached' : 'container', ...(cached ? ['--offline'] : []), '--port', String(port), '--host', '127.0.0.1', '--browser', browserExe, '--features', 'all'], { cwd: app, env: cached ? { ...env, PATH: path.join(app, 'empty-path') } : env, stdio: ['ignore', 'pipe', 'pipe'] })
+    ? spawn(windows ? consoleExe : binary, [...(windows ? [binary] : []), 'dev', content, '--dev-backend', cached ? 'cached' : 'container', ...(cached ? ['--offline'] : []), '--port', String(port), '--host', '127.0.0.1', '--browser', browserExe, '--features', 'all'], { cwd: app, env: cached ? { ...env, PATH: path.join(app, 'empty-path') } : env, stdio: [windows ? 'pipe' : 'ignore', 'pipe', 'pipe'] })
     : spawn(process.execPath, [cli, 'dev', '--content', './authored docs', '--', '--hostname', '0.0.0.0', '--port', String(port), ...(process.env.ZELLIJ_TEST_WEBPACK ? ['--webpack'] : [])], { cwd: app, env, stdio: ['ignore', 'pipe', 'pipe'] });
   // Wait for stdio to drain too, before asserting the final shutdown message.
   exited = once(server, 'close');
@@ -227,8 +230,10 @@ try {
 } finally {
   await browser?.close();
   if (server && server.exitCode === null && server.signalCode === null) {
-    // Signal only zel: it must clean up its own named container and runtime client.
-    server.kill(binary ? 'SIGINT' : 'SIGTERM');
+    // Node's Windows SIGINT kills immediately. The console helper delivers a
+    // real Ctrl-C; zel must clean up its own descendants and session/container.
+    if (binary && windows) server.stdin.end('stop\n');
+    else server.kill(binary ? 'SIGINT' : 'SIGTERM');
     let timer;
     const [code, signal] = await Promise.race([exited, new Promise((_, reject) => {
       timer = setTimeout(() => { server.kill('SIGKILL'); reject(new Error(`Dev shutdown timed out: ${log}`)); }, 10000);

@@ -21,6 +21,11 @@ requirements and corrected cache/development instructions; previous published
 archives remain unchanged.
 See [the implementation record](specs/zellij-cached-development-2026-11-25.md)
 for scope and qualification. No rc.22 release is published at this checkpoint.
+Windows diagnostics identify inherited control input as the first-page stall
+trigger; `37da78f` disconnects Next's stdin while retaining ordinary wrappers'
+interactive input. Full Mac lifecycle/browser acceptance passes. Final CI adds
+Windows x64 Chromium coverage alongside Linux; six-platform qualification is
+still required before publishing.
 
 The rc.21 guide checkpoint below is now complete: PR #259 merged as `0d7e3a1`,
 with identical tree to `e6b11b7`. PR CI `45717207977`, post-merge CI

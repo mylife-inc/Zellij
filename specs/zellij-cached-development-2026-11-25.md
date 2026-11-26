@@ -205,3 +205,10 @@ interactive input. Next stdout/stderr and process-tree ownership are unchanged.
 The temporary diagnostic workflow, package variants and harness switches are
 removed; their commits and runs remain the evidence. Full native/browser
 acceptance, including both Windows architectures, must pass before release.
+
+Fix commit: `37da78f`. The rebuilt local package passes all lifecycle and Chromium
+checks, including 13 font families, maths/Mermaid, search, route changes,
+repeated image reloads and concurrent page requests. Type checking and all ten
+watcher tests also pass. Windows x64 now joins Linux x64 in actual Chromium
+acceptance, using the existing real Ctrl-C console fixture for cancellation;
+the other four native targets retain the full HTTP/process/cache checks.
