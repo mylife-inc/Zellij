@@ -1,9 +1,11 @@
 # Cached Next development — 25 November 2026
 
-Status: implementation `3d7ab74`, with harness/release-recipe corrections in
-`cc193d6`, is in draft PR #260. Initial local Webpack qualification passed;
-subsequent native CI exposed issues described below. Revised local Turbopack
-qualification passes; six-platform qualification remains in progress. Current public CLI remains rc.21.
+Status: PR #260 merged as `85cea58`, identical to qualified `1e8f437`.
+All 37 source CI jobs and nine PDF jobs pass. The tagged rc.22 release caught
+a separate Windows V8/Wasm PDF abort and did not publish CLI assets. The rc.23
+mitigation is tracked in [the PDF lifetime record](zellij-pdf-wasm-lifetime-2026-11-25.md).
+The current public/installed CLI remains rc.21. Earlier observations below are
+retained as chronological evidence, including the Windows development fix.
 
 ## Product scope
 
@@ -212,3 +214,19 @@ repeated image reloads and concurrent page requests. Type checking and all ten
 watcher tests also pass. Windows x64 now joins Linux x64 in actual Chromium
 acceptance, using the existing real Ctrl-C console fixture for cancellation;
 the other four native targets retain the full HTTP/process/cache checks.
+
+## Source qualification and tagged release checkpoint
+
+Final CI `45760836399` passes 37 jobs and PDF `45760836480` passes nine, without
+retries. Six native cached-development receipts show cold/offline sessions,
+interrupted-transfer cleanup, invalid edits, released ports and removed sessions.
+Linux and Windows x64 also pass Chromium reload/search/image/font/maths checks.
+The merged tree matches the qualified head. A local publication draft preserves
+61 routes, 282 original headings, 82 compatibility mappings and 29 original images
+without captured hydration errors; this draft was not deployed as rc.22 guides.
+
+Release `45764526352` retains the later Windows PDF runtime failure; it does not
+invalidate the native-development qualification or justify retrying that failure
+without investigation. Rc.22's tag is not moved. No installer/channel promotion
+or release/image retirement occurred. The new website archive identities remain
+unpublished, and their minimum CLI advances to the replacement rc.23 candidate.

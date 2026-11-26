@@ -3,7 +3,7 @@ id: product-studio
 version: 0.1.3
 title: Product studio
 description: An editorial product landing page and guide using existing Cupertino sections.
-minimum-cli: 0.2.0-rc.22
+minimum-cli: 0.2.0-rc.23
 minimum-engine: 0.2.0-rc.5
 renderer: hosted
 kind: site

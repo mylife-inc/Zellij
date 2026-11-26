@@ -53,7 +53,9 @@ export async function compileProcess(bundle, input, output, {
   try {
     const result = path.join(stage, 'result');
     // V8's process flag overrides Worker resourceLimits; keep both at 128 MiB.
-    child = spawn(process.execPath, ['--max-old-space-size=128', fileURLToPath(import.meta.url), '--run',
+    // Node 24's Wasm code-GC race can abort between disposable passes (#66366).
+    // Retain compiled code only until this bounded, isolated process exits.
+    child = spawn(process.execPath, ['--max-old-space-size=128', '--no-wasm-code-gc', fileURLToPath(import.meta.url), '--run',
       path.resolve(bundle), path.resolve(input), result, String(timeoutMs), String(passTimeoutMs)], {
       cwd: stage, env: runnerEnvironment(), stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true,
     });

@@ -8,24 +8,31 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-25**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-25: cached Next development — implementation in progress**
+**2026-11-25: rc.22 release gate caught a PDF runtime crash; rc.23 mitigation in progress**
 
-The rc.22 source candidate adds the optional development dependency package
-under `ZELLIJ_HOME/cache/development`, reusing renderer Node and editable
-sources. `zel dev` selects it by default; `--dev-backend container` and
-`ZEL_DEV_BACKEND=container` preserve explicit container use. `--offline` requires
-all three caches. This renders the standard documentation wrapper; arbitrary
-custom Next apps still need their own dependency/toolchain management.
-Five rich website starters also have new immutable revisions with rc.22
-requirements and corrected cache/development instructions; previous published
-archives remain unchanged.
-See [the implementation record](specs/zellij-cached-development-2026-11-25.md)
-for scope and qualification. No rc.22 release is published at this checkpoint.
-Windows diagnostics identify inherited control input as the first-page stall
-trigger; `37da78f` disconnects Next's stdin while retaining ordinary wrappers'
-interactive input. Full Mac lifecycle/browser acceptance passes. Final CI adds
-Windows x64 Chromium coverage alongside Linux; six-platform qualification is
-still required before publishing.
+Cached Next development merged in PR #260 as `85cea58`, tree-identical to
+`1e8f437`. All 37 source CI jobs and nine PDF jobs passed, including native cached
+development on six targets and Windows/Linux Chromium. The automatic duplicate
+post-merge CI was cancelled to free release runners; production docs and main
+images passed. The immutable rc.22 tag points to `85cea58`.
+
+Tagged release `45764526352` then caught a Windows x64 Node 24.22.3 V8 abort
+while compiling the French study PDF. The signature matches an open upstream
+Wasm code-GC lifetime defect; the pinned source still contains the affected
+lookup. CLI publication is blocked; rc.21 remains installed and published.
+The rc.23 candidate scopes the known code-GC workaround to the isolated PDF
+compiler, retaining current heap/guest limits, deadlines and output preservation.
+Its adapter-only input review stays within the previously approved GPL scope.
+See [the failure and mitigation record](specs/zellij-pdf-wasm-lifetime-2026-11-25.md)
+and [rc.22 evidence](specs/evidence/zellij-rc22-release-2026-11-25.json).
+
+`zel dev` uses `ZELLIJ_HOME/cache/development`, private renderer Node and editable
+sources. It supports offline reuse and explicit container selection. Windows
+first-page stalls are corrected in `37da78f` by disconnecting only Next's stdin
+from the launcher's control pipe. Custom Next apps still need their own toolchain.
+The five new website template revisions have not been published as archives;
+their minimum CLI now points to rc.23. Previous published identities stay intact.
+See [the cached-development record](specs/zellij-cached-development-2026-11-25.md).
 
 The rc.21 guide checkpoint below is now complete: PR #259 merged as `0d7e3a1`,
 with identical tree to `e6b11b7`. PR CI `45717207977`, post-merge CI

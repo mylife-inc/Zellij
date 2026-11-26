@@ -43,6 +43,23 @@ grant applies only to this directory. The exact component review is recorded in
 See the [CLI integration record](../../specs/zellij-cached-pdf-cli-2026-11-24.md)
 and the [distribution decision](../../specs/zellij-pdf-distribution-decision-2026-11-24.md).
 
+## Wasm code lifetime on Node 24
+
+The rc.22 release gate caught a native V8 abort while compiling the French study
+fixture. Its signature matches [Node #66366](https://github.com/nodejs/node/issues/66366).
+The pinned Node 24.22.3 still contains the affected wrapper lookup; the upstream
+backport remains open. Rc.22 was not published as a CLI release.
+
+The rc.23 candidate disables Wasm **code** garbage collection inside the isolated
+PDF process. Rust and JavaScript supervisors pass `--no-wasm-code-gc` at startup;
+direct maintainer compilation applies the same policy before creating workers.
+This does not disable JavaScript heap collection, increase the 128 MiB JS heap
+or 512 MiB guest-memory limits, or change cancellation/deadline behavior. Compiled
+Wasm code remains until the bounded process exits. The website renderer and
+Next development keep their normal runtime settings. Direct maintainer APIs
+are intended for bounded qualification jobs, not a long-lived shared Node host.
+See [the failure and mitigation record](../../specs/zellij-pdf-wasm-lifetime-2026-11-25.md).
+
 ## Reviewed release packaging
 
 After preparing the verified original source cache and compact resources:

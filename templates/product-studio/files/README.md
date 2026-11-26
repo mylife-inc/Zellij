@@ -12,7 +12,7 @@ checksums. It does not prevent normal edits or automatically update your files.
 
 This rich template uses hero, bento-grid and feature-grid sections.
 
-Requires CLI rc.22 or later. `zel build` downloads a verified renderer once,
+Requires CLI rc.23 or later. `zel build` downloads a verified renderer once,
 then generates the rich website without separately installed Docker, Node.js,
 npm or Python. Double-click `site/index.html`; keep the complete `site/` folder
 together. Later builds can use `zel build --offline` with the cached renderer.
