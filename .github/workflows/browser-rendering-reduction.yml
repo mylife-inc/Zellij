@@ -21,6 +21,7 @@ jobs:
       - run: node scripts/browser-resize-reduction/build.mjs
       - run: npx playwright install --with-deps webkit
       - name: Exercise the reductions without retries
+        shell: bash
         working-directory: examples/showcase
         env:
           DEBUG: pw:browser

@@ -22,6 +22,8 @@ function Fixture() {
     if (!restore.current) return;
     const frame = requestAnimationFrame(() => {
       restore.current = false;
+      const active = document.activeElement;
+      if (active !== document.body && active?.getClientRects().length) return;
       links.current?.querySelector<HTMLElement>('[data-zellij-navitem]')?.focus({ preventScroll: true });
     });
     return () => cancelAnimationFrame(frame);

@@ -22,7 +22,11 @@ function render(next: number) {
   count = next;
   links.innerHTML = items.slice(0, count).map((item, i) => `<li data-nav-index="${i}"><a class="zellij-nav-link" data-zellij-navitem href="#${i}" style="width:${item.width}px">${item.label}</a></li>`).join('') + (count < items.length ? `<li data-nav-index="more"><button class="zellij-nav-link" data-zellij-navitem style="width:${moreWidth}px">More</button></li>` : '');
   header.dataset.solid = 'false';
-  if (restore) requestAnimationFrame(() => links.querySelector<HTMLElement>('[data-zellij-navitem]')?.focus({ preventScroll: true }));
+  if (restore) requestAnimationFrame(() => {
+    const active = document.activeElement;
+    if (active !== document.body && active?.getClientRects().length) return;
+    links.querySelector<HTMLElement>('[data-zellij-navitem]')?.focus({ preventScroll: true });
+  });
 }
 function update() {
   const style = getComputedStyle(bar);

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 import { browserFailureState } from '../../../scripts/browser-failure-state.mjs';
 import { installResizeMonitor } from '../../../scripts/browser-resize-reduction/monitor.mjs';
@@ -11,9 +11,11 @@ const variants = [
   { name: 'showcase-control', url: '/', monitor: false },
 ];
 
+const observedErrors = new WeakMap<Page, string[]>();
+
 test.afterEach(async ({ page }, info) => {
   let timer: ReturnType<typeof setTimeout> | undefined;
-  const diagnostic: Record<string, unknown> = { status: info.status, title: info.title, worker: info.parallelIndex };
+  const diagnostic: Record<string, unknown> = { status: info.status, title: info.title, worker: info.parallelIndex, pageErrors: observedErrors.get(page) ?? [] };
   if (info.status !== info.expectedStatus) diagnostic.failure = await browserFailureState(page);
   try {
     diagnostic.scheduling = await Promise.race([
@@ -29,10 +31,11 @@ test.afterEach(async ({ page }, info) => {
 
 // Distinct cases share the normal two worker/browser processes. No repeat-each
 // worker restart, active heartbeat or injected stall; assertion deadlines stay 5s.
-for (let iteration = 0; iteration < 12; iteration++) {
+for (let iteration = 0; iteration < 16; iteration++) {
   for (const variant of variants) {
     test(`${variant.name} / sequence ${iteration + 1}`, async ({ page }, info) => {
       const errors: string[] = [];
+      observedErrors.set(page, errors);
       page.on('pageerror', error => errors.push(error.message));
       if (variant.monitor) await page.addInitScript(installResizeMonitor);
       await page.goto(variant.url, { waitUntil: 'networkidle' });
