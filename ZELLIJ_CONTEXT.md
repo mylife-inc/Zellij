@@ -8,6 +8,16 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-26**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-26: rc.24 delivery workflow migration**
+
+The six generated acceptance workflows and both inspector targets now select
+published rc.24. Public and source generators reproduce the same YAML; six
+HTTP/metadata guards and workflow lint pass. Hosted PR qualification, manual
+main image publication and fresh pulls are tracked separately in the
+[migration record](specs/zellij-rc24-delivery-acceptance-2026-11-26.md).
+The deferred provider workflows still consume rc.19; retain it. No provider
+deployment or new native release is part of this migration.
+
 **2026-11-26: rc.16–rc.18 retirement complete**
 
 The [completed retirement](specs/zellij-rc16-rc18-retirement-2026-11-26.md)
