@@ -4,35 +4,35 @@ on:
     branches: [codex/browser-resize-investigation]
 permissions:
   contents: read
+  actions: read
 jobs:
-  header-sequence:
-    name: WebKit full header sequence
+  report:
+    name: Verify retained browser outcome summary
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-          cache: npm
-      - run: npm ci
-      - run: npm run build --workspace @shebka/zellij
-      - run: npm run build --workspace @shebka/zellij-showcase
-      - run: npx playwright install --with-deps webkit
-      - name: Repeat the full header group with normal browser reuse and no retries
-        working-directory: examples/showcase
-        env:
-          DEBUG: pw:browser
-          PLAYWRIGHT_JSON_OUTPUT_FILE: timing-results/results.json
-        run: |
-          mkdir -p timing-results
-          npx playwright test e2e/header-layout.spec.ts --project desktop-safari --repeat-each 20 --workers 2 --retries 0 --reporter line,json 2>&1 | tee timing-results/browser.log
-      - uses: actions/upload-artifact@v7
-        if: always()
+      - run: node --test scripts/report-browser-results.test.mjs
+      - uses: actions/download-artifact@v8
         with:
           name: resize-header-sequence
+          run-id: 46063731462
+          github-token: ${{ github.token }}
+          path: timing-input
+      - name: Summarize the actual completed header results
+        run: |
+          node scripts/report-browser-results.mjs timing-input/timing-results/results.json
+          cp "$GITHUB_STEP_SUMMARY" timing-summary.md
+          sha256sum scripts/report-browser-results.mjs scripts/report-browser-results.test.mjs > source-hashes.txt
+      - uses: actions/upload-artifact@v7
+        with:
+          name: browser-summary-verification
           path: |
-            examples/showcase/timing-results/
-            examples/showcase/test-results/
+            timing-summary.md
+            source-hashes.txt
+            timing-input/timing-results/results.json
           retention-days: 14
           if-no-files-found: error
