@@ -84,10 +84,13 @@ evidence for rc.18. Fix `45eb4fa` binds inspection metadata to the source
 configuration and generation checks. Fresh run `45921906069` now verifies both
 actual rc.19 images. See the [retention review](../../../specs/zellij-retention-review-2026-11-26.md).
 
-Rc.24 migration (26 November): all six workflows and both inspector targets
+Rc.24 migration (completed 27 November): all six workflows and both inspector targets
 are regenerated using the published executable, with an exact match against
-the current source generator. Hosted qualification and registry publication
-are tracked in the [migration record](../../../specs/zellij-rc24-delivery-acceptance-2026-11-26.md).
+the current source generator. PR #267 merged as `624bfb3` with an identical
+qualified tree: all six verification workflows and 37 CI jobs pass on attempt 1.
+Static/Next publication runs `45960440498` / `45960444256` pass; fresh-pull
+run `46026610903` verifies both actual rc.24 images. Anonymous manifests match
+the pulled digests. See the [migration record](../../../specs/zellij-rc24-delivery-acceptance-2026-11-26.md).
 The separate deferred provider workflows still pin rc.19; retain that release
 and its images. Do not dispatch Netlify or other provider deployments as part
 of this migration.

@@ -1,5 +1,11 @@
 # Zellij readiness — 21 November 2026
 
+Updated 27 November: the [six generated delivery workflows](zellij-rc24-delivery-acceptance-2026-11-26.md)
+now exercise the published rc.24 CLI and engine. All six PR verification jobs,
+37 source CI jobs, both manual image publications and fresh registry pulls pass.
+Anonymous manifest reads match the pulled digests. Deferred provider workflows
+retain rc.19; no provider deployment, native release or retirement occurred.
+
 Updated 26 November: the published and installed candidate is **v0.2.0-rc.24**,
 source `2c3b7da`. All 55 release jobs pass on their first attempt, including six
 public native installations, six complete cached-PDF checks against both
@@ -78,7 +84,7 @@ and [HTTP export](zellij-cached-http-export-2026-11-21.md) cache migrations now 
 | Books and PDF | Shared publication model, technical/study editions, references, citations, glossary/index, print styling and supported Latin/Arabic print are implemented. Rc.20 adds a verified optional compiler under `ZELLIJ_HOME/cache/pdf`, reusing private Node. Public acceptance verifies complete matching sources and offline PDF/rich builds on six targets. | Rc.21 selects cached PDF by default, updates generated CI and publishes new book-template versions. Explicit container selection remains available. Arbitrary citation styles/BibTeX, unrestricted font inventories and broader format fidelity remain expansion requests. |
 | Installation | Public rc.24 packages pass all six native installation jobs and independent Mac acceptance. The installed default-home cold/offline checks pass. Homebrew and Scoop recipes match the release's verified checksums; all eight actual rc.21-to-rc.24 upgrades and lifecycle checks pass. | Ownership protection and native WinGet manifests remain included; Microsoft catalog approval stays separate. |
 | Retention | The [26 November cleanup](zellij-rc16-rc18-retirement-2026-11-26.md) removed six rc.16–rc.18 releases, six tags, 240 assets and 72 image versions. Independent inventory and fresh rc.19 image pulls pass; public rc.24 downloads remain valid. The earlier inspector-version mismatch is fixed. | Preserve the retained compatibility/catalog/upgrade inputs, PDF source/runtime pairs, failure tags and unreferenced history. The completed execution plan must not be reused. |
-| Live providers and generated runners | Adapters and build/protocol harnesses exist. Earlier live Netlify, Cloudflare, GitHub Pages and Railway checks have their recorded evidence. | Fly, S3 and actual GitLab/CircleCI runner acceptance stay at the end by user instruction. Vercel remains explicitly deferred after payment was required. |
+| Live providers and generated runners | Adapters and build/protocol harnesses exist. The six generated GitHub workflows pass with rc.24, including static/Next image publication and fresh pulls. Earlier live Netlify, Cloudflare, GitHub Pages and Railway checks have their recorded evidence. | Fly, S3 and actual GitLab/CircleCI runner acceptance stay at the end by user instruction. Vercel remains explicitly deferred after payment was required. Deferred provider workflows still consume rc.19; retain those inputs. |
 
 The cached-renderer current-page defect found during rc.18 is corrected
 in `e3bc39a`: prefixed routes now match sidebar items in both rich modes, with

@@ -5,18 +5,20 @@ tests only. Keep third-party project identities, local case studies and delivery
 details out of tracked files, pull requests, release notes, logs and artifacts.
 External test projects are not Zellij deliverables or product backlog.
 
-Last refreshed: **2026-11-26**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-27**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-26: rc.24 delivery workflow migration**
+**2026-11-27: rc.24 delivery workflow migration complete**
 
-The six generated acceptance workflows and both inspector targets now select
-published rc.24. Public and source generators reproduce the same YAML; six
-HTTP/metadata guards and workflow lint pass. Hosted PR qualification, manual
-main image publication and fresh pulls are tracked separately in the
-[migration record](specs/zellij-rc24-delivery-acceptance-2026-11-26.md).
+PR #267 merged as `624bfb3`, tree-identical to qualified `24784c9`. All six
+generated verification workflows and 37 executable CI jobs pass on attempt 1.
+Static/Next publication runs `45960440498` / `45960444256` and fresh-pull run
+`46026610903` pass. Anonymous manifests match both pulled digests; compressed
+layers total 7,290,374 and 79,262,259 bytes respectively. Public and source
+generators reproduce the same YAML; six HTTP/metadata guards and lint pass.
+See the [migration record](specs/zellij-rc24-delivery-acceptance-2026-11-26.md).
 The deferred provider workflows still consume rc.19; retain it. No provider
-deployment or new native release is part of this migration.
+deployment, native release, channel update or retirement occurred.
 
 **2026-11-26: rc.16–rc.18 retirement complete**
 
