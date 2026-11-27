@@ -2,9 +2,9 @@
 
 Date: 2026-11-11. This records the user's explicit follow-up to the
 [product expansion design](zellij-product-expansion-2026-11-11.md).
-Refreshed 2026-11-26 with the [current read-only review](zellij-retention-review-2026-11-26.md).
-It proposes rc.16–rc.18 cleanup and records a corrected image-inspection target;
-no artifacts are deleted by that review. The rc.15/rc.12 execution below is history.
+Refreshed 2026-11-26 with [completed rc.16–rc.18 retirement](zellij-rc16-rc18-retirement-2026-11-26.md).
+The preceding [read-only review](zellij-retention-review-2026-11-26.md) records
+the scope and corrected image-inspection target. The rc.15/rc.12 execution below is history.
 Earlier records and failed attempts remain historical.
 
 ## User decision
@@ -27,6 +27,16 @@ This supersedes any earlier preference to retain all public candidates. Existing
 dated release records remain valid historical evidence; add retirement records
 rather than silently rewrite them. The user has authorized this cleanup policy;
 do not repeatedly request approval for a reviewed cleanup within its scope.
+
+## Current rc.16–rc.18 retirement result — 2026-11-26
+
+Exactly six releases, six tags, 240 assets and 72 image versions were removed
+at `4699f11` after hosted guard/preflight qualification. Independent inventory
+preserves all excluded identities and manifest dependencies; fresh rc.19 image
+pulls and both public rc.24 download channels pass. Rc.11/13/14/15/19/20/21/24,
+PDF source/runtime pairs, failure tags, unrelated releases and unreferenced
+image history remain intact. The execution plan is complete and must not be
+reused. See the [record and evidence](zellij-rc16-rc18-retirement-2026-11-26.md).
 
 ## Previous rc.15 retirement result — 2026-11-20
 

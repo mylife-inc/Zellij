@@ -1,0 +1,1419 @@
+{
+  "planSha256": "24e89f08208efb703afc7fec6ec814f0fabb8a0e2842f4a64fd615e9b291d2e6",
+  "sourceCommit": "4699f11a902ce5d840504515231806b5de903359",
+  "mode": "apply",
+  "startedAt": "2026-11-27T03:21:18.144Z",
+  "complete": true,
+  "events": [
+    {
+      "time": "2026-11-27T03:22:42.239Z",
+      "action": "deleting-release",
+      "repository": "mylife-inc/Zellij",
+      "id": 454234418,
+      "tag": "v0.2.0-rc.18"
+    },
+    {
+      "time": "2026-11-27T03:22:45.655Z",
+      "action": "deleted-release",
+      "repository": "mylife-inc/Zellij",
+      "id": 454234418,
+      "tag": "v0.2.0-rc.18"
+    },
+    {
+      "time": "2026-11-27T03:22:46.132Z",
+      "action": "deleting-tag",
+      "repository": "mylife-inc/Zellij",
+      "tag": "v0.2.0-rc.18"
+    },
+    {
+      "time": "2026-11-27T03:22:47.367Z",
+      "action": "deleted-tag",
+      "repository": "mylife-inc/Zellij",
+      "tag": "v0.2.0-rc.18"
+    },
+    {
+      "time": "2026-11-27T03:22:50.623Z",
+      "action": "deleting-release",
+      "repository": "mylife-inc/Zellij",
+      "id": 453982711,
+      "tag": "v0.2.0-rc.17"
+    },
+    {
+      "time": "2026-11-27T03:22:56.311Z",
+      "action": "deleted-release",
+      "repository": "mylife-inc/Zellij",
+      "id": 453982711,
+      "tag": "v0.2.0-rc.17"
+    },
+    {
+      "time": "2026-11-27T03:22:56.745Z",
+      "action": "deleting-tag",
+      "repository": "mylife-inc/Zellij",
+      "tag": "v0.2.0-rc.17"
+    },
+    {
+      "time": "2026-11-27T03:22:57.960Z",
+      "action": "deleted-tag",
+      "repository": "mylife-inc/Zellij",
+      "tag": "v0.2.0-rc.17"
+    },
+    {
+      "time": "2026-11-27T03:23:01.072Z",
+      "action": "deleting-release",
+      "repository": "mylife-inc/Zellij",
+      "id": 453531308,
+      "tag": "v0.2.0-rc.16"
+    },
+    {
+      "time": "2026-11-27T03:23:04.860Z",
+      "action": "deleted-release",
+      "repository": "mylife-inc/Zellij",
+      "id": 453531308,
+      "tag": "v0.2.0-rc.16"
+    },
+    {
+      "time": "2026-11-27T03:23:05.299Z",
+      "action": "deleting-tag",
+      "repository": "mylife-inc/Zellij",
+      "tag": "v0.2.0-rc.16"
+    },
+    {
+      "time": "2026-11-27T03:23:06.524Z",
+      "action": "deleted-tag",
+      "repository": "mylife-inc/Zellij",
+      "tag": "v0.2.0-rc.16"
+    },
+    {
+      "time": "2026-11-27T03:23:09.553Z",
+      "action": "deleting-release",
+      "repository": "mylife-inc/releases",
+      "id": 454234456,
+      "tag": "zellij-v0.2.0-rc.18"
+    },
+    {
+      "time": "2026-11-27T03:23:12.290Z",
+      "action": "deleted-release",
+      "repository": "mylife-inc/releases",
+      "id": 454234456,
+      "tag": "zellij-v0.2.0-rc.18"
+    },
+    {
+      "time": "2026-11-27T03:23:12.776Z",
+      "action": "deleting-tag",
+      "repository": "mylife-inc/releases",
+      "tag": "zellij-v0.2.0-rc.18"
+    },
+    {
+      "time": "2026-11-27T03:23:14.054Z",
+      "action": "deleted-tag",
+      "repository": "mylife-inc/releases",
+      "tag": "zellij-v0.2.0-rc.18"
+    },
+    {
+      "time": "2026-11-27T03:23:17.222Z",
+      "action": "deleting-release",
+      "repository": "mylife-inc/releases",
+      "id": 453982764,
+      "tag": "zellij-v0.2.0-rc.17"
+    },
+    {
+      "time": "2026-11-27T03:23:20.399Z",
+      "action": "deleted-release",
+      "repository": "mylife-inc/releases",
+      "id": 453982764,
+      "tag": "zellij-v0.2.0-rc.17"
+    },
+    {
+      "time": "2026-11-27T03:23:20.843Z",
+      "action": "deleting-tag",
+      "repository": "mylife-inc/releases",
+      "tag": "zellij-v0.2.0-rc.17"
+    },
+    {
+      "time": "2026-11-27T03:23:22.006Z",
+      "action": "deleted-tag",
+      "repository": "mylife-inc/releases",
+      "tag": "zellij-v0.2.0-rc.17"
+    },
+    {
+      "time": "2026-11-27T03:23:25.377Z",
+      "action": "deleting-release",
+      "repository": "mylife-inc/releases",
+      "id": 453531361,
+      "tag": "zellij-v0.2.0-rc.16"
+    },
+    {
+      "time": "2026-11-27T03:23:28.127Z",
+      "action": "deleted-release",
+      "repository": "mylife-inc/releases",
+      "id": 453531361,
+      "tag": "zellij-v0.2.0-rc.16"
+    },
+    {
+      "time": "2026-11-27T03:23:28.975Z",
+      "action": "deleting-tag",
+      "repository": "mylife-inc/releases",
+      "tag": "zellij-v0.2.0-rc.16"
+    },
+    {
+      "time": "2026-11-27T03:23:30.221Z",
+      "action": "deleted-tag",
+      "repository": "mylife-inc/releases",
+      "tag": "zellij-v0.2.0-rc.16"
+    },
+    {
+      "time": "2026-11-27T03:23:32.812Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1603932020,
+      "digest": "sha256:fdd9944c7ea138667dfa6a76e26a78a6775cb4f09ec787efa5d637ea8fbabcc9",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:34.566Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1603932020,
+      "digest": "sha256:fdd9944c7ea138667dfa6a76e26a78a6775cb4f09ec787efa5d637ea8fbabcc9",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:35.315Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1603932329,
+      "digest": "sha256:c078b0d89e4cd351b725d0e91208908502e6bf694be2da50be7731d4f91247e3",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:37.062Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1603932329,
+      "digest": "sha256:c078b0d89e4cd351b725d0e91208908502e6bf694be2da50be7731d4f91247e3",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:37.788Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1603932529,
+      "digest": "sha256:bb73d121fb3a82e0ec68e8d94db1b1f2713136f84e22676accdf22ddfdef1a35",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:39.649Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1603932529,
+      "digest": "sha256:bb73d121fb3a82e0ec68e8d94db1b1f2713136f84e22676accdf22ddfdef1a35",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:40.543Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1603932531,
+      "digest": "sha256:fec9b2e205dad44adaebdfcca43eefeac1dcf70ea5c9d08ca614b03c0df629ba",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:42.207Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1603932531,
+      "digest": "sha256:fec9b2e205dad44adaebdfcca43eefeac1dcf70ea5c9d08ca614b03c0df629ba",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:43.109Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1603932574,
+      "digest": "sha256:043c128cb994e12a2be60bb2b0d164526f14f5b28cfddfa020f9f48df5f7d3eb",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:45.002Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1603932574,
+      "digest": "sha256:043c128cb994e12a2be60bb2b0d164526f14f5b28cfddfa020f9f48df5f7d3eb",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:45.716Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1603932582,
+      "digest": "sha256:8e5886c934f69f88b99c7138d4457d50dd57095dc7f006ec83e40833d7c941c3",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:47.404Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1603932582,
+      "digest": "sha256:8e5886c934f69f88b99c7138d4457d50dd57095dc7f006ec83e40833d7c941c3",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:48.129Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1603932802,
+      "digest": "sha256:11a7b033f2ca53e8fed4a10432ac234bb25f24f515e9650e8526def81a4f4ec6",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:49.929Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1603932802,
+      "digest": "sha256:11a7b033f2ca53e8fed4a10432ac234bb25f24f515e9650e8526def81a4f4ec6",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:50.735Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1608888839,
+      "digest": "sha256:e54f05133f2df62c957cc5bf0ccfae9a5d6486b37e683f7ca173bc9b80a5109e",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:52.490Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1608888839,
+      "digest": "sha256:e54f05133f2df62c957cc5bf0ccfae9a5d6486b37e683f7ca173bc9b80a5109e",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:53.448Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1608898113,
+      "digest": "sha256:e3f9600259cf945b50697b33e2d86a9a1c3d01dbf4b1ec98a490b5022fc083fe",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:55.289Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1608898113,
+      "digest": "sha256:e3f9600259cf945b50697b33e2d86a9a1c3d01dbf4b1ec98a490b5022fc083fe",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:56.110Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1608898200,
+      "digest": "sha256:2bad84133c4996606230d977fb6e7d27acc0ee26527d8965fffdf7aeef60cedc",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:57.872Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1608898200,
+      "digest": "sha256:2bad84133c4996606230d977fb6e7d27acc0ee26527d8965fffdf7aeef60cedc",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:23:58.668Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1608898233,
+      "digest": "sha256:a82df732dd5e63818ebdba85fa7e85c2d400ae723d13cf9b48a39bb93df19a94",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:00.479Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1608898233,
+      "digest": "sha256:a82df732dd5e63818ebdba85fa7e85c2d400ae723d13cf9b48a39bb93df19a94",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:01.331Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1608898234,
+      "digest": "sha256:29e0974a66d90bb862a59b5e0a9dd5c79bbe3861bdeae524a9afb196698f9887",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:02.977Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1608898234,
+      "digest": "sha256:29e0974a66d90bb862a59b5e0a9dd5c79bbe3861bdeae524a9afb196698f9887",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:03.890Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1608898310,
+      "digest": "sha256:d7a0218c7551fff5e935aa46d5924c9db6a8af6d3403ba949c6179ea6cb52ea2",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:05.499Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1608898310,
+      "digest": "sha256:d7a0218c7551fff5e935aa46d5924c9db6a8af6d3403ba949c6179ea6cb52ea2",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:06.293Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1608898362,
+      "digest": "sha256:ecd68f3d97b645a7ec80827bde839dba768da878f07961f47d673e063c15be04",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:08.299Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1608898362,
+      "digest": "sha256:ecd68f3d97b645a7ec80827bde839dba768da878f07961f47d673e063c15be04",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:09.068Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1608898413,
+      "digest": "sha256:d5564b3cb6544ba2cf11ca188f14d369531e1650f2f0c9cd52bb63cd68cac52b",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:10.890Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1608898413,
+      "digest": "sha256:d5564b3cb6544ba2cf11ca188f14d369531e1650f2f0c9cd52bb63cd68cac52b",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:11.674Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1608898456,
+      "digest": "sha256:50688ec6083000922d84e140c1626259a24962764c4fa53ff15ccd69ec36c453",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:13.516Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1608898456,
+      "digest": "sha256:50688ec6083000922d84e140c1626259a24962764c4fa53ff15ccd69ec36c453",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:14.435Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1608899260,
+      "digest": "sha256:142230cff4c3c8aa06e95181b7ef5f561caae5a8fa954018016e8135bddb2690",
+      "tags": [
+        "0.2.0-rc.16-diagrams"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:24:16.235Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1608899260,
+      "digest": "sha256:142230cff4c3c8aa06e95181b7ef5f561caae5a8fa954018016e8135bddb2690",
+      "tags": [
+        "0.2.0-rc.16-diagrams"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:24:17.102Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1608899286,
+      "digest": "sha256:774a58d4b76b21369db5dd9a096613259a2ce74a197aeb9e6b2cea7d22b73d78",
+      "tags": [
+        "0.2.0-rc.16-all"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:24:18.954Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1608899286,
+      "digest": "sha256:774a58d4b76b21369db5dd9a096613259a2ce74a197aeb9e6b2cea7d22b73d78",
+      "tags": [
+        "0.2.0-rc.16-all"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:24:19.792Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1608899400,
+      "digest": "sha256:59065a43a63791fca51ef30cc5fe18131bbe5978df0bb5bfb8bc3e085a43ed85",
+      "tags": [
+        "0.2.0-rc.16-maths"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:24:21.357Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1608899400,
+      "digest": "sha256:59065a43a63791fca51ef30cc5fe18131bbe5978df0bb5bfb8bc3e085a43ed85",
+      "tags": [
+        "0.2.0-rc.16-maths"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:24:22.145Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1608899431,
+      "digest": "sha256:59461b76961e4faa61c67620707ad5a2d078985e6d69556e741a812bbf506a97",
+      "tags": [
+        "0.2.0-rc.16"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:24:23.961Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1608899431,
+      "digest": "sha256:59461b76961e4faa61c67620707ad5a2d078985e6d69556e741a812bbf506a97",
+      "tags": [
+        "0.2.0-rc.16"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:24:24.781Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1609339609,
+      "digest": "sha256:9eb6db7c65be75b884fc5c7561e5e24c515727fd9c2448d7510f399f4620d3a8",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:26.624Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1609339609,
+      "digest": "sha256:9eb6db7c65be75b884fc5c7561e5e24c515727fd9c2448d7510f399f4620d3a8",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:27.440Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1609339622,
+      "digest": "sha256:5b0dad46204895e34ddf2e1db8379ee2e4c51ff59c1c70f48cca5b421f01f60a",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:29.490Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1609339622,
+      "digest": "sha256:5b0dad46204895e34ddf2e1db8379ee2e4c51ff59c1c70f48cca5b421f01f60a",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:30.293Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1609339804,
+      "digest": "sha256:c3ecbbc40b7af9e644c287f801ebe77da1728f48c217d6325abe6da7d92cca0e",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:32.110Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1609339804,
+      "digest": "sha256:c3ecbbc40b7af9e644c287f801ebe77da1728f48c217d6325abe6da7d92cca0e",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:32.851Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1609340115,
+      "digest": "sha256:359111847f395a86edf9f05cb3e6f35b6b4ae70a4ac9a5c682b2d6b869e7a2d9",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:34.619Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1609340115,
+      "digest": "sha256:359111847f395a86edf9f05cb3e6f35b6b4ae70a4ac9a5c682b2d6b869e7a2d9",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:35.539Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1609340152,
+      "digest": "sha256:fc3e368c597977dd89aef2a69d1bc98db8ca03cb75dc885abf515cfa62af6dc4",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:37.379Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1609340152,
+      "digest": "sha256:fc3e368c597977dd89aef2a69d1bc98db8ca03cb75dc885abf515cfa62af6dc4",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:38.126Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1609340220,
+      "digest": "sha256:a4d420fa6e8da4e2990d1f77dd2d68a5962b1a20fbd4116c618148a4f913523e",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:39.917Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1609340220,
+      "digest": "sha256:a4d420fa6e8da4e2990d1f77dd2d68a5962b1a20fbd4116c618148a4f913523e",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:40.679Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1609340496,
+      "digest": "sha256:c898fbb06360d515bfdb24c97fc90610e77d74f2497711434aea9c76a63fdbe4",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:42.552Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1609340496,
+      "digest": "sha256:c898fbb06360d515bfdb24c97fc90610e77d74f2497711434aea9c76a63fdbe4",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:43.385Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1609340687,
+      "digest": "sha256:34770bf4a32b5d12c2fa6098039d39431a2b5e49bbef7b812729e7ed96ddabc8",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:45.239Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1609340687,
+      "digest": "sha256:34770bf4a32b5d12c2fa6098039d39431a2b5e49bbef7b812729e7ed96ddabc8",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:46.082Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1611695627,
+      "digest": "sha256:25933cd23d43c36260fc65456e7229e96c530d3a79d12052f71d23a1b6327531",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:48.030Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1611695627,
+      "digest": "sha256:25933cd23d43c36260fc65456e7229e96c530d3a79d12052f71d23a1b6327531",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:48.792Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1611695772,
+      "digest": "sha256:782a9366be988c17a0fa7814f0c11b6659395536cc043b27791ad6a508b1da9f",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:50.692Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1611695772,
+      "digest": "sha256:782a9366be988c17a0fa7814f0c11b6659395536cc043b27791ad6a508b1da9f",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:51.508Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1611695804,
+      "digest": "sha256:817a1035997b7fa9dfe9dafac0024cf33346c0d029ced50daa32b6d97b1e2af6",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:53.352Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1611695804,
+      "digest": "sha256:817a1035997b7fa9dfe9dafac0024cf33346c0d029ced50daa32b6d97b1e2af6",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:54.116Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1611695816,
+      "digest": "sha256:77db30ac37bb1dba76edccbbffcf954a8811990cd01ba998dadc3a034808bf2f",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:55.913Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1611695816,
+      "digest": "sha256:77db30ac37bb1dba76edccbbffcf954a8811990cd01ba998dadc3a034808bf2f",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:56.837Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1611695862,
+      "digest": "sha256:aab8d40ea140c6277f68ca3dd06e2810b57db264c4e59ca87492bcb8b00334fb",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:58.821Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1611695862,
+      "digest": "sha256:aab8d40ea140c6277f68ca3dd06e2810b57db264c4e59ca87492bcb8b00334fb",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:24:59.613Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1611695924,
+      "digest": "sha256:16ec305ae9f73afee52472ba45f25e209bcc66f615b481eeb9c537f8e13ef441",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:01.646Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1611695924,
+      "digest": "sha256:16ec305ae9f73afee52472ba45f25e209bcc66f615b481eeb9c537f8e13ef441",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:02.495Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1611695946,
+      "digest": "sha256:add7adf852cf8c0e66ce8f4af421446a12e8f03145e08c37fb6dbfd1fa7d2955",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:04.520Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1611695946,
+      "digest": "sha256:add7adf852cf8c0e66ce8f4af421446a12e8f03145e08c37fb6dbfd1fa7d2955",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:05.331Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1611695969,
+      "digest": "sha256:f334d0bb56244a908c9f746cd03efbdbe7fd258b747a9835eaa3d852d01d752e",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:07.077Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1611695969,
+      "digest": "sha256:f334d0bb56244a908c9f746cd03efbdbe7fd258b747a9835eaa3d852d01d752e",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:07.986Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1611697150,
+      "digest": "sha256:2d59a1913f283da7db32459853720c2fab351c25b475558d506ec60c158da65a",
+      "tags": [
+        "0.2.0-rc.17"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:25:09.737Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1611697150,
+      "digest": "sha256:2d59a1913f283da7db32459853720c2fab351c25b475558d506ec60c158da65a",
+      "tags": [
+        "0.2.0-rc.17"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:25:10.575Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1611697204,
+      "digest": "sha256:13da5749b638b10aad62d0544bc23e342402a0ec63d46e909a86e484eb21c7e5",
+      "tags": [
+        "0.2.0-rc.17-all"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:25:12.280Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1611697204,
+      "digest": "sha256:13da5749b638b10aad62d0544bc23e342402a0ec63d46e909a86e484eb21c7e5",
+      "tags": [
+        "0.2.0-rc.17-all"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:25:13.215Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1611697238,
+      "digest": "sha256:fe4c60afc9674f887f9a84b2ffb523fd1537b3315631165e554111202d790047",
+      "tags": [
+        "0.2.0-rc.17-diagrams"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:25:15.061Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1611697238,
+      "digest": "sha256:fe4c60afc9674f887f9a84b2ffb523fd1537b3315631165e554111202d790047",
+      "tags": [
+        "0.2.0-rc.17-diagrams"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:25:15.983Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1611697365,
+      "digest": "sha256:d9e61ac80618206df1919e78e2157f3de358ba8e7be1f6dae3d80d4a67d995a4",
+      "tags": [
+        "0.2.0-rc.17-maths"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:25:17.930Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1611697365,
+      "digest": "sha256:d9e61ac80618206df1919e78e2157f3de358ba8e7be1f6dae3d80d4a67d995a4",
+      "tags": [
+        "0.2.0-rc.17-maths"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:25:18.747Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1612998155,
+      "digest": "sha256:33a25dfffe73043b63d27afff19df731b2b3e9c01f234ddedab303f91ca98e09",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:20.387Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1612998155,
+      "digest": "sha256:33a25dfffe73043b63d27afff19df731b2b3e9c01f234ddedab303f91ca98e09",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:21.216Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1612998380,
+      "digest": "sha256:ac533364620f9b4759454a9c62877d0517bc3e4559161a048e2be876bb62e9ef",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:22.959Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1612998380,
+      "digest": "sha256:ac533364620f9b4759454a9c62877d0517bc3e4559161a048e2be876bb62e9ef",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:23.868Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1613007196,
+      "digest": "sha256:2675c75e4004862e678d3c704fa8e6b3f4320f425de5e2fcde46737bb8c3527e",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:25.625Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1613007196,
+      "digest": "sha256:2675c75e4004862e678d3c704fa8e6b3f4320f425de5e2fcde46737bb8c3527e",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:26.413Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1613007202,
+      "digest": "sha256:6bcef02cc2982f11380f2159e87677b1a5a0bcf1fd294b45b8138bed93b7d27a",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:28.277Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1613007202,
+      "digest": "sha256:6bcef02cc2982f11380f2159e87677b1a5a0bcf1fd294b45b8138bed93b7d27a",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:29.025Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1613007216,
+      "digest": "sha256:525e9acb17438ad4fe1f18a0cc277d3164c447ea90bd763fee20ef314eb7f8cf",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:30.786Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1613007216,
+      "digest": "sha256:525e9acb17438ad4fe1f18a0cc277d3164c447ea90bd763fee20ef314eb7f8cf",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:31.521Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1613007225,
+      "digest": "sha256:3542a1db8286feabe3046a65228c9134c948ced3e5e191b433a7c7c5408017f3",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:33.292Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1613007225,
+      "digest": "sha256:3542a1db8286feabe3046a65228c9134c948ced3e5e191b433a7c7c5408017f3",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:33.994Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1613007283,
+      "digest": "sha256:4ac82af393740f46ace7674e893fe6886709e7202d89eec87c76f8bac1d08be8",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:35.720Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1613007283,
+      "digest": "sha256:4ac82af393740f46ace7674e893fe6886709e7202d89eec87c76f8bac1d08be8",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:36.521Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1613007328,
+      "digest": "sha256:02c017e374ab572be924daf43337d288ae94586d53f6bf63795b97a2d73f84ca",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:38.220Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1613007328,
+      "digest": "sha256:02c017e374ab572be924daf43337d288ae94586d53f6bf63795b97a2d73f84ca",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:38.935Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1613007338,
+      "digest": "sha256:f92e3307571d3dd59059449d63fccf96f26c5cff61601f07f5eac07ee4afd1b5",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:40.766Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1613007338,
+      "digest": "sha256:f92e3307571d3dd59059449d63fccf96f26c5cff61601f07f5eac07ee4afd1b5",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:41.585Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1613007600,
+      "digest": "sha256:4b4ab236e61dbc9d3bf051a0c6d8e7a2b357e33205d72db9e1f2e54db45ab5eb",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:43.325Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1613007600,
+      "digest": "sha256:4b4ab236e61dbc9d3bf051a0c6d8e7a2b357e33205d72db9e1f2e54db45ab5eb",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:44.388Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1613008400,
+      "digest": "sha256:e1a46ed0583ab5425051756293a7dba1435029650fecfda9a1d606af3cf1e28b",
+      "tags": [
+        "0.2.0-rc.18"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:25:46.275Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1613008400,
+      "digest": "sha256:e1a46ed0583ab5425051756293a7dba1435029650fecfda9a1d606af3cf1e28b",
+      "tags": [
+        "0.2.0-rc.18"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:25:48.273Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1613008582,
+      "digest": "sha256:92c59dd7776cce7402ef75efa7d8ef54d592c483c8dc2074bc40e408dda0e473",
+      "tags": [
+        "0.2.0-rc.18-maths"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:25:50.146Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1613008582,
+      "digest": "sha256:92c59dd7776cce7402ef75efa7d8ef54d592c483c8dc2074bc40e408dda0e473",
+      "tags": [
+        "0.2.0-rc.18-maths"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:25:50.900Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1613008590,
+      "digest": "sha256:1adcb480fbc97163f989b40f73d67407897744a2ec109a6f15aa4e0435bdf3dc",
+      "tags": [
+        "0.2.0-rc.18-all"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:25:52.557Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1613008590,
+      "digest": "sha256:1adcb480fbc97163f989b40f73d67407897744a2ec109a6f15aa4e0435bdf3dc",
+      "tags": [
+        "0.2.0-rc.18-all"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:25:53.305Z",
+      "action": "deleting-image",
+      "package": "zellij-base",
+      "id": 1613008870,
+      "digest": "sha256:e4ad0b9cecf43424e8817c7d59a3733432a8f8bf570060f1eef32ad0a32c7b6c",
+      "tags": [
+        "0.2.0-rc.18-diagrams"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:25:55.305Z",
+      "action": "deleted-image",
+      "package": "zellij-base",
+      "id": 1613008870,
+      "digest": "sha256:e4ad0b9cecf43424e8817c7d59a3733432a8f8bf570060f1eef32ad0a32c7b6c",
+      "tags": [
+        "0.2.0-rc.18-diagrams"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:25:58.003Z",
+      "action": "deleting-image",
+      "package": "zellij/acceptance-static",
+      "id": 1608969071,
+      "digest": "sha256:9997c54cf141fe5df1ca6dd8707bf1464eea170c2e94f3987fa9808826fb6067",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:25:59.657Z",
+      "action": "deleted-image",
+      "package": "zellij/acceptance-static",
+      "id": 1608969071,
+      "digest": "sha256:9997c54cf141fe5df1ca6dd8707bf1464eea170c2e94f3987fa9808826fb6067",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:00.422Z",
+      "action": "deleting-image",
+      "package": "zellij/acceptance-static",
+      "id": 1608969075,
+      "digest": "sha256:3f98aa7edeb67ac42e52c9479d878876e0c5f4efcf92f9f25f82bb38a890484d",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:02.171Z",
+      "action": "deleted-image",
+      "package": "zellij/acceptance-static",
+      "id": 1608969075,
+      "digest": "sha256:3f98aa7edeb67ac42e52c9479d878876e0c5f4efcf92f9f25f82bb38a890484d",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:02.945Z",
+      "action": "deleting-image",
+      "package": "zellij/acceptance-static",
+      "id": 1608969101,
+      "digest": "sha256:ad12e4ee4d500672f2d9d36718217cc92c62dc2c062a6dfd4ecce0df80ed5793",
+      "tags": [
+        "0.2.0-rc.16"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:26:04.656Z",
+      "action": "deleted-image",
+      "package": "zellij/acceptance-static",
+      "id": 1608969101,
+      "digest": "sha256:ad12e4ee4d500672f2d9d36718217cc92c62dc2c062a6dfd4ecce0df80ed5793",
+      "tags": [
+        "0.2.0-rc.16"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:26:05.445Z",
+      "action": "deleting-image",
+      "package": "zellij/acceptance-static",
+      "id": 1611804047,
+      "digest": "sha256:318a4588c9451ed7a16f0d23c36296fd697b868b1200625f825680f3f508000c",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:07.325Z",
+      "action": "deleted-image",
+      "package": "zellij/acceptance-static",
+      "id": 1611804047,
+      "digest": "sha256:318a4588c9451ed7a16f0d23c36296fd697b868b1200625f825680f3f508000c",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:08.115Z",
+      "action": "deleting-image",
+      "package": "zellij/acceptance-static",
+      "id": 1611804049,
+      "digest": "sha256:662d8ddaf2aaf6e9dc83dbeb76de8736191b44991c52677394f09579a246a7a9",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:09.953Z",
+      "action": "deleted-image",
+      "package": "zellij/acceptance-static",
+      "id": 1611804049,
+      "digest": "sha256:662d8ddaf2aaf6e9dc83dbeb76de8736191b44991c52677394f09579a246a7a9",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:10.727Z",
+      "action": "deleting-image",
+      "package": "zellij/acceptance-static",
+      "id": 1611804087,
+      "digest": "sha256:e96d8c54fc20cb29ca8837a7915152dda2bdb685c5b0171938490aa33246ef0d",
+      "tags": [
+        "0.2.0-rc.17"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:26:12.567Z",
+      "action": "deleted-image",
+      "package": "zellij/acceptance-static",
+      "id": 1611804087,
+      "digest": "sha256:e96d8c54fc20cb29ca8837a7915152dda2bdb685c5b0171938490aa33246ef0d",
+      "tags": [
+        "0.2.0-rc.17"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:26:13.274Z",
+      "action": "deleting-image",
+      "package": "zellij/acceptance-static",
+      "id": 1613088342,
+      "digest": "sha256:9414179b0a6ded076d29fdec3f7ecedd06b7e5be5692224ea621ad6e6f808fd1",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:14.999Z",
+      "action": "deleted-image",
+      "package": "zellij/acceptance-static",
+      "id": 1613088342,
+      "digest": "sha256:9414179b0a6ded076d29fdec3f7ecedd06b7e5be5692224ea621ad6e6f808fd1",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:15.799Z",
+      "action": "deleting-image",
+      "package": "zellij/acceptance-static",
+      "id": 1613088350,
+      "digest": "sha256:779a8c6e7c6f40d7e0cddf7217bbc7d47b845494e941557f43e37987e439958c",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:17.523Z",
+      "action": "deleted-image",
+      "package": "zellij/acceptance-static",
+      "id": 1613088350,
+      "digest": "sha256:779a8c6e7c6f40d7e0cddf7217bbc7d47b845494e941557f43e37987e439958c",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:18.357Z",
+      "action": "deleting-image",
+      "package": "zellij/acceptance-static",
+      "id": 1613088383,
+      "digest": "sha256:2f091dea2895a47f7e97f0d75377c3466b8b53f9de77180418f7384ce2570ff0",
+      "tags": [
+        "0.2.0-rc.18"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:26:20.190Z",
+      "action": "deleted-image",
+      "package": "zellij/acceptance-static",
+      "id": 1613088383,
+      "digest": "sha256:2f091dea2895a47f7e97f0d75377c3466b8b53f9de77180418f7384ce2570ff0",
+      "tags": [
+        "0.2.0-rc.18"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:26:23.616Z",
+      "action": "deleting-image",
+      "package": "zellij/acceptance-next",
+      "id": 1608971286,
+      "digest": "sha256:0366b5de50524fc3186004d10c18ae1e615ca85c9b78e31f05c3e27f6c6465a3",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:25.272Z",
+      "action": "deleted-image",
+      "package": "zellij/acceptance-next",
+      "id": 1608971286,
+      "digest": "sha256:0366b5de50524fc3186004d10c18ae1e615ca85c9b78e31f05c3e27f6c6465a3",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:26.129Z",
+      "action": "deleting-image",
+      "package": "zellij/acceptance-next",
+      "id": 1608971317,
+      "digest": "sha256:ce02228f9da0740f4d27f344b213b382328fa2e589a9eab525c324eb6caae6c8",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:27.778Z",
+      "action": "deleted-image",
+      "package": "zellij/acceptance-next",
+      "id": 1608971317,
+      "digest": "sha256:ce02228f9da0740f4d27f344b213b382328fa2e589a9eab525c324eb6caae6c8",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:28.690Z",
+      "action": "deleting-image",
+      "package": "zellij/acceptance-next",
+      "id": 1608971349,
+      "digest": "sha256:98d7a9f724db7c7c58c2182211242d58665b510011ab49176e320eb72dcf407e",
+      "tags": [
+        "0.2.0-rc.16"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:26:30.501Z",
+      "action": "deleted-image",
+      "package": "zellij/acceptance-next",
+      "id": 1608971349,
+      "digest": "sha256:98d7a9f724db7c7c58c2182211242d58665b510011ab49176e320eb72dcf407e",
+      "tags": [
+        "0.2.0-rc.16"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:26:31.256Z",
+      "action": "deleting-image",
+      "package": "zellij/acceptance-next",
+      "id": 1611807475,
+      "digest": "sha256:05bc7694b9ec114e293a879abc9080ccdc2a98a93901c55f1078dc4027a90290",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:32.900Z",
+      "action": "deleted-image",
+      "package": "zellij/acceptance-next",
+      "id": 1611807475,
+      "digest": "sha256:05bc7694b9ec114e293a879abc9080ccdc2a98a93901c55f1078dc4027a90290",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:33.707Z",
+      "action": "deleting-image",
+      "package": "zellij/acceptance-next",
+      "id": 1611807493,
+      "digest": "sha256:836bf7e03f9b236cbb1c16a176531631dc8abccee1c508e52e7c5edcbf8f5fe7",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:35.334Z",
+      "action": "deleted-image",
+      "package": "zellij/acceptance-next",
+      "id": 1611807493,
+      "digest": "sha256:836bf7e03f9b236cbb1c16a176531631dc8abccee1c508e52e7c5edcbf8f5fe7",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:36.107Z",
+      "action": "deleting-image",
+      "package": "zellij/acceptance-next",
+      "id": 1611807539,
+      "digest": "sha256:07db7d1e0cbe03e6200afc0355dde8a4eb49d0983022a81310ba01006d4542c9",
+      "tags": [
+        "0.2.0-rc.17"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:26:37.963Z",
+      "action": "deleted-image",
+      "package": "zellij/acceptance-next",
+      "id": 1611807539,
+      "digest": "sha256:07db7d1e0cbe03e6200afc0355dde8a4eb49d0983022a81310ba01006d4542c9",
+      "tags": [
+        "0.2.0-rc.17"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:26:38.692Z",
+      "action": "deleting-image",
+      "package": "zellij/acceptance-next",
+      "id": 1613090505,
+      "digest": "sha256:2394f6ad06b73dcb0f94bc623c5156c9c5eb543ae87eac91988073bd1e077295",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:40.607Z",
+      "action": "deleted-image",
+      "package": "zellij/acceptance-next",
+      "id": 1613090505,
+      "digest": "sha256:2394f6ad06b73dcb0f94bc623c5156c9c5eb543ae87eac91988073bd1e077295",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:41.486Z",
+      "action": "deleting-image",
+      "package": "zellij/acceptance-next",
+      "id": 1613090522,
+      "digest": "sha256:1e2eacd1c23280c44d3bb12e6a52a86c68383bf8ee2e3f8007695bf65fcd6a16",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:43.231Z",
+      "action": "deleted-image",
+      "package": "zellij/acceptance-next",
+      "id": 1613090522,
+      "digest": "sha256:1e2eacd1c23280c44d3bb12e6a52a86c68383bf8ee2e3f8007695bf65fcd6a16",
+      "tags": []
+    },
+    {
+      "time": "2026-11-27T03:26:44.152Z",
+      "action": "deleting-image",
+      "package": "zellij/acceptance-next",
+      "id": 1613090558,
+      "digest": "sha256:3244389531ef9db8c8a5e92fd94f01c1fa828f8dbbf17bd00a4af088d47a1541",
+      "tags": [
+        "0.2.0-rc.18"
+      ]
+    },
+    {
+      "time": "2026-11-27T03:26:45.922Z",
+      "action": "deleted-image",
+      "package": "zellij/acceptance-next",
+      "id": 1613090558,
+      "digest": "sha256:3244389531ef9db8c8a5e92fd94f01c1fa828f8dbbf17bd00a4af088d47a1541",
+      "tags": [
+        "0.2.0-rc.18"
+      ]
+    }
+  ],
+  "authenticatedOwner": "mylife-inc",
+  "qualificationRun": 45933106254,
+  "preflightPassed": true,
+  "postCounts": {
+    "releases": [
+      {
+        "repository": "mylife-inc/Zellij",
+        "count": 8
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "count": 10
+      }
+    ],
+    "packages": [
+      {
+        "name": "zellij-base",
+        "count": 4860
+      },
+      {
+        "name": "zellij/acceptance-static",
+        "count": 13
+      },
+      {
+        "name": "zellij/acceptance-next",
+        "count": 12
+      }
+    ]
+  },
+  "finishedAt": "2026-11-27T03:27:55.788Z"
+}

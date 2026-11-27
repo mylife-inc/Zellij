@@ -1,5 +1,50 @@
 # Scoped rc.16–rc.18 retirement — 26 November 2026
 
+Status: complete. The scoped cleanup and independent post-checks passed. Rc.24
+remains the installed and published candidate; this maintenance change does not
+publish a new CLI version.
+
+## Completed execution and verification
+
+The [evidence](evidence/zellij-rc16-rc18-retirement-2026-11-26.json) and
+[complete journal](evidence/zellij-rc16-rc18-execution-journal-2026-11-26.json)
+record execution at `4699f11`. Hosted read-only qualification
+[45933106254](https://github.com/mylife-inc/Zellij/actions/runs/45933106254)
+passed 36 JavaScript guard tests, 13 native guard cases and the live preflight.
+The first apply attempt stopped before deletion when GitHub reported three
+active workflows. Subsequent requests reported none; the cause of that transient
+report is not established. The unchanged guard and same plan then completed.
+
+Exactly six releases, six release tags and 72 image versions were removed.
+The releases contained 240 assets. Native release counts are now eight Zellij
+versions in each repository; the mirror also retains both unrelated releases.
+Base-image versions changed from 4,914 to 4,860, static acceptance images from
+22 to 13, and Next acceptance images from 21 to 12. All excluded identities,
+28 protected Git tag refs, 226 retained manifest dependencies and 4,659
+unreferenced historical image versions matched the reviewed state.
+
+Independent hosted verification
+[45934388655](https://github.com/mylife-inc/Zellij/actions/runs/45934388655)
+confirms every target is absent and all retained identities/manifest graphs
+match. Public checks return HTTP 404 for one native archive URL from each of
+the six removed releases and for all 18 retired image tag references.
+
+Fresh rc.24 Mac archives from both public repositories have the same verified
+SHA-256, match their combined/per-file checksum manifests and contain installers
+identical to tagged source. Both binaries launch as `zel 0.2.0-rc.24`.
+Fresh-pull run
+[45934391048](https://github.com/mylife-inc/Zellij/actions/runs/45934391048)
+passes both retained rc.19 images, including health, nonroot and HTTP/asset/source
+isolation checks. Their digests remain identical to the original review. Its
+live-provider job is skipped.
+
+This execution plan is spent. Do not reuse it for another version or source
+checkpoint. Historical rc.16–rc.18 release URLs now refer to retired artifacts;
+source history and earlier verification records are preserved. The current
+workflow's ordinary `inventory` mode remains usable without requiring retired
+versions. The frozen `review`/`verify-retained` modes retain their dated source-head
+requirements and are evidence for this execution, not rolling cleanup commands.
+
 ## Reviewed scope and preparation
 
 The [read-only review](zellij-retention-review-2026-11-26.md) merged in PR #265
@@ -42,5 +87,5 @@ remains separate and cannot consume the new plan. Apply is local-owner-only.
 Preparation verification: 14 new executor tests cover immutable releases, wrong
 owners/scopes, source qualification, moved tags, changed assets, protected/shared
 manifests, unreferenced history, journal failure, partial failure, lost responses
-and idempotent resumption. Actions syntax is checked with Actionlint. Execution
-and fresh-pull/download results will be recorded after their actual completion.
+and idempotent resumption. Actions syntax passes Actionlint. The completed execution and independent
+checks are recorded above.

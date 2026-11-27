@@ -8,6 +8,20 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-26**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-26: rc.16–rc.18 retirement complete**
+
+The [completed retirement](specs/zellij-rc16-rc18-retirement-2026-11-26.md)
+at `4699f11` removed exactly six releases, six tags, 240 assets and 72 image
+versions. Hosted qualification `45933106254` passed 36 JS guards, 13 native guards
+and live preflight. Independent verification `45934388655` confirms every target
+is absent and all retained identities/graphs are unchanged. Fresh rc.19 image
+pulls pass in `45934391048`; public rc.24 archives from both repositories pass
+checksum, tagged-installer and executable checks. Rc.24 remains current.
+The first attempt stopped before deletion on a transient active-run report;
+its cause is not established, and the guard was not relaxed. The plan is spent.
+Retain rc.11/13/14/15/19/20/21/24, failure tags, matching PDF sources and all
+unreferenced image history. Ordinary inventory is read-only and remains usable.
+
 **2026-11-26: exact rc.16–rc.18 executor preparation**
 
 PR #265 merged as `e4518f2`, tree-identical to qualified `ff78154`, after all
