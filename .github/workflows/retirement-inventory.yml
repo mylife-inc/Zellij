@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: Read inventory and plan, or execute the reviewed rc.12 image retirement plan
+        description: Read current inventory and rc.16–rc.18 review, or use the frozen historical rc.12 executor
         type: choice
         options: [inventory, retire-images]
         default: inventory
@@ -34,25 +34,27 @@ jobs:
         with:
           node-version: 24
       - name: Check exact-scope deletion safeguards
-        run: node --test scripts/retire-release-images.test.mjs
+        run: node --test scripts/retire-release-images.test.mjs scripts/review-release-retention.test.mjs
       - name: Check native release deletion safeguards without networking
         run: python3 scripts/retire-native-releases.test.py specs/evidence/zellij-rc15-native-retirement-plan-2026-11-20.json
       - name: List exact Zellij release and image version identities
         env:
           GH_TOKEN: ${{ github.token }}
         run: node scripts/inspect-release-inventory.mjs "$RUNNER_TEMP/retirement-inventory.json"
-      - name: Generate a read-only retained and retired manifest plan
-        run: node scripts/retire-release-images.mjs plan "$RUNNER_TEMP/retirement-inventory.json" "$RUNNER_TEMP/image-retirement-plan.json"
+      - name: Review exact superseded releases and manifest dependencies without deleting
+        run: node scripts/review-release-retention.mjs "$RUNNER_TEMP/retirement-inventory.json" "$RUNNER_TEMP/retention-review.json"
       - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: retirement-inventory
           path: |
             ${{ runner.temp }}/retirement-inventory.json
-            ${{ runner.temp }}/image-retirement-plan.json
+            ${{ runner.temp }}/retention-review.json
           if-no-files-found: error
           retention-days: 7
   retire-images:
+    # Historical, exact rc.12-only executor. It cannot accept the schema-2
+    # read-only review above; a new cleanup requires new tested execution guards.
     if: github.repository == 'mylife-inc/Zellij' && startsWith(github.ref, 'refs/heads/') && inputs.mode == 'retire-images'
     runs-on: ubuntu-latest
     timeout-minutes: 30

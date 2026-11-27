@@ -34,6 +34,10 @@ node scripts/prepare-delivery-acceptance.mjs cli/target/debug/zel --write
 Omit `--write` to check the committed workflows. The script runs the real CLI
 in a temporary Git repository, compares exact generated YAML, checks unique
 queues, and verifies manual-main-only publication and draft-only Netlify mode.
+It also regenerates each image inspector target and its configuration hash. The
+comparison checks that the target agrees with both the saved settings and the
+generated publication step. Inspection rejects edited settings until metadata
+is regenerated; it needs no additional npm dependencies.
 It does not build images or deploy. CI runs this comparison. Generated YAML
 should be changed through its configuration and generator, not hand-edited.
 
@@ -72,3 +76,9 @@ workflows pass on `9bfbf1c`, merged with an identical tree as `9e7c58e`.
 Static and Next publication runs `45010926037` and `45010928505` pass; fresh-pull
 HTTP/health/nonroot checks pass in `45011278526`. No live-provider workflow is
 run in this checkpoint. See [the rc.19 release evidence](../../../specs/evidence/zellij-rc19-release-2026-11-22.json).
+
+Correction — 26 November: run `45011278526` actually pulled rc.18, because the
+inspection metadata had not followed the rc.19 publication pin. Its logs remain
+evidence for rc.18. Fix `45eb4fa` binds inspection metadata to the source
+configuration and generation checks. Fresh run `45921906069` now verifies both
+actual rc.19 images. See the [retention review](../../../specs/zellij-retention-review-2026-11-26.md).

@@ -3,6 +3,31 @@ import { test } from 'node:test';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { checkDeliverySite } from './check-delivery-http.mjs';
+import yaml from 'js-yaml';
+import { imageInspectionMetadata, inspectionImage } from './delivery-acceptance-image.mjs';
+
+for (const kind of ['static', 'next']) {
+  test(`${kind} inspection is tied to the configured, generated publication`, async () => {
+    const cases = JSON.parse(await readFile(new URL('./fixtures/release-delivery/cases.json', import.meta.url)));
+    const entry = cases.find(entry => entry.name === kind);
+    const bytes = await readFile(new URL(`./fixtures/release-delivery/${entry.config}`, import.meta.url));
+    const config = yaml.load(bytes.toString());
+    const workflow = yaml.load(await readFile(new URL(`../.github/workflows/${entry.workflow}`, import.meta.url), 'utf8'));
+    const expected = imageInspectionMetadata(entry, config, workflow, bytes);
+    assert.deepEqual({ image: entry.image, configSha256: entry.configSha256 }, expected);
+    assert.equal(inspectionImage(entry, bytes), config.image.name);
+
+    // The historical inspector silently checked rc.18 after publication moved
+    // to rc.19. Both independent drift paths must fail before pulling an image.
+    assert.throws(() => imageInspectionMetadata({ ...entry, image: expected.image.replace(/:[^:]+$/, ':0.2.0-rc.18') }, config, workflow, bytes), /inspection target is stale/);
+    assert.throws(() => inspectionImage(entry, Buffer.concat([bytes, Buffer.from('\n# changed configuration\n')])), /stale/);
+    assert.throws(() => inspectionImage({ ...entry, configSha256: undefined }, bytes), /stale/);
+    assert.throws(() => inspectionImage({ ...entry, image: 'ghcrXio/other/image:old' }, bytes), /Unexpected/);
+    const changed = structuredClone(workflow);
+    changed.jobs.publish.steps.find(step => step.env?.IMAGE_TAG).env.IMAGE_TAG += '-wrong';
+    assert.throws(() => imageInspectionMetadata(entry, config, changed, bytes), /Generated publication target/);
+  });
+}
 
 async function site(t, renderer) {
   const portable = renderer === 'portable';

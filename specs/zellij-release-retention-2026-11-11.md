@@ -2,7 +2,9 @@
 
 Date: 2026-11-11. This records the user's explicit follow-up to the
 [product expansion design](zellij-product-expansion-2026-11-11.md).
-Refreshed 2026-11-20 with verified rc.15 replacement and reviewed rc.12-only retirement.
+Refreshed 2026-11-26 with the [current read-only review](zellij-retention-review-2026-11-26.md).
+It proposes rc.16–rc.18 cleanup and records a corrected image-inspection target;
+no artifacts are deleted by that review. The rc.15/rc.12 execution below is history.
 Earlier records and failed attempts remain historical.
 
 ## User decision
@@ -26,7 +28,7 @@ dated release records remain valid historical evidence; add retirement records
 rather than silently rewrite them. The user has authorized this cleanup policy;
 do not repeatedly request approval for a reviewed cleanup within its scope.
 
-## Current rc.15 retirement result — 2026-11-20
+## Previous rc.15 retirement result — 2026-11-20
 
 The published rc.15 replacement, managed channels, production guides and current
 acceptance images pass all 17 recorded gates. Retain the existing rc.11/rc.13

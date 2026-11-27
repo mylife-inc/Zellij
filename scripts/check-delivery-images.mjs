@@ -4,13 +4,17 @@ import { execFileSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { setTimeout as delay } from 'node:timers/promises';
 import { checkDeliverySite } from './check-delivery-http.mjs';
+import { inspectionImage } from './delivery-acceptance-image.mjs';
 
 const kind = process.argv[2];
 assert(['static', 'next'].includes(kind), 'Choose static or next');
 const cases = JSON.parse(await readFile(new URL('./fixtures/release-delivery/cases.json', import.meta.url)));
-const image = cases.find(entry => entry.name === kind).image;
+const entry = cases.find(entry => entry.name === kind);
+assert(entry && /^(portable|hosted)\/[a-z-]+\.yaml$/.test(entry.config), 'Expected fixture configuration');
+const image = inspectionImage(entry, await readFile(new URL(`./fixtures/release-delivery/${entry.config}`, import.meta.url)));
 const docker = args => execFileSync('docker', args, { encoding: 'utf8', timeout: 180000 }).trim();
 const name = `zel-published-${kind}-${process.pid}`;
+console.log(`Inspecting configured publication: ${image}`);
 docker(['pull', image]);
 const info = JSON.parse(docker(['image', 'inspect', image]))[0];
 assert.equal(info.Architecture, 'amd64');
