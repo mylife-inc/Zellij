@@ -1,0 +1,20 @@
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px system-ui, sans-serif; background: #f4f5f8; }
+header { position: sticky; top: 0; z-index: 10; width: 100%; transition: background-color 200ms, backdrop-filter 200ms; }
+header[data-solid="true"] { background: rgb(255 255 255 / .85); backdrop-filter: blur(20px); }
+.zellij-nav-inner { display: flex; align-items: center; gap: 24px; height: 89px; padding: 0 32px; width: 100%; }
+.zellij-nav-content { display: flex; align-items: center; gap: 24px; margin: auto; max-width: calc(100% - 2 * var(--zellij-nav-edge, 264px) - 48px); }
+.zellij-brand { width: 120px; flex: 0 0 120px; }
+.zellij-nav-actions { position: absolute; right: 32px; width: 264px; display: flex; gap: 12px; }
+.zellij-nav-desktop { min-width: var(--zellij-nav-min-width, 0); }
+.zellij-nav-list { display: flex; gap: 4px; align-items: center; list-style: none; margin: 0; padding: 0; }
+.zellij-nav-list > li { flex: none; }
+.zellij-nav-link { display: block; padding: 12px; font-size: 20px; text-decoration: none; border: 0; background: transparent; color: #202124; }
+.zellij-nav-measure { position: absolute; visibility: hidden; pointer-events: none; width: 0; height: 0; overflow: hidden; }
+.zellij-mega-panel { position: absolute; top: 100%; left: 0; width: 100%; padding: 24px; background: rgb(255 255 255 / .92); backdrop-filter: blur(20px); }
+.zellij-mega-panel a { display: inline-block; padding: 16px; }
+main { min-height: 180vh; padding: 32px; }
+.background { height: 600px; background: radial-gradient(circle at 35% 35%, #9f8bff, transparent 60%), radial-gradient(circle at 75% 65%, #75def2, transparent 70%); }
+html[data-effects="off"] header, html[data-effects="off"] .zellij-mega-panel { backdrop-filter: none; transition: none; background: white; }
+html[data-effects="off"] .background { background: #ddd; }
+[hidden] { display: none !important; }

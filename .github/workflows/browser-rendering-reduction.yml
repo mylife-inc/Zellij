@@ -1,0 +1,41 @@
+name: Browser rendering reduction
+on:
+  push:
+    branches: [codex/browser-rendering-reduction]
+permissions:
+  contents: read
+jobs:
+  reduction:
+    name: Compare DOM, actual hooks and full header
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace @shebka/zellij
+      - run: npm run build --workspace @shebka/zellij-showcase
+      - run: node scripts/browser-resize-reduction/build.mjs
+      - run: npx playwright install --with-deps webkit
+      - name: Exercise the reductions without retries
+        working-directory: examples/showcase
+        env:
+          DEBUG: pw:browser
+        run: |
+          mkdir -p reduction-results
+          npx playwright test --config playwright.reduction.config.ts 2>&1 | tee reduction-results/browser.log
+      - name: Retain structured outcomes
+        if: always() && hashFiles('examples/showcase/reduction-results/results.json') != ''
+        run: node scripts/report-browser-results.mjs examples/showcase/reduction-results/results.json
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: browser-rendering-reduction
+          path: |
+            examples/showcase/reduction-results/
+            examples/showcase/public/__resize-reduction/
+          retention-days: 14
+          if-no-files-found: error
