@@ -1,8 +1,9 @@
 # Generated delivery acceptance
 
 These sites exercise complete GitHub workflows from the current CLI generator,
-using the **selected 0.2.0-rc.19 executable and exact engine image** at execution
-time. This candidate includes the current generators and multi-site queue fix.
+using the **selected 0.2.0-rc.24 executable and exact engine image** at execution
+time. Rich validation and HTTP exports use its verified renderer cache; explicit
+image operations use the matching base image.
 Run only after the selected release publication succeeds. Previous rc.1/rc.2 verification
 records remain evidence for those versions; retargeting does not rerun live delivery.
 
@@ -10,8 +11,8 @@ records remain evidence for those versions; retargeting does not rerun live deli
 | --- | --- | --- |
 | acceptance-portable.yml | Native validation and portable build | Same |
 | acceptance-hosted.yml | Hosted validation and static export | Same |
-| acceptance-static.yml | Build portable static image | Publish ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.19 |
-| acceptance-next.yml | Build portable Next.js image | Publish ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.19 |
+| acceptance-static.yml | Build portable static image | Publish ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.24 |
+| acceptance-next.yml | Build portable Next.js image | Publish ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.24 |
 | acceptance-netlify-portable.yml | Native validation and portable build | Create a Netlify draft preview |
 | acceptance-netlify-hosted.yml | Hosted validation and static export | Create a Netlify draft preview |
 
@@ -71,7 +72,7 @@ Static and Next publication runs `44951056149` and `44951058940` pass;
 fresh-pull HTTP/health/nonroot checks pass in `44951268820`. Provider deployment
 is not part of this checkpoint. See [the release evidence](../../../specs/evidence/zellij-rc17-release-2026-11-21.json).
 
-Current rc.19 checkpoint (2026-11-22): all six generated PR verification
+Historical rc.19 checkpoint (2026-11-22): all six generated PR verification
 workflows pass on `9bfbf1c`, merged with an identical tree as `9e7c58e`.
 Static and Next publication runs `45010926037` and `45010928505` pass; fresh-pull
 HTTP/health/nonroot checks pass in `45011278526`. No live-provider workflow is
@@ -82,3 +83,11 @@ inspection metadata had not followed the rc.19 publication pin. Its logs remain
 evidence for rc.18. Fix `45eb4fa` binds inspection metadata to the source
 configuration and generation checks. Fresh run `45921906069` now verifies both
 actual rc.19 images. See the [retention review](../../../specs/zellij-retention-review-2026-11-26.md).
+
+Rc.24 migration (26 November): all six workflows and both inspector targets
+are regenerated using the published executable, with an exact match against
+the current source generator. Hosted qualification and registry publication
+are tracked in the [migration record](../../../specs/zellij-rc24-delivery-acceptance-2026-11-26.md).
+The separate deferred provider workflows still pin rc.19; retain that release
+and its images. Do not dispatch Netlify or other provider deployments as part
+of this migration.
