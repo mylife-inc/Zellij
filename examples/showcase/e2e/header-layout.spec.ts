@@ -514,6 +514,9 @@ for (const finalWidth of [901, 1600]) {
     const current = finalWidth === 901 ? guide : more;
     await current.focus();
     await expect(current).toBeFocused();
+    // Queue a real observer measurement even if this browser does not resize
+    // the measured navigation element when the visible link list changes.
+    await page.locator('.zellij-nav-inner').evaluate((bar, width) => { (bar as HTMLElement).style.width = `${width}px`; }, finalWidth === 901 ? 1601 : 902);
     await expect.poll(() => page.evaluate(() => (window as unknown as { overflowCommitFrames: OverflowCommitFrames }).overflowCommitFrames.pending())).toEqual({ measurement: 1, focus: 1 });
     await page.evaluate(width => (window as unknown as { overflowCommitFrames: OverflowCommitFrames }).overflowCommitFrames.resizeAndRun(width), finalWidth);
     await expect(more).toHaveCount(finalWidth === 901 ? 1 : 0);
