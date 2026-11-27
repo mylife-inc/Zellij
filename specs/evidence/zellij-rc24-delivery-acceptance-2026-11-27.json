@@ -1,0 +1,703 @@
+{
+  "schema": 1,
+  "date": "2026-11-27",
+  "status": "complete",
+  "scope": "Six generated GitHub delivery workflows, static/Next publication and fresh image inspection using repository-owned fixtures.",
+  "candidate": "v0.2.0-rc.24",
+  "releaseSource": "2c3b7daa3be5b0f218b4584a8074e77b4f25d848",
+  "baseline": "e0e639285ddf2a41b71f5495f7b75189ba088799",
+  "pullRequest": "https://github.com/mylife-inc/Zellij/pull/267",
+  "qualifiedHead": "24784c90e0cf429927df3d4aa2eff5461ec5428d",
+  "merge": "624bfb387fb0ef652207f366e2b8c054a5e65c3e",
+  "qualifiedAndMergedTree": "adf8a042c331368b17c369a3b92b2722fcdcf307",
+  "local": {
+    "publicGeneratorMatches": true,
+    "sourceGeneratorMatches": true,
+    "httpAndMetadataTestsPassed": 6,
+    "actionlint": "pass",
+    "diffCheck": "pass"
+  },
+  "pullRequestRuns": [
+    {
+      "id": 45956665792,
+      "name": "CI",
+      "head_sha": "24784c90e0cf429927df3d4aa2eff5461ec5428d",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792",
+      "created_at": "2026-11-27T07:10:41Z",
+      "updated_at": "2026-11-27T07:41:55Z",
+      "jobs": [
+        {
+          "id": 140364613777,
+          "name": "Engine",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364613777"
+        },
+        {
+          "id": 140364613976,
+          "name": "Native images (amd64)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364613976"
+        },
+        {
+          "id": 140364613980,
+          "name": "Portable docs (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364613980"
+        },
+        {
+          "id": 140364613984,
+          "name": "native-packages / Compile shared rich renderer",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364613984"
+        },
+        {
+          "id": 140364613990,
+          "name": "Native images (arm64)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364613990"
+        },
+        {
+          "id": 140364614052,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364614052"
+        },
+        {
+          "id": 140364614059,
+          "name": "Website and book templates",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364614059"
+        },
+        {
+          "id": 140364614089,
+          "name": "Portable docs (macos-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364614089"
+        },
+        {
+          "id": 140364614092,
+          "name": "Embedded schema is current",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364614092"
+        },
+        {
+          "id": 140364614098,
+          "name": "Rich website without HTTP",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364614098"
+        },
+        {
+          "id": 140364614118,
+          "name": "next-pdf / Next PDF (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364614118"
+        },
+        {
+          "id": 140364614148,
+          "name": "Portable docs (windows-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364614148"
+        },
+        {
+          "id": 140364614157,
+          "name": "CLI",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364614157"
+        },
+        {
+          "id": 140364614160,
+          "name": "Showcase end to end",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364614160"
+        },
+        {
+          "id": 140364614177,
+          "name": "websites / Websites (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364614177"
+        },
+        {
+          "id": 140364614313,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364614313"
+        },
+        {
+          "id": 140364614318,
+          "name": "websites / Websites (ubuntu-24.04-arm)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364614318"
+        },
+        {
+          "id": 140364614323,
+          "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364614323"
+        },
+        {
+          "id": 140364614548,
+          "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364614548"
+        },
+        {
+          "id": 140364959226,
+          "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364959226"
+        },
+        {
+          "id": 140364959273,
+          "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364959273"
+        },
+        {
+          "id": 140364959289,
+          "name": "native-packages / Package and install (aarch64-apple-darwin)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364959289"
+        },
+        {
+          "id": 140364959292,
+          "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364959292"
+        },
+        {
+          "id": 140364959336,
+          "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364959336"
+        },
+        {
+          "id": 140364959347,
+          "name": "native-packages / Package and install (x86_64-apple-darwin)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140364959347"
+        },
+        {
+          "id": 140365870123,
+          "name": "Combined image manifests",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140365870123"
+        },
+        {
+          "id": 140374286738,
+          "name": "Rich standalone file website",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140374286738"
+        },
+        {
+          "id": 140374286911,
+          "name": "homebrew / Homebrew (macos-15)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140374286911"
+        },
+        {
+          "id": 140374286947,
+          "name": "homebrew / Homebrew (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140374286947"
+        },
+        {
+          "id": 140374286974,
+          "name": "homebrew / Homebrew (macos-15-intel)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140374286974"
+        },
+        {
+          "id": 140374287017,
+          "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140374287017"
+        },
+        {
+          "id": 140374287063,
+          "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140374287063"
+        },
+        {
+          "id": 140374287064,
+          "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140374287064"
+        },
+        {
+          "id": 140374287072,
+          "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140374287072"
+        },
+        {
+          "id": 140374287177,
+          "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140374287177"
+        },
+        {
+          "id": 140374287500,
+          "name": "winget / WinGet lifecycle (x86_64-pc-windows-msvc)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140374287500"
+        },
+        {
+          "id": 140374287561,
+          "name": "winget / WinGet lifecycle (aarch64-pc-windows-msvc)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140374287561"
+        },
+        {
+          "id": 140374288467,
+          "name": "winget / WinGet binary (${{ matrix.target }})",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665792/job/140374288467"
+        }
+      ]
+    },
+    {
+      "id": 45956665799,
+      "name": "Documentation (acceptance-portable.yml)",
+      "head_sha": "24784c90e0cf429927df3d4aa2eff5461ec5428d",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665799",
+      "created_at": "2026-11-27T07:10:41Z",
+      "updated_at": "2026-11-27T07:10:50Z",
+      "jobs": [
+        {
+          "id": 140364613402,
+          "name": "verify",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665799/job/140364613402"
+        }
+      ]
+    },
+    {
+      "id": 45956665776,
+      "name": "Documentation (acceptance-static.yml)",
+      "head_sha": "24784c90e0cf429927df3d4aa2eff5461ec5428d",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665776",
+      "created_at": "2026-11-27T07:10:41Z",
+      "updated_at": "2026-11-27T07:10:54Z",
+      "jobs": [
+        {
+          "id": 140364613568,
+          "name": "verify",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665776/job/140364613568"
+        },
+        {
+          "id": 140364614945,
+          "name": "publish",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665776/job/140364614945"
+        }
+      ]
+    },
+    {
+      "id": 45956665782,
+      "name": "Documentation (acceptance-next.yml)",
+      "head_sha": "24784c90e0cf429927df3d4aa2eff5461ec5428d",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665782",
+      "created_at": "2026-11-27T07:10:41Z",
+      "updated_at": "2026-11-27T07:12:01Z",
+      "jobs": [
+        {
+          "id": 140364613398,
+          "name": "verify",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665782/job/140364613398"
+        },
+        {
+          "id": 140364614884,
+          "name": "publish",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665782/job/140364614884"
+        }
+      ]
+    },
+    {
+      "id": 45956665723,
+      "name": "Documentation (acceptance-netlify-hosted.yml)",
+      "head_sha": "24784c90e0cf429927df3d4aa2eff5461ec5428d",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665723",
+      "created_at": "2026-11-27T07:10:41Z",
+      "updated_at": "2026-11-27T07:11:02Z",
+      "jobs": [
+        {
+          "id": 140364613126,
+          "name": "verify",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665723/job/140364613126"
+        },
+        {
+          "id": 140364615147,
+          "name": "publish",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665723/job/140364615147"
+        }
+      ]
+    },
+    {
+      "id": 45956665761,
+      "name": "Documentation (acceptance-netlify-portable.yml)",
+      "head_sha": "24784c90e0cf429927df3d4aa2eff5461ec5428d",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665761",
+      "created_at": "2026-11-27T07:10:41Z",
+      "updated_at": "2026-11-27T07:10:49Z",
+      "jobs": [
+        {
+          "id": 140364613477,
+          "name": "verify",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665761/job/140364613477"
+        },
+        {
+          "id": 140364615534,
+          "name": "publish",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665761/job/140364615534"
+        }
+      ]
+    },
+    {
+      "id": 45956665861,
+      "name": "Documentation (acceptance-hosted.yml)",
+      "head_sha": "24784c90e0cf429927df3d4aa2eff5461ec5428d",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665861",
+      "created_at": "2026-11-27T07:10:41Z",
+      "updated_at": "2026-11-27T07:10:58Z",
+      "jobs": [
+        {
+          "id": 140364613271,
+          "name": "verify",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45956665861/job/140364613271"
+        }
+      ]
+    }
+  ],
+  "versionObservations": [
+    {
+      "name": "portable",
+      "runId": 45956665799,
+      "jobId": 140364613402,
+      "publish": "not-defined",
+      "installedRc24": true,
+      "excerpts": [
+        "2026-11-27T07:10:47.7902079Z zel 0.2.0-rc.24"
+      ]
+    },
+    {
+      "name": "hosted",
+      "runId": 45956665861,
+      "jobId": 140364613271,
+      "publish": "not-defined",
+      "installedRc24": true,
+      "excerpts": [
+        "2026-11-27T07:10:48.5312518Z zel 0.2.0-rc.24",
+        "2026-11-27T07:10:52.0085674Z   Engine   cached rich renderer 0.2.0-rc.24",
+        "2026-11-27T07:10:56.3355084Z [zellij] Rich static export: 3 routes \u2192 /home/runner/work/_temp/.zel-build-6Lwbvk/site"
+      ]
+    },
+    {
+      "name": "static",
+      "runId": 45956665776,
+      "jobId": 140364613568,
+      "publish": "skipped",
+      "installedRc24": true,
+      "excerpts": [
+        "2026-11-27T07:10:47.3832187Z zel 0.2.0-rc.24"
+      ]
+    },
+    {
+      "name": "next",
+      "runId": 45956665782,
+      "jobId": 140364613398,
+      "publish": "skipped",
+      "installedRc24": true,
+      "excerpts": [
+        "2026-11-27T07:10:50.5219657Z zel 0.2.0-rc.24"
+      ]
+    },
+    {
+      "name": "netlify-portable",
+      "runId": 45956665761,
+      "jobId": 140364613477,
+      "publish": "skipped",
+      "installedRc24": true,
+      "excerpts": [
+        "2026-11-27T07:10:47.4607525Z zel 0.2.0-rc.24"
+      ]
+    },
+    {
+      "name": "netlify-hosted",
+      "runId": 45956665723,
+      "jobId": 140364613126,
+      "publish": "skipped",
+      "installedRc24": true,
+      "excerpts": [
+        "2026-11-27T07:10:52.4647652Z zel 0.2.0-rc.24",
+        "2026-11-27T07:10:54.9463466Z   Engine   cached rich renderer 0.2.0-rc.24",
+        "2026-11-27T07:11:00.1152789Z [zellij] Rich static export: 3 routes \u2192 /home/runner/work/_temp/.zel-build-IGH03B/site"
+      ]
+    }
+  ],
+  "showcase": {
+    "runId": 45956665792,
+    "jobId": 140364614160,
+    "passed": 552,
+    "conditionalSkips": 169,
+    "retryMarkers": 0,
+    "developmentBrowsers": [
+      "chromium",
+      "webkit"
+    ]
+  },
+  "postMergeRuns": [
+    {
+      "id": 45960440498,
+      "name": "Documentation (acceptance-static.yml)",
+      "head_sha": "624bfb387fb0ef652207f366e2b8c054a5e65c3e",
+      "event": "workflow_dispatch",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45960440498",
+      "created_at": "2026-11-27T07:43:37Z",
+      "updated_at": "2026-11-27T07:43:54Z",
+      "jobs": [
+        {
+          "id": 140376750827,
+          "name": "publish",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45960440498/job/140376750827"
+        },
+        {
+          "id": 140376752252,
+          "name": "verify",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45960440498/job/140376752252"
+        }
+      ]
+    },
+    {
+      "id": 45960444256,
+      "name": "Documentation (acceptance-next.yml)",
+      "head_sha": "624bfb387fb0ef652207f366e2b8c054a5e65c3e",
+      "event": "workflow_dispatch",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45960444256",
+      "created_at": "2026-11-27T07:43:39Z",
+      "updated_at": "2026-11-27T07:44:47Z",
+      "jobs": [
+        {
+          "id": 140376762549,
+          "name": "publish",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45960444256/job/140376762549"
+        },
+        {
+          "id": 140376764182,
+          "name": "verify",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/45960444256/job/140376764182"
+        }
+      ]
+    },
+    {
+      "id": 46026610903,
+      "name": "Inspect published images and live providers",
+      "head_sha": "624bfb387fb0ef652207f366e2b8c054a5e65c3e",
+      "event": "workflow_dispatch",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/46026610903",
+      "created_at": "2026-11-27T15:37:51Z",
+      "updated_at": "2026-11-27T15:38:27Z",
+      "jobs": [
+        {
+          "id": 140599525458,
+          "name": "inspect (static)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/46026610903/job/140599525458"
+        },
+        {
+          "id": 140599525647,
+          "name": "inspect (next)",
+          "status": "completed",
+          "conclusion": "success",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/46026610903/job/140599525647"
+        },
+        {
+          "id": 140599527961,
+          "name": "live-providers",
+          "status": "completed",
+          "conclusion": "skipped",
+          "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/46026610903/job/140599527961"
+        }
+      ]
+    }
+  ],
+  "inspectionObservations": [
+    {
+      "kind": "static",
+      "jobId": 140599525458,
+      "lines": [
+        "2026-11-27T15:38:18.7826226Z Inspecting configured publication: ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.24",
+        "2026-11-27T15:38:23.5467426Z portable: published pages, linked assets and source-file isolation passed at http://127.0.0.1:32768/",
+        "2026-11-27T15:38:23.5469336Z ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.24: fresh pull and HTTP acceptance passed (ghcr.io/mylife-inc/zellij/acceptance-static@sha256:9c013347387226d1c08697f03609b597716955a2e1f415cdd5b3127f8a2f6eb4)"
+      ],
+      "versionMatched": true,
+      "passed": true
+    },
+    {
+      "kind": "next",
+      "jobId": 140599525647,
+      "lines": [
+        "2026-11-27T15:38:01.0008458Z Inspecting configured publication: ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.24",
+        "2026-11-27T15:38:08.1029621Z portable: published pages, linked assets and source-file isolation passed at http://127.0.0.1:32768/",
+        "2026-11-27T15:38:08.1032599Z ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.24: fresh pull and HTTP acceptance passed (ghcr.io/mylife-inc/zellij/acceptance-next@sha256:8aade9c99c068fd409c51a31cfb3e316527707a3bffc459dda5c128371bca222)"
+      ],
+      "versionMatched": true,
+      "passed": true
+    }
+  ],
+  "publicImages": [
+    {
+      "image": "ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.24",
+      "checkedAt": "2026-11-27T15:38:02.383Z",
+      "anonymousAccess": true,
+      "tagDigest": "sha256:9c013347387226d1c08697f03609b597716955a2e1f415cdd5b3127f8a2f6eb4",
+      "manifestDigest": "sha256:41c92fb6ecf30f6f0b89a107d21f480d51c58f57fb7c0cb6ce3c58d94957017e",
+      "architecture": "amd64",
+      "os": "linux",
+      "user": "nginx",
+      "compressedLayerBytes": 7290374,
+      "layerCount": 1
+    },
+    {
+      "image": "ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.24",
+      "checkedAt": "2026-11-27T15:38:03.060Z",
+      "anonymousAccess": true,
+      "tagDigest": "sha256:8aade9c99c068fd409c51a31cfb3e316527707a3bffc459dda5c128371bca222",
+      "manifestDigest": "sha256:c64541f337497723db71dc5627cb453a255590236370c94e2cfad5a606d5768c",
+      "architecture": "amd64",
+      "os": "linux",
+      "user": "nextjs",
+      "compressedLayerBytes": 79262259,
+      "layerCount": 7
+    }
+  ],
+  "limits": [
+    "Published acceptance images and fresh-pull checks target Linux amd64; separate source CI covers amd64/arm64 image builds.",
+    "Compressed image sizes are layer-byte totals, not installed sizes or registry storage savings.",
+    "No live provider was deployed. Both Netlify PR verification jobs built only; the inspector live-providers job was skipped.",
+    "Fly, S3, Vercel and combined live-provider workflows retain rc.19 engine pins. Rc.19 releases and images remain retained.",
+    "No new native release, channel update, production documentation deployment or retirement occurred.",
+    "Duplicate automatic main CI/base-image builds were skipped after exact qualified-tree equivalence. They are not counted as passing runs.",
+    "Historical browser timing findings and the PDF Wasm mitigation remain separate; no zero-bug claim."
+  ],
+  "publicationObservations": [
+    {
+      "jobId": 140376750827,
+      "installedRc24": true,
+      "lines": [
+        "2026-11-27T07:43:44.5969190Z zel 0.2.0-rc.24",
+        "2026-11-27T07:43:51.7570459Z 0.2.0-rc.24: digest: sha256:9c013347387226d1c08697f03609b597716955a2e1f415cdd5b3127f8a2f6eb4 size: 855"
+      ]
+    },
+    {
+      "jobId": 140376762549,
+      "installedRc24": true,
+      "lines": [
+        "2026-11-27T07:43:47.0235652Z zel 0.2.0-rc.24",
+        "2026-11-27T07:44:44.7848251Z 0.2.0-rc.24: digest: sha256:8aade9c99c068fd409c51a31cfb3e316527707a3bffc459dda5c128371bca222 size: 856"
+      ]
+    }
+  ]
+}

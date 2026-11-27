@@ -81,3 +81,9 @@ captured browser errors. Main image run `45806880747` passes all 13 jobs.
 These completed receipts supersede this record's earlier pre-merge checkpoint.
 Historical browser timing findings and deferred provider/catalog verification
 remain separate; this record does not claim stable 1.0 or zero bugs.
+
+Follow-up, 27 November: [generated delivery acceptance](zellij-rc24-delivery-acceptance-2026-11-26.md)
+now selects rc.24 throughout its six workflows and hash-bound inspector targets.
+PR #267 passes all six verification workflows and 37 CI jobs; both manual image
+publications and fresh pulls pass. Anonymous registry reads match the digests.
+This adds acceptance evidence, not another native release or live-provider run.
