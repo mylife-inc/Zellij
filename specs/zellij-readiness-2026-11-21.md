@@ -98,7 +98,7 @@ full browser run passes 552 cases without failures or retries (169 conditional
 skips). PR #229 is merged; production documentation and main images are updated. The correction now ships in the rc.17 renderer and matching images. See the [implementation record](zellij-overflow-focus-2026-11-21.md).
 
 Two historical browser timing findings remain unexplained: WebKit navigation
-overflow after resize and one documentation hydration-readiness timeout.
+overflow after resize and a documentation hydration-readiness timeout.
 Bounded repetitions passed, and failure diagnostics were added; passing later
 runs alone does not establish a root cause or resolve them. See the
 [investigation](zellij-browser-timing-investigation-2026-11-13.md). Investigate
@@ -110,6 +110,15 @@ timeout. The retained capture has no browser errors and cannot distinguish
 unresponsive evaluation from stalled scheduling. Diagnostic follow-up `bfb450b`
 now retains immediate state independently of page timers and timestamps requests.
 Its regressions pass; the original timing finding remains unresolved.
+The [27 November review](zellij-browser-timing-review-2026-11-27.md) also finds
+two resize recurrences on 22–23 November UTC that passed on retry. Their saved
+traces distinguish delayed/stalled frames from an unresponsive JavaScript
+context, but do not establish the cause. Counts of successful jobs must retain
+these flaky first attempts; neither finding is closed.
+CI now retains structured Playwright outcomes and exposes retries and runner
+errors in its summary (`d63f491` / `6264495`, qualified by `46065076326`).
+The new 120 isolated and 500 full-group trials all pass without reproducing the
+stall. They provide no root-cause fix; both findings remain open.
 
 Released rc.19 retains registry/file ownership detection before self-upgrade,
 verified x64/ARM64 portable manifests and native install/upgrade/uninstall

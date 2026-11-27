@@ -162,3 +162,16 @@ documentation regressions continue to check rejection of browser/hydration error
 acceptance of hosting annotations and capture of missing client hydration. These
 are diagnostic improvements, not evidence that the original timing failure is
 fixed.
+
+
+## Follow-up — 27 November 2026
+
+A broader [CI log/trace review](zellij-browser-timing-review-2026-11-27.md)
+finds two previously unrecorded WebKit overflow recurrences, in `45085352094`
+and `45133775474`. Both Showcase jobs passed only after retry. One trace shows
+a wide frame arriving at the assertion deadline; the other retains a responsive
+DOM and timer but no animation callbacks and a stale More menu. These findings
+supersede any inference that successful job status means no recurrence; the
+original records and separate focus fixes remain intact. No further hydration
+timeout was found in the review's bounded ordinary-CI scope. Both original
+findings remain unresolved.
