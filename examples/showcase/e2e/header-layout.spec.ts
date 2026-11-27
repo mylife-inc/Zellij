@@ -2,17 +2,6 @@ import { test, expect, type Page } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 import { browserFailureState } from '../../../scripts/browser-failure-state.mjs';
 
-// Investigation only: compare the unchanged Escape behavior with cancellation
-// of its native default, retaining application propagation and all assertions.
-test.beforeEach(async ({ page }) => {
-  if (process.env['ZELLIJ_ESCAPE_CONTROL'] !== 'prevent-default') return;
-  await page.addInitScript(() => {
-    document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') event.preventDefault();
-    }, true);
-  });
-});
-
 test.afterEach(async ({ page }, info) => {
   if (info.status === info.expectedStatus) return;
   try {

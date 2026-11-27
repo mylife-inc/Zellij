@@ -5,14 +5,10 @@ on:
 permissions:
   contents: read
 jobs:
-  compare:
-    name: WebKit Escape (${{ matrix.escape }})
+  header-sequence:
+    name: WebKit full header sequence
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      matrix:
-        escape: [original, prevent-default]
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -23,19 +19,18 @@ jobs:
       - run: npm run build --workspace @shebka/zellij
       - run: npm run build --workspace @shebka/zellij-showcase
       - run: npx playwright install --with-deps webkit
-      - name: Compare Escape behavior without retries or frame wrappers
+      - name: Repeat the full header group with normal browser reuse and no retries
         working-directory: examples/showcase
         env:
-          ZELLIJ_ESCAPE_CONTROL: ${{ matrix.escape }}
           DEBUG: pw:browser
           PLAYWRIGHT_JSON_OUTPUT_FILE: timing-results/results.json
         run: |
           mkdir -p timing-results
-          npx playwright test e2e/header-layout.spec.ts --grep 'moves trailing links' --project desktop-safari --repeat-each 60 --workers 2 --retries 0 --reporter line,json 2>&1 | tee timing-results/browser.log
+          npx playwright test e2e/header-layout.spec.ts --project desktop-safari --repeat-each 20 --workers 2 --retries 0 --reporter line,json 2>&1 | tee timing-results/browser.log
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: resize-${{ matrix.escape }}
+          name: resize-header-sequence
           path: |
             examples/showcase/timing-results/
             examples/showcase/test-results/
