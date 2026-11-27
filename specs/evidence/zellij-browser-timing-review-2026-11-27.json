@@ -1,0 +1,5248 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-27",
+  "repository": "mylife-inc/Zellij",
+  "sourceBaseline": "88d57b2e1554e823d1209b2a2abf49055710aac9",
+  "status": "Both historical timing findings remain unresolved. These two resize recurrences passed on retry; no root cause is established.",
+  "review": {
+    "workflow": "CI",
+    "query": "created:>=2026-11-22",
+    "firstRunCreatedAt": "2026-11-22T04:02:00Z",
+    "lastRunCreatedAt": "2026-11-27T07:10:41Z",
+    "runCount": 98,
+    "conclusions": {
+      "success": 48,
+      "cancelled": 44,
+      "failure": 6
+    },
+    "attemptInventories": 108,
+    "browserLogs": 89,
+    "selection": "Review all latest CI attempts plus earlier attempts for nonpassing or retried runs. Read all Showcase logs that reached Playwright (including success/cancellation); read non-success Engine logs reaching documentation browser checks. Inspect steps for all Engine jobs.",
+    "limitations": [
+      "CI workflow only; separate documentation/release/provider workflows are outside this review.",
+      "Passing Engine jobs were inspected by step conclusion, not their complete logs.",
+      "Cancelled jobs can lack a final test result.",
+      "Log parsing and saved trace frames do not identify the native browser cause."
+    ],
+    "runs": [
+      {
+        "id": 45956665792,
+        "head_sha": "24784c90e0cf429927df3d4aa2eff5461ec5428d",
+        "created_at": "2026-11-27T07:10:41Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45934928276,
+        "head_sha": "5096ec1b0c7d7c3bb18b135044dc5a6abe03c28d",
+        "created_at": "2026-11-27T03:34:11Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45923597757,
+        "head_sha": "ff78154fcf0ca7f21ce91344b9821e73a81c86cf",
+        "created_at": "2026-11-27T01:37:16Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45894196729,
+        "head_sha": "c1d0a2cb3196449f8de3b900ec0a677a3911cfd0",
+        "created_at": "2026-11-26T20:52:48Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45806880688,
+        "head_sha": "c583efbaa515b2454d683b845baf137dbfaedddc",
+        "created_at": "2026-11-26T11:02:26Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45802055700,
+        "head_sha": "b6df903bc07042042ffa5da35bce52635679b904",
+        "created_at": "2026-11-26T10:31:00Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45791394937,
+        "head_sha": "2c3b7daa3be5b0f218b4584a8074e77b4f25d848",
+        "created_at": "2026-11-26T09:22:41Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45786080712,
+        "head_sha": "a3933b62b6cb382a2c21b769db8b6674db335211",
+        "created_at": "2026-11-26T08:47:00Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45778612146,
+        "head_sha": "288913cb74b9b9fb42207d72ffa7e520edd27cda",
+        "created_at": "2026-11-26T07:52:48Z",
+        "run_attempt": 2,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45773987959,
+        "head_sha": "120cea98b2a9c8b296233134a145494c174ff174",
+        "created_at": "2026-11-26T07:15:36Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45769701271,
+        "head_sha": "54251255d05038e8525c7e1a9c170365b3bde1bc",
+        "created_at": "2026-11-26T06:39:28Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45764485508,
+        "head_sha": "85cea58c88eca5f93b5d3c64b1932ff1153c5b84",
+        "created_at": "2026-11-26T05:53:16Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45760836399,
+        "head_sha": "1e8f437844deee518f89e0c84c732199331f1515",
+        "created_at": "2026-11-26T05:19:28Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45760401460,
+        "head_sha": "37da78fdfe56daea3ef52ddd2dfcd2f9df391be4",
+        "created_at": "2026-11-26T05:15:29Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45759087009,
+        "head_sha": "7d11015e9da1a08f75b51b3254257b8916e4b736",
+        "created_at": "2026-11-26T05:03:32Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45757913726,
+        "head_sha": "d02bcec6542f9f8596b83e8f7791e765aaf74293",
+        "created_at": "2026-11-26T04:52:14Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45756990366,
+        "head_sha": "87be1bac3d7c43ab556a19322ea008332b4fcdb9",
+        "created_at": "2026-11-26T04:43:19Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45755247073,
+        "head_sha": "6b15bd6157b4c0a4d2985667696c8a160d3dd03e",
+        "created_at": "2026-11-26T04:26:48Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45751882986,
+        "head_sha": "f231e11d02f9908d42283de933a086f47e431253",
+        "created_at": "2026-11-26T03:54:51Z",
+        "run_attempt": 1,
+        "conclusion": "failure"
+      },
+      {
+        "id": 45749096647,
+        "head_sha": "e7d6a98786ec2647b0f2e25297d4077c7bec18ea",
+        "created_at": "2026-11-26T03:28:07Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45745470433,
+        "head_sha": "cc193d624e945f99d7aaabe3f9e185e28691afb1",
+        "created_at": "2026-11-26T02:54:16Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45744719684,
+        "head_sha": "3d7ab748b1b986650531c1731232be115f310a20",
+        "created_at": "2026-11-26T02:47:14Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45720791571,
+        "head_sha": "0d7e3a11dd8610fc7be8672cab2be5df1d2626f2",
+        "created_at": "2026-11-25T23:21:57Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45717207977,
+        "head_sha": "e6b11b7bf4670d8b9bba2c10d9d38bd93463945a",
+        "created_at": "2026-11-25T22:55:07Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45707147021,
+        "head_sha": "cd7608e5521fafd1abde827cc7bcb02950aa9a6b",
+        "created_at": "2026-11-25T21:44:50Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45703096716,
+        "head_sha": "178c8e0aefdaa8b802428143679fb4cef284c41f",
+        "created_at": "2026-11-25T21:18:16Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45688978899,
+        "head_sha": "0adba60f2ea9820a1d6752e82b2c186ccb5ab1b8",
+        "created_at": "2026-11-25T19:49:32Z",
+        "run_attempt": 1,
+        "conclusion": "failure"
+      },
+      {
+        "id": 45682344249,
+        "head_sha": "f00aca63f411d632c484b9c2edb95f3fdbc3074c",
+        "created_at": "2026-11-25T19:09:20Z",
+        "run_attempt": 2,
+        "conclusion": "success"
+      },
+      {
+        "id": 45678848618,
+        "head_sha": "b17f4db950063a79aab5c40f1c68501fec792e95",
+        "created_at": "2026-11-25T18:48:17Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45677798982,
+        "head_sha": "58996634e18b917435c3b799fabd9e7e33cdab99",
+        "created_at": "2026-11-25T18:41:59Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45677019550,
+        "head_sha": "ac69e5cbf3774fd750d91743ff37f60dc3253707",
+        "created_at": "2026-11-25T18:37:16Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45581948158,
+        "head_sha": "b9f23eaa499492d8350ff8ced7c86d67e3c07618",
+        "created_at": "2026-11-25T09:04:33Z",
+        "run_attempt": 2,
+        "conclusion": "success"
+      },
+      {
+        "id": 45577816156,
+        "head_sha": "539d6b13a6653f94b411e0622239ab9649396835",
+        "created_at": "2026-11-25T08:36:46Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45576632463,
+        "head_sha": "757cbba27ec594c97ba7bd7721ef405a1373618a",
+        "created_at": "2026-11-25T08:28:52Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45564988471,
+        "head_sha": "65249fa7b685879538bfcc4719414e90d15b176e",
+        "created_at": "2026-11-25T07:01:56Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45561362507,
+        "head_sha": "0396005fb55fd30d05a0ed28fc8b98471134c991",
+        "created_at": "2026-11-25T06:32:30Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45561220810,
+        "head_sha": "db34745f6cb66b36a1b97630d17b6bff2d1df878",
+        "created_at": "2026-11-25T06:31:20Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45561063945,
+        "head_sha": "c6ca0f76d9bdeafe8ea9bd7374a6ea8c90f67116",
+        "created_at": "2026-11-25T06:30:11Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45552922780,
+        "head_sha": "67a411e0ec69311caa3da9d9a3d7b236e3392d93",
+        "created_at": "2026-11-25T05:20:46Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45548294602,
+        "head_sha": "0d83284051795c108fe4dbceffdaee140c916d34",
+        "created_at": "2026-11-25T04:39:39Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45538460837,
+        "head_sha": "f8578e565bc9507782f42022dcacc331c4c15fa0",
+        "created_at": "2026-11-25T03:13:25Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45535195352,
+        "head_sha": "9498a7552e04d4e45dce6ebb4fd9e321e950edf7",
+        "created_at": "2026-11-25T02:45:18Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45530964794,
+        "head_sha": "013dc78ed8bab4bf2a4428de649aa7bd7f1b2477",
+        "created_at": "2026-11-25T02:09:53Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45530308462,
+        "head_sha": "57119548a68dfeb03891e501bdb2adb543d52cf2",
+        "created_at": "2026-11-25T02:04:23Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45530112930,
+        "head_sha": "83dec90d245fb4a6b9389c5135207fb543aed3a4",
+        "created_at": "2026-11-25T02:02:45Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45529933646,
+        "head_sha": "52fe4ed3de77439c9c2374d71890c34cd3f6925f",
+        "created_at": "2026-11-25T02:01:16Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45498740733,
+        "head_sha": "191a882339727aece2d56c9e0f13b2eb4dca64c5",
+        "created_at": "2026-11-24T22:12:38Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45494370791,
+        "head_sha": "03d0d00cfbea91e0f761a92ddd0ac7397874eee8",
+        "created_at": "2026-11-24T21:45:59Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45493350076,
+        "head_sha": "2f8e5b592068feee8720ee16aefba406a90d9eef",
+        "created_at": "2026-11-24T21:39:48Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45345879289,
+        "head_sha": "9e0b3a5e3dfb05fe70060338d2c5901250605fb8",
+        "created_at": "2026-11-24T07:09:56Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45340856436,
+        "head_sha": "5d8146eae10d9f4517de29597d27ce842c9a34b1",
+        "created_at": "2026-11-24T06:29:43Z",
+        "run_attempt": 2,
+        "conclusion": "success"
+      },
+      {
+        "id": 45340675040,
+        "head_sha": "7a9762423a195a9b174b98dea40434eebb3e3ebd",
+        "created_at": "2026-11-24T06:28:11Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45308679266,
+        "head_sha": "e64e07cb81d764e5ff2a9482f5d4247c27b831d9",
+        "created_at": "2026-11-24T01:56:13Z",
+        "run_attempt": 2,
+        "conclusion": "success"
+      },
+      {
+        "id": 45305132347,
+        "head_sha": "c1d768ab65fa9cfd295239f1e26b6f9d9b97fc4f",
+        "created_at": "2026-11-24T01:27:07Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45304356856,
+        "head_sha": "06e26789e51f51709fc18631929ebc0edecb8772",
+        "created_at": "2026-11-24T01:20:49Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45282777504,
+        "head_sha": "0935d5c1b5b6aa0eaf8ab997e9440810a35aaf95",
+        "created_at": "2026-11-23T22:46:06Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45278436633,
+        "head_sha": "b18ce11d1128eccb6fe546d677f52a9faf6259fc",
+        "created_at": "2026-11-23T22:18:40Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45244541989,
+        "head_sha": "83f3608b99b91d8e2d16d20e651c54982c469bb7",
+        "created_at": "2026-11-23T19:01:34Z",
+        "run_attempt": 2,
+        "conclusion": "failure"
+      },
+      {
+        "id": 45232766939,
+        "head_sha": "bf6445be62fb7d843afc1d2f90fe502a73b9edbf",
+        "created_at": "2026-11-23T17:55:02Z",
+        "run_attempt": 3,
+        "conclusion": "success"
+      },
+      {
+        "id": 45223943954,
+        "head_sha": "fa919f847136addc470d2a2a52b921d08c1767b9",
+        "created_at": "2026-11-23T17:06:20Z",
+        "run_attempt": 2,
+        "conclusion": "success"
+      },
+      {
+        "id": 45217035909,
+        "head_sha": "80ae68a2501255090054cd265961957ebedfe4b2",
+        "created_at": "2026-11-23T16:29:09Z",
+        "run_attempt": 2,
+        "conclusion": "success"
+      },
+      {
+        "id": 45214763075,
+        "head_sha": "81be4186a3ecc6525b671463ca87e7fdfea79cc9",
+        "created_at": "2026-11-23T16:17:10Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45159553137,
+        "head_sha": "7f250821d993b3793e04f7c4856105f7daca7102",
+        "created_at": "2026-11-23T10:49:16Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45155144409,
+        "head_sha": "1364bb3b68b85797057e7e288555a650c9440e0b",
+        "created_at": "2026-11-23T10:20:08Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45142894032,
+        "head_sha": "e7c1d36f408450ce3614bdbbcc2cbe8ffc2e3419",
+        "created_at": "2026-11-23T08:58:09Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45139281706,
+        "head_sha": "aff7d36ded8362239df42b3544a45eb987a551e3",
+        "created_at": "2026-11-23T08:31:15Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45135456493,
+        "head_sha": "adaf01cd139c559e7003bd7bd70a0d52ee50e3e3",
+        "created_at": "2026-11-23T08:02:26Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45133775474,
+        "head_sha": "77a909c6ba6a957751d6796b67f27d1272dafc02",
+        "created_at": "2026-11-23T07:48:22Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45124076067,
+        "head_sha": "0e2db6996b4d39e7e9f706fd40f2ef190cbfb9f2",
+        "created_at": "2026-11-23T06:26:10Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45120456002,
+        "head_sha": "8a24f45537b21c7456903163346cba3b0f060fdd",
+        "created_at": "2026-11-23T05:52:14Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45120142611,
+        "head_sha": "95896c2126f4753bede0c467bf7b05922af74000",
+        "created_at": "2026-11-23T05:49:13Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45119828575,
+        "head_sha": "3a6a11cb51548b0d13734568d4876a84c019ec4f",
+        "created_at": "2026-11-23T05:46:10Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45088661314,
+        "head_sha": "d4b05699f7919f314863c7c1752762133871235a",
+        "created_at": "2026-11-23T00:25:12Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45085476352,
+        "head_sha": "5dfae5392aaa3a637be859dbbecda9d00b700de3",
+        "created_at": "2026-11-22T23:51:20Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45085352094,
+        "head_sha": "d738c6f0200a0295c4c583ed1ab4611249b454b7",
+        "created_at": "2026-11-22T23:49:58Z",
+        "run_attempt": 1,
+        "conclusion": "failure"
+      },
+      {
+        "id": 45083051154,
+        "head_sha": "7ef0da79d658804c4cbe6544bc0e923dacbcc1dc",
+        "created_at": "2026-11-22T23:24:03Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45081234143,
+        "head_sha": "2228b58516dd3681933fe6336e7738b12809d729",
+        "created_at": "2026-11-22T23:04:41Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45081033510,
+        "head_sha": "63914a382435a0693f12cdcdc29b5ac308aa95c2",
+        "created_at": "2026-11-22T23:02:38Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45011754304,
+        "head_sha": "2a3ac72ce34308fd6e614303ebee64a8ba2913b5",
+        "created_at": "2026-11-22T10:18:03Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45011703515,
+        "head_sha": "49a2148433fa0fc39b577818c7632c71382a3f5c",
+        "created_at": "2026-11-22T10:17:24Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45010872276,
+        "head_sha": "9e7c58eb7d6e4d65810ab321c2dfe8744b948f7e",
+        "created_at": "2026-11-22T10:07:27Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45010001388,
+        "head_sha": "9bfbf1cae8377f61a740814f05e519ad2fe33302",
+        "created_at": "2026-11-22T09:56:58Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45007103274,
+        "head_sha": "3d3b4260e41be106aac6be3286961d5d979498d0",
+        "created_at": "2026-11-22T09:20:57Z",
+        "run_attempt": 1,
+        "conclusion": "failure"
+      },
+      {
+        "id": 45004886385,
+        "head_sha": "bedf63eb865250bc2bce689d01694bb5cdb03792",
+        "created_at": "2026-11-22T08:53:11Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 45003811871,
+        "head_sha": "d1ace51c588b7efb60c3f019007bf2ad68272b92",
+        "created_at": "2026-11-22T08:39:14Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 45003586391,
+        "head_sha": "ed5e768f8f2e649dafab37a3b7dab35d5e856181",
+        "created_at": "2026-11-22T08:36:13Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 44993303025,
+        "head_sha": "43894a128311ec798a41fda0d1326daeaba47152",
+        "created_at": "2026-11-22T06:20:49Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 44993009740,
+        "head_sha": "dcf5adc309471847005078c7bed5ec97a30c7fcf",
+        "created_at": "2026-11-22T06:16:53Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 44992644513,
+        "head_sha": "604bab2b24eee2595beecf1fb795c280efb26b01",
+        "created_at": "2026-11-22T06:11:54Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 44991379693,
+        "head_sha": "05007219997a254292b8b4177750e1a4f792168a",
+        "created_at": "2026-11-22T05:54:18Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 44989625362,
+        "head_sha": "faaee97afb21f89723989e4c063ea78c34079e96",
+        "created_at": "2026-11-22T05:29:32Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 44987846589,
+        "head_sha": "15b66254e35e9e1c10c7d13a7daf310d894688c1",
+        "created_at": "2026-11-22T05:05:10Z",
+        "run_attempt": 1,
+        "conclusion": "success"
+      },
+      {
+        "id": 44987721770,
+        "head_sha": "e3bc39ac296ed8c58721a3aa6d1551bff26ccca8",
+        "created_at": "2026-11-22T05:03:29Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 44986540048,
+        "head_sha": "baaf064a25062c9b93842c29ab0d6a71944924f7",
+        "created_at": "2026-11-22T04:46:47Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 44986078465,
+        "head_sha": "b8f59a34f94abb16c0422caee2a2123f1ad0e095",
+        "created_at": "2026-11-22T04:40:24Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 44985792831,
+        "head_sha": "6d5b2390e156b34aefd281a974cbd5bb765ddd6c",
+        "created_at": "2026-11-22T04:36:22Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 44985611928,
+        "head_sha": "464e8fcebdb329512e90aa7c7f7099e9f784f4b9",
+        "created_at": "2026-11-22T04:33:56Z",
+        "run_attempt": 1,
+        "conclusion": "cancelled"
+      },
+      {
+        "id": 44983233993,
+        "head_sha": "e82a58653210acd68a638c7155866e561aebdc3d",
+        "created_at": "2026-11-22T04:02:00Z",
+        "run_attempt": 1,
+        "conclusion": "failure"
+      }
+    ],
+    "inventories": [
+      {
+        "runId": 44983233993,
+        "attempt": 1,
+        "sha256": "ffea5b36e8884156a99c828f1d6243b413347ac1c4de1b72fc959b428b78da83",
+        "browserJobs": [
+          {
+            "id": 137088110423,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137088110541,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 44985611928,
+        "attempt": 1,
+        "sha256": "e0b9dadb3d09b8904c041293eb3935c0a65dcd05c798c0766acab47ae70adaf1",
+        "browserJobs": [
+          {
+            "id": 137095390432,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright test",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 137095390515,
+            "name": "Engine",
+            "conclusion": "failure",
+            "steps": [
+              {
+                "name": "Run node --test scripts/publish-docs.test.mjs scripts/check-print-fonts.test.mjs scripts/retire-release-images.test.mjs scripts/homebrew-formula.test.mjs scripts/scoop-manifest.test.mjs scripts/winget-manifest.test.mjs scripts/release-policy.test.mjs scripts/download-release.test.mjs scripts/check-delivery-http.test.mjs scripts/check-live-providers.test.mjs scripts/check-vercel-live.test.mjs scripts/check-fly-live.test.mjs scripts/check-s3-live.test.mjs scripts/preview-client.test.mjs scripts/browser-failure-state.test.mjs",
+                "conclusion": "failure"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 44985792831,
+        "attempt": 1,
+        "sha256": "9e93eb9b3d251ecf9815a279071e209878b11e31463801ba4057a797aac4b1df",
+        "browserJobs": [
+          {
+            "id": 137096012233,
+            "name": "Engine",
+            "conclusion": "failure",
+            "steps": [
+              {
+                "name": "Run node --test scripts/publish-docs.test.mjs scripts/check-print-fonts.test.mjs scripts/retire-release-images.test.mjs scripts/homebrew-formula.test.mjs scripts/scoop-manifest.test.mjs scripts/winget-manifest.test.mjs scripts/release-policy.test.mjs scripts/download-release.test.mjs scripts/check-delivery-http.test.mjs scripts/check-live-providers.test.mjs scripts/check-vercel-live.test.mjs scripts/check-fly-live.test.mjs scripts/check-s3-live.test.mjs scripts/preview-client.test.mjs scripts/browser-failure-state.test.mjs",
+                "conclusion": "failure"
+              }
+            ]
+          },
+          {
+            "id": 137096012431,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright test",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 44986078465,
+        "attempt": 1,
+        "sha256": "03bc84f6d327acf57647e6b814118bb623b42c382502a63dde22558d80bfa9d1",
+        "browserJobs": [
+          {
+            "id": 137096895689,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright test",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 137096895703,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 44986540048,
+        "attempt": 1,
+        "sha256": "57c081dabde783fd083931ce1d3742562eb1495412011c0ec56262acf0aaf173",
+        "browserJobs": [
+          {
+            "id": 137098302362,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137098302402,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 44987721770,
+        "attempt": 1,
+        "sha256": "91d33803aaea45a3f05855ca1dac5f84675c245f6c398e5d337bac33b450b3b8",
+        "browserJobs": [
+          {
+            "id": 137101886844,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright install --with-deps chromium webkit",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 137101887059,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Build documentation with the preserved authored images",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 44987846589,
+        "attempt": 1,
+        "sha256": "592983f85f6759a983ce55dfb5f064b8dcddc8ae4327c9742152bfa0a96c58c9",
+        "browserJobs": [
+          {
+            "id": 137102296187,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137102296188,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 44989625362,
+        "attempt": 1,
+        "sha256": "e31b5b67ab7dcf550af3c3ff0fc8cc472dd4014df526fa112b85f5f0297ad1b7",
+        "browserJobs": [
+          {
+            "id": 137107639955,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npm run typecheck",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 137107640137,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npm run build --workspace @shebka/zellij",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 44991379693,
+        "attempt": 1,
+        "sha256": "9662547800df82c911550dfbfc61f398afb9336f4bfa74dfaa783a1e64794762",
+        "browserJobs": [
+          {
+            "id": 137112965769,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright install --with-deps chromium --only-shell",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 137112965844,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 44992644513,
+        "attempt": 1,
+        "sha256": "a1d7776b9be86346ede3b0fbb62397f186bc2e3c17b484bae915b8eab38027dd",
+        "browserJobs": [
+          {
+            "id": 137116851935,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npm run typecheck",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 137116851999,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npm run build --workspace @shebka/zellij",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 44993009740,
+        "attempt": 1,
+        "sha256": "6949c8daf8210b7eb0f8a8e5cd226cff5e524e10463d9b99f556f281621aeae8",
+        "browserJobs": [
+          {
+            "id": 137117983108,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright install --with-deps chromium webkit",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 137117983124,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npm run typecheck",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 44993303025,
+        "attempt": 1,
+        "sha256": "e46ecdd19f6557d06682eae753e74790608a282dc7548052d347d136fe068947",
+        "browserJobs": [
+          {
+            "id": 137118885836,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npm run typecheck",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 137118886081,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npm run build --workspace @shebka/zellij",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45003586391,
+        "attempt": 1,
+        "sha256": "63eeb17b2771dcf2c7096785d66c87df058922aea8b3ffd1b2691f24a743cb91",
+        "browserJobs": [
+          {
+            "id": 137150176217,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Documentation tolerates head annotations and rejects hydration and runtime errors",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 137150176453,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright test",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45003811871,
+        "attempt": 1,
+        "sha256": "7360aa2932efa4306b468d6ea9889b8fff2e10249ad8a909aaad771c4779e3ed",
+        "browserJobs": [
+          {
+            "id": 137150962595,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137150962885,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45004886385,
+        "attempt": 1,
+        "sha256": "55a2466516168f367c8dd876c9b683f1a965545ff2a1ed509c7db3cede3b875f",
+        "browserJobs": [
+          {
+            "id": 137154194297,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137154194393,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45007103274,
+        "attempt": 1,
+        "sha256": "62cf54389126eeda61e4da4f3394d7d8f7a652fea633814092c9c93979c0d67d",
+        "browserJobs": [
+          {
+            "id": 137161009186,
+            "name": "Engine",
+            "conclusion": "failure",
+            "steps": [
+              {
+                "name": "Documentation tolerates head annotations and rejects hydration and runtime errors",
+                "conclusion": "failure"
+              }
+            ]
+          },
+          {
+            "id": 137161009306,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45010001388,
+        "attempt": 1,
+        "sha256": "78312585d620b70685f31337ff22e5cf5270c9f961748f2bb24d9c4804c2b044",
+        "browserJobs": [
+          {
+            "id": 137170016527,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137170016698,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45010872276,
+        "attempt": 1,
+        "sha256": "b2fedfc424748c261deeedcfcc692c3a5f087f4ddb7213557aecde757b4c695c",
+        "browserJobs": [
+          {
+            "id": 137172695847,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright test",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 137172696015,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45011703515,
+        "attempt": 1,
+        "sha256": "6cb85889d6d7dcc18f3e2f97c88b07a951975106b9e6a2c9f1dbe91f455e49b8",
+        "browserJobs": [
+          {
+            "id": 137175233036,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137175233334,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45011754304,
+        "attempt": 1,
+        "sha256": "1bebaf048409b85791f9aa18e9a20e6088fafdbb015d277ba3b5a42aa5ae0971",
+        "browserJobs": [
+          {
+            "id": 137175481254,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137175481565,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45081033510,
+        "attempt": 1,
+        "sha256": "9f6786237aac9ae31622b06f72b00692f4b3dbe574e414d6a8f49f326637f41b",
+        "browserJobs": [
+          {
+            "id": 137389023212,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npm run build",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 137389023255,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Build documentation with the preserved authored images",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45081234143,
+        "attempt": 1,
+        "sha256": "b1c433db9871ab28dfbe0c79fd4c5a5ea67f2721c063477cb1937156337bf126",
+        "browserJobs": [
+          {
+            "id": 137389728117,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137389728541,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45083051154,
+        "attempt": 1,
+        "sha256": "392cceb676a80a30fadf3a2f143c52f4e25ba0f622387c32015ef68ca99bff4c",
+        "browserJobs": [
+          {
+            "id": 137395360744,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137395361073,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45085352094,
+        "attempt": 1,
+        "sha256": "e541fa186c7655750545865526ef7f421a7145d3fc7e0d8f1672cd9d5faa06dd",
+        "browserJobs": [
+          {
+            "id": 137402593006,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137402593071,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45085476352,
+        "attempt": 1,
+        "sha256": "7100b4f00c9cf1616b8dc531c54f2d314a57e30fcc83d3470ddfa9e00530969f",
+        "browserJobs": [
+          {
+            "id": 137402978028,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137402978117,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45088661314,
+        "attempt": 1,
+        "sha256": "dd7dab1ce27e50ee5926fba3afb0876f18c09ecbd2fd49724f8efd6018df41a3",
+        "browserJobs": [
+          {
+            "id": 137412963475,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137412963481,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45119828575,
+        "attempt": 1,
+        "sha256": "53dfa68d17131389b56742fb7883a07c35b7660fe7954cf88b97f791bd4e6ce3",
+        "browserJobs": [
+          {
+            "id": 137510811604,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright test",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 137510811622,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Published documentation routes, bookmarks, assets and search survive",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45120142611,
+        "attempt": 1,
+        "sha256": "b61cc5f501fe7a94cbf7225c1854649bb6684bbf36adbaafea5a2628c4149870",
+        "browserJobs": [
+          {
+            "id": 137511911865,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": []
+          },
+          {
+            "id": 137511911891,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45120456002,
+        "attempt": 1,
+        "sha256": "2b4e662ef740385dc183d3e48d7ebc1ab2b68b4bbeeb91fa382f18027a6f0054",
+        "browserJobs": [
+          {
+            "id": 137512876127,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137512876156,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45124076067,
+        "attempt": 1,
+        "sha256": "8dfe40865a489d208b80e341b907b851baa8f30c11f04bc7d36c792b9392347b",
+        "browserJobs": [
+          {
+            "id": 137524283721,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137524283799,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45133775474,
+        "attempt": 1,
+        "sha256": "bb6d302d80ffa6bc5ee10f1b3b3319029191f4007bec9a05efc8cb2358d88d01",
+        "browserJobs": [
+          {
+            "id": 137555053722,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137555053983,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45135456493,
+        "attempt": 1,
+        "sha256": "b89c535d5c3b3aa2df191a5219df39d4086a037138f5da3c63274170141e8dc1",
+        "browserJobs": [
+          {
+            "id": 137560662269,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137560662617,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45139281706,
+        "attempt": 1,
+        "sha256": "86a3b90b6211c26b233e7ba3863b4f01b96ed267f2b1ed55db6423b7ef193007",
+        "browserJobs": [
+          {
+            "id": 137572981048,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137572981062,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45142894032,
+        "attempt": 1,
+        "sha256": "83b74cc132b0ec3d7043542a6d92d508e84c9e88f57d49615cdc15ca109808cb",
+        "browserJobs": [
+          {
+            "id": 137584990352,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137584990374,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45155144409,
+        "attempt": 1,
+        "sha256": "da949871eb1fec995860bf389bf47fd94fd02ec31b1ff6275999dbe21386a8d8",
+        "browserJobs": [
+          {
+            "id": 137626063084,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137626063781,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45159553137,
+        "attempt": 1,
+        "sha256": "9d95b89d338471a7e900b43753a614b7a750a8750d7f1001259d7b17e3c4bc98",
+        "browserJobs": [
+          {
+            "id": 137641101728,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137641101760,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45214763075,
+        "attempt": 1,
+        "sha256": "4dcbd12dfa830dc72298412b8e916658a78d1bfa21fb9654b2559476778f870a",
+        "browserJobs": [
+          {
+            "id": 137832801766,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137832802736,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45217035909,
+        "attempt": 1,
+        "sha256": "27e929dc4283bf42499782fcdc39f30db4848cbe151a857a113b940b3ddb5dc9",
+        "browserJobs": [
+          {
+            "id": 137841050992,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137841051285,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45217035909,
+        "attempt": 2,
+        "sha256": "00caf198b357e739cdfe5a5e780587881dd21421024830a29ef0a4e21225f465",
+        "browserJobs": [
+          {
+            "id": 137856927205,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137856955918,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45223943954,
+        "attempt": 1,
+        "sha256": "cdfad837426238532704bc6b1db1616fccbfe73627ac5932984d01937708bb61",
+        "browserJobs": [
+          {
+            "id": 137865287324,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137865287434,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45223943954,
+        "attempt": 2,
+        "sha256": "6f6f356c8c54495ccec01fc316f15219b078347c10b07b5df44fd56abf5a1afa",
+        "browserJobs": [
+          {
+            "id": 137885973808,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137885983809,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45232766939,
+        "attempt": 1,
+        "sha256": "2bb19792eaaf743fd387f6c9217d6c8f4747ae3799832f9725ae70a8d9b73bc2",
+        "browserJobs": [
+          {
+            "id": 137896427245,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Content-owned deployment prefix works in a production browser",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 137896427400,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45232766939,
+        "attempt": 2,
+        "sha256": "d8fb7664ff17fc0815aea167f41e6a16730e8cb105bd21958b6c79ca5846c7c7",
+        "browserJobs": [
+          {
+            "id": 137913661242,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137913750720,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45232766939,
+        "attempt": 3,
+        "sha256": "2f86dabed1d922077bc2750e4c4ac35592e7ff0a387f9272d63d86e573643609",
+        "browserJobs": [
+          {
+            "id": 137936257774,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137936291007,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45244541989,
+        "attempt": 1,
+        "sha256": "d8ea9866c48b0b6b43a5677919e29f3fca9f52c89ceb44a67912c927f3e89dea",
+        "browserJobs": [
+          {
+            "id": 137937731009,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 137937732002,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45244541989,
+        "attempt": 2,
+        "sha256": "cc5b30ab43d5e6cb320ece54f9f562cad391725bf8e8ca488e688393bfe30f71",
+        "browserJobs": [
+          {
+            "id": 138044371228,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 138044423857,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45278436633,
+        "attempt": 1,
+        "sha256": "4671e7f538b6fdcd1665ba9afd191164442a36075d17e2dd0f128bd48136a058",
+        "browserJobs": [
+          {
+            "id": 138056228539,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 138056228971,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45282777504,
+        "attempt": 1,
+        "sha256": "45fd318826fa3c4e6aad80a8e3676d23daa65a2a92b85c6d5855cdf83dc05f4c",
+        "browserJobs": [
+          {
+            "id": 138071250526,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 138071250562,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45304356856,
+        "attempt": 1,
+        "sha256": "0c2da5d01ca1c280e598ea104520a50160fdbfd36327d2544282cb6fa14edc9c",
+        "browserJobs": [
+          {
+            "id": 138144409700,
+            "name": "Engine",
+            "conclusion": "failure",
+            "steps": [
+              {
+                "name": "Run npm test",
+                "conclusion": "failure"
+              }
+            ]
+          },
+          {
+            "id": 138144410150,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright test",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45305132347,
+        "attempt": 1,
+        "sha256": "9b832032f5c75e4078f364c04e1d30b66ed3d4f3f5ffd4a82b5b1c62e0199538",
+        "browserJobs": [
+          {
+            "id": 138147149730,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 138147149842,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45308679266,
+        "attempt": 1,
+        "sha256": "948c1e98ef8f1feac092a409eb9217b577785fbdbbe93f9958d6d31482cc4870",
+        "browserJobs": [
+          {
+            "id": 138158666951,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 138158667098,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45308679266,
+        "attempt": 2,
+        "sha256": "3bcdecf00404af27bc049cbd1b7f91eee368004968acf1d86bc08ad4acd5ebd3",
+        "browserJobs": [
+          {
+            "id": 138256440620,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 138256490384,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45340675040,
+        "attempt": 1,
+        "sha256": "d4f52db3fdbbb91302d1b64ecdba2c358b55ef46891fd7d4ba7f9f9c444c2c05",
+        "browserJobs": [
+          {
+            "id": 138263312389,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Build documentation with the preserved authored images",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 138263312835,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright install --with-deps chromium webkit",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45340856436,
+        "attempt": 1,
+        "sha256": "7dbd0a4678242db70cc4cacfbd253c4ed87310761b22e0173796c1f1df0a150d",
+        "browserJobs": [
+          {
+            "id": 138264043985,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 138264044376,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright install --with-deps chromium webkit",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45340856436,
+        "attempt": 2,
+        "sha256": "05f327669d7a1dbe52e04337d4950b58089ab8689066f45382c215cb222f113c",
+        "browserJobs": [
+          {
+            "id": 138275456474,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 138275518063,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45345879289,
+        "attempt": 1,
+        "sha256": "a905f54ecb5b4d4ae56440352dbd0f439549e5c651ccd82596ce52dbb4d42f54",
+        "browserJobs": [
+          {
+            "id": 138280180115,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 138280180285,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45493350076,
+        "attempt": 1,
+        "sha256": "8964b755bdd2619470646ebed0d2574f308ca7f4cfb855602e66561c253782ff",
+        "browserJobs": [
+          {
+            "id": 138797234387,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright test",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 138797234446,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45494370791,
+        "attempt": 1,
+        "sha256": "60e1977102ed2750f90b5ef3cec6366cfbcad5012764811b49df9a064d4feab1",
+        "browserJobs": [
+          {
+            "id": 138801002587,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 138801002678,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45498740733,
+        "attempt": 1,
+        "sha256": "5fff148f72801d65cc639322e8f76bbefb19b2662db555f8c61826de85c4ccce",
+        "browserJobs": [
+          {
+            "id": 138816056248,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 138816056255,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45529933646,
+        "attempt": 1,
+        "sha256": "6771af54f952eb4cb92eae4c5e65f1bfdab79b1228b5632f6ea4d1b301b15d6c",
+        "browserJobs": [
+          {
+            "id": 138922416312,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Build documentation with the preserved authored images",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 138922416843,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright install --with-deps chromium webkit",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45530112930,
+        "attempt": 1,
+        "sha256": "a037377cc2e7405532015ee59dc1e902922617bbd2ff3599acf96f02a2fc04d9",
+        "browserJobs": [
+          {
+            "id": 138923172650,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npm test",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 138923172712,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npm ci",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45530308462,
+        "attempt": 1,
+        "sha256": "774e1ea340a2109dc0569ea761441681584af81081f0da3207ea210e459f3582",
+        "browserJobs": [
+          {
+            "id": 138923783703,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 138923783709,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright test",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45530964794,
+        "attempt": 1,
+        "sha256": "6bbf46a2388a2adbc7108d52b1cd8b566f8b42ee38a1906f8a72afb4578cd992",
+        "browserJobs": [
+          {
+            "id": 138926000600,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 138926000901,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45535195352,
+        "attempt": 1,
+        "sha256": "f53eb2eca4b11c9c09780e6224e1ff021b0aabff98145a0c11c209d516a01507",
+        "browserJobs": [
+          {
+            "id": 138939966341,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 138939966527,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45538460837,
+        "attempt": 1,
+        "sha256": "72347f06548701e681f76ae2de5dd4435174179154d040c3995570096c38fc71",
+        "browserJobs": [
+          {
+            "id": 138950797838,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 138950797904,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45548294602,
+        "attempt": 1,
+        "sha256": "51bfb52eba17684e637542723067f628a7995d2a982e606a3bd0fe4f7192d55b",
+        "browserJobs": [
+          {
+            "id": 138983094146,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 138983094156,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45552922780,
+        "attempt": 1,
+        "sha256": "5cdf598bdfc8db2dea1652c7ce02a81995e22e7ed4c9cdba95bb7df0062e5474",
+        "browserJobs": [
+          {
+            "id": 138998053947,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 138998054055,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45561063945,
+        "attempt": 1,
+        "sha256": "0835d908e277ca21edbc0696cc768f24922e9ecb770b3e0cbd3ca664a0c45b8e",
+        "browserJobs": [
+          {
+            "id": 139024641316,
+            "name": "Engine",
+            "conclusion": "failure",
+            "steps": [
+              {
+                "name": "Run node --test scripts/publish-docs.test.mjs scripts/check-print-fonts.test.mjs scripts/retire-release-images.test.mjs scripts/homebrew-formula.test.mjs scripts/scoop-manifest.test.mjs scripts/winget-manifest.test.mjs scripts/release-policy.test.mjs scripts/download-release.test.mjs scripts/check-delivery-http.test.mjs scripts/check-live-providers.test.mjs scripts/check-vercel-live.test.mjs scripts/check-fly-live.test.mjs scripts/check-s3-live.test.mjs scripts/preview-client.test.mjs scripts/browser-failure-state.test.mjs",
+                "conclusion": "failure"
+              }
+            ]
+          },
+          {
+            "id": 139024641917,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright install --with-deps chromium webkit",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45561220810,
+        "attempt": 1,
+        "sha256": "19d484467840fa7000faefd92aa05f6d8dee0f3d2e8b7e0426f378b631057129",
+        "browserJobs": [
+          {
+            "id": 139025241431,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": []
+          },
+          {
+            "id": 139025241487,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45561362507,
+        "attempt": 1,
+        "sha256": "43fd0177f1e6a25883f2052f045416fa49d7e99f40b9feca9164dcb37b92eb53",
+        "browserJobs": [
+          {
+            "id": 139025702120,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139025702241,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45564988471,
+        "attempt": 1,
+        "sha256": "fb29caf4da1ccc724a6cfb0066222a1e8b41c4a4743440a882bd1f7a7243272d",
+        "browserJobs": [
+          {
+            "id": 139037487112,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139037487170,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45576632463,
+        "attempt": 1,
+        "sha256": "9982429b40117bac2951a4747be9b065fb847c783891a49daf7611ed890d1fb2",
+        "browserJobs": [
+          {
+            "id": 139076080033,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139076080829,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Development browsers reload after valid edits and retain pages through invalid edits",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45577816156,
+        "attempt": 1,
+        "sha256": "0efaaa75a00be6e9f7de4fc1540e6363f2a5cf1ef7c71e87c80643805732eb17",
+        "browserJobs": [
+          {
+            "id": 139080172646,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139080172847,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45581948158,
+        "attempt": 1,
+        "sha256": "14d3540a50e2af3de8ab64e768bf53e247bb7c41b47b440266afc2a1f86f5c8f",
+        "browserJobs": [
+          {
+            "id": 139093933979,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139093934398,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45581948158,
+        "attempt": 2,
+        "sha256": "aa177d7e41ff022e3b5687c74aaca61b295a32c1ef0c636fe0568a82da91c7ae",
+        "browserJobs": [
+          {
+            "id": 139414762788,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139414833011,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45677019550,
+        "attempt": 1,
+        "sha256": "8bffbf412897f188be7cdae6ec6c92caf84f02c832b2aa60512a5bc1008f8a4e",
+        "browserJobs": [
+          {
+            "id": 139427136718,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright test",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 139427136849,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45677798982,
+        "attempt": 1,
+        "sha256": "05a754228d01a27db9b8ada66a4485cae7548ba523e1bb1f0962e2b70412e0df",
+        "browserJobs": [
+          {
+            "id": 139430082695,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139430083259,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright test",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45678848618,
+        "attempt": 1,
+        "sha256": "0656bb46efe49869ccb6ec73b23172a80fe6a02fd6b091b4d0c42d5d92dc9341",
+        "browserJobs": [
+          {
+            "id": 139433838116,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139433838268,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45682344249,
+        "attempt": 1,
+        "sha256": "891bdae98d768b0c3233185b32b6cb1e755abc517d7cd34b3a61a07709b3edd0",
+        "browserJobs": [
+          {
+            "id": 139446112081,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139446112855,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45682344249,
+        "attempt": 2,
+        "sha256": "5e4afc61ecb0ed8ee968db2739ca180934f963d3d67b168d7f58fe218ecbe017",
+        "browserJobs": [
+          {
+            "id": 139461882033,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139461902060,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45688978899,
+        "attempt": 1,
+        "sha256": "1e75959a2bb09d4d8c62db7f3c34147a1e7a8273f3c0e483fa3f8fd9cd335100",
+        "browserJobs": [
+          {
+            "id": 139469052882,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139469052920,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45703096716,
+        "attempt": 1,
+        "sha256": "41c91fcd63c99988c7e8473c07feb05d4ccaf5b060b05b0aa98ff93b16d72f14",
+        "browserJobs": [
+          {
+            "id": 139517999290,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139517999298,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45707147021,
+        "attempt": 1,
+        "sha256": "c984267ef55c1c31b0ae73abfaaaf40351d9a807b3ac4bc00e8b904b7eb0976d",
+        "browserJobs": [
+          {
+            "id": 139531925106,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139531925332,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45717207977,
+        "attempt": 1,
+        "sha256": "c8297ee598790991086582bb0f948766904626540cb88cbddf807fa21d9c7440",
+        "browserJobs": [
+          {
+            "id": 139566210106,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139566210418,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45720791571,
+        "attempt": 1,
+        "sha256": "279f0de5569f71f91a60407ee03a5239c652cac4aafd5399579112e90afc7c52",
+        "browserJobs": [
+          {
+            "id": 139578301443,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139578301766,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45744719684,
+        "attempt": 1,
+        "sha256": "ae872c4fcd1b19fc1b4292772ee7a1d97c2993ed30cf3071d329da9758b2b378",
+        "browserJobs": [
+          {
+            "id": 139657879327,
+            "name": "Engine",
+            "conclusion": "failure",
+            "steps": [
+              {
+                "name": "Run node --test scripts/publish-docs.test.mjs scripts/check-print-fonts.test.mjs scripts/retire-release-images.test.mjs scripts/homebrew-formula.test.mjs scripts/scoop-manifest.test.mjs scripts/winget-manifest.test.mjs scripts/release-policy.test.mjs scripts/download-release.test.mjs scripts/check-delivery-http.test.mjs scripts/check-live-providers.test.mjs scripts/check-vercel-live.test.mjs scripts/check-fly-live.test.mjs scripts/check-s3-live.test.mjs scripts/preview-client.test.mjs scripts/browser-failure-state.test.mjs",
+                "conclusion": "failure"
+              }
+            ]
+          },
+          {
+            "id": 139657879364,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright test",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45745470433,
+        "attempt": 1,
+        "sha256": "6d331c56b37eb6c09bb591f82c481b57413e61d656539bdd12fd33016a3c57d2",
+        "browserJobs": [
+          {
+            "id": 139660435028,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139660435425,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45749096647,
+        "attempt": 1,
+        "sha256": "df0330b6381cb0ab82d118a22c3fbbf81643166ef58861560763d7d325c69bd4",
+        "browserJobs": [
+          {
+            "id": 139672335551,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139672335600,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright test",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45751882986,
+        "attempt": 1,
+        "sha256": "5f17963a164c3bc359871656ea14e3ad5da3c2cce0c711dbf2a28935e8488906",
+        "browserJobs": [
+          {
+            "id": 139681355536,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139681355814,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45755247073,
+        "attempt": 1,
+        "sha256": "43c0322ff169f076e53559764f2275350b440a20c5137136cbe1fd036ff7049f",
+        "browserJobs": [
+          {
+            "id": 139692241735,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Optional Next development dependency lock and audit",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 139692241804,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npm run build --workspace @shebka/zellij",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45756990366,
+        "attempt": 1,
+        "sha256": "551cf8fbb8be2493329186a8557b4475b5deb22b59e235a0a13de4f16c038192",
+        "browserJobs": [
+          {
+            "id": 139697828993,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npm run build --workspace @shebka/zellij",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 139697829393,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npm test",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45757913726,
+        "attempt": 1,
+        "sha256": "0edb9915bafc462e430651d31a445f57971915d9cc8deab6a1dee3714b4edafe",
+        "browserJobs": [
+          {
+            "id": 139700812404,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright install --with-deps chromium webkit",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 139700812468,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run actions/setup-node@v7",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45759087009,
+        "attempt": 1,
+        "sha256": "da46438dc813778ee1ee2cbbbfc2ff7a764561ed94a6a07de1fada45b50f26cb",
+        "browserJobs": [
+          {
+            "id": 139704565199,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright install --with-deps chromium webkit",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 139704565379,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45760401460,
+        "attempt": 1,
+        "sha256": "051524ff33bde8223e494fbe1f99ba2a79580197bebd7660943c7c88e5601b45",
+        "browserJobs": [
+          {
+            "id": 139708769803,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139708769926,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright test",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45760836399,
+        "attempt": 1,
+        "sha256": "a25262cfcc7129b1c4e021516b52352d7546cfb4fb1744d0b2f482e86b10e639",
+        "browserJobs": [
+          {
+            "id": 139710286047,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139710286448,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45764485508,
+        "attempt": 1,
+        "sha256": "1dce8894df4e0e8f5f1aa569d48771b511fe3ccb4c028789d2ec9dfba0657e93",
+        "browserJobs": [
+          {
+            "id": 139721990932,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright install --with-deps chromium --only-shell",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 139721991004,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright test",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45769701271,
+        "attempt": 1,
+        "sha256": "da93be4245f6f89ddf93eeec156dbd48827e640d76567e367c0928409d1d7f63",
+        "browserJobs": [
+          {
+            "id": 139739121546,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139739121621,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45773987959,
+        "attempt": 1,
+        "sha256": "e1427172d4bc9010932605c32b929c2ec00e0192705b47899e364c1d20094f5c",
+        "browserJobs": [
+          {
+            "id": 139753090460,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npm run build --workspace @shebka/zellij",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 139753090845,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npm run build",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45778612146,
+        "attempt": 1,
+        "sha256": "ce14a92e64e76d8df64b9266868340dafba09f0f6a641901e3968e183f0ae128",
+        "browserJobs": [
+          {
+            "id": 139768292358,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139768292492,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright test",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45778612146,
+        "attempt": 2,
+        "sha256": "28e0b6b8bfe3ea3a7153c173395bbb5b58d6a5211a21631d5d7bc167f045c76a",
+        "browserJobs": [
+          {
+            "id": 139782380694,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npx playwright test",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 139782384402,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45786080712,
+        "attempt": 1,
+        "sha256": "d0b0bb52193e484681dabeed0363027be2ca97663a4b5c40232397a888ea6731",
+        "browserJobs": [
+          {
+            "id": 139793061288,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139793061405,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45791394937,
+        "attempt": 1,
+        "sha256": "241f4f258be5d50db6792f3975d3edcb641796b7c2d148c47a181fad53f32c18",
+        "browserJobs": [
+          {
+            "id": 139811034432,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Build documentation with the preserved authored images",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 139811034882,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npm run build",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45802055700,
+        "attempt": 1,
+        "sha256": "456260ef95a96c7e22014fceddec3a332d4a3370bb104515c1f0045cbbc83c40",
+        "browserJobs": [
+          {
+            "id": 139847528622,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 139847529175,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45806880688,
+        "attempt": 1,
+        "sha256": "a85ab761952abca1a89b1113d28b9d69c3baec51a256daea3c68c98dc95b9ef3",
+        "browserJobs": [
+          {
+            "id": 139864361831,
+            "name": "Engine",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npm run build --workspace @shebka/zellij",
+                "conclusion": "cancelled"
+              }
+            ]
+          },
+          {
+            "id": 139864362467,
+            "name": "Showcase end to end",
+            "conclusion": "cancelled",
+            "steps": [
+              {
+                "name": "Run npm run build",
+                "conclusion": "cancelled"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "runId": 45894196729,
+        "attempt": 1,
+        "sha256": "656f2d62f5e4f5898d702504ad7cb6a6c7e0b6c26494825aaf1a55770b3fd367",
+        "browserJobs": [
+          {
+            "id": 140163928207,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 140163928269,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45923597757,
+        "attempt": 1,
+        "sha256": "f178fdbf1708d9f93bef8d4ef84fe114e0ffc33d2bb42ee40933137e3925837e",
+        "browserJobs": [
+          {
+            "id": 140259748021,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 140259748138,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45934928276,
+        "attempt": 1,
+        "sha256": "24add8db88b58a9ea5b46d9af8f6302bed89c1ebcb3a261676606b7c32e5d5c1",
+        "browserJobs": [
+          {
+            "id": 140295829776,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 140295829846,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      },
+      {
+        "runId": 45956665792,
+        "attempt": 1,
+        "sha256": "1b9d43f01add475ceeb1f0d45abed2173489db8cefaa3986a1e8e417d0d65285",
+        "browserJobs": [
+          {
+            "id": 140364613777,
+            "name": "Engine",
+            "conclusion": "success",
+            "steps": []
+          },
+          {
+            "id": 140364614160,
+            "name": "Showcase end to end",
+            "conclusion": "success",
+            "steps": []
+          }
+        ]
+      }
+    ],
+    "logs": [
+      {
+        "attemptFile": "run-44983233993-attempt-1.json",
+        "runId": 44983233993,
+        "jobId": 137088110541,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "a6c42d1960cc31a2f831a18c727ccbb17e0f552d3bf0412be265709aa37fa308",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-22T04:10:29.1817696Z   169 skipped",
+          "2026-11-22T04:10:29.1818137Z   552 passed (6.3m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-44985611928-attempt-1.json",
+        "runId": 44985611928,
+        "jobId": 137095390432,
+        "name": "Showcase end to end",
+        "conclusion": "cancelled",
+        "sha256": "9e1b21266210d281984f4d3194f8bf7dade9b45759cf361231fa2d00d9bbd83d",
+        "retryLines": [],
+        "summaries": [],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-44985792831-attempt-1.json",
+        "runId": 44985792831,
+        "jobId": 137096012431,
+        "name": "Showcase end to end",
+        "conclusion": "cancelled",
+        "sha256": "00df3866fb547952b3cdba5024163ae78ec79356210d15fca66435a4a69dcb75",
+        "retryLines": [],
+        "summaries": [],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-44986078465-attempt-1.json",
+        "runId": 44986078465,
+        "jobId": 137096895689,
+        "name": "Showcase end to end",
+        "conclusion": "cancelled",
+        "sha256": "8bda6859342cdc97f11bb4ef2ccd16bdc57ca586170eaf319cda5e65c0c67ab8",
+        "retryLines": [],
+        "summaries": [],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-44986540048-attempt-1.json",
+        "runId": 44986540048,
+        "jobId": 137098302402,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "879e987d71676987f8ca97d41a681551e0309798a13033673dc205f106530810",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-22T04:55:15.4086466Z   169 skipped",
+          "2026-11-22T04:55:15.4086896Z   552 passed (6.3m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-44987846589-attempt-1.json",
+        "runId": 44987846589,
+        "jobId": 137102296188,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "39a10291c8447cbb562f9654fbe367c537134feca7be5c5e5b328d5a72aa2bb1",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-22T05:12:39.3618735Z   169 skipped",
+          "2026-11-22T05:12:39.3619046Z   552 passed (5.3m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45003586391-attempt-1.json",
+        "runId": 45003586391,
+        "jobId": 137150176217,
+        "name": "Engine",
+        "conclusion": "cancelled",
+        "sha256": "33de5b8f1c36d07fe7c8f569c757e7bce4745452b5eb220f0c60a4e767403244",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-22T08:37:21.7967177Z  Test Files  49 passed (49)",
+          "2026-11-22T08:37:21.7969146Z       Tests  546 passed (546)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45003586391-attempt-1.json",
+        "runId": 45003586391,
+        "jobId": 137150176453,
+        "name": "Showcase end to end",
+        "conclusion": "cancelled",
+        "sha256": "c7d5cee9c306c05733d7d1e4ef969127cdab661fb451a4970bd224bb0360d60a",
+        "retryLines": [],
+        "summaries": [],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45003811871-attempt-1.json",
+        "runId": 45003811871,
+        "jobId": 137150962595,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "60a6c5380611f0fcd4cd8603a2ebe57a939090d526b1ef60b9c09f54ade0980e",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-22T08:46:18.1907814Z   169 skipped",
+          "2026-11-22T08:46:18.1908169Z   552 passed (4.6m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45004886385-attempt-1.json",
+        "runId": 45004886385,
+        "jobId": 137154194297,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "076773523c3693ad3ac30b1819ff1e50f0ec158fccc481b76475f7058eeadb94",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-22T09:00:19.1216188Z   169 skipped",
+          "2026-11-22T09:00:19.1216442Z   552 passed (4.7m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45007103274-attempt-1.json",
+        "runId": 45007103274,
+        "jobId": 137161009186,
+        "name": "Engine",
+        "conclusion": "failure",
+        "sha256": "c0d738af3424b51212b28cc6b8bab1f3663681315b4bb3c0328efce69a991e4f",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-22T09:21:58.7753778Z  Test Files  49 passed (49)",
+          "2026-11-22T09:21:58.7763621Z       Tests  546 passed (546)"
+        ],
+        "signals": [
+          "2026-11-22T09:24:38.5007789Z   Error: Documentation hydration readiness failed at http://127.0.0.1:38585/cli/dev#what-it-is-for",
+          "2026-11-22T09:24:38.5009611Z     [cause]: locator.waitFor: Timeout 15000ms exceeded.",
+          "2026-11-22T09:24:38.5021988Z     stderr: `node:internal/modules/run_main:107\\n    triggerUncaughtException(\\n    ^\\n\\nError: Documentation hydration readiness failed at http://127.0.0.1:38585/cli/dev#what-it-is-for\\n    at visit (file:///home/runner/work/Zellij/Zellij/scripts/check-docs-preservation.mjs:72:13)\\n    at async file:///home/runner/work/Zellij/Zellij/scripts/check-docs-preservation.mjs:106:5 {\\n  [cause]: locator.waitFor: Timeout 15000ms exceeded.\\n  Call log:\\n    - waiting for getByRole('button', { name: /^Switch to (light|dark) theme$/ }) to be visible\\n  \\n      at visit (/home/runner/work/Zellij/Zellij/scripts/check-docs-preservation.mjs:70:82)\\n      at async file:///home/runner/work/Zellij/Zellij/scripts/check-docs-preservation.mjs:106:5 {\\n    log: [\\n      \"  - waiting for getByRole('button', { name: /^Switch to (light|dark) theme$/ }) to be visible\"\\n    ],\\n    name: 'TimeoutError'\\n  }\\n}\\n\\nNode.js v24.22.3\\n`"
+        ]
+      },
+      {
+        "attemptFile": "run-45007103274-attempt-1.json",
+        "runId": 45007103274,
+        "jobId": 137161009306,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "6e28838253c7dbcaf0eddcfc547d664ef865432d283868ba8ff1bf29385c0923",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-22T09:29:21.4476476Z   169 skipped",
+          "2026-11-22T09:29:21.4476911Z   552 passed (6.3m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45010001388-attempt-1.json",
+        "runId": 45010001388,
+        "jobId": 137170016527,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "5b786f15fa4a049a33369a7fd5dbe863cd8ef334b7205e3db5de73f9f6dca9ab",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-22T10:03:59.3363584Z   169 skipped",
+          "2026-11-22T10:03:59.3363853Z   552 passed (5.2m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45010872276-attempt-1.json",
+        "runId": 45010872276,
+        "jobId": 137172695847,
+        "name": "Showcase end to end",
+        "conclusion": "cancelled",
+        "sha256": "7b559513645372178cd782f66e68e20c182642d0cef4ff4482b119d5ba927b97",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-22T10:18:10.7696299Z   169 skipped",
+          "2026-11-22T10:18:10.7696608Z   552 passed (6.3m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45011703515-attempt-1.json",
+        "runId": 45011703515,
+        "jobId": 137175233334,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "a741ffc2d32a144eb200f39fc3b2c895eb2f7d7bf7ce7dd962ecf28433e77d98",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-22T10:34:30.9186462Z   169 skipped",
+          "2026-11-22T10:34:30.9187067Z   552 passed (6.6m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45011754304-attempt-1.json",
+        "runId": 45011754304,
+        "jobId": 137175481254,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "2e850079c99a7b442e0ff4eba367e530805befd36ba8d97999406339376323b3",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-22T10:31:21.4021183Z   169 skipped",
+          "2026-11-22T10:31:21.4021512Z   552 passed (5.2m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45081234143-attempt-1.json",
+        "runId": 45081234143,
+        "jobId": 137389728117,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "18bd79206d3a4620b7526ca872bc3803aad613f66010f56aceefd75e683653ba",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-22T23:11:35.2418073Z   169 skipped",
+          "2026-11-22T23:11:35.2418336Z   552 passed (4.6m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45083051154-attempt-1.json",
+        "runId": 45083051154,
+        "jobId": 137395361073,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "e540298a5d6800afc6e34627ec93d610f0c7cc044a8d747a0a8eacc45825c2bf",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-22T23:35:04.7300258Z   169 skipped",
+          "2026-11-22T23:35:04.7300811Z   552 passed (4.9m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45085352094-attempt-1.json",
+        "runId": 45085352094,
+        "jobId": 137402593006,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "9661a86e73702be5b9bd398445b978980d7acef283ca34bbf8dc7febb038ddec",
+        "retryLines": [
+          "2026-11-22T23:54:06.1920650Z [238/721] (retries) [desktop-safari] \u203a e2e/header-layout.spec.ts:120:3 \u203a measured overflow \u203a moves trailing links into More and restores them when space returns (retry #1)"
+        ],
+        "summaries": [
+          "2026-11-22T23:58:27.6523139Z   1 flaky",
+          "2026-11-22T23:58:27.6526343Z   169 skipped",
+          "2026-11-22T23:58:27.6526590Z   551 passed (6.3m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45085476352-attempt-1.json",
+        "runId": 45085476352,
+        "jobId": 137402978117,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "7fbeb43c82364cd990c12c01e66f6325911305afbe67295e5af3cdf349f1b45f",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T00:12:25.4263384Z   169 skipped",
+          "2026-11-23T00:12:25.4263643Z   552 passed (4.7m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45088661314-attempt-1.json",
+        "runId": 45088661314,
+        "jobId": 137412963481,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "30aae0ae21dec8e72cd63df61c8874080a8a3b6ce8b677fdd17aa7f166b0b7d6",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T00:34:01.9751862Z   169 skipped",
+          "2026-11-23T00:34:01.9754875Z   552 passed (5.3m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45119828575-attempt-1.json",
+        "runId": 45119828575,
+        "jobId": 137510811604,
+        "name": "Showcase end to end",
+        "conclusion": "cancelled",
+        "sha256": "607fffd47c8149da9115d76f9561f4b727f911147bd479deb1bdf5c2e81fed40",
+        "retryLines": [],
+        "summaries": [],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45120456002-attempt-1.json",
+        "runId": 45120456002,
+        "jobId": 137512876156,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "0b6118074b7d8b224ed3ba1f689743476ef0018d3f04299889f8dadcaecbb55b",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T06:00:39.8847142Z   169 skipped",
+          "2026-11-23T06:00:39.8847558Z   552 passed (6.3m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45124076067-attempt-1.json",
+        "runId": 45124076067,
+        "jobId": 137524283721,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "8c4eb282bd6b24e817facd0e488276455f3dd5f34e68f4e544f0f567d04407ab",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T06:33:17.3237074Z   169 skipped",
+          "2026-11-23T06:33:17.3237331Z   552 passed (5.2m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45133775474-attempt-1.json",
+        "runId": 45133775474,
+        "jobId": 137555053722,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "8f02f1d1a9eed3782f69d3896dee7c4d18e4dd8cf42bdfe1337a83745a9f99bc",
+        "retryLines": [
+          "2026-11-23T07:53:02.5301259Z [238/721] (retries) [desktop-safari] \u203a e2e/header-layout.spec.ts:120:3 \u203a measured overflow \u203a moves trailing links into More and restores them when space returns (retry #1)"
+        ],
+        "summaries": [
+          "2026-11-23T07:57:32.2133299Z   1 flaky",
+          "2026-11-23T07:57:32.2136322Z   169 skipped",
+          "2026-11-23T07:57:32.2136779Z   551 passed (6.5m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45135456493-attempt-1.json",
+        "runId": 45135456493,
+        "jobId": 137560662617,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "259240d3593dabbcfbd8de1e8e0bc71bd4a83e137ba80c925d89507e3d6eaf8f",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T08:11:19.8811338Z   169 skipped",
+          "2026-11-23T08:11:19.8811870Z   552 passed (6.2m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45139281706-attempt-1.json",
+        "runId": 45139281706,
+        "jobId": 137572981062,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "38c1f46c291364591c9664f19f5e6e8c775b81ec15212b2d8b706937b364209b",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T08:40:08.9115940Z   169 skipped",
+          "2026-11-23T08:40:08.9116283Z   552 passed (6.6m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45142894032-attempt-1.json",
+        "runId": 45142894032,
+        "jobId": 137584990374,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "ca828dbd6943ad3065a631487b2848aba459e2e33a302635a2f8698f73f88591",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T09:05:19.2328668Z   169 skipped",
+          "2026-11-23T09:05:19.2328934Z   552 passed (5.2m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45155144409-attempt-1.json",
+        "runId": 45155144409,
+        "jobId": 137626063781,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "c1e8b314fc1b9219d4cad974c12435f081a80b5e3ec09abb981348a4b31be758",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T10:28:24.9092305Z   169 skipped",
+          "2026-11-23T10:28:24.9092912Z   552 passed (6.2m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45159553137-attempt-1.json",
+        "runId": 45159553137,
+        "jobId": 137641101760,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "334a2c5365cd54d88f93612ba7723bc654dd5c6588b9a8bb57adee0685f35e06",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T10:55:17.1559318Z   169 skipped",
+          "2026-11-23T10:55:17.1559679Z   552 passed (4.6m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45214763075-attempt-1.json",
+        "runId": 45214763075,
+        "jobId": 137832802736,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "fb2a599bd86540f3e11958441d73f6292de8c55ba511766918bf7e886cf5999f",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T16:27:30.1448917Z   169 skipped",
+          "2026-11-23T16:27:30.1449218Z   552 passed (4.5m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45217035909-attempt-1.json",
+        "runId": 45217035909,
+        "jobId": 137841050992,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "2894f6433265ef595b3037783e242f66b473f023335f6b20150d7fde68eac005",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T16:41:56.7842160Z   169 skipped",
+          "2026-11-23T16:41:56.7842520Z   552 passed (5.2m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45217035909-attempt-2.json",
+        "runId": 45217035909,
+        "jobId": 137856927205,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "2894f6433265ef595b3037783e242f66b473f023335f6b20150d7fde68eac005",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T16:41:56.7842160Z   169 skipped",
+          "2026-11-23T16:41:56.7842520Z   552 passed (5.2m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45223943954-attempt-1.json",
+        "runId": 45223943954,
+        "jobId": 137865287434,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "5232542dc33464e8542acf7d54a2d11349d5e2a2d19cb34118c96f7514c68101",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T17:15:04.7991337Z   169 skipped",
+          "2026-11-23T17:15:04.7991793Z   552 passed (6.4m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45223943954-attempt-2.json",
+        "runId": 45223943954,
+        "jobId": 137885973808,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "5232542dc33464e8542acf7d54a2d11349d5e2a2d19cb34118c96f7514c68101",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T17:15:04.7991337Z   169 skipped",
+          "2026-11-23T17:15:04.7991793Z   552 passed (6.4m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45232766939-attempt-1.json",
+        "runId": 45232766939,
+        "jobId": 137896427245,
+        "name": "Showcase end to end",
+        "conclusion": "cancelled",
+        "sha256": "89b7ad29a368375b366780701f2606ea4b5e1043d4ecdde32d360830b72ded03",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T18:14:51.3156839Z   169 skipped",
+          "2026-11-23T18:14:51.3157121Z   552 passed (4.8m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45232766939-attempt-2.json",
+        "runId": 45232766939,
+        "jobId": 137913661242,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "d6cb6928acb6126a35eaf2de9d43e806e1094c42d691cbceb3c6e8ded73e57ec",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T18:29:26.3859252Z   169 skipped",
+          "2026-11-23T18:29:26.3859564Z   552 passed (4.8m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45232766939-attempt-3.json",
+        "runId": 45232766939,
+        "jobId": 137936257774,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "d6cb6928acb6126a35eaf2de9d43e806e1094c42d691cbceb3c6e8ded73e57ec",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T18:29:26.3859252Z   169 skipped",
+          "2026-11-23T18:29:26.3859564Z   552 passed (4.8m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45244541989-attempt-1.json",
+        "runId": 45244541989,
+        "jobId": 137937732002,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "3a2a0d56971008c916d426f5a363a52fc3d9ed794c2e7d983b376a726da681d7",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T19:12:43.1054061Z   169 skipped",
+          "2026-11-23T19:12:43.1054553Z   552 passed (6.3m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45244541989-attempt-2.json",
+        "runId": 45244541989,
+        "jobId": 138044371228,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "3a2a0d56971008c916d426f5a363a52fc3d9ed794c2e7d983b376a726da681d7",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T19:12:43.1054061Z   169 skipped",
+          "2026-11-23T19:12:43.1054553Z   552 passed (6.3m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45278436633-attempt-1.json",
+        "runId": 45278436633,
+        "jobId": 138056228971,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "98ac5169f98d1755e05f56bffdb19d82040ed40c26346814715ca6c0542d137d",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T22:27:26.2762257Z   169 skipped",
+          "2026-11-23T22:27:26.2762716Z   552 passed (6.4m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45282777504-attempt-1.json",
+        "runId": 45282777504,
+        "jobId": 138071250526,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "2a2a3ebd73788c3f1afd61a5b3ca110fd49a59e926360267deb8eefc39f890b7",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-23T22:53:31.7016599Z   169 skipped",
+          "2026-11-23T22:53:31.7016955Z   552 passed (5.3m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45304356856-attempt-1.json",
+        "runId": 45304356856,
+        "jobId": 138144410150,
+        "name": "Showcase end to end",
+        "conclusion": "cancelled",
+        "sha256": "68a0065badf147eaad6ab2c0af0f29178c5b2a729f9bb14d9712596c1ce6d8e7",
+        "retryLines": [],
+        "summaries": [],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45305132347-attempt-1.json",
+        "runId": 45305132347,
+        "jobId": 138147149842,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "b85f5dcae943d1d991c6f9993f0e250de6bc340f3ab788a6e2b6340c22cdd948",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-24T01:35:56.0733071Z   169 skipped",
+          "2026-11-24T01:35:56.0733460Z   552 passed (6.5m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45308679266-attempt-1.json",
+        "runId": 45308679266,
+        "jobId": 138158667098,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "c390cf15d712d2b2f98adcb9ee5651cd40e6f19a3adfe5679fecb901c136a104",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-24T02:04:29.7383918Z   169 skipped",
+          "2026-11-24T02:04:29.7384371Z   552 passed (6.3m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45308679266-attempt-2.json",
+        "runId": 45308679266,
+        "jobId": 138256490384,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "c390cf15d712d2b2f98adcb9ee5651cd40e6f19a3adfe5679fecb901c136a104",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-24T02:04:29.7383918Z   169 skipped",
+          "2026-11-24T02:04:29.7384371Z   552 passed (6.3m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45340856436-attempt-2.json",
+        "runId": 45340856436,
+        "jobId": 138275456474,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "f1a7ac7fe696ed9ae9c17f565f8542cfb0e0b9519007a811f6af516a626fc7e4",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-24T07:06:57.5960861Z   169 skipped",
+          "2026-11-24T07:06:57.5961203Z   552 passed (6.4m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45345879289-attempt-1.json",
+        "runId": 45345879289,
+        "jobId": 138280180115,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "da3f59aa6052646cbe77bf7f6f41a047a1d8632588cb605aea6c90b1d8d340cd",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-24T07:20:02.1517614Z   169 skipped",
+          "2026-11-24T07:20:02.1517911Z   552 passed (6.2m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45493350076-attempt-1.json",
+        "runId": 45493350076,
+        "jobId": 138797234387,
+        "name": "Showcase end to end",
+        "conclusion": "cancelled",
+        "sha256": "1df8ba40087f1e2936cea8f20001c069221a1b2104e4e95747044d76a89cc073",
+        "retryLines": [],
+        "summaries": [],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45494370791-attempt-1.json",
+        "runId": 45494370791,
+        "jobId": 138801002678,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "b188164845cb846c502ef5b9dd3c8ea7d0a691f19d076421820e78e6ceef05c3",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-24T21:56:44.8089498Z   169 skipped",
+          "2026-11-24T21:56:44.8089787Z   552 passed (5.0m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45498740733-attempt-1.json",
+        "runId": 45498740733,
+        "jobId": 138816056255,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "44c0ef2ce068cfcb4a4afe6034a8d80e09d7adabaee1949252aeb58cda50ea49",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-24T22:22:18.6074841Z   169 skipped",
+          "2026-11-24T22:22:18.6075544Z   552 passed (6.9m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45530308462-attempt-1.json",
+        "runId": 45530308462,
+        "jobId": 138923783709,
+        "name": "Showcase end to end",
+        "conclusion": "cancelled",
+        "sha256": "fd950cc6bb8264d123f703f654b1835f42c49b5932f2b5b2f6c2956751cbb801",
+        "retryLines": [],
+        "summaries": [],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45530964794-attempt-1.json",
+        "runId": 45530964794,
+        "jobId": 138926000901,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "00e580d2a23fb09e4f8c09f2e293acf410b78632c4533df07d06cd2ff858c385",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-25T02:23:52.9833444Z   169 skipped",
+          "2026-11-25T02:23:52.9833743Z   552 passed (4.7m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45535195352-attempt-1.json",
+        "runId": 45535195352,
+        "jobId": 138939966341,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "012a43a7770e396dbdd97aaf45aa38881496ec93176706b1dac74b607ab5f768",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-25T02:55:39.2992697Z   169 skipped",
+          "2026-11-25T02:55:39.2992962Z   552 passed (5.0m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45538460837-attempt-1.json",
+        "runId": 45538460837,
+        "jobId": 138950797838,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "5dd5bd1dd5bc031d6558dd46953c63bee99283430a347747a469807751f9420f",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-25T03:19:43.1838070Z   169 skipped",
+          "2026-11-25T03:19:43.1838372Z   552 passed (4.8m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45548294602-attempt-1.json",
+        "runId": 45548294602,
+        "jobId": 138983094156,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "894012c8246758d4a5a280a5a2cf071bac58c2af021d95be99a8c78663f79afd",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-25T04:45:48.2219958Z   169 skipped",
+          "2026-11-25T04:45:48.2220463Z   552 passed (4.6m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45552922780-attempt-1.json",
+        "runId": 45552922780,
+        "jobId": 138998054055,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "c3906e1304aa7997842bed233e9cbdb92cbf0ced0c92bd47e59a870c534efc37",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-25T05:29:14.6919794Z   169 skipped",
+          "2026-11-25T05:29:14.6920244Z   552 passed (6.3m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45561362507-attempt-1.json",
+        "runId": 45561362507,
+        "jobId": 139025702241,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "b33a906a04a9c5a7cbd5ee07c5125a2bb3334174346e0596f89f17c71e422a6f",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-25T06:39:52.6323510Z   169 skipped",
+          "2026-11-25T06:39:52.6323870Z   552 passed (5.1m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45564988471-attempt-1.json",
+        "runId": 45564988471,
+        "jobId": 139037487112,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "2936bb2dd319a9ef69c4d0787ac1c152b8cebec0a238494a9d6052452e187dff",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-25T07:09:28.4798685Z   169 skipped",
+          "2026-11-25T07:09:28.4798998Z   552 passed (5.2m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45576632463-attempt-1.json",
+        "runId": 45576632463,
+        "jobId": 139076080829,
+        "name": "Showcase end to end",
+        "conclusion": "cancelled",
+        "sha256": "3d90c06e3f1f5178605e0cabc4178d35706c4f390d19e74e404a97b4a10dbf49",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-25T08:35:54.1660763Z   169 skipped",
+          "2026-11-25T08:35:54.1661029Z   552 passed (4.7m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45577816156-attempt-1.json",
+        "runId": 45577816156,
+        "jobId": 139080172847,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "b7d9b1c65490877654d351cebeec74ff439f687ae7875caad3605cb8234ab4bb",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-25T08:43:33.2454157Z   169 skipped",
+          "2026-11-25T08:43:33.2454519Z   552 passed (4.6m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45581948158-attempt-1.json",
+        "runId": 45581948158,
+        "jobId": 139093934398,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "5b6be248d5b1fd3e7d3859871b8ce0f84edc87a326f54fdb6f788ff01b76a96d",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-25T09:12:59.9400806Z   169 skipped",
+          "2026-11-25T09:12:59.9401150Z   552 passed (6.4m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45581948158-attempt-2.json",
+        "runId": 45581948158,
+        "jobId": 139414762788,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "5b6be248d5b1fd3e7d3859871b8ce0f84edc87a326f54fdb6f788ff01b76a96d",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-25T09:12:59.9400806Z   169 skipped",
+          "2026-11-25T09:12:59.9401150Z   552 passed (6.4m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45677019550-attempt-1.json",
+        "runId": 45677019550,
+        "jobId": 139427136718,
+        "name": "Showcase end to end",
+        "conclusion": "cancelled",
+        "sha256": "ee381bce72f2dab592cdb2d28fff8816c2a2df2d16b8eb811c5d5d8de6edd9f4",
+        "retryLines": [],
+        "summaries": [],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45677798982-attempt-1.json",
+        "runId": 45677798982,
+        "jobId": 139430083259,
+        "name": "Showcase end to end",
+        "conclusion": "cancelled",
+        "sha256": "364095846d3c9498f1dc2295af443b87f60c9134d1760cd003ea82fcd3c8b79f",
+        "retryLines": [],
+        "summaries": [],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45678848618-attempt-1.json",
+        "runId": 45678848618,
+        "jobId": 139433838268,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "39922bdb535a060031c96576b229712bd9f1db149675385c364cf596f3b82157",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-25T18:57:11.8461662Z   169 skipped",
+          "2026-11-25T18:57:11.8462086Z   552 passed (6.4m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45682344249-attempt-1.json",
+        "runId": 45682344249,
+        "jobId": 139446112855,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "2db864de45feb40b0a54696c63d3eb5546d3cb2c393a4040b1d388548752b084",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-25T19:19:31.8432613Z   169 skipped",
+          "2026-11-25T19:19:31.8432852Z   552 passed (4.8m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45682344249-attempt-2.json",
+        "runId": 45682344249,
+        "jobId": 139461902060,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "2db864de45feb40b0a54696c63d3eb5546d3cb2c393a4040b1d388548752b084",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-25T19:19:31.8432613Z   169 skipped",
+          "2026-11-25T19:19:31.8432852Z   552 passed (4.8m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45688978899-attempt-1.json",
+        "runId": 45688978899,
+        "jobId": 139469052920,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "2223b8e5173581c70b5940bb430ae3171e546c2cbfb75e0d8951d826d08660f2",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-25T20:00:17.4355837Z   169 skipped",
+          "2026-11-25T20:00:17.4356928Z   552 passed (6.8m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45703096716-attempt-1.json",
+        "runId": 45703096716,
+        "jobId": 139517999290,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "ddb3636748aed7b5d287ffba64d63d08bfac57e1bcc57a0bf700a80485e70c68",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-25T21:26:45.4886973Z   169 skipped",
+          "2026-11-25T21:26:45.4887283Z   552 passed (6.5m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45707147021-attempt-1.json",
+        "runId": 45707147021,
+        "jobId": 139531925332,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "c1b7a84ac32d01a065f22279ea6efcd4b8bf6180254a59b0469dfbf3c03f90f7",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-25T21:54:23.9881491Z   169 skipped",
+          "2026-11-25T21:54:23.9881907Z   552 passed (4.6m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45717207977-attempt-1.json",
+        "runId": 45717207977,
+        "jobId": 139566210418,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "71f3f76fac5b5715c471d10935022244f3c9fb6d725985b53b09729b5ae3228b",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-25T23:01:59.8027786Z   169 skipped",
+          "2026-11-25T23:01:59.8028057Z   552 passed (5.1m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45720791571-attempt-1.json",
+        "runId": 45720791571,
+        "jobId": 139578301766,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "3c8e67d4bbd27a6f7cb0c931db90bcc0419dcd6c6260148a07325886991d4086",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-25T23:28:16.5773771Z   169 skipped",
+          "2026-11-25T23:28:16.5774063Z   552 passed (4.6m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45744719684-attempt-1.json",
+        "runId": 45744719684,
+        "jobId": 139657879364,
+        "name": "Showcase end to end",
+        "conclusion": "cancelled",
+        "sha256": "c1b90e625b2ed6da2c4fe85ded5548955ad312a0aa1da850bae20ab4dde23d1f",
+        "retryLines": [],
+        "summaries": [],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45745470433-attempt-1.json",
+        "runId": 45745470433,
+        "jobId": 139660435425,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "c30322e0f7c07af057f9154600da40d440e78accba2bfbf528815e0ee623fb5e",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-26T03:01:57.1507322Z   169 skipped",
+          "2026-11-26T03:01:57.1507655Z   552 passed (5.5m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45749096647-attempt-1.json",
+        "runId": 45749096647,
+        "jobId": 139672335600,
+        "name": "Showcase end to end",
+        "conclusion": "cancelled",
+        "sha256": "47ca4ab55d51040083fb0d009dd82f96d0ce3fe82ca0519904f3bc8a0adf60e1",
+        "retryLines": [],
+        "summaries": [],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45751882986-attempt-1.json",
+        "runId": 45751882986,
+        "jobId": 139681355814,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "0fa657fb4849eb879ef2964efc607667c25c7a5dd200565eb8476343f84e3945",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-26T04:03:18.9349856Z   169 skipped",
+          "2026-11-26T04:03:18.9350307Z   552 passed (6.5m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45760401460-attempt-1.json",
+        "runId": 45760401460,
+        "jobId": 139708769926,
+        "name": "Showcase end to end",
+        "conclusion": "cancelled",
+        "sha256": "a985afeef81ab5d994eceea195e70c2a2462b7458d9f3ea802d4f09f5f1208ac",
+        "retryLines": [],
+        "summaries": [],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45760836399-attempt-1.json",
+        "runId": 45760836399,
+        "jobId": 139710286448,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "6f1a84b6e92c75fb3068d5f0927fe12a98c0a2d51c8d4b80c80cd0910067f95f",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-26T05:29:04.6915533Z   169 skipped",
+          "2026-11-26T05:29:04.6915936Z   552 passed (6.5m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45764485508-attempt-1.json",
+        "runId": 45764485508,
+        "jobId": 139721991004,
+        "name": "Showcase end to end",
+        "conclusion": "cancelled",
+        "sha256": "91cb77adc4910a2f16e92123e519812a0572ef02ab2a397f428f68693a8e4f42",
+        "retryLines": [],
+        "summaries": [],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45769701271-attempt-1.json",
+        "runId": 45769701271,
+        "jobId": 139739121621,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "752130a1cbe55867b9bd31973a46f3ccb350561d6f4b711a556ebadf3d25dd5f",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-26T06:47:50.8979496Z   169 skipped",
+          "2026-11-26T06:47:50.8979838Z   552 passed (6.4m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45778612146-attempt-1.json",
+        "runId": 45778612146,
+        "jobId": 139768292492,
+        "name": "Showcase end to end",
+        "conclusion": "cancelled",
+        "sha256": "61e128741f5c79c1e741195f30ea9ce81c98d05d7424b49641180345a931cb98",
+        "retryLines": [],
+        "summaries": [],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45778612146-attempt-2.json",
+        "runId": 45778612146,
+        "jobId": 139782380694,
+        "name": "Showcase end to end",
+        "conclusion": "cancelled",
+        "sha256": "862d727cc26e621cf78bd20bb89fa12386fc2ed0e97a44a929356998baa71274",
+        "retryLines": [],
+        "summaries": [],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45786080712-attempt-1.json",
+        "runId": 45786080712,
+        "jobId": 139793061405,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "eb26213f52c9ce6a510a2d5c0093de26d977f3e822005d44c710296daf13172c",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-26T08:56:21.0089926Z   169 skipped",
+          "2026-11-26T08:56:21.0090376Z   552 passed (6.8m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45802055700-attempt-1.json",
+        "runId": 45802055700,
+        "jobId": 139847529175,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "3bf63e307680a0763e19d59930b0e5583d0013049d94473055a25b4cfc897dfa",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-26T10:39:14.6761730Z   169 skipped",
+          "2026-11-26T10:39:14.6762276Z   552 passed (6.4m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45894196729-attempt-1.json",
+        "runId": 45894196729,
+        "jobId": 140163928269,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "3036d65611b14ade1b47cce94c259d29d0a3325a375c0d74ef0c27b7be639ba9",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-26T20:59:33.9731542Z   169 skipped",
+          "2026-11-26T20:59:33.9731901Z   552 passed (5.1m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45923597757-attempt-1.json",
+        "runId": 45923597757,
+        "jobId": 140259748021,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "bdfb1468e23b05829a60d6584cdb1bf6034e8e22c3ccdac9c3461408d6551c44",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-27T01:45:23.7297105Z   169 skipped",
+          "2026-11-27T01:45:23.7297526Z   552 passed (6.1m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45934928276-attempt-1.json",
+        "runId": 45934928276,
+        "jobId": 140295829776,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "8e0a09fb48c1b709f6677181d1920b3a2ab8eef384430936874a26a53169c296",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-27T03:41:18.2290970Z   169 skipped",
+          "2026-11-27T03:41:18.2291321Z   552 passed (5.3m)"
+        ],
+        "signals": []
+      },
+      {
+        "attemptFile": "run-45956665792-attempt-1.json",
+        "runId": 45956665792,
+        "jobId": 140364614160,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "sha256": "05eed3f1b40005d92e10fb6ca413f21239687a350685fdb475098852b99b0552",
+        "retryLines": [],
+        "summaries": [
+          "2026-11-27T07:17:46.2011111Z   169 skipped",
+          "2026-11-27T07:17:46.2011377Z   552 passed (5.2m)"
+        ],
+        "signals": []
+      }
+    ]
+  },
+  "webkitRecurrences": [
+    {
+      "runId": 45085352094,
+      "runUrl": "https://github.com/mylife-inc/Zellij/actions/runs/45085352094",
+      "head": "d738c6f0200a0295c4c583ed1ab4611249b454b7",
+      "jobId": 137402593006,
+      "jobConclusion": "success",
+      "runConclusion": "failure",
+      "jobLogSha256": "9661a86e73702be5b9bd398445b978980d7acef283ca34bbf8dc7febb038ddec",
+      "summary": [
+        "2026-11-22T23:58:27.6523139Z   1 flaky",
+        "2026-11-22T23:58:27.6526343Z   169 skipped",
+        "2026-11-22T23:58:27.6526590Z   551 passed (6.3m)"
+      ],
+      "retryLines": [
+        "2026-11-22T23:54:06.1920650Z [238/721] (retries) [desktop-safari] \u203a e2e/header-layout.spec.ts:120:3 \u203a measured overflow \u203a moves trailing links into More and restores them when space returns (retry #1)"
+      ],
+      "artifact": {
+        "id": 14778629929,
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45085352094/artifacts/14778629929",
+        "bytes": 24674221,
+        "sha256": "e5bdf26fa140662d2c394ea08af761948460624768614070a105a72fec8bc1fe",
+        "expiresAt": "2026-11-30T00:00:10Z"
+      },
+      "members": {
+        "state": {
+          "path": "header-layout-measured-ove-fedf3-res-them-when-space-returns-desktop-safari/header-failure-state.json",
+          "sha256": "7f962c8c4899ae39624dd482e316c630be3b9f2caae3dcca6966e8e53aa077e8"
+        },
+        "trace": {
+          "path": "header-layout-measured-ove-fedf3-res-them-when-space-returns-desktop-safari/trace.zip",
+          "sha256": "527b2170e45d6e7a34cc65d8bb6707cda85b74562cbe672edcbc047e63377254",
+          "retainedPath": "browser-resize-2026-11-27/45085352094-trace.zip"
+        },
+        "errorContext": {
+          "path": "header-layout-measured-ove-fedf3-res-them-when-space-returns-desktop-safari/error-context.md",
+          "sha256": "0749e6fa4967b4174354cc35ca0e172861c1a580188f5e4704019ac3233313a1"
+        }
+      },
+      "state": {
+        "before": {
+          "at": 7224,
+          "url": "http://127.0.0.1:4317/",
+          "readyState": "complete",
+          "visibility": "visible",
+          "documentFocus": true,
+          "viewport": {
+            "width": 1600,
+            "height": 900
+          },
+          "scroll": {
+            "x": 0,
+            "y": 0
+          },
+          "fontStatus": "loaded",
+          "active": {
+            "tag": "A",
+            "id": "",
+            "class": "zellij-nav-link",
+            "role": null,
+            "label": null
+          },
+          "header": {
+            "x": 0,
+            "y": 0,
+            "width": 1600,
+            "height": 89
+          },
+          "navigation": {
+            "box": {
+              "x": 657,
+              "y": 40,
+              "width": 384.25,
+              "height": 48
+            },
+            "measured": "true",
+            "items": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4"
+            ],
+            "probeWidths": [
+              144.359375,
+              91.40625,
+              113.796875,
+              83.359375,
+              80.140625,
+              91.953125
+            ],
+            "probeFonts": [
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              }
+            ],
+            "gap": "4px",
+            "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif"
+          },
+          "themeControls": [
+            {
+              "tag": "BUTTON",
+              "id": "",
+              "class": "zellij-icon-button",
+              "role": null,
+              "label": "Change theme",
+              "box": {
+                "x": 1374.09375,
+                "y": 46,
+                "width": 36,
+                "height": 36
+              },
+              "display": "grid",
+              "visibility": "visible",
+              "hiddenBy": null
+            },
+            {
+              "tag": "BUTTON",
+              "id": "",
+              "class": "zellij-icon-button",
+              "role": null,
+              "label": "Switch to dark theme",
+              "box": {
+                "x": 1418.09375,
+                "y": 46,
+                "width": 36,
+                "height": 36
+              },
+              "display": "grid",
+              "visibility": "visible",
+              "hiddenBy": null
+            }
+          ],
+          "drawerCount": 0
+        },
+        "frameTimes": [
+          7278,
+          7339
+        ],
+        "after": {
+          "at": 7493,
+          "url": "http://127.0.0.1:4317/",
+          "readyState": "complete",
+          "visibility": "visible",
+          "documentFocus": true,
+          "viewport": {
+            "width": 1600,
+            "height": 900
+          },
+          "scroll": {
+            "x": 0,
+            "y": 0
+          },
+          "fontStatus": "loaded",
+          "active": {
+            "tag": "A",
+            "id": "",
+            "class": "zellij-nav-link",
+            "role": null,
+            "label": null
+          },
+          "header": {
+            "x": 0,
+            "y": 0,
+            "width": 1600,
+            "height": 89
+          },
+          "navigation": {
+            "box": {
+              "x": 657,
+              "y": 40,
+              "width": 384.25,
+              "height": 48
+            },
+            "measured": "true",
+            "items": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4"
+            ],
+            "probeWidths": [
+              144.359375,
+              91.40625,
+              113.796875,
+              83.359375,
+              80.140625,
+              91.953125
+            ],
+            "probeFonts": [
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              }
+            ],
+            "gap": "4px",
+            "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif"
+          },
+          "themeControls": [
+            {
+              "tag": "BUTTON",
+              "id": "",
+              "class": "zellij-icon-button",
+              "role": null,
+              "label": "Change theme",
+              "box": {
+                "x": 1374.09375,
+                "y": 46,
+                "width": 36,
+                "height": 36
+              },
+              "display": "grid",
+              "visibility": "visible",
+              "hiddenBy": null
+            },
+            {
+              "tag": "BUTTON",
+              "id": "",
+              "class": "zellij-icon-button",
+              "role": null,
+              "label": "Switch to dark theme",
+              "box": {
+                "x": 1418.09375,
+                "y": 46,
+                "width": 36,
+                "height": 36
+              },
+              "display": "grid",
+              "visibility": "visible",
+              "hiddenBy": null
+            }
+          ],
+          "drawerCount": 0
+        }
+      },
+      "trace": {
+        "context": {
+          "version": 8,
+          "type": "context-options",
+          "origin": "library",
+          "browserName": "webkit",
+          "playwrightVersion": "1.62.1",
+          "options": {
+            "noDefaultViewport": false,
+            "viewport": {
+              "width": 1280,
+              "height": 720
+            },
+            "ignoreHTTPSErrors": false,
+            "javaScriptEnabled": true,
+            "bypassCSP": false,
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Safari/605.1.15",
+            "locale": "en-US",
+            "offline": false,
+            "deviceScaleFactor": 2,
+            "isMobile": false,
+            "hasTouch": false,
+            "colorScheme": "light",
+            "acceptDownloads": "accept",
+            "baseURL": "http://127.0.0.1:4317",
+            "serviceWorkers": "allow",
+            "selectorEngines": [],
+            "testIdAttributeName": "data-testid"
+          },
+          "platform": "linux",
+          "wallTime": 1795391637372,
+          "monotonicTime": 108349.93,
+          "sdkLanguage": "javascript",
+          "testIdAttributeName": "data-testid",
+          "contextId": "browser-context@fcd702e46d7f5ddf830a60bb28214f2b",
+          "title": "header-layout.spec.ts:120 \u203a measured overflow \u203a moves trailing links into More and restores them when space returns"
+        },
+        "resizeStartMs": 110828.69,
+        "resizeEndMs": 110865.553,
+        "assertionEndMs": 115882.324,
+        "lastFrameBeforeResize": {
+          "timestamp": 110743.016,
+          "width": 1802,
+          "height": 1800,
+          "sha1": "page@319ebb08edf8da6b315827a42ffe6da3-1795391639765.jpeg"
+        },
+        "framesAfterResize": [
+          {
+            "timestamp": 115866.894,
+            "width": 3200,
+            "height": 1800,
+            "sha1": "page@319ebb08edf8da6b315827a42ffe6da3-1795391644889.jpeg"
+          },
+          {
+            "timestamp": 116022.912,
+            "width": 3200,
+            "height": 1800,
+            "sha1": "page@319ebb08edf8da6b315827a42ffe6da3-1795391645045.jpeg"
+          }
+        ],
+        "callsFromResize": [
+          {
+            "callId": "call@104",
+            "method": "setViewportSize",
+            "startMs": 110828.69,
+            "endMs": 110865.553,
+            "params": {
+              "viewportSize": {
+                "width": 1600,
+                "height": 900
+              }
+            },
+            "error": null
+          },
+          {
+            "callId": "call@106",
+            "method": "expect",
+            "startMs": 110875.472,
+            "endMs": 115882.324,
+            "params": {
+              "selector": "internal:role=navigation[name=\"Main\"s] >> [data-nav-index=\"more\"] > button",
+              "expectedNumber": 0,
+              "expectedValue": {
+                "value": {
+                  "v": "undefined"
+                },
+                "handles": []
+              },
+              "isNot": false,
+              "timeout": 5000
+            },
+            "error": {
+              "message": "Expect failed",
+              "stack": "ExpectError: Expect failed\n    at _Frame.expect (/home/runner/work/Zellij/Zellij/node_modules/playwright-core/lib/coreBundle.js:23785:17)\n    at _FrameDispatcher.expect (/home/runner/work/Zellij/Zellij/node_modules/playwright-core/lib/coreBundle.js:54544:11)\n    at _ProgressController.run (/home/runner/work/Zellij/Zellij/node_modules/playwright-core/lib/coreBundle.js:12149:27)\n    at DispatcherConnection.dispatch (/home/runner/work/Zellij/Zellij/node_modules/playwright-core/lib/coreBundle.js:18775:27)",
+              "name": "ExpectError"
+            }
+          },
+          {
+            "callId": "call@108",
+            "method": "evaluateExpression",
+            "startMs": 115913.348,
+            "endMs": 115951.37,
+            "params": {
+              "isFunction": true
+            },
+            "error": null
+          },
+          {
+            "callId": "call@110",
+            "method": "evaluateExpression",
+            "startMs": 115955.848,
+            "endMs": 116210.273,
+            "params": {
+              "isFunction": true
+            },
+            "error": null
+          },
+          {
+            "callId": "call@112",
+            "method": "evaluateExpression",
+            "startMs": 116214.081,
+            "endMs": 116218.526,
+            "params": {
+              "isFunction": true
+            },
+            "error": null
+          }
+        ]
+      }
+    },
+    {
+      "runId": 45133775474,
+      "runUrl": "https://github.com/mylife-inc/Zellij/actions/runs/45133775474",
+      "head": "77a909c6ba6a957751d6796b67f27d1272dafc02",
+      "jobId": 137555053722,
+      "jobConclusion": "success",
+      "runConclusion": "cancelled",
+      "jobLogSha256": "8f02f1d1a9eed3782f69d3896dee7c4d18e4dd8cf42bdfe1337a83745a9f99bc",
+      "summary": [
+        "2026-11-23T07:57:32.2133299Z   1 flaky",
+        "2026-11-23T07:57:32.2136322Z   169 skipped",
+        "2026-11-23T07:57:32.2136779Z   551 passed (6.5m)"
+      ],
+      "retryLines": [
+        "2026-11-23T07:53:02.5301259Z [238/721] (retries) [desktop-safari] \u203a e2e/header-layout.spec.ts:120:3 \u203a measured overflow \u203a moves trailing links into More and restores them when space returns (retry #1)"
+      ],
+      "artifact": {
+        "id": 14799228246,
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/45133775474/artifacts/14799228246",
+        "bytes": 24506624,
+        "sha256": "93fe4f29ec27589501c0468fbea970a330a9982bf92334e0d8c3614c61fbcd32",
+        "expiresAt": "2026-11-30T07:59:22Z"
+      },
+      "members": {
+        "state": {
+          "path": "header-layout-measured-ove-fedf3-res-them-when-space-returns-desktop-safari/header-failure-state.json",
+          "sha256": "862d9be8f54def7a4f3da09e8ce11bf02c80f378f8415cf35136fec861497e9c"
+        },
+        "trace": {
+          "path": "header-layout-measured-ove-fedf3-res-them-when-space-returns-desktop-safari/trace.zip",
+          "sha256": "b612c7aacda7c800d8e52f9396e6109a8ccdf1a2f00b90b486133342b5c04795",
+          "retainedPath": "browser-resize-2026-11-27/45133775474-trace.zip"
+        },
+        "errorContext": {
+          "path": "header-layout-measured-ove-fedf3-res-them-when-space-returns-desktop-safari/error-context.md",
+          "sha256": "e17fa722ff3d5224eb75265873fb7198542f5b9ed825e08dc8f0947cff7a667f"
+        }
+      },
+      "state": {
+        "before": {
+          "at": 6978,
+          "url": "http://127.0.0.1:4317/",
+          "readyState": "complete",
+          "visibility": "visible",
+          "documentFocus": true,
+          "viewport": {
+            "width": 1600,
+            "height": 900
+          },
+          "scroll": {
+            "x": 0,
+            "y": 0
+          },
+          "fontStatus": "loaded",
+          "active": {
+            "tag": "BUTTON",
+            "id": "",
+            "class": "zellij-nav-link zellij-nav-trigger",
+            "role": null,
+            "label": null
+          },
+          "header": {
+            "x": 0,
+            "y": 0,
+            "width": 1600,
+            "height": 89
+          },
+          "navigation": {
+            "box": {
+              "x": 803.140625,
+              "y": 40,
+              "width": 91.953125,
+              "height": 48
+            },
+            "measured": "true",
+            "items": [
+              "more"
+            ],
+            "probeWidths": [
+              144.359375,
+              91.40625,
+              113.796875,
+              83.359375,
+              80.140625,
+              91.953125
+            ],
+            "probeFonts": [
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              }
+            ],
+            "gap": "4px",
+            "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif"
+          },
+          "themeControls": [
+            {
+              "tag": "BUTTON",
+              "id": "",
+              "class": "zellij-icon-button",
+              "role": null,
+              "label": "Change theme",
+              "box": {
+                "x": 1374.09375,
+                "y": 46,
+                "width": 36,
+                "height": 36
+              },
+              "display": "grid",
+              "visibility": "visible",
+              "hiddenBy": null
+            },
+            {
+              "tag": "BUTTON",
+              "id": "",
+              "class": "zellij-icon-button",
+              "role": null,
+              "label": "Switch to dark theme",
+              "box": {
+                "x": 1418.09375,
+                "y": 46,
+                "width": 36,
+                "height": 36
+              },
+              "display": "grid",
+              "visibility": "visible",
+              "hiddenBy": null
+            }
+          ],
+          "drawerCount": 0
+        },
+        "frameTimes": [],
+        "after": {
+          "at": 7265,
+          "url": "http://127.0.0.1:4317/",
+          "readyState": "complete",
+          "visibility": "visible",
+          "documentFocus": true,
+          "viewport": {
+            "width": 1600,
+            "height": 900
+          },
+          "scroll": {
+            "x": 0,
+            "y": 0
+          },
+          "fontStatus": "loaded",
+          "active": {
+            "tag": "BUTTON",
+            "id": "",
+            "class": "zellij-nav-link zellij-nav-trigger",
+            "role": null,
+            "label": null
+          },
+          "header": {
+            "x": 0,
+            "y": 0,
+            "width": 1600,
+            "height": 89
+          },
+          "navigation": {
+            "box": {
+              "x": 803.140625,
+              "y": 40,
+              "width": 91.953125,
+              "height": 48
+            },
+            "measured": "true",
+            "items": [
+              "more"
+            ],
+            "probeWidths": [
+              144.359375,
+              91.40625,
+              113.796875,
+              83.359375,
+              80.140625,
+              91.953125
+            ],
+            "probeFonts": [
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              }
+            ],
+            "gap": "4px",
+            "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif"
+          },
+          "themeControls": [
+            {
+              "tag": "BUTTON",
+              "id": "",
+              "class": "zellij-icon-button",
+              "role": null,
+              "label": "Change theme",
+              "box": {
+                "x": 1374.09375,
+                "y": 46,
+                "width": 36,
+                "height": 36
+              },
+              "display": "grid",
+              "visibility": "visible",
+              "hiddenBy": null
+            },
+            {
+              "tag": "BUTTON",
+              "id": "",
+              "class": "zellij-icon-button",
+              "role": null,
+              "label": "Switch to dark theme",
+              "box": {
+                "x": 1418.09375,
+                "y": 46,
+                "width": 36,
+                "height": 36
+              },
+              "display": "grid",
+              "visibility": "visible",
+              "hiddenBy": null
+            }
+          ],
+          "drawerCount": 0
+        }
+      },
+      "trace": {
+        "context": {
+          "version": 8,
+          "type": "context-options",
+          "origin": "library",
+          "browserName": "webkit",
+          "playwrightVersion": "1.62.1",
+          "options": {
+            "noDefaultViewport": false,
+            "viewport": {
+              "width": 1280,
+              "height": 720
+            },
+            "ignoreHTTPSErrors": false,
+            "javaScriptEnabled": true,
+            "bypassCSP": false,
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Safari/605.1.15",
+            "locale": "en-US",
+            "offline": false,
+            "deviceScaleFactor": 2,
+            "isMobile": false,
+            "hasTouch": false,
+            "colorScheme": "light",
+            "acceptDownloads": "accept",
+            "baseURL": "http://127.0.0.1:4317",
+            "serviceWorkers": "allow",
+            "selectorEngines": [],
+            "testIdAttributeName": "data-testid"
+          },
+          "platform": "linux",
+          "wallTime": 1795420373741,
+          "monotonicTime": 110513.136,
+          "sdkLanguage": "javascript",
+          "testIdAttributeName": "data-testid",
+          "contextId": "browser-context@4cae009c4051db5f1898ed8244d95788",
+          "title": "header-layout.spec.ts:120 \u203a measured overflow \u203a moves trailing links into More and restores them when space returns"
+        },
+        "resizeStartMs": 112722.08,
+        "resizeEndMs": 112766.049,
+        "assertionEndMs": 117784.731,
+        "lastFrameBeforeResize": {
+          "timestamp": 112578.949,
+          "width": 1802,
+          "height": 1800,
+          "sha1": "page@0c9d059339fbad33136569addbe746c2-1795420375807.jpeg"
+        },
+        "framesAfterResize": [],
+        "callsFromResize": [
+          {
+            "callId": "call@104",
+            "method": "setViewportSize",
+            "startMs": 112722.08,
+            "endMs": 112766.049,
+            "params": {
+              "viewportSize": {
+                "width": 1600,
+                "height": 900
+              }
+            },
+            "error": null
+          },
+          {
+            "callId": "call@106",
+            "method": "expect",
+            "startMs": 112779.348,
+            "endMs": 117784.731,
+            "params": {
+              "selector": "internal:role=navigation[name=\"Main\"s] >> [data-nav-index=\"more\"] > button",
+              "expectedNumber": 0,
+              "expectedValue": {
+                "value": {
+                  "v": "undefined"
+                },
+                "handles": []
+              },
+              "isNot": false,
+              "timeout": 5000
+            },
+            "error": {
+              "message": "Expect failed",
+              "stack": "ExpectError: Expect failed\n    at _Frame.expect (/home/runner/work/Zellij/Zellij/node_modules/playwright-core/lib/coreBundle.js:23785:17)\n    at _FrameDispatcher.expect (/home/runner/work/Zellij/Zellij/node_modules/playwright-core/lib/coreBundle.js:54544:11)\n    at _ProgressController.run (/home/runner/work/Zellij/Zellij/node_modules/playwright-core/lib/coreBundle.js:12149:27)\n    at DispatcherConnection.dispatch (/home/runner/work/Zellij/Zellij/node_modules/playwright-core/lib/coreBundle.js:18775:27)",
+              "name": "ExpectError"
+            }
+          },
+          {
+            "callId": "call@108",
+            "method": "evaluateExpression",
+            "startMs": 117812.434,
+            "endMs": 117834.923,
+            "params": {
+              "isFunction": true
+            },
+            "error": null
+          },
+          {
+            "callId": "call@110",
+            "method": "evaluateExpression",
+            "startMs": 117839.827,
+            "endMs": 118095.779,
+            "params": {
+              "isFunction": true
+            },
+            "error": null
+          },
+          {
+            "callId": "call@112",
+            "method": "evaluateExpression",
+            "startMs": 118102.127,
+            "endMs": 118112.36,
+            "params": {
+              "isFunction": true
+            },
+            "error": null
+          }
+        ]
+      }
+    }
+  ],
+  "hydration": {
+    "newRecurrenceFound": false,
+    "previouslyRecordedRun": 45007103274,
+    "previouslyRecordedJob": 137161009186,
+    "diagnosticImprovement": "bfb450b",
+    "previousEvidence": "zellij-browser-timing-recurrence-2026-11-22.json"
+  },
+  "controlledComparison": {
+    "runId": 46063043070,
+    "head": "48f02bacd5d6c711e7f7c61a3b6ccc695a216f91",
+    "status": "completed",
+    "conclusion": "success",
+    "variants": [
+      {
+        "variant": "resize-original",
+        "artifactId": 15229816741,
+        "artifactSha256": "58c5ef044521af7891785f816d9b6540c9bd3bda0d7a9268732323233f898928",
+        "artifactBytes": 15166,
+        "reportSha256": "c1df8bc943f2a33a9cd56e2a5f8874232f983ea942644ff23f3b4354bed841f0",
+        "logSha256": "ad7858abdaee53cdb7825bdfbc40f4e215473013a5450dfdb44c080a56783fbb",
+        "stats": {
+          "startTime": "2026-11-27T20:27:36.978Z",
+          "duration": 124674.35,
+          "expected": 60,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        },
+        "browserLaunches": 60,
+        "everyTestHasOneResultAtRetryZero": true,
+        "errors": []
+      },
+      {
+        "variant": "resize-prevent-default",
+        "artifactId": 15229537716,
+        "artifactSha256": "42f660b7d20c5d66c7e9bbdbe4eaa6082e6cad23643f41bfd0c37f2988a66a6c",
+        "artifactBytes": 14955,
+        "reportSha256": "eb1d47d2658351431ca56b68611aeb5a550f5905609d31a3e9a7e1629e613087",
+        "logSha256": "915b1896fc7b19f49456bc8411ad24eda99b65741fa3ed9df29283f9a9ecc2d6",
+        "stats": {
+          "startTime": "2026-11-27T20:23:20.086Z",
+          "duration": 98320.23,
+          "expected": 60,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        },
+        "browserLaunches": 60,
+        "everyTestHasOneResultAtRetryZero": true,
+        "errors": []
+      }
+    ],
+    "interpretation": "No failure in either arm; no differential evidence implicating Escape or justifying a runtime change. Repetitions start fresh browser processes and do not reproduce the preceding full-suite header sequence.",
+    "workers": 2,
+    "retries": 0,
+    "repeatEach": 60,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/46063043070"
+  },
+  "fullHeaderSequence": {
+    "runId": 46063731462,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/46063731462",
+    "head": "6c7114774959083757ae1d609025c3b43fe91a49",
+    "repeatEach": 20,
+    "workers": 2,
+    "retries": 0,
+    "status": "completed",
+    "motivation": "Both recurrence logs have the two leading header cases before the overflow test. Isolated repeat-each runs start a new browser process per repetition; repeat the complete unchanged header group to include browser reuse and neighboring cases.",
+    "conclusion": "success",
+    "artifactId": 15230198197,
+    "artifactSha256": "deb9cbfc59c47743bda68a9fbd77b9ca2cbbac91623a0114bbcb6ddd642cc55c",
+    "artifactBytes": 74453,
+    "reportSha256": "b0c09150fca073f16a8b864865969d77e609b98aaf637984cddcabda53218adc",
+    "logSha256": "bae4e73a0fa760517c36259531a0c9302c955b782d3246c4345cbca6649a2a6c",
+    "stats": {
+      "startTime": "2026-11-27T20:29:08.586Z",
+      "duration": 563851.1819999999,
+      "expected": 500,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "browserLaunches": 40,
+    "scenarioCounts": {
+      "closes a mobile drawer and releases scroll lock when resized to desktop": 20,
+      "company stays far left without shifting the product/menu center": 20,
+      "does not take focus from document content on a breakpoint change": 20,
+      "keeps a flat More panel full width below the header": 20,
+      "keeps focus reachable when a focused item moves into overflow": 20,
+      "keeps the final breakpoint in charge during rapid drawer resizes": 20,
+      "moves keyboard focus between visible controls across reciprocal resizes": 20,
+      "moves trailing links into More and restores them when space returns": 20,
+      "preserves a focused drawer link while the header reacts to scrolling": 20,
+      "preserves brand focus across resizes before queued frames run": 20,
+      "preserves brand focus when overflow grow commits before queued focus": 20,
+      "preserves brand focus when overflow shrink commits before queued focus": 20,
+      "preserves content focus across resizes before queued frames run": 20,
+      "preserves content focus when overflow grow commits before queued focus": 20,
+      "preserves content focus when overflow shrink commits before queued focus": 20,
+      "preserves navigation focus across resizes before queued frames run": 20,
+      "preserves navigation focus when overflow grow commits before queued focus": 20,
+      "preserves navigation focus when overflow shrink commits before queued focus": 20,
+      "preserves pointer focus across resizes before queued frames run": 20,
+      "preserves pointer focus when overflow grow commits before queued focus": 20,
+      "preserves pointer focus when overflow shrink commits before queued focus": 20,
+      "product navigation stays centered while controls stay at the viewport edge": 20,
+      "reacts to larger text and retains nested destinations and external links": 20,
+      "restores overflow focus for the final 1600px width after two queued resizes": 20,
+      "restores overflow focus for the final 901px width after two queued resizes": 20
+    },
+    "everyTestHasOneResultAtRetryZero": true,
+    "interpretation": "500 first-attempt passes across 25 scenarios repeated 20 times, including the original overflow case. The historical stall was not reproduced; this is not a root-cause fix."
+  },
+  "reportingVerification": {
+    "fixingCommits": [
+      "d63f491",
+      "6264495"
+    ],
+    "runId": 46065076326,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/46065076326",
+    "head": "a04bb99dce238c653516e2792672098be69da579",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 140728315959,
+        "name": "Verify retained browser outcome summary",
+        "conclusion": "success"
+      }
+    ],
+    "focusedTests": 4,
+    "artifactId": 15229998622,
+    "artifactSha256": "a429d95e0e89b183c7fbc2e57c8e618a1aa326495db14e0951ba013d7c03e3d7",
+    "summary": "### Browser test outcomes\n\n| Expected | Flaky (retry needed) | Unexpected | Skipped | Runner errors |\n| ---: | ---: | ---: | ---: | ---: |\n| 500 | 0 | 0 | 0 | 0 |\n\n",
+    "sourceHashes": {
+      "scripts/report-browser-results.mjs": "cddc74418333f50bf73b6d90375d1fabdd7acc9ac0c2b327e5a040996e5ed7b9",
+      "scripts/report-browser-results.test.mjs": "4e968f8c519df062bfc907aaccd67c36ebe7a22d689d8a26b9b480a949451208"
+    },
+    "reportMatchesFullHeaderSequence": true,
+    "localChecks": [
+      "node --test scripts/report-browser-results.test.mjs",
+      "node --check scripts/report-browser-results.mjs",
+      "actionlint .github/workflows/ci.yml",
+      "git diff --check"
+    ]
+  }
+}

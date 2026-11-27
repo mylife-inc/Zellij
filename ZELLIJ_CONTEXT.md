@@ -8,6 +8,24 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-27**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-27: additional browser timing evidence**
+
+The [browser follow-up](specs/zellij-browser-timing-review-2026-11-27.md) reviews
+98 CI runs, 108 attempt inventories and 89 browser logs. It finds two WebKit
+overflow recurrences (`45085352094`, `45133775474`) that passed on retry.
+Saved state/trace evidence shows one late recovery and one responsive DOM/timer
+with stalled frames and a stale More menu. No additional hydration recurrence
+was found in the bounded CI review. Both timing findings remain unresolved;
+successful job status alone is not proof of a clean first attempt. Product
+runtime, timeout/retry policy and rc.24 remain unchanged.
+CI reporting `d63f491` / `6264495` retains JSON outcomes and distinguishes flaky
+results and runner errors in the Actions summary. Both original failure traces
+are retained in the repository; future CI evidence lasts 14 days.
+Controlled runs pass 120 isolated comparisons and 500 full-group cases with no
+retries; neither reproduces the stall or closes either finding. Scoped hosted
+run `46065076326` passes all four reporting guards and the actual 500-case
+summary with matching source/report hashes.
+
 **2026-11-27: rc.24 delivery workflow migration complete**
 
 PR #267 merged as `624bfb3`, tree-identical to qualified `24784c9`. All six
