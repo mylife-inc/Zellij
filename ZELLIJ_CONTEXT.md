@@ -8,6 +8,16 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-26**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-26: exact rc.16–rc.18 executor preparation**
+
+PR #265 merged as `e4518f2`, tree-identical to qualified `ff78154`, after all
+37 executable CI jobs passed on their first attempt. The new
+[retirement record](specs/zellij-rc16-rc18-retirement-2026-11-26.md) tracks a
+separate hash-bound execution plan and tested local-owner executor. Inventory,
+review and post-retirement verification are separate read-only workflow modes.
+This preparation checkpoint makes no deletion claim; check its execution record
+before repeating any cleanup. Rc.24 remains the published candidate.
+
 **2026-11-26: distribution retention review and image-inspection correction**
 
 The [retention review](specs/zellij-retention-review-2026-11-26.md) inventories

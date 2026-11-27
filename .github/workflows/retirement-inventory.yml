@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: Read current inventory and rc.16–rc.18 review, or use the frozen historical rc.12 executor
+        description: Read inventory, review or verify rc.16–rc.18, or use the frozen rc.12 executor
         type: choice
-        options: [inventory, retire-images]
+        options: [inventory, review, verify-retained, retire-images]
         default: inventory
       plan_sha256:
         description: Exact SHA256 of the committed retirement plan (required for deletion)
@@ -16,6 +16,7 @@ on:
 permissions:
   contents: read
   packages: read
+  actions: read
 
 concurrency:
   group: zellij-distribution-retirement
@@ -34,7 +35,7 @@ jobs:
         with:
           node-version: 24
       - name: Check exact-scope deletion safeguards
-        run: node --test scripts/retire-release-images.test.mjs scripts/review-release-retention.test.mjs
+        run: node --test scripts/retire-release-images.test.mjs scripts/review-release-retention.test.mjs scripts/retire-reviewed-distributions.test.mjs
       - name: Check native release deletion safeguards without networking
         run: python3 scripts/retire-native-releases.test.py specs/evidence/zellij-rc15-native-retirement-plan-2026-11-20.json
       - name: List exact Zellij release and image version identities
@@ -42,7 +43,20 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: node scripts/inspect-release-inventory.mjs "$RUNNER_TEMP/retirement-inventory.json"
       - name: Review exact superseded releases and manifest dependencies without deleting
+        if: inputs.mode == 'review'
         run: node scripts/review-release-retention.mjs "$RUNNER_TEMP/retirement-inventory.json" "$RUNNER_TEMP/retention-review.json"
+      - name: Check the execution plan without deleting
+        if: inputs.mode == 'review' || inputs.mode == 'verify-retained'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RETENTION_MODE: ${{ inputs.mode }}
+        run: |
+          plan=specs/evidence/zellij-rc16-rc18-execution-plan-2026-11-26.json
+          RETIRE_PLAN_SHA256="$(sha256sum "$plan" | cut -d ' ' -f1)"
+          export RETIRE_PLAN_SHA256
+          mode=preflight
+          if [ "$RETENTION_MODE" = verify-retained ]; then mode=verify; fi
+          node scripts/retire-reviewed-distributions.mjs "$mode" "$plan" "$RUNNER_TEMP/retention-check.json"
       - uses: actions/upload-artifact@v7
         if: always()
         with:
@@ -50,6 +64,7 @@ jobs:
           path: |
             ${{ runner.temp }}/retirement-inventory.json
             ${{ runner.temp }}/retention-review.json
+            ${{ runner.temp }}/retention-check.json
           if-no-files-found: error
           retention-days: 7
   retire-images:

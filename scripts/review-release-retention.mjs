@@ -63,7 +63,7 @@ export function review(inventory, graphs) {
   return { schema: 2, kind: 'read-only-retention-review', executable: false, sourceCommit: inventory.sourceCommit, observedAt: inventory.observedAt, candidateVersions: versions, releases, images };
 }
 
-async function manifests(name, roots) {
+export async function manifests(name, roots) {
   assert(packages.includes(name));
   const repository = `mylife-inc/${name}`;
   const auth = await fetch(`https://ghcr.io/token?service=ghcr.io&scope=repository:${repository}:pull`, { signal: AbortSignal.timeout(30000) });
