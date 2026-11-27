@@ -7,8 +7,8 @@ import { test } from 'node:test';
 import { browserResultSummary } from './report-browser-results.mjs';
 
 test('clean outcomes stay distinct from skips and unexpected failures', () => {
-  const result = browserResultSummary({ stats: { expected: 552, flaky: 0, unexpected: 1, skipped: 169 } });
-  assert.match(result.markdown, /\| 552 \| 0 \| 1 \| 169 \|/);
+  const result = browserResultSummary({ stats: { expected: 552, flaky: 0, unexpected: 1, skipped: 169 }, errors: [] });
+  assert.match(result.markdown, /\| 552 \| 0 \| 1 \| 169 \| 0 \|/);
   assert.doesNotMatch(result.markdown, /passing retry/);
 });
 
@@ -20,6 +20,13 @@ test('missing, malformed and negative counts cannot produce a clean summary', ()
       assert.throws(() => browserResultSummary({ stats: { ...stats, [key]: value } }), /Invalid Playwright result count/);
     }
   }
+  assert.throws(() => browserResultSummary({ stats }), /runner error inventory/);
+});
+
+test('runner failures remain visible even when no test has an unexpected outcome', () => {
+  const result = browserResultSummary({ stats: { expected: 0, flaky: 0, unexpected: 0, skipped: 0 }, errors: [{ message: 'Global setup failed' }] });
+  assert.equal(result.counts.runnerErrors, 1);
+  assert.match(result.markdown, /\| 0 \| 0 \| 0 \| 0 \| 1 \|/);
 });
 
 test('a passing retry is retained in the Actions summary and warning without changing success', async () => {
@@ -27,14 +34,14 @@ test('a passing retry is retained in the Actions summary and warning without cha
   try {
     const report = path.join(directory, 'results.json');
     const summary = path.join(directory, 'summary.md');
-    await writeFile(report, JSON.stringify({ stats: { expected: 551, flaky: 1, unexpected: 0, skipped: 169 } }));
+    await writeFile(report, JSON.stringify({ stats: { expected: 551, flaky: 1, unexpected: 0, skipped: 169 }, errors: [] }));
     const result = spawnSync(process.execPath, ['scripts/report-browser-results.mjs', report], {
       encoding: 'utf8', env: { ...process.env, GITHUB_STEP_SUMMARY: summary },
     });
     assert.equal(result.status, 0, result.stderr);
     assert.match(result.stdout, /::warning title=Browser tests required retries::1 flaky test/);
     const contents = await readFile(summary, 'utf8');
-    assert.match(contents, /\| 551 \| 1 \| 0 \| 169 \|/);
+    assert.match(contents, /\| 551 \| 1 \| 0 \| 169 \| 0 \|/);
     assert.match(contents, /passing retry does not resolve the first failure/);
   } finally {
     await rm(directory, { recursive: true, force: true });

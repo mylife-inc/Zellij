@@ -11,11 +11,13 @@ export function browserResultSummary(report) {
     }
     counts[key] = value;
   }
+  if (!Array.isArray(report.errors)) throw new Error('Missing Playwright runner error inventory');
+  counts.runnerErrors = report.errors.length;
   const lines = [
     '### Browser test outcomes', '',
-    '| Expected | Flaky (retry needed) | Unexpected | Skipped |',
-    '| ---: | ---: | ---: | ---: |',
-    `| ${counts.expected} | ${counts.flaky} | ${counts.unexpected} | ${counts.skipped} |`, '',
+    '| Expected | Flaky (retry needed) | Unexpected | Skipped | Runner errors |',
+    '| ---: | ---: | ---: | ---: | ---: |',
+    `| ${counts.expected} | ${counts.flaky} | ${counts.unexpected} | ${counts.skipped} | ${counts.runnerErrors} |`, '',
   ];
   if (counts.flaky) {
     lines.push('A passing retry does not resolve the first failure. Inspect the retained report, traces and browser-state snapshots.', '');
