@@ -7,6 +7,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
+import { imageInspectionMetadata } from './delivery-acceptance-image.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const binary = path.resolve(process.argv[2] || 'cli/target/debug/zel');
@@ -33,6 +34,11 @@ try {
     const relative = `.github/workflows/${entry.workflow}`;
     const generated = await readFile(path.join(temp, relative));
     const workflow = yaml.load(generated.toString());
+    const configBytes = await readFile(path.join(temp, fixture, entry.config));
+    const inspection = imageInspectionMetadata(entry, yaml.load(configBytes.toString()), workflow, configBytes, write);
+    if (inspection) {
+      if (write) Object.assign(entry, inspection);
+    }
     assert.deepEqual(Object.keys(workflow.on), ['pull_request', 'workflow_dispatch'], 'Acceptance only verifies PRs or runs manually');
     if (workflow.jobs.publish) {
       assert.equal(workflow.jobs.publish.if, "${{ (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') }}", 'Publication requires a manual main run');
@@ -47,7 +53,10 @@ try {
     if (!write) assert.deepEqual(await readFile(path.join(root, relative)), generated, `${relative} is stale; regenerate with --write`);
     console.log(`${entry.workflow}: ${write ? 'generated' : 'matches generator'} (PR verification; manual publication)`);
   }
-  if (write) for (const { relative, generated } of prepared) await writeFile(path.join(root, relative), generated);
+  if (write) {
+    for (const { relative, generated } of prepared) await writeFile(path.join(root, relative), generated);
+    await writeFile(path.join(root, fixture, 'cases.json'), JSON.stringify(cases, null, 2) + '\n');
+  }
 } finally {
   await rm(temp, { recursive: true, force: true });
 }

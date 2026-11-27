@@ -13,13 +13,15 @@
     "name": "static",
     "config": "portable/static.yaml",
     "workflow": "acceptance-static.yml",
-    "image": "ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.18"
+    "image": "ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.19",
+    "configSha256": "dd6abcf99e9cb1409ed92018dbbaaa6ad25c69f9e1b6edaf4d788768549a0f97"
   },
   {
     "name": "next",
     "config": "portable/next.yaml",
     "workflow": "acceptance-next.yml",
-    "image": "ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.18"
+    "image": "ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.19",
+    "configSha256": "d1e5f76a6fc0cd2190f3f9db1f0d45820d9f10ea355b35b3d32b86946ae45363"
   },
   {
     "name": "netlify-portable",
