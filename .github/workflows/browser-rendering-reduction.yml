@@ -6,7 +6,7 @@ permissions:
   contents: read
 jobs:
   reduction:
-    name: Compare DOM, actual hooks and full header
+    name: Overflow commit-order regression
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -18,16 +18,15 @@ jobs:
       - run: npm ci
       - run: npm run build --workspace @shebka/zellij
       - run: npm run build --workspace @shebka/zellij-showcase
-      - run: node scripts/browser-resize-reduction/build.mjs
-      - run: npx playwright install --with-deps webkit
-      - name: Exercise the reductions without retries
+      - run: npx playwright install --with-deps chromium webkit
+      - name: Reproduce the observed callback order without retries
         shell: bash
         working-directory: examples/showcase
         env:
           DEBUG: pw:browser
         run: |
           mkdir -p reduction-results
-          npx playwright test --config playwright.reduction.config.ts 2>&1 | tee reduction-results/browser.log
+          PLAYWRIGHT_JSON_OUTPUT_FILE=reduction-results/results.json npx playwright test e2e/header-layout.spec.ts --grep 'preserves the latest overflow request' --project desktop --project desktop-safari --workers 2 --repeat-each 2 --retries 0 --reporter=line,json 2>&1 | tee reduction-results/browser.log
       - name: Retain structured outcomes
         if: always() && hashFiles('examples/showcase/reduction-results/results.json') != ''
         run: node scripts/report-browser-results.mjs examples/showcase/reduction-results/results.json
@@ -37,6 +36,6 @@ jobs:
           name: browser-rendering-reduction
           path: |
             examples/showcase/reduction-results/
-            examples/showcase/public/__resize-reduction/
+            examples/showcase/test-results/
           retention-days: 14
           if-no-files-found: error
