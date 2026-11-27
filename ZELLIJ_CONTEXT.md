@@ -8,6 +8,21 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-26**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-26: distribution retention review and image-inspection correction**
+
+The [retention review](specs/zellij-retention-review-2026-11-26.md) inventories
+published artifacts without deleting them. The first proposed group is rc.16–rc.18:
+six releases, 240 assets and 72 exact image versions, protecting shared manifests,
+compatibility/upgrade inputs, current rc.24 and the PDF runtime/source pairs.
+A verification gap is fixed in `45eb4fa`: the old inspector pulled rc.18 while
+publication selected rc.19. Metadata now comes from the publication configuration,
+is checked against the generated workflow and binds its configuration hash.
+Fresh run `45921906069` verifies both actual rc.19 images. Earlier rc.18 results
+are preserved and correctly attributed. Execution still needs fresh, tested
+guards for this group; no artifact retirement or new CLI release occurred.
+The previous CLI audit merged as `dad1fca`, tree-identical to `c1d0a2c`, after
+all 37 CI and nine PDF jobs passed on their first attempt.
+
 **2026-11-26: CLI completion audit**
 
 The [current source/help/test audit](specs/zellij-cli-completion-audit-2026-11-26.md)

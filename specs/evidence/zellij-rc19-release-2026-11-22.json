@@ -1469,5 +1469,16 @@
         "logSha256": "f465f751988b08c390bec8b78f79116277a02f399c347c9a358b5783a80aa620"
       }
     ]
+  },
+  "imageInspectionCorrection": {
+    "date": "2026-11-26",
+    "originalRun": 45011278526,
+    "actualOriginalImageVersion": "0.2.0-rc.18",
+    "reason": "Inspection metadata remained pinned to rc.18 while publication selected rc.19. Existing success receipts are preserved but do not prove rc.19 fresh-pull acceptance.",
+    "fixCommit": "45eb4fa",
+    "correctedRun": 45921906069,
+    "correctedImageVersion": "0.2.0-rc.19",
+    "correctedConclusion": "success",
+    "record": "zellij-retention-review-2026-11-26.json"
   }
 }
