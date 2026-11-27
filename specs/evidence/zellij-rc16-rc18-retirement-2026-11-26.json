@@ -1,0 +1,293 @@
+{
+  "date": "2026-11-26",
+  "status": "complete",
+  "sourceCommit": "4699f11a902ce5d840504515231806b5de903359",
+  "replacement": "v0.2.0-rc.24",
+  "plan": "zellij-rc16-rc18-execution-plan-2026-11-26.json",
+  "planSha256": "24e89f08208efb703afc7fec6ec814f0fabb8a0e2842f4a64fd615e9b291d2e6",
+  "journal": "zellij-rc16-rc18-execution-journal-2026-11-26.json",
+  "journalSha256": "89890afe714d81130c412a00ac85851017fd664685186f4a59918a1a52879275",
+  "qualification": {
+    "run": 45933106254,
+    "sourceCommit": "4699f11a902ce5d840504515231806b5de903359",
+    "conclusion": "success",
+    "javascriptGuardTests": 36,
+    "nativeGuardCases": 13,
+    "artifact": 15169795654,
+    "artifactSha256": "1b701c8bd41e684758af89db490c970f65af1b9ca52634f757d4d6332f34f5ff"
+  },
+  "initialAttempt": {
+    "recordedAt": "2026-11-27T03:21:18.031917+00:00",
+    "sourceCommit": "4699f11a902ce5d840504515231806b5de903359",
+    "qualificationRun": 45933106254,
+    "result": "Stopped before journal creation and before deletion because the Actions API reported three active runs. Subsequent same-header requests returned zero queued and zero in-progress runs. The cause of the transient report is not established.",
+    "deletions": 0,
+    "guardUnchanged": true
+  },
+  "removed": {
+    "releases": 6,
+    "releaseTags": 6,
+    "releaseAssets": 240,
+    "imageVersions": 72,
+    "publishedAssetBytes": 2044866250,
+    "registryStorageReductionMeasured": false
+  },
+  "retained": {
+    "releaseVersions": [
+      "0.2.0-rc.11",
+      "0.2.0-rc.13",
+      "0.2.0-rc.14",
+      "0.2.0-rc.15",
+      "0.2.0-rc.19",
+      "0.2.0-rc.20",
+      "0.2.0-rc.21",
+      "0.2.0-rc.24"
+    ],
+    "sourceReleases": 8,
+    "mirrorZellijReleases": 8,
+    "unrelatedMirrorReleases": 2,
+    "protectedGitRefs": 28,
+    "protectedManifestNodes": 226,
+    "unreferencedImageHistory": 4659,
+    "postCounts": {
+      "releases": [
+        {
+          "repository": "mylife-inc/Zellij",
+          "count": 8
+        },
+        {
+          "repository": "mylife-inc/releases",
+          "count": 10
+        }
+      ],
+      "packages": [
+        {
+          "name": "zellij-base",
+          "count": 4860
+        },
+        {
+          "name": "zellij/acceptance-static",
+          "count": 13
+        },
+        {
+          "name": "zellij/acceptance-next",
+          "count": 12
+        }
+      ]
+    }
+  },
+  "publicDownloads": {
+    "checkedAt": "2026-11-27T03:24:42.146Z",
+    "success": true,
+    "checks": [
+      {
+        "repository": "mylife-inc/Zellij",
+        "version": "v0.2.0-rc.24",
+        "target": "x86_64-apple-darwin",
+        "archive": "zel-v0.2.0-rc.24-x86_64-apple-darwin.tar.gz",
+        "sha256": "759556a1f9dbd5c0c0e99f1c660c61415e71f3238987dfb7ecc1ca9f476ee5b6",
+        "reportedVersion": "zel 0.2.0-rc.24",
+        "installersMatchTaggedSource": true,
+        "combinedAndPerFileChecksums": true
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "version": "v0.2.0-rc.24",
+        "target": "x86_64-apple-darwin",
+        "archive": "zel-v0.2.0-rc.24-x86_64-apple-darwin.tar.gz",
+        "sha256": "759556a1f9dbd5c0c0e99f1c660c61415e71f3238987dfb7ecc1ca9f476ee5b6",
+        "reportedVersion": "zel 0.2.0-rc.24",
+        "installersMatchTaggedSource": true,
+        "combinedAndPerFileChecksums": true
+      }
+    ]
+  },
+  "retiredUrls": {
+    "checkedAt": "2026-11-27T03:27:57.167Z",
+    "complete": true,
+    "records": [
+      {
+        "kind": "native-download",
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.18",
+        "url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.18/zel-v0.2.0-rc.18-x86_64-apple-darwin.tar.gz",
+        "status": 404
+      },
+      {
+        "kind": "native-download",
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.17",
+        "url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.17/zel-v0.2.0-rc.17-x86_64-apple-darwin.tar.gz",
+        "status": 404
+      },
+      {
+        "kind": "native-download",
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.16",
+        "url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.16/zel-v0.2.0-rc.16-x86_64-apple-darwin.tar.gz",
+        "status": 404
+      },
+      {
+        "kind": "native-download",
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.18",
+        "url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.18/zel-v0.2.0-rc.18-x86_64-apple-darwin.tar.gz",
+        "status": 404
+      },
+      {
+        "kind": "native-download",
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.17",
+        "url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.17/zel-v0.2.0-rc.17-x86_64-apple-darwin.tar.gz",
+        "status": 404
+      },
+      {
+        "kind": "native-download",
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.16",
+        "url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.16/zel-v0.2.0-rc.16-x86_64-apple-darwin.tar.gz",
+        "status": 404
+      },
+      {
+        "kind": "image-tag",
+        "package": "zellij-base",
+        "tag": "0.2.0-rc.16",
+        "status": 404
+      },
+      {
+        "kind": "image-tag",
+        "package": "zellij-base",
+        "tag": "0.2.0-rc.16-all",
+        "status": 404
+      },
+      {
+        "kind": "image-tag",
+        "package": "zellij-base",
+        "tag": "0.2.0-rc.16-diagrams",
+        "status": 404
+      },
+      {
+        "kind": "image-tag",
+        "package": "zellij-base",
+        "tag": "0.2.0-rc.16-maths",
+        "status": 404
+      },
+      {
+        "kind": "image-tag",
+        "package": "zellij-base",
+        "tag": "0.2.0-rc.17",
+        "status": 404
+      },
+      {
+        "kind": "image-tag",
+        "package": "zellij-base",
+        "tag": "0.2.0-rc.17-all",
+        "status": 404
+      },
+      {
+        "kind": "image-tag",
+        "package": "zellij-base",
+        "tag": "0.2.0-rc.17-diagrams",
+        "status": 404
+      },
+      {
+        "kind": "image-tag",
+        "package": "zellij-base",
+        "tag": "0.2.0-rc.17-maths",
+        "status": 404
+      },
+      {
+        "kind": "image-tag",
+        "package": "zellij-base",
+        "tag": "0.2.0-rc.18",
+        "status": 404
+      },
+      {
+        "kind": "image-tag",
+        "package": "zellij-base",
+        "tag": "0.2.0-rc.18-all",
+        "status": 404
+      },
+      {
+        "kind": "image-tag",
+        "package": "zellij-base",
+        "tag": "0.2.0-rc.18-diagrams",
+        "status": 404
+      },
+      {
+        "kind": "image-tag",
+        "package": "zellij-base",
+        "tag": "0.2.0-rc.18-maths",
+        "status": 404
+      },
+      {
+        "kind": "image-tag",
+        "package": "zellij/acceptance-static",
+        "tag": "0.2.0-rc.16",
+        "status": 404
+      },
+      {
+        "kind": "image-tag",
+        "package": "zellij/acceptance-static",
+        "tag": "0.2.0-rc.17",
+        "status": 404
+      },
+      {
+        "kind": "image-tag",
+        "package": "zellij/acceptance-static",
+        "tag": "0.2.0-rc.18",
+        "status": 404
+      },
+      {
+        "kind": "image-tag",
+        "package": "zellij/acceptance-next",
+        "tag": "0.2.0-rc.16",
+        "status": 404
+      },
+      {
+        "kind": "image-tag",
+        "package": "zellij/acceptance-next",
+        "tag": "0.2.0-rc.17",
+        "status": 404
+      },
+      {
+        "kind": "image-tag",
+        "package": "zellij/acceptance-next",
+        "tag": "0.2.0-rc.18",
+        "status": 404
+      }
+    ]
+  },
+  "independentInventory": {
+    "run": 45934388655,
+    "conclusion": "success",
+    "sourceCommit": "4699f11a902ce5d840504515231806b5de903359",
+    "artifact": 15169537736,
+    "artifactSha256": "a832c5495465afacf7bfc37bef39fc77a69d156e46db13643f057f7ff7ad16e1",
+    "inventorySha256": "976bd4a99ab17200444566f1aa6640944b8333e9814e1c5ef5555cbf412b2030",
+    "targetsAbsent": true,
+    "allExcludedIdentitiesUnchanged": true
+  },
+  "freshImageInspection": {
+    "run": 45934391048,
+    "conclusion": "success",
+    "sourceCommit": "4699f11a902ce5d840504515231806b5de903359",
+    "providerJob": "skipped",
+    "images": [
+      {
+        "job": 140294143069,
+        "kind": "static",
+        "version": "0.2.0-rc.19",
+        "digest": "sha256:36eeb7d29d375b9d71ab27f25dd7d2181f274ab1c2ee2e9fbcd2c2f99b314220",
+        "freshPullAndHttp": true
+      },
+      {
+        "job": 140294142737,
+        "kind": "next",
+        "version": "0.2.0-rc.19",
+        "digest": "sha256:fbc1d54d9d73acd93a3acfb1b335e3c48647e33496d2dd61e3034f2e91d0c1c7",
+        "freshPullAndHttp": true
+      }
+    ]
+  }
+}

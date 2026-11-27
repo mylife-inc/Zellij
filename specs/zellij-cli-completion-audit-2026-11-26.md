@@ -121,6 +121,8 @@ and [release evidence](evidence/zellij-rc24-release-2026-11-25.json).
    identities, failure history and the PDF runtime's corresponding sources and
    notices. This audit performs no deletions; the next inventory must identify
    the exact obsolete artifacts and their remaining consumers.
+   Follow-up: the [scoped rc.16–rc.18 retirement](zellij-rc16-rc18-retirement-2026-11-26.md)
+   is now complete with retained-state and public-download verification.
 3. **Deferred external acceptance.** Fly, S3, actual GitLab/CircleCI runners and
    Microsoft catalog approval remain separate from implemented commands. Vercel
    is explicitly user-deferred after payment was required. Do not restart these

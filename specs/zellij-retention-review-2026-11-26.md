@@ -1,6 +1,9 @@
 # Distribution retention review — 26 November 2026
 
-Status: read-only review, with a verified correction to the image inspector.
+Outcome: the subsequent [scoped retirement](zellij-rc16-rc18-retirement-2026-11-26.md)
+is complete. The following dated review preceded that execution.
+
+Status at review: read-only, with a verified correction to the image inspector.
 No release, tag, image version or source archive has been deleted. Rc.24 remains
 the published and installed candidate. Existing user authorization covers a
 reviewed pre-1.0 cleanup; this record does not request another permission grant.

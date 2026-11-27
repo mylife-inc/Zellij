@@ -1,0 +1,474 @@
+{
+  "schema": 3,
+  "kind": "rc16-rc18-execution",
+  "executable": true,
+  "replacement": "v0.2.0-rc.24",
+  "reviewSha256": "4bc9032980257307c76dbcac470a15dc7adcb1aa1a675db9dff1efcfcd961acb",
+  "reviewedAt": "2026-11-27T03:08:42.898Z",
+  "repositoryHeads": {
+    "mylife-inc/Zellij": "e4518f2e6014c7e569be85c14bbc04b83c752c72",
+    "mylife-inc/releases": "3f03c9ef49ac2e715fe8ae7a48fc0b6b450922da",
+    "mylife-inc/homebrew-tap": "1325f888a9be2788125300efd1adc352b9ad08e0",
+    "mylife-inc/scoop-bucket": "cc249aa51c4a95dbe3778c07b3123be20b75d55f"
+  },
+  "targets": [
+    {
+      "repository": "mylife-inc/Zellij",
+      "tag": "v0.2.0-rc.16",
+      "id": 453531308,
+      "ref": {
+        "ref": "refs/tags/v0.2.0-rc.16",
+        "object": {
+          "sha": "d97b545e259573f4f746e3cc6878624e5519fb30",
+          "type": "tag"
+        }
+      }
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "tag": "v0.2.0-rc.17",
+      "id": 453982711,
+      "ref": {
+        "ref": "refs/tags/v0.2.0-rc.17",
+        "object": {
+          "sha": "fe68e354f74796e3aba20329b958e9530b2d77e8",
+          "type": "tag"
+        }
+      }
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "tag": "v0.2.0-rc.18",
+      "id": 454234418,
+      "ref": {
+        "ref": "refs/tags/v0.2.0-rc.18",
+        "object": {
+          "sha": "179eb60b93259b6e6f2f2e3959c10578970ca526",
+          "type": "tag"
+        }
+      }
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "tag": "zellij-v0.2.0-rc.16",
+      "id": 453531361,
+      "ref": {
+        "ref": "refs/tags/zellij-v0.2.0-rc.16",
+        "object": {
+          "sha": "723b0608f0dc6bfb08bf9b3ea0f2f7da18ea8de2",
+          "type": "commit"
+        }
+      }
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "tag": "zellij-v0.2.0-rc.17",
+      "id": 453982764,
+      "ref": {
+        "ref": "refs/tags/zellij-v0.2.0-rc.17",
+        "object": {
+          "sha": "590b8b89f284cca5ee876ba75ed5fe62a9e72acc",
+          "type": "commit"
+        }
+      }
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "tag": "zellij-v0.2.0-rc.18",
+      "id": 454234456,
+      "ref": {
+        "ref": "refs/tags/zellij-v0.2.0-rc.18",
+        "object": {
+          "sha": "f56fd135c371b802bab942fe3b2a2c4a720acb60",
+          "type": "commit"
+        }
+      }
+    }
+  ],
+  "protectedReleases": [
+    {
+      "repository": "mylife-inc/Zellij",
+      "id": 459227881,
+      "tag": "v0.2.0-rc.24",
+      "fingerprint": "967fa8f9ac34d1c403c1f7ad014ac567216ad623f13fe12d12808a723b50bf00"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "id": 458721769,
+      "tag": "v0.2.0-rc.21",
+      "fingerprint": "9509ff86b46ed87cdbd30b2176fb46ea29683e13bb730c9db997cf8ced70b97c"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "id": 457808212,
+      "tag": "v0.2.0-rc.20",
+      "fingerprint": "049384bbe1f218b67601c89ff15937e11978fe07c80adab7c54392546d9c7fca"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "id": 454347418,
+      "tag": "v0.2.0-rc.19",
+      "fingerprint": "b3d58c0946d5a37d3a258f8390b12eb32df9d4ca8b1a2ca5202a78a47c0fa99c"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "id": 452607018,
+      "tag": "v0.2.0-rc.15",
+      "fingerprint": "ad5f1b1f6da9c2a6dd77f2844ee66f3e33f9291040e79639213ed875e1a65e52"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "id": 452346992,
+      "tag": "v0.2.0-rc.14",
+      "fingerprint": "fdeb5a0bb4cd614296f36905aca0c09e61729beb7a6708d010b6b40f829f8012"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "id": 452241712,
+      "tag": "v0.2.0-rc.13",
+      "fingerprint": "e87bbf8dfc6c415a28f405a5c84462cf3c736affdeb93b565ea6f332b6ec901a"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "id": 450706000,
+      "tag": "v0.2.0-rc.11",
+      "fingerprint": "b12f6342df2adb9d4cae3aeefcd47aab4eea6f44360a3fcff8b6b57fbef8e45b"
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "id": 459228191,
+      "tag": "zellij-v0.2.0-rc.24",
+      "fingerprint": "2fcc3b4a221cc63c809abf34aef184b20f4b0760855739deb7c9cc7bb81310f6"
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "id": 458721993,
+      "tag": "zellij-v0.2.0-rc.21",
+      "fingerprint": "6724b5ba0535d134ad79344124d6aab8b22906c1bf88fff98649eb867ded94e2"
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "id": 457808440,
+      "tag": "zellij-v0.2.0-rc.20",
+      "fingerprint": "38672ed2579363c001a485f93857e11dc1ae6f82821ef99f4fd700aaa880e507"
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "id": 454347487,
+      "tag": "zellij-v0.2.0-rc.19",
+      "fingerprint": "00842f731179700dcfe7fc62bac8efbd528bae671d91cb43832d3efffd0cb035"
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "id": 452607147,
+      "tag": "zellij-v0.2.0-rc.15",
+      "fingerprint": "26d7ee06504406f9332ce9b974513f3fc18ac3971c8e15d532cafa69e413a491"
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "id": 452347061,
+      "tag": "zellij-v0.2.0-rc.14",
+      "fingerprint": "7d0b6cfc3435ff78f837a23420af5ac6230a33878a8b9c5287027b8ef8bb81df"
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "id": 452241760,
+      "tag": "zellij-v0.2.0-rc.13",
+      "fingerprint": "01feb2690ecedb9f639f638397f2256910a97c584459e612e69ad84044c4c71a"
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "id": 450706078,
+      "tag": "zellij-v0.2.0-rc.11",
+      "fingerprint": "966497ffafe202a8f3e9d6a0a8595c1cbf0177d3b271e63bf9887accdb825f13"
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "id": 369569503,
+      "tag": "codeseal-v1.1.0",
+      "fingerprint": "8a6ffccc5c068b1a09d661ed0ded84e08728540caa3894ed5aff70e8b437ab50"
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "id": 368834845,
+      "tag": "codeseal-v1.0.4",
+      "fingerprint": "f740c35e6cea055b39868d737420523a90f2d565463cf4fe9c179cc8dd2dc4d8"
+    }
+  ],
+  "protectedRefs": [
+    {
+      "repository": "mylife-inc/Zellij",
+      "ref": "refs/tags/v0.1.0-rc.1",
+      "object": {
+        "sha": "6631b0baddc10998369ba4d5933c60798bf736fc",
+        "type": "tag"
+      }
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "ref": "refs/tags/v0.1.0-rc.2",
+      "object": {
+        "sha": "6c13c0b8de3eed56f12fa53a13924f27818d7aaa",
+        "type": "tag"
+      }
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "ref": "refs/tags/v0.1.0-rc.3",
+      "object": {
+        "sha": "30ce29157e730ca294992bd17c38268980410add",
+        "type": "tag"
+      }
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "ref": "refs/tags/v0.1.0-rc.4",
+      "object": {
+        "sha": "a739e9733e14d80155e79248a6682a6aac8c1892",
+        "type": "tag"
+      }
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "ref": "refs/tags/v0.1.0-rc.5",
+      "object": {
+        "sha": "9de1650e62d7927a42d4e5dd15cc8bbd6f7a1ae8",
+        "type": "tag"
+      }
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "ref": "refs/tags/v0.1.0-rc.6",
+      "object": {
+        "sha": "03e62f074d81fa855285f271adb676b7a0c46785",
+        "type": "tag"
+      }
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "ref": "refs/tags/v0.1.0-rc.7",
+      "object": {
+        "sha": "4605ea0641de17b71aaae2ecf96b8daafacd41af",
+        "type": "tag"
+      }
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "ref": "refs/tags/v0.2.0-rc.11",
+      "object": {
+        "sha": "901eae33a000196b3de00cf15033352caf652f1e",
+        "type": "tag"
+      }
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "ref": "refs/tags/v0.2.0-rc.13",
+      "object": {
+        "sha": "451778ee3d3ad3fb85445d1f04d81595277ce562",
+        "type": "tag"
+      }
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "ref": "refs/tags/v0.2.0-rc.14",
+      "object": {
+        "sha": "6d227ae3454c03afa1f95c7125a57a7383cc2c00",
+        "type": "tag"
+      }
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "ref": "refs/tags/v0.2.0-rc.15",
+      "object": {
+        "sha": "40ecda5943cca9139984f94705e5702322bb6eae",
+        "type": "tag"
+      }
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "ref": "refs/tags/v0.2.0-rc.19",
+      "object": {
+        "sha": "4e77b476201b439e23503df9edf307cbd224a2ad",
+        "type": "tag"
+      }
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "ref": "refs/tags/v0.2.0-rc.20",
+      "object": {
+        "sha": "f705020f64eae5f2ed0b105c678a9d91915f569e",
+        "type": "tag"
+      }
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "ref": "refs/tags/v0.2.0-rc.21",
+      "object": {
+        "sha": "1938e44d7c8d11b02611b8db8251ee1be7538664",
+        "type": "tag"
+      }
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "ref": "refs/tags/v0.2.0-rc.22",
+      "object": {
+        "sha": "e6c69c5639dba5bf24085b2fae4d954a02c6d66a",
+        "type": "tag"
+      }
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "ref": "refs/tags/v0.2.0-rc.23",
+      "object": {
+        "sha": "b55d4e35b0664abc55cdb0e5c644b758ee796e86",
+        "type": "tag"
+      }
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "ref": "refs/tags/v0.2.0-rc.24",
+      "object": {
+        "sha": "2c3b7daa3be5b0f218b4584a8074e77b4f25d848",
+        "type": "commit"
+      }
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "ref": "refs/tags/codeseal-v1.0.3",
+      "object": {
+        "sha": "8011d8754b35634e1844844eb5be717c2ee4db85",
+        "type": "commit"
+      }
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "ref": "refs/tags/codeseal-v1.0.4",
+      "object": {
+        "sha": "8011d8754b35634e1844844eb5be717c2ee4db85",
+        "type": "commit"
+      }
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "ref": "refs/tags/codeseal-v1.1.0",
+      "object": {
+        "sha": "eb96e0b48a3f3859d06d6be764689e09eb4fd64f",
+        "type": "commit"
+      }
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "ref": "refs/tags/zellij-v0.2.0-rc.11",
+      "object": {
+        "sha": "a6ee987f100ff115897c209aff807e59076dc1f6",
+        "type": "commit"
+      }
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "ref": "refs/tags/zellij-v0.2.0-rc.13",
+      "object": {
+        "sha": "697533faf8cf6d3e45a9b33961a425f3dd034b38",
+        "type": "commit"
+      }
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "ref": "refs/tags/zellij-v0.2.0-rc.14",
+      "object": {
+        "sha": "49ff9ef284b8074c11aa0ca404824049dfa941c9",
+        "type": "commit"
+      }
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "ref": "refs/tags/zellij-v0.2.0-rc.15",
+      "object": {
+        "sha": "f1fbe44fc5241188fa343c9b0763f58cf0ca25b8",
+        "type": "commit"
+      }
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "ref": "refs/tags/zellij-v0.2.0-rc.19",
+      "object": {
+        "sha": "3f03c9ef49ac2e715fe8ae7a48fc0b6b450922da",
+        "type": "commit"
+      }
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "ref": "refs/tags/zellij-v0.2.0-rc.20",
+      "object": {
+        "sha": "3f03c9ef49ac2e715fe8ae7a48fc0b6b450922da",
+        "type": "commit"
+      }
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "ref": "refs/tags/zellij-v0.2.0-rc.21",
+      "object": {
+        "sha": "3f03c9ef49ac2e715fe8ae7a48fc0b6b450922da",
+        "type": "commit"
+      }
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "ref": "refs/tags/zellij-v0.2.0-rc.24",
+      "object": {
+        "sha": "3f03c9ef49ac2e715fe8ae7a48fc0b6b450922da",
+        "type": "commit"
+      }
+    }
+  ],
+  "gates": [
+    {
+      "repository": "mylife-inc/Zellij",
+      "run": 45786080712,
+      "head": "a3933b62b6cb382a2c21b769db8b6674db335211",
+      "workflow": ".github/workflows/ci.yml"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run": 45786080629,
+      "head": "a3933b62b6cb382a2c21b769db8b6674db335211",
+      "workflow": ".github/workflows/pdf-wasm-probe.yml"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run": 45791545516,
+      "head": "2c3b7daa3be5b0f218b4584a8074e77b4f25d848",
+      "workflow": ".github/workflows/release.yml"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run": 45806880663,
+      "head": "c583efbaa515b2454d683b845baf137dbfaedddc",
+      "workflow": ".github/workflows/docs.yml"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run": 45921906069,
+      "head": "45eb4fa7594bd34d3c8c7eb08725f286689de84a",
+      "workflow": ".github/workflows/acceptance-inspect-images.yml"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run": 45923597757,
+      "head": "ff78154fcf0ca7f21ce91344b9821e73a81c86cf",
+      "workflow": ".github/workflows/ci.yml"
+    },
+    {
+      "repository": "mylife-inc/homebrew-tap",
+      "run": 45800173733,
+      "head": "1325f888a9be2788125300efd1adc352b9ad08e0",
+      "workflow": ".github/workflows/acceptance.yml"
+    },
+    {
+      "repository": "mylife-inc/scoop-bucket",
+      "run": 45800212328,
+      "head": "cc249aa51c4a95dbe3778c07b3123be20b75d55f",
+      "workflow": ".github/workflows/acceptance.yml"
+    }
+  ]
+}
