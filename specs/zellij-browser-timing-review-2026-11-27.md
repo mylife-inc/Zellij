@@ -10,6 +10,12 @@ finds and fixes a separate focus-restoration race while frames continue. Its
 natural failures and controlled before/after regression do not close either
 historical timing finding described here.
 
+The [28 November scheduling comparison](zellij-browser-scheduling-2026-11-28.md)
+subsequently reproduces six stale-menu/frame-delay failures with restricted CPU
+affinity on the current engine. It retains their original traces and distinguishes
+this symptom reproduction from a native root-cause diagnosis. Neither historical
+finding is closed.
+
 ## Review scope
 
 The [evidence](evidence/zellij-browser-timing-review-2026-11-27.json) inventories
