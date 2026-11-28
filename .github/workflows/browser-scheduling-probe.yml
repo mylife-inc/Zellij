@@ -1,4 +1,4 @@
-name: Browser native scheduling capture
+name: Browser renderer process capture
 on:
   push:
     branches: [codex/browser-scheduling-probe]
@@ -6,7 +6,7 @@ permissions:
   contents: read
 jobs:
   probe:
-    name: native / ${{ matrix.profile }}
+    name: renderer / ${{ matrix.profile }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
@@ -47,7 +47,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: native-${{ matrix.profile }}
+          name: renderer-${{ matrix.profile }}
           path: |
             scheduling-results/
             examples/showcase/scheduling-results/

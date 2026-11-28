@@ -23,12 +23,14 @@ def browser_processes():
             continue
         try:
             name = (entry / 'comm').read_text().strip()
-            if not any(token in name.lower() for token in ('webkit', 'minibrowser')):
+            executable = Path(os.readlink(entry / 'exe')).name
+            if not any(token in (name + ' ' + executable).lower()
+                       for token in ('webkit', 'minibrowser', 'wpe', 'webprocess', 'networkprocess', 'gpuprocess')):
                 continue
             # Deliberately omit arguments and environments. stat fields are
             # numeric counters, state and parent ID for repository browser runs.
             stat = (entry / 'stat').read_text().rsplit(')', 1)[1].split()
-            records.append({'pid': int(entry.name), 'name': name, 'state': stat[0],
+            records.append({'pid': int(entry.name), 'name': name, 'executable': executable, 'state': stat[0],
                             'ppid': int(stat[1]), 'userTicks': int(stat[11]),
                             'systemTicks': int(stat[12]), 'threads': int(stat[17]),
                             'startedTicks': int(stat[19]),
@@ -52,6 +54,7 @@ try:
         metadata["competitorPid"] = competitor.pid
     child = subprocess.Popen(command, start_new_session=True)
     metadata["commandPid"] = child.pid
+    process_names = set()
     with (output / "host-samples.jsonl").open("w", buffering=1) as samples:
         while True:
             sample = {"elapsedSeconds": time.time() - started,
@@ -59,6 +62,7 @@ try:
                       "cpuTicks": [line for line in Path("/proc/stat").read_text().splitlines()
                                    if line.split()[0] in {"cpu" + str(cpu) for cpu in selected}],
                       "commandExit": child.poll(), "browserProcesses": browser_processes()}
+            process_names.update(p['executable'] for p in sample['browserProcesses'])
             pressure = Path("/proc/pressure/cpu")
             if pressure.exists():
                 sample["hostCpuPressure"] = pressure.read_text()
@@ -67,6 +71,10 @@ try:
                 break
             time.sleep(2)
     metadata["exitCode"] = child.returncode
+    metadata["capturedExecutables"] = sorted(process_names)
+    metadata["capturedWebProcess"] = any('webprocess' in name.lower() for name in process_names)
+    if not metadata["capturedWebProcess"]:
+        raise RuntimeError("Native capture lacks a rendering web process; do not infer idle renderer state")
 finally:
     for process in (child, competitor):
         if process is not None:

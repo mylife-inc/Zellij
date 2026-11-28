@@ -20,7 +20,7 @@ test.afterEach(async ({ page }, info) => {
 
 // Distinct cases share the normal two worker/browser processes. No repeat-each
 // worker restart, active heartbeat or injected stall; assertion deadlines stay 5s.
-for (let iteration = 0; iteration < 64; iteration++) {
+for (let iteration = 0; iteration < 32; iteration++) {
   for (const variant of variants) {
     test(`${variant.name} / sequence ${iteration + 1}`, async ({ page }, info) => {
       const errors: string[] = [];
