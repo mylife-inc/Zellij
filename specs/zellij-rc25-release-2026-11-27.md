@@ -25,6 +25,10 @@ The workspace and its six local lockfile package versions advance to
 audit immediately before tagging, and use the existing release helper from the
 qualified clean main tree. The new tag must remain immutable.
 
+The initial local release-policy run caught the standalone Docker recipe still
+selecting rc.24. Its default is updated with the workspace version; the guard
+is retained. The initial source head is not a qualified release checkpoint.
+
 Tagged publication must complete its native, renderer, editable-source,
 development, PDF, image and both-repository public-download gates. Existing
 template archive identities must retain their recorded hashes. Then verify the
