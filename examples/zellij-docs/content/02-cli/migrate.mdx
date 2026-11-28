@@ -21,7 +21,7 @@ report their location; `--dry-run` never downloads a renderer.
 
 For compatibility, **omitting `--layout` still writes raw hosted content directly
 under `--out`**. `--layout content` explicitly selects that same legacy behavior.
-The shortcut has identical defaults. Candidate rc.24 supports both layouts;
+The shortcut has identical defaults. Candidate rc.25 supports both layouts;
 the older `zellij-v0.1.3` binary does not support this option.
 
 <div id="when-to-run-the-three-commands-instead" className="zellij-legacy-anchor" />
@@ -69,14 +69,14 @@ See [conversion limits](/cli/convert).
 | `--validate` | Accepted for parity with `convert`; migration already validates |
 | `--dry-run` | In-memory conversion only; no writes or validation |
 
-Candidate rc.24 supports `--assets skip` for document-only imports. Asset
+Candidate rc.25 supports `--assets skip` for document-only imports. Asset
 references remain unchanged and may need manual repair; document links still
 convert normally. See [asset policy](/cli/convert#document-links-and-assets).
 To use existing public assets, add `--assets link --asset-base-url
 https://cdn.example.com/manual/`. Migration saves the resulting absolute URLs
 in the converted content and copies no referenced assets. The report lists
 those URLs; validation does not test their remote availability. The asset and
-optional validation flags are available in candidate `0.2.0-rc.24`.
+optional validation flags are available in candidate `0.2.0-rc.25`.
 
 ## See also
 

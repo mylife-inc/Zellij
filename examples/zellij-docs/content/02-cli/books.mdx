@@ -11,8 +11,8 @@ output locations and offline reuse. `--pdf-backend container` remains available.
 </Callout>
 
 
-<Callout type="info" title="Included in candidate 0.2.0-rc.24">
-Candidate rc.24 includes the versioned book manifest, `book-classic@0.3.0`
+<Callout type="info" title="Included in candidate 0.2.0-rc.25">
+Candidate rc.25 includes the versioned book manifest, `book-classic@0.3.0`
 and optional LuaLaTeX PDFs on all six native platforms. Shared equation and
 statement references, numeric citations, glossary and subject index are included.
 Technical/study templates, the `book.edition` selector and PDF downloads in
@@ -24,7 +24,7 @@ and Arabic RTL print, plus pinned Amiri/Libertinus fonts.
 
 ## Coordinated editions
 
-Candidate rc.24 includes `book-technical@0.2.0` and `book-study@0.2.0`.
+Candidate rc.25 includes `book-technical@0.2.0` and `book-study@0.2.0`.
 Their updated instructions require CLI rc.21; the manuscript format needs engine rc.8 or later.
 
 ```sh
@@ -62,7 +62,7 @@ the publication revision, so a downloadable PDF remains tied to that selection.
 The PDF receipt records `classic-v1`, `technical-v1` or `study-v1` in `template`.
 Unknown edition names fail validation and preserve the previous export.
 
-PDF remains opt-in. Candidate rc.24 includes print design
+PDF remains opt-in. Candidate rc.25 includes print design
 settings and the multilingual support described below. Custom TeX execution,
 automatic indexing and alternate citation styles remain
 separate work. The new starters contain original sample writing and an explicitly
@@ -482,7 +482,7 @@ collation and rich glossary definitions remain separate extensions.
 These set the HTML content language and writing direction, including in adapted
 Next images. Portable layout uses logical inline edges. They do not translate
 interface labels such as “Chapter” and “Search” or promise complete typesetting
-support for every language. Candidate rc.24 selects local Amiri for Arabic books. Verify the glyphs
+support for every language. Candidate rc.25 selects local Amiri for Arabic books. Verify the glyphs
 needed by your manuscript; the bundled fonts do not cover every script.
 
 The supported language syntax is 2–8 ASCII letters, optionally followed by
@@ -591,7 +591,7 @@ Paper may be `a5`, `a4` or `letter`; font size is the integer `10`, `11` or `12`
 (points). Settings are validated even when PDF is disabled. Unknown keys,
 unsupported values, null settings, hosted sites and missing book manifests fail
 validation. The selected edition supplies the default fonts and chapter styling.
-Candidate rc.24 includes the print overrides and bounded language/font support below.
+Candidate rc.25 includes the print overrides and bounded language/font support below.
 Custom font files remain unsupported. Standalone `zel pdf` explicitly
 requests export regardless of `enabled`, using the same paper and font settings.
 
@@ -758,7 +758,7 @@ Any explicit `pdf` settings require a CLI pin of **0.2.0-rc.6 or later**.
 PDF-enabled **Next** image jobs require **0.2.0-rc.8 or later**; CI generation
 rejects older pins before writing a workflow, including with `--force`.
 Generation does not check whether a pinned candidate has been published.
-Generate the workflow with `--zel-version 0.2.0-rc.24` to select this published
+Generate the workflow with `--zel-version 0.2.0-rc.25` to select this published
 candidate. Pins below the minimum versions above do not support these settings.
 
 ### Toolchain and failure behavior
@@ -798,7 +798,7 @@ fail publication. The last complete output is retained. `pdf --check` checks the
 adapter's content contract; only actual typesetting can establish layout, fonts
 and successful PDF generation.
 
-Candidate rc.24 lets long URL-shaped external-link labels wrap
+Candidate rc.25 lets long URL-shaped external-link labels wrap
 at punctuation, including labels styled with bold or inline code. Their clickable
 destinations remain unchanged. Descriptive prose labels keep their ordinary
 typesetting.
@@ -809,7 +809,7 @@ typesetting.
 
 ### Cached PDF default (rc.21)
 
-[Candidate rc.24](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.24)
+[Candidate rc.25](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.25)
 uses the cached PDF backend by default with matching downloadable packages.
 It shares the rich renderer's verified private Node runtime and
 stores its compiler under `$ZELLIJ_HOME/cache/pdf/VERSION` (default
@@ -862,7 +862,7 @@ references share their number; unreferenced definitions are rejected. The printe
 any authored home document; its body remains part of the publication. The adapter
 starts that authored home content on a separate page after the contents.
 
-Candidate rc.24 print editions support English/French/German/Spanish LTR and
+Candidate rc.25 print editions support English/French/German/Spanish LTR and
 Arabic RTL, with the bundled fonts described above. SVG, WebP,
 GIF, remote images, diagram fences, attachment links and internal-link URL queries
 are rejected for print with an explanation; ordinary web builds retain their existing support.

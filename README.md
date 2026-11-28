@@ -63,7 +63,7 @@ and no browser library. They work offline with JavaScript disabled. Enable
 runtime. Diagram source stays readable without JavaScript; Mermaid grammar errors
 are reported in the browser, while native checks validate input limits.
 
-[Candidate 0.2.0-rc.24](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.24)
+[Candidate 0.2.0-rc.25](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.25)
 provides native x64 and ARM64 downloads for GNU/Linux, macOS and Windows, with
 pinned shell/PowerShell installers and checksums. Homebrew installation is
 `brew install mylife-inc/tap/zel`. Windows users can install through the owned
@@ -126,14 +126,15 @@ creative-studio use version 0.1.4; product-studio and api-platform use 0.1.3.
 These revisions require rc.24 and document cached Next development; previously published
 archives remain unchanged.
 
-The [candidate notes](specs/releases/v0.2.0-rc.24.md) describe cached Next development,
-offline reuse and the isolated PDF runtime workaround found during release testing.
+The [candidate notes](specs/releases/v0.2.0-rc.25.md) describe the desktop navigation
+focus correction and the CLI help update. Cached Next development, offline reuse
+and the isolated PDF runtime workaround remain included.
 The short workflows, cached PDF default and matching compiler sources remain available. Cached editable sources
 for default `eject` and `new app`, rich HTTP/file builds, validation and preview
 remain included.
 Wrapper generation needs only `zel`; running an editable Next app needs Node/npm. WinGet ownership protection and the x64/ARM64 manifest bundle remain
-included. Microsoft catalog acceptance for the rc.15 submission remains
-separate; a public WinGet install is not yet available.
+included. Microsoft catalog acceptance remains separate from this candidate's
+verification; use Scoop or the pinned installer for the verified rc.25 release.
 Standalone rich validation and live preview remain included. Downloaded resources share one home: `ZELLIJ_HOME`,
 default `~/Dev/config/zellij`. Standalone installers use its
 `bin/`; renderer, remote-template and editable-source downloads use
@@ -232,7 +233,7 @@ only the compiled serving app in the final image.
 
 [`cli/`](cli) is `zel`: one native binary for scaffolding a content folder,
 converting one from another documentation tool, validating it, building it and
-shipping it. Candidate rc.24 builds rich double-click websites with a downloaded,
+shipping it. Candidate rc.25 builds rich double-click websites with a downloaded,
 verified renderer cached separately from the small CLI: no Docker, Node.js, npm
 or Python installation is required. `zel build` selects this for rich sites;
 `zel build --offline` requires the matching cache to be present. Explicit
@@ -240,7 +241,7 @@ or Python installation is required. `zel build` selects this for rich sites;
 their container workflow. Commands that describe Zellij's content
 model read the schema compiled into the native binary.
 
-Candidate rc.24 also uses the cached renderer for rich `zel check`,
+Candidate rc.25 also uses the cached renderer for rich `zel check`,
 `zel watch`, `zel view` and `zel view --watch`. These commands accept
 `--offline` for both `file` and `static`. Static deployment builds and optional
 import validation also reuse the cache.
