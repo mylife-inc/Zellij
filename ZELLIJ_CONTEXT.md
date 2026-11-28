@@ -8,6 +8,21 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-27**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-27: rc.25 source candidate preparation**
+
+The [rc.25 release record](specs/zellij-rc25-release-2026-11-27.md) packages the
+navigation focus fix from merged PR #270 (`f287b74`) and the existing `templates`
+JSON-help correction. Source version preparation does not establish publication:
+rc.24 remains the public installation target until tagged/public verification.
+Template identities, command syntax, PDF licensing and deferred provider/catalog
+boundaries are unchanged. No old distributions are retired in this preparation.
+
+PR #270's merged tree matches the source that passes all 37 CI jobs and 556
+browser cases without retries. Natural resize qualification passes 32 cases
+(160 cycles). Production docs `46089063545` and all 13 main-image jobs in
+`46089063530` pass; the live home/menu pages hydrate and toggle themes without
+captured browser errors. The original timing findings remain open.
+
 **2026-11-27: overflow focus request consumed before its menu commits**
 
 Source `f3ac599` fixes a separate focus race found during the rendering
