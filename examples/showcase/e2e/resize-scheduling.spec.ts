@@ -1,7 +1,13 @@
 import { test, expect, type Page } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 import { browserFailureState } from '../../../scripts/browser-failure-state.mjs';
-const variants = [{ name: 'showcase-control', url: '/' }];
+const variants = [
+  { name: 'showcase-control', url: '/' },
+  { name: 'escape-cancel', url: '/' },
+  { name: 'showcase-flat', url: '/' },
+  { name: 'dom-effects', url: '/__resize-reduction/dom.html' },
+  { name: 'dom-flat', url: '/__resize-reduction/dom.html?effects=off' },
+].filter(variant => variant.name === (process.env.PROBE_VARIANT ?? 'showcase-control'));
 const observedErrors = new WeakMap<Page, string[]>();
 test.afterEach(async ({ page }, info) => {
   if (info.status === info.expectedStatus) return;
@@ -20,12 +26,20 @@ for (let iteration = 0; iteration < 32; iteration++) {
       const errors: string[] = [];
       observedErrors.set(page, errors);
       page.on('pageerror', error => errors.push(error.message));
+      if (variant.name === 'escape-cancel') await page.addInitScript(() => {
+        document.addEventListener('keydown', event => {
+          if (event.key === 'Escape') event.preventDefault();
+        }, true);
+      });
       await page.goto(variant.url, { waitUntil: 'networkidle' });
       await page.evaluate(() => document.fonts.ready);
       const nav = page.getByRole('navigation', { name: 'Main', exact: true });
       if (variant.url === '/') {
         await page.addStyleTag({ content: '.zellij-nav-link, .zellij-nav-probe-label { font-size: 1.25rem; }' });
       }
+      if (variant.name === 'showcase-flat') await page.addStyleTag({ content:
+        '*, *::before, *::after { animation: none !important; transition: none !important; filter: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }',
+      });
       for (let cycle = 0; cycle < 5; cycle++) {
         await test.step(`narrow/open/Escape/widen ${cycle + 1}`, async () => {
           await page.setViewportSize({ width: 901, height: 900 });
