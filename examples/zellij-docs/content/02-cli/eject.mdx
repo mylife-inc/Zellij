@@ -3,8 +3,8 @@ title: eject
 description: Create an editable Next.js wrapper from verified source downloads or an explicit distribution image.
 ---
 
-<Callout type="info" title="Available in candidate 0.2.0-rc.24">
-Candidate rc.24 introduces cached editable sources. Older candidates extract
+<Callout type="info" title="Available in candidate 0.2.0-rc.25">
+Candidate rc.25 introduces cached editable sources. Older candidates extract
 from a container by default. Explicit image selection remains supported.
 </Callout>
 
@@ -13,7 +13,7 @@ zel eject --out my-wrapper
 zel eject docs/manual --out my-wrapper
 zel eject --with-docs --out my-wrapper
 zel eject --with-docs --out another-wrapper --offline
-zel eject --with-docs --out my-wrapper --image ghcr.io/mylife-inc/zellij-base:0.2.0-rc.24
+zel eject --with-docs --out my-wrapper --image ghcr.io/mylife-inc/zellij-base:0.2.0-rc.25
 ```
 
 With no image override, `eject` downloads the matching editable source package
@@ -96,4 +96,4 @@ For explicit image extraction, missing runtime exits `4`, invalid arguments/layo
 operations exit `3`. `--json` is not supported. See [`features`](/cli/features) to
 change dependency selection afterward.
 
-Candidate rc.24 supports both cached sources and explicit image extraction.
+Candidate rc.25 supports both cached sources and explicit image extraction.
