@@ -13,14 +13,14 @@ test.afterEach(async ({ page }, info) => {
   if (info.status === info.expectedStatus) return;
   const output = info.outputPath('resize-state.json');
   await writeFile(output, JSON.stringify({ status: info.status, title: info.title,
-    worker: info.parallelIndex, pageErrors: observedErrors.get(page) ?? [],
+    worker: info.parallelIndex, capturedAtEpochMs: Date.now(), pageErrors: observedErrors.get(page) ?? [],
     state: await browserFailureState(page) }, null, 2));
   await info.attach('resize-state', { path: output, contentType: 'application/json' });
 });
 
 // Distinct cases share the normal two worker/browser processes. No repeat-each
 // worker restart, active heartbeat or injected stall; assertion deadlines stay 5s.
-for (let iteration = 0; iteration < 32; iteration++) {
+for (let iteration = 0; iteration < 64; iteration++) {
   for (const variant of variants) {
     test(`${variant.name} / sequence ${iteration + 1}`, async ({ page }, info) => {
       const errors: string[] = [];

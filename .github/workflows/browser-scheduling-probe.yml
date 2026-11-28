@@ -1,4 +1,4 @@
-name: Browser scheduling reduction
+name: Browser native scheduling capture
 on:
   push:
     branches: [codex/browser-scheduling-probe]
@@ -6,13 +6,13 @@ permissions:
   contents: read
 jobs:
   probe:
-    name: one-cpu / ${{ matrix.variant }}
+    name: native / ${{ matrix.profile }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
-        variant: [showcase-control, escape-cancel, showcase-flat, dom-effects, dom-flat]
+        profile: [one-cpu, contended]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -34,19 +34,20 @@ jobs:
       - name: Natural resize sequence with zero retries
         working-directory: examples/showcase
         env:
-          PROBE_VARIANT: ${{ matrix.variant }}
+          PROBE_VARIANT: showcase-control
+          PROBE_PROFILE: ${{ matrix.profile }}
           DEBUG: pw:browser
         shell: bash
         run: |
           set -euo pipefail
-          python3 ../../scripts/browser-scheduling-probe/run.py one-cpu ../../scheduling-results/host npx playwright test --config playwright.scheduling.config.ts 2>&1 | tee ../../scheduling-results/browser.log
+          python3 ../../scripts/browser-scheduling-probe/run.py "$PROBE_PROFILE" ../../scheduling-results/host npx playwright test --config playwright.scheduling.config.ts 2>&1 | tee ../../scheduling-results/browser.log
       - name: Summarize structured resize outcomes
         if: always() && hashFiles('examples/showcase/scheduling-results/results.json') != ''
         run: node scripts/report-browser-results.mjs examples/showcase/scheduling-results/results.json
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: reduction-${{ matrix.variant }}
+          name: native-${{ matrix.profile }}
           path: |
             scheduling-results/
             examples/showcase/scheduling-results/

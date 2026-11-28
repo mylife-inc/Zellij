@@ -16,10 +16,33 @@ output.mkdir(parents=True, exist_ok=True)
 allowed = sorted(os.sched_getaffinity(0))
 selected = allowed if profile == "available" else allowed[:1]
 os.sched_setaffinity(0, selected)
+def browser_processes():
+    records = []
+    for entry in Path('/proc').iterdir():
+        if not entry.name.isdigit():
+            continue
+        try:
+            name = (entry / 'comm').read_text().strip()
+            if not any(token in name.lower() for token in ('webkit', 'minibrowser')):
+                continue
+            # Deliberately omit arguments and environments. stat fields are
+            # numeric counters, state and parent ID for repository browser runs.
+            stat = (entry / 'stat').read_text().rsplit(')', 1)[1].split()
+            records.append({'pid': int(entry.name), 'name': name, 'state': stat[0],
+                            'ppid': int(stat[1]), 'userTicks': int(stat[11]),
+                            'systemTicks': int(stat[12]), 'threads': int(stat[17]),
+                            'startedTicks': int(stat[19]),
+                            'waitChannel': (entry / 'wchan').read_text().strip()})
+        except (FileNotFoundError, ProcessLookupError, PermissionError):
+            pass
+    return records
+
 started = time.time()
 metadata = {"profile": profile, "allowedCpus": allowed, "selectedCpus": selected,
             "competitors": 1 if profile == "contended" else 0,
-            "command": command, "startedAtEpoch": started}
+            "command": command, "startedAtEpoch": started,
+            "clockTicksPerSecond": os.sysconf('SC_CLK_TCK'),
+            "cpuModel": next((line.split(':', 1)[1].strip() for line in Path('/proc/cpuinfo').read_text().splitlines() if line.startswith('model name')), None)}
 (output / "scheduling.json").write_text(json.dumps(metadata, indent=2) + "\n")
 competitor = None
 child = None
@@ -35,7 +58,7 @@ try:
                       "loadAverage": os.getloadavg(),
                       "cpuTicks": [line for line in Path("/proc/stat").read_text().splitlines()
                                    if line.split()[0] in {"cpu" + str(cpu) for cpu in selected}],
-                      "commandExit": child.poll()}
+                      "commandExit": child.poll(), "browserProcesses": browser_processes()}
             pressure = Path("/proc/pressure/cpu")
             if pressure.exists():
                 sample["hostCpuPressure"] = pressure.read_text()
