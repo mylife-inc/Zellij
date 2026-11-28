@@ -1,0 +1,71 @@
+name: Browser scheduling probe
+on:
+  push:
+    branches: [codex/browser-scheduling-probe]
+permissions:
+  contents: read
+jobs:
+  probe:
+    name: ${{ matrix.case }} / ${{ matrix.profile }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        case: [resize, hydration]
+        profile: [available, one-cpu, contended]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace @shebka/zellij
+      - if: matrix.case == 'resize'
+        run: npm run build --workspace @shebka/zellij-showcase
+      - if: matrix.case == 'hydration'
+        working-directory: examples/zellij-docs
+        env:
+          ZELLIJ_OUTPUT: export
+        run: |
+          node ../../engine/packages/zellij/bin/zellij.mjs prepare
+          node ../../node_modules/next/dist/bin/next build --webpack
+      - run: npx playwright install --with-deps chromium webkit
+      - name: Record exact browser and source identities
+        run: |
+          mkdir -p scheduling-results
+          git rev-parse HEAD > scheduling-results/source.txt
+          cp node_modules/playwright-core/browsers.json scheduling-results/browsers.json
+          node --version > scheduling-results/node.txt
+          npx playwright --version > scheduling-results/playwright.txt
+      - name: Natural resize sequence with zero retries
+        if: matrix.case == 'resize'
+        working-directory: examples/showcase
+        env:
+          PROBE_PROFILE: ${{ matrix.profile }}
+          DEBUG: pw:browser
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 ../../scripts/browser-scheduling-probe/run.py "$PROBE_PROFILE" ../../scheduling-results/host npx playwright test --config playwright.scheduling.config.ts 2>&1 | tee ../../scheduling-results/browser.log
+      - name: Original positive documentation checks
+        if: matrix.case == 'hydration'
+        env:
+          PROBE_PROFILE: ${{ matrix.profile }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/browser-scheduling-probe/run.py "$PROBE_PROFILE" scheduling-results/host node scripts/browser-scheduling-probe/docs.mjs 2>&1 | tee scheduling-results/browser.log
+      - name: Summarize structured resize outcomes
+        if: always() && matrix.case == 'resize' && hashFiles('examples/showcase/scheduling-results/results.json') != ''
+        run: node scripts/report-browser-results.mjs examples/showcase/scheduling-results/results.json
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: scheduling-${{ matrix.case }}-${{ matrix.profile }}
+          path: |
+            scheduling-results/
+            examples/showcase/scheduling-results/
+          retention-days: 14
+          if-no-files-found: error
