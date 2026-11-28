@@ -1,0 +1,2519 @@
+{
+  "status": "failed",
+  "title": "showcase-observed / sequence 5",
+  "worker": 0,
+  "pageErrors": [],
+  "failure": {
+    "before": {
+      "at": 9147,
+      "url": "http://127.0.0.1:4317/",
+      "readyState": "complete",
+      "visibility": "visible",
+      "documentFocus": true,
+      "viewport": {
+        "width": 1600,
+        "height": 900
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "fontStatus": "loaded",
+      "active": {
+        "tag": "BODY",
+        "id": "",
+        "class": "",
+        "role": null,
+        "label": null
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "width": 1600,
+        "height": 89
+      },
+      "navigation": {
+        "box": {
+          "x": 657,
+          "y": 40,
+          "width": 384.25,
+          "height": 48
+        },
+        "measured": "true",
+        "items": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "probeWidths": [
+          144.359375,
+          91.40625,
+          113.796875,
+          83.359375,
+          80.140625,
+          91.953125
+        ],
+        "probeFonts": [
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          }
+        ],
+        "gap": "4px",
+        "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif"
+      },
+      "themeControls": [
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "zellij-icon-button",
+          "role": null,
+          "label": "Change theme",
+          "box": {
+            "x": 1374.09375,
+            "y": 46,
+            "width": 36,
+            "height": 36
+          },
+          "display": "grid",
+          "visibility": "visible",
+          "hiddenBy": null
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "zellij-icon-button",
+          "role": null,
+          "label": "Switch to dark theme",
+          "box": {
+            "x": 1418.09375,
+            "y": 46,
+            "width": 36,
+            "height": 36
+          },
+          "display": "grid",
+          "visibility": "visible",
+          "hiddenBy": null
+        }
+      ],
+      "drawerCount": 0
+    },
+    "frameTimes": [
+      9184,
+      9202
+    ],
+    "after": {
+      "at": 9421,
+      "url": "http://127.0.0.1:4317/",
+      "readyState": "complete",
+      "visibility": "visible",
+      "documentFocus": true,
+      "viewport": {
+        "width": 1600,
+        "height": 900
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "fontStatus": "loaded",
+      "active": {
+        "tag": "BODY",
+        "id": "",
+        "class": "",
+        "role": null,
+        "label": null
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "width": 1600,
+        "height": 89
+      },
+      "navigation": {
+        "box": {
+          "x": 657,
+          "y": 40,
+          "width": 384.25,
+          "height": 48
+        },
+        "measured": "true",
+        "items": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "probeWidths": [
+          144.359375,
+          91.40625,
+          113.796875,
+          83.359375,
+          80.140625,
+          91.953125
+        ],
+        "probeFonts": [
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          }
+        ],
+        "gap": "4px",
+        "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif"
+      },
+      "themeControls": [
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "zellij-icon-button",
+          "role": null,
+          "label": "Change theme",
+          "box": {
+            "x": 1374.09375,
+            "y": 46,
+            "width": 36,
+            "height": 36
+          },
+          "display": "grid",
+          "visibility": "visible",
+          "hiddenBy": null
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "zellij-icon-button",
+          "role": null,
+          "label": "Switch to dark theme",
+          "box": {
+            "x": 1418.09375,
+            "y": 46,
+            "width": 36,
+            "height": 36
+          },
+          "display": "grid",
+          "visibility": "visible",
+          "hiddenBy": null
+        }
+      ],
+      "drawerCount": 0
+    }
+  },
+  "scheduling": {
+    "at": 9429,
+    "viewport": {
+      "width": 1600,
+      "height": 900
+    },
+    "totals": {
+      "observer-created": 6,
+      "observer-observe": 16,
+      "frame-cancelled": 25,
+      "frame-requested": 26,
+      "nav-commit": 17,
+      "frame-fired": 26,
+      "frame-returned": 26,
+      "observer-delivered": 29,
+      "window-resize": 8,
+      "focusin": 15,
+      "keydown": 8,
+      "focusout": 4,
+      "observer-disconnect": 4
+    },
+    "pending": [],
+    "events": [
+      {
+        "at": 564,
+        "kind": "observer-created",
+        "id": 1
+      },
+      {
+        "at": 564,
+        "kind": "observer-observe",
+        "id": 1,
+        "tag": "NAV",
+        "class": "zellij-nav-desktop"
+      },
+      {
+        "at": 564,
+        "kind": "observer-observe",
+        "id": 1,
+        "tag": "DIV",
+        "class": "zellij-nav-inner"
+      },
+      {
+        "at": 564,
+        "kind": "observer-observe",
+        "id": 1,
+        "tag": "DIV",
+        "class": "zellij-brand"
+      },
+      {
+        "at": 564,
+        "kind": "observer-observe",
+        "id": 1,
+        "tag": "DIV",
+        "class": "zellij-nav-company"
+      },
+      {
+        "at": 564,
+        "kind": "observer-observe",
+        "id": 1,
+        "tag": "DIV",
+        "class": "zellij-nav-actions"
+      },
+      {
+        "at": 564,
+        "kind": "observer-observe",
+        "id": 1,
+        "tag": "LI",
+        "class": "zellij-nav-probe"
+      },
+      {
+        "at": 564,
+        "kind": "observer-observe",
+        "id": 1,
+        "tag": "LI",
+        "class": "zellij-nav-probe"
+      },
+      {
+        "at": 564,
+        "kind": "observer-observe",
+        "id": 1,
+        "tag": "LI",
+        "class": "zellij-nav-probe"
+      },
+      {
+        "at": 564,
+        "kind": "observer-observe",
+        "id": 1,
+        "tag": "LI",
+        "class": "zellij-nav-probe"
+      },
+      {
+        "at": 564,
+        "kind": "observer-observe",
+        "id": 1,
+        "tag": "LI",
+        "class": "zellij-nav-probe"
+      },
+      {
+        "at": 564,
+        "kind": "observer-observe",
+        "id": 1,
+        "tag": "LI",
+        "class": "zellij-nav-probe"
+      },
+      {
+        "at": 577,
+        "kind": "observer-created",
+        "id": 2
+      },
+      {
+        "at": 577,
+        "kind": "observer-observe",
+        "id": 2,
+        "tag": "DIV",
+        "class": "zellij-carousel-track"
+      },
+      {
+        "at": 594,
+        "kind": "frame-cancelled",
+        "handle": 0
+      },
+      {
+        "at": 594,
+        "kind": "frame-requested",
+        "handle": 1,
+        "callback": "j",
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 594,
+        "kind": "nav-commit",
+        "items": [
+          "0",
+          "1",
+          "2",
+          "more"
+        ],
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 656,
+        "kind": "frame-fired",
+        "handle": 1,
+        "scheduledAt": 594,
+        "elapsed": 62,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 659,
+        "kind": "frame-returned",
+        "handle": 1,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 660,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 11
+      },
+      {
+        "at": 660,
+        "kind": "frame-cancelled",
+        "handle": 1
+      },
+      {
+        "at": 660,
+        "kind": "frame-requested",
+        "handle": 2,
+        "callback": "j",
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 660,
+        "kind": "observer-delivered",
+        "id": 2,
+        "count": 1
+      },
+      {
+        "at": 830,
+        "kind": "frame-fired",
+        "handle": 2,
+        "scheduledAt": 660,
+        "elapsed": 170,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 832,
+        "kind": "frame-returned",
+        "handle": 2,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 1398,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 6
+      },
+      {
+        "at": 1398,
+        "kind": "frame-cancelled",
+        "handle": 2
+      },
+      {
+        "at": 1398,
+        "kind": "frame-requested",
+        "handle": 3,
+        "callback": "j",
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 1421,
+        "kind": "window-resize",
+        "width": 901,
+        "height": 900,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 1421,
+        "kind": "frame-fired",
+        "handle": 3,
+        "scheduledAt": 1398,
+        "elapsed": 23,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 1422,
+        "kind": "frame-returned",
+        "handle": 3,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 1425,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 3
+      },
+      {
+        "at": 1425,
+        "kind": "frame-cancelled",
+        "handle": 3
+      },
+      {
+        "at": 1425,
+        "kind": "frame-requested",
+        "handle": 4,
+        "callback": "j",
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 1425,
+        "kind": "observer-delivered",
+        "id": 2,
+        "count": 1
+      },
+      {
+        "at": 1444,
+        "kind": "nav-commit",
+        "items": [
+          "more"
+        ],
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 1549,
+        "kind": "focusin",
+        "target": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": null,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 1557,
+        "kind": "keydown",
+        "key": "ArrowDown"
+      },
+      {
+        "at": 1614,
+        "kind": "observer-created",
+        "id": 3
+      },
+      {
+        "at": 1614,
+        "kind": "observer-observe",
+        "id": 3,
+        "tag": "HEADER",
+        "class": "zellij-header zellij-header-sticky"
+      },
+      {
+        "at": 1615,
+        "kind": "focusout",
+        "target": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 1616,
+        "kind": "focusin",
+        "target": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 1620,
+        "kind": "nav-commit",
+        "items": [
+          "more"
+        ],
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 1626,
+        "kind": "frame-fired",
+        "handle": 4,
+        "scheduledAt": 1425,
+        "elapsed": 201,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 1639,
+        "kind": "frame-returned",
+        "handle": 4,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 1639,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 2
+      },
+      {
+        "at": 1639,
+        "kind": "frame-cancelled",
+        "handle": 4
+      },
+      {
+        "at": 1639,
+        "kind": "frame-requested",
+        "handle": 5,
+        "callback": "j",
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 1639,
+        "kind": "observer-delivered",
+        "id": 3,
+        "count": 1
+      },
+      {
+        "at": 1729,
+        "kind": "keydown",
+        "key": "Escape"
+      },
+      {
+        "at": 1733,
+        "kind": "observer-disconnect",
+        "id": 3
+      },
+      {
+        "at": 1735,
+        "kind": "focusin",
+        "target": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": null,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 1735,
+        "kind": "nav-commit",
+        "items": [
+          "more"
+        ],
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 1853,
+        "kind": "window-resize",
+        "width": 1600,
+        "height": 900,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 1856,
+        "kind": "frame-fired",
+        "handle": 5,
+        "scheduledAt": 1639,
+        "elapsed": 217,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 1862,
+        "kind": "frame-returned",
+        "handle": 5,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 1862,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 2
+      },
+      {
+        "at": 1862,
+        "kind": "frame-cancelled",
+        "handle": 5
+      },
+      {
+        "at": 1862,
+        "kind": "frame-requested",
+        "handle": 6,
+        "callback": "j",
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 1862,
+        "kind": "observer-delivered",
+        "id": 2,
+        "count": 1
+      },
+      {
+        "at": 1869,
+        "kind": "nav-commit",
+        "items": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 1874,
+        "kind": "frame-requested",
+        "handle": 7,
+        "callback": "",
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 2169,
+        "kind": "frame-fired",
+        "handle": 6,
+        "scheduledAt": 1862,
+        "elapsed": 307,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 2170,
+        "kind": "frame-returned",
+        "handle": 6,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 2170,
+        "kind": "frame-fired",
+        "handle": 7,
+        "scheduledAt": 1874,
+        "elapsed": 296,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 2171,
+        "kind": "focusin",
+        "target": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        },
+        "related": null,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 2171,
+        "kind": "frame-returned",
+        "handle": 7,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 2172,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 1
+      },
+      {
+        "at": 2172,
+        "kind": "frame-cancelled",
+        "handle": 6
+      },
+      {
+        "at": 2172,
+        "kind": "frame-requested",
+        "handle": 8,
+        "callback": "j",
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 2366,
+        "kind": "window-resize",
+        "width": 901,
+        "height": 900,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 2366,
+        "kind": "frame-fired",
+        "handle": 8,
+        "scheduledAt": 2172,
+        "elapsed": 194,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 2367,
+        "kind": "frame-returned",
+        "handle": 8,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 2367,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 3
+      },
+      {
+        "at": 2367,
+        "kind": "frame-cancelled",
+        "handle": 8
+      },
+      {
+        "at": 2367,
+        "kind": "frame-requested",
+        "handle": 9,
+        "callback": "j",
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 2367,
+        "kind": "observer-delivered",
+        "id": 2,
+        "count": 1
+      },
+      {
+        "at": 2370,
+        "kind": "nav-commit",
+        "items": [
+          "more"
+        ],
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 2372,
+        "kind": "frame-cancelled",
+        "handle": 7
+      },
+      {
+        "at": 2372,
+        "kind": "frame-requested",
+        "handle": 10,
+        "callback": "",
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 2446,
+        "kind": "focusin",
+        "target": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": null,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 2452,
+        "kind": "keydown",
+        "key": "ArrowDown"
+      },
+      {
+        "at": 2466,
+        "kind": "observer-created",
+        "id": 4
+      },
+      {
+        "at": 2466,
+        "kind": "observer-observe",
+        "id": 4,
+        "tag": "HEADER",
+        "class": "zellij-header zellij-header-sticky"
+      },
+      {
+        "at": 2467,
+        "kind": "focusout",
+        "target": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 2467,
+        "kind": "focusin",
+        "target": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 2467,
+        "kind": "nav-commit",
+        "items": [
+          "more"
+        ],
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 2504,
+        "kind": "frame-fired",
+        "handle": 9,
+        "scheduledAt": 2367,
+        "elapsed": 137,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 2508,
+        "kind": "frame-returned",
+        "handle": 9,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 2508,
+        "kind": "frame-fired",
+        "handle": 10,
+        "scheduledAt": 2372,
+        "elapsed": 136,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 2508,
+        "kind": "frame-returned",
+        "handle": 10,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 2508,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 2
+      },
+      {
+        "at": 2508,
+        "kind": "frame-cancelled",
+        "handle": 9
+      },
+      {
+        "at": 2508,
+        "kind": "frame-requested",
+        "handle": 11,
+        "callback": "j",
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 2508,
+        "kind": "observer-delivered",
+        "id": 4,
+        "count": 1
+      },
+      {
+        "at": 2512,
+        "kind": "keydown",
+        "key": "Escape"
+      },
+      {
+        "at": 2514,
+        "kind": "observer-disconnect",
+        "id": 4
+      },
+      {
+        "at": 2515,
+        "kind": "focusin",
+        "target": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": null,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 2515,
+        "kind": "nav-commit",
+        "items": [
+          "more"
+        ],
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 2641,
+        "kind": "window-resize",
+        "width": 1600,
+        "height": 900,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 2641,
+        "kind": "frame-fired",
+        "handle": 11,
+        "scheduledAt": 2508,
+        "elapsed": 133,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 2643,
+        "kind": "frame-returned",
+        "handle": 11,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 2643,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 2
+      },
+      {
+        "at": 2643,
+        "kind": "frame-cancelled",
+        "handle": 11
+      },
+      {
+        "at": 2643,
+        "kind": "frame-requested",
+        "handle": 12,
+        "callback": "j",
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 2643,
+        "kind": "observer-delivered",
+        "id": 2,
+        "count": 1
+      },
+      {
+        "at": 2655,
+        "kind": "nav-commit",
+        "items": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 2658,
+        "kind": "frame-cancelled",
+        "handle": 10
+      },
+      {
+        "at": 2658,
+        "kind": "frame-requested",
+        "handle": 13,
+        "callback": "",
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 2809,
+        "kind": "frame-fired",
+        "handle": 12,
+        "scheduledAt": 2643,
+        "elapsed": 166,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 2809,
+        "kind": "frame-returned",
+        "handle": 12,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 2809,
+        "kind": "frame-fired",
+        "handle": 13,
+        "scheduledAt": 2658,
+        "elapsed": 151,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 2810,
+        "kind": "focusin",
+        "target": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        },
+        "related": null,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 2810,
+        "kind": "frame-returned",
+        "handle": 13,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 2811,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 1
+      },
+      {
+        "at": 2811,
+        "kind": "frame-cancelled",
+        "handle": 12
+      },
+      {
+        "at": 2811,
+        "kind": "frame-requested",
+        "handle": 14,
+        "callback": "j",
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 2884,
+        "kind": "frame-fired",
+        "handle": 14,
+        "scheduledAt": 2811,
+        "elapsed": 73,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 2884,
+        "kind": "frame-returned",
+        "handle": 14,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 3018,
+        "kind": "window-resize",
+        "width": 901,
+        "height": 900,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 3018,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 3
+      },
+      {
+        "at": 3018,
+        "kind": "frame-cancelled",
+        "handle": 14
+      },
+      {
+        "at": 3018,
+        "kind": "frame-requested",
+        "handle": 15,
+        "callback": "j",
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 3018,
+        "kind": "observer-delivered",
+        "id": 2,
+        "count": 1
+      },
+      {
+        "at": 3159,
+        "kind": "frame-fired",
+        "handle": 15,
+        "scheduledAt": 3018,
+        "elapsed": 141,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 3159,
+        "kind": "frame-returned",
+        "handle": 15,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 3164,
+        "kind": "nav-commit",
+        "items": [
+          "more"
+        ],
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 3165,
+        "kind": "frame-cancelled",
+        "handle": 13
+      },
+      {
+        "at": 3166,
+        "kind": "frame-requested",
+        "handle": 16,
+        "callback": "",
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 3207,
+        "kind": "frame-fired",
+        "handle": 16,
+        "scheduledAt": 3165,
+        "elapsed": 42,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 3207,
+        "kind": "focusin",
+        "target": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": null,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 3207,
+        "kind": "frame-returned",
+        "handle": 16,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 3208,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 2
+      },
+      {
+        "at": 3208,
+        "kind": "frame-cancelled",
+        "handle": 15
+      },
+      {
+        "at": 3208,
+        "kind": "frame-requested",
+        "handle": 17,
+        "callback": "j",
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 3272,
+        "kind": "frame-fired",
+        "handle": 17,
+        "scheduledAt": 3208,
+        "elapsed": 64,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 3272,
+        "kind": "frame-returned",
+        "handle": 17,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 3364,
+        "kind": "keydown",
+        "key": "ArrowDown"
+      },
+      {
+        "at": 3380,
+        "kind": "observer-created",
+        "id": 5
+      },
+      {
+        "at": 3380,
+        "kind": "observer-observe",
+        "id": 5,
+        "tag": "HEADER",
+        "class": "zellij-header zellij-header-sticky"
+      },
+      {
+        "at": 3381,
+        "kind": "focusout",
+        "target": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 3382,
+        "kind": "focusin",
+        "target": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 3382,
+        "kind": "nav-commit",
+        "items": [
+          "more"
+        ],
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 3386,
+        "kind": "observer-delivered",
+        "id": 5,
+        "count": 1
+      },
+      {
+        "at": 3423,
+        "kind": "keydown",
+        "key": "Escape"
+      },
+      {
+        "at": 3424,
+        "kind": "observer-disconnect",
+        "id": 5
+      },
+      {
+        "at": 3428,
+        "kind": "focusin",
+        "target": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": null,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 3429,
+        "kind": "nav-commit",
+        "items": [
+          "more"
+        ],
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 3628,
+        "kind": "window-resize",
+        "width": 1600,
+        "height": 900,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 3629,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 2
+      },
+      {
+        "at": 3629,
+        "kind": "frame-cancelled",
+        "handle": 17
+      },
+      {
+        "at": 3629,
+        "kind": "frame-requested",
+        "handle": 18,
+        "callback": "j",
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 3629,
+        "kind": "observer-delivered",
+        "id": 2,
+        "count": 1
+      },
+      {
+        "at": 3765,
+        "kind": "frame-fired",
+        "handle": 18,
+        "scheduledAt": 3629,
+        "elapsed": 136,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 3765,
+        "kind": "frame-returned",
+        "handle": 18,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 3769,
+        "kind": "nav-commit",
+        "items": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 3772,
+        "kind": "frame-cancelled",
+        "handle": 16
+      },
+      {
+        "at": 3772,
+        "kind": "frame-requested",
+        "handle": 19,
+        "callback": "",
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 3846,
+        "kind": "frame-fired",
+        "handle": 19,
+        "scheduledAt": 3772,
+        "elapsed": 74,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 3846,
+        "kind": "focusin",
+        "target": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        },
+        "related": null,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 3846,
+        "kind": "frame-returned",
+        "handle": 19,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 3848,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 1
+      },
+      {
+        "at": 3848,
+        "kind": "frame-cancelled",
+        "handle": 18
+      },
+      {
+        "at": 3848,
+        "kind": "frame-requested",
+        "handle": 20,
+        "callback": "j",
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 3926,
+        "kind": "window-resize",
+        "width": 901,
+        "height": 900,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 3926,
+        "kind": "frame-fired",
+        "handle": 20,
+        "scheduledAt": 3848,
+        "elapsed": 78,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 3927,
+        "kind": "frame-returned",
+        "handle": 20,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 3927,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 3
+      },
+      {
+        "at": 3927,
+        "kind": "frame-cancelled",
+        "handle": 20
+      },
+      {
+        "at": 3927,
+        "kind": "frame-requested",
+        "handle": 21,
+        "callback": "j",
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 3927,
+        "kind": "observer-delivered",
+        "id": 2,
+        "count": 1
+      },
+      {
+        "at": 3930,
+        "kind": "nav-commit",
+        "items": [
+          "more"
+        ],
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 3932,
+        "kind": "frame-cancelled",
+        "handle": 19
+      },
+      {
+        "at": 3932,
+        "kind": "frame-requested",
+        "handle": 22,
+        "callback": "",
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 3967,
+        "kind": "focusin",
+        "target": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": null,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 3975,
+        "kind": "keydown",
+        "key": "ArrowDown"
+      },
+      {
+        "at": 3983,
+        "kind": "observer-created",
+        "id": 6
+      },
+      {
+        "at": 3983,
+        "kind": "observer-observe",
+        "id": 6,
+        "tag": "HEADER",
+        "class": "zellij-header zellij-header-sticky"
+      },
+      {
+        "at": 3984,
+        "kind": "focusout",
+        "target": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 3984,
+        "kind": "focusin",
+        "target": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 3985,
+        "kind": "nav-commit",
+        "items": [
+          "more"
+        ],
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 4017,
+        "kind": "keydown",
+        "key": "Escape"
+      },
+      {
+        "at": 4020,
+        "kind": "observer-disconnect",
+        "id": 6
+      },
+      {
+        "at": 4021,
+        "kind": "focusin",
+        "target": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": null,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 4021,
+        "kind": "nav-commit",
+        "items": [
+          "more"
+        ],
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 4062,
+        "kind": "window-resize",
+        "width": 1600,
+        "height": 900,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 4063,
+        "kind": "frame-fired",
+        "handle": 21,
+        "scheduledAt": 3927,
+        "elapsed": 136,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 4063,
+        "kind": "frame-returned",
+        "handle": 21,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 4063,
+        "kind": "frame-fired",
+        "handle": 22,
+        "scheduledAt": 3932,
+        "elapsed": 131,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 4063,
+        "kind": "frame-returned",
+        "handle": 22,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 4063,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 3
+      },
+      {
+        "at": 4063,
+        "kind": "frame-cancelled",
+        "handle": 21
+      },
+      {
+        "at": 4063,
+        "kind": "frame-requested",
+        "handle": 23,
+        "callback": "j",
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 4063,
+        "kind": "observer-delivered",
+        "id": 2,
+        "count": 1
+      },
+      {
+        "at": 4067,
+        "kind": "nav-commit",
+        "items": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 4070,
+        "kind": "frame-cancelled",
+        "handle": 22
+      },
+      {
+        "at": 4232,
+        "kind": "frame-fired",
+        "handle": 23,
+        "scheduledAt": 4063,
+        "elapsed": 169,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 4232,
+        "kind": "frame-returned",
+        "handle": 23,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 4232,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 1
+      },
+      {
+        "at": 4232,
+        "kind": "frame-cancelled",
+        "handle": 23
+      },
+      {
+        "at": 4232,
+        "kind": "frame-requested",
+        "handle": 24,
+        "callback": "j",
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 4301,
+        "kind": "frame-fired",
+        "handle": 24,
+        "scheduledAt": 4232,
+        "elapsed": 69,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 4302,
+        "kind": "frame-returned",
+        "handle": 24,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 9165,
+        "kind": "frame-requested",
+        "handle": 25,
+        "callback": "",
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 9184,
+        "kind": "frame-fired",
+        "handle": 25,
+        "scheduledAt": 9165,
+        "elapsed": 19,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 9184,
+        "kind": "frame-requested",
+        "handle": 26,
+        "callback": "",
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 9184,
+        "kind": "frame-returned",
+        "handle": 25,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 9202,
+        "kind": "frame-fired",
+        "handle": 26,
+        "scheduledAt": 9184,
+        "elapsed": 18,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 9202,
+        "kind": "frame-returned",
+        "handle": 26,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 9415,
+        "kind": "frame-cancelled",
+        "handle": 26
+      }
+    ],
+    "visibility": "visible",
+    "documentFocus": true
+  }
+}
