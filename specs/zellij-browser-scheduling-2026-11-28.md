@@ -140,7 +140,7 @@ failure samples record no animation callback; the one-CPU sample records one.
 
 Both concurrent web processes advance their CPU counters during each failure
 window. Over pairs of samples strictly within the five seconds before capture,
-they use approximately 45–49% of one CPU each in the one-CPU failure, and
+they use approximately 45–50% of one CPU each in the one-CPU failure, and
 26–38% each in the two contended failures. The main-thread wait channel often
 shows polling, but that does not mean the process's other threads are idle.
 This is evidence of continuing native work, not an identified deadlock or a
