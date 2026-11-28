@@ -138,7 +138,7 @@ export function NavBarClient({ model }: { model: NavModel }) {
   const headerRef = useRef<HTMLElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const measureRef = useRef<HTMLUListElement>(null);
-  const focusAfterResize = useRef<number | 'more' | null>(null);
+  const focusAfterResize = useRef<{ target: number | 'more'; count: number } | null>(null);
   const lastNavigationFocus = useRef<HTMLElement | null>(null);
   const lostNavigationFocus = useRef(false);
   const pendingResizeFocus = useRef(false);
@@ -267,7 +267,10 @@ export function NavBarClient({ model }: { model: NavModel }) {
     if (focused && menuBarRef.current?.contains(focused)) {
       const index = focused.closest<HTMLElement>('[data-nav-index]')?.dataset.navIndex;
       if (index === 'more' || (index !== undefined && Number(index) >= next)) {
-        focusAfterResize.current = next < model.items.length ? 'more' : Math.min(previous, next - 1);
+        focusAfterResize.current = {
+          target: next < model.items.length ? 'more' : Math.min(previous, next - 1),
+          count: next,
+        };
       }
     }
     closeMenu();
@@ -282,12 +285,14 @@ export function NavBarClient({ model }: { model: NavModel }) {
     // A new focus destination or pointer choice can cancel restoration after
     // this effect schedules its frame. Read the live intent, not a stale target.
     const frame = requestAnimationFrame(() => {
-      const target = focusAfterResize.current;
+      const request = focusAfterResize.current;
+      // Another measurement can run earlier in this frame, before React commits
+      // its new menu. Leave that request for the effect of the matching layout.
+      if (request === null || request.count !== visibleCount) return;
       focusAfterResize.current = null;
-      if (target === null) return;
       const active = document.activeElement;
       if (active !== document.body && active?.getClientRects().length) return;
-      menuBarRef.current?.querySelector<HTMLElement>(`[data-nav-index="${target}"] [data-zellij-navitem]`)?.focus({ preventScroll: true });
+      menuBarRef.current?.querySelector<HTMLElement>(`[data-nav-index="${request.target}"] [data-zellij-navitem]`)?.focus({ preventScroll: true });
     });
     return () => cancelAnimationFrame(frame);
   }, [visibleCount]);

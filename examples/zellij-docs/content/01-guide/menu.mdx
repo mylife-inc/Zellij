@@ -128,7 +128,9 @@ or clicking page content takes precedence over that restoration.
 
 CLI rc.21 and its renderer apply the same rule when desktop links
 move into or out of **More**: delayed restoration respects a newer focus or
-pointer choice instead of pulling focus back to the menu.
+pointer choice instead of pulling focus back to the menu. During rapid desktop
+resizes, restoration waits for the matching menu layout to appear, so an older
+queued callback cannot discard the latest focus destination.
 
 Header updates, such as changing from transparent to
 solid while scrolling, preserve the focused link inside an open drawer.

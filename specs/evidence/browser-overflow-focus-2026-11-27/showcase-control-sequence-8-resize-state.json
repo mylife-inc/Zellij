@@ -1,0 +1,259 @@
+{
+  "status": "failed",
+  "title": "showcase-control / sequence 8",
+  "worker": 0,
+  "pageErrors": [],
+  "failure": {
+    "before": {
+      "at": 11064,
+      "url": "http://127.0.0.1:4317/",
+      "readyState": "complete",
+      "visibility": "visible",
+      "documentFocus": true,
+      "viewport": {
+        "width": 1600,
+        "height": 900
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "fontStatus": "loaded",
+      "active": {
+        "tag": "BODY",
+        "id": "",
+        "class": "",
+        "role": null,
+        "label": null
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "width": 1600,
+        "height": 89
+      },
+      "navigation": {
+        "box": {
+          "x": 657,
+          "y": 40,
+          "width": 384.25,
+          "height": 48
+        },
+        "measured": "true",
+        "items": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "probeWidths": [
+          144.359375,
+          91.40625,
+          113.796875,
+          83.359375,
+          80.140625,
+          91.953125
+        ],
+        "probeFonts": [
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          }
+        ],
+        "gap": "4px",
+        "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif"
+      },
+      "themeControls": [
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "zellij-icon-button",
+          "role": null,
+          "label": "Change theme",
+          "box": {
+            "x": 1374.09375,
+            "y": 46,
+            "width": 36,
+            "height": 36
+          },
+          "display": "grid",
+          "visibility": "visible",
+          "hiddenBy": null
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "zellij-icon-button",
+          "role": null,
+          "label": "Switch to dark theme",
+          "box": {
+            "x": 1418.09375,
+            "y": 46,
+            "width": 36,
+            "height": 36
+          },
+          "display": "grid",
+          "visibility": "visible",
+          "hiddenBy": null
+        }
+      ],
+      "drawerCount": 0
+    },
+    "frameTimes": [
+      11098,
+      11114
+    ],
+    "after": {
+      "at": 11341,
+      "url": "http://127.0.0.1:4317/",
+      "readyState": "complete",
+      "visibility": "visible",
+      "documentFocus": true,
+      "viewport": {
+        "width": 1600,
+        "height": 900
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "fontStatus": "loaded",
+      "active": {
+        "tag": "BODY",
+        "id": "",
+        "class": "",
+        "role": null,
+        "label": null
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "width": 1600,
+        "height": 89
+      },
+      "navigation": {
+        "box": {
+          "x": 657,
+          "y": 40,
+          "width": 384.25,
+          "height": 48
+        },
+        "measured": "true",
+        "items": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "probeWidths": [
+          144.359375,
+          91.40625,
+          113.796875,
+          83.359375,
+          80.140625,
+          91.953125
+        ],
+        "probeFonts": [
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          },
+          {
+            "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+            "size": "16px",
+            "weight": "400"
+          }
+        ],
+        "gap": "4px",
+        "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif"
+      },
+      "themeControls": [
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "zellij-icon-button",
+          "role": null,
+          "label": "Change theme",
+          "box": {
+            "x": 1374.09375,
+            "y": 46,
+            "width": 36,
+            "height": 36
+          },
+          "display": "grid",
+          "visibility": "visible",
+          "hiddenBy": null
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "zellij-icon-button",
+          "role": null,
+          "label": "Switch to dark theme",
+          "box": {
+            "x": 1418.09375,
+            "y": 46,
+            "width": 36,
+            "height": 36
+          },
+          "display": "grid",
+          "visibility": "visible",
+          "hiddenBy": null
+        }
+      ],
+      "drawerCount": 0
+    }
+  },
+  "scheduling": {
+    "instrumentation": false
+  }
+}

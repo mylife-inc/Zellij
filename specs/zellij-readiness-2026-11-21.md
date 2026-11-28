@@ -97,6 +97,14 @@ All 37 required source CI jobs and documentation validation pass. The final
 full browser run passes 552 cases without failures or retries (169 conditional
 skips). PR #229 is merged; production documentation and main images are updated. The correction now ships in the rc.17 renderer and matching images. See the [implementation record](zellij-overflow-focus-2026-11-21.md).
 
+A second overflow focus race is corrected in source `f3ac599`: an older queued
+callback no longer consumes a newer request before its menu commits. Natural
+showcase failures occurred with and without instrumentation. The controlled
+regression fails in all eight Chromium/WebKit cases before the correction and
+passes all eight afterward without retries. Local types and 556 engine tests
+pass. See the [27 November focus record](zellij-overflow-focus-commit-2026-11-27.md).
+This source correction needs packaging in a later candidate; rc.24 is unchanged.
+
 Two historical browser timing findings remain unexplained: WebKit navigation
 overflow after resize and a documentation hydration-readiness timeout.
 Bounded repetitions passed, and failure diagnostics were added; passing later

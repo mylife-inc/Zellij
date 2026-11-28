@@ -8,6 +8,19 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-27**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-27: overflow focus request consumed before its menu commits**
+
+Source `f3ac599` fixes a separate focus race found during the rendering
+reduction. An older queued callback could clear a newer resize request before
+its menu committed, leaving focus on the body. Requests now carry their target
+visible-item count; only the matching layout effect may consume them. Newer
+focus/pointer choices still win. The [implementation record](specs/zellij-overflow-focus-commit-2026-11-27.md)
+retains natural instrumented/uninstrumented failures and controlled evidence:
+all eight Chromium/WebKit cases fail before the fix (`46085478688`) and pass
+afterward (`46085554070`), with zero retries. Local types and 556 engine tests
+pass. The historical missing-frame resize stall and hydration timeout remain
+unresolved. Rc.24 is unchanged; the fix needs inclusion in a later candidate.
+
 **2026-11-27: additional browser timing evidence**
 
 The [browser follow-up](specs/zellij-browser-timing-review-2026-11-27.md) reviews

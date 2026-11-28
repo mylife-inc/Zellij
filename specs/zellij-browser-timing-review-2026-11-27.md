@@ -5,6 +5,11 @@ WebKit resize failures that passed on Playwright retry. Successful job status
 alone must not be described as a clean first attempt. No product fix follows
 from these observations yet.
 
+The subsequent [rendering reduction](zellij-overflow-focus-commit-2026-11-27.md)
+finds and fixes a separate focus-restoration race while frames continue. Its
+natural failures and controlled before/after regression do not close either
+historical timing finding described here.
+
 ## Review scope
 
 The [evidence](evidence/zellij-browser-timing-review-2026-11-27.json) inventories

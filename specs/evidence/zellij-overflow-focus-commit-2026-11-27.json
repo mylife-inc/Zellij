@@ -1,0 +1,1174 @@
+{
+  "date": "2026-11-27",
+  "scope": "Repository showcase and synthetic reduction fixtures; no provider deployments.",
+  "historicalRenderingStallResolved": false,
+  "historicalHydrationTimeoutResolved": false,
+  "runs": [
+    {
+      "run": 46083601538,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/46083601538",
+      "source": "3f54510669d109ef2000dfdeeb58fe8dd592aad7",
+      "artifactSha256": "370561de5f7199fe063621f700f8579cb798930ec169559757d7d8dae6290340",
+      "reportSha256": "7fc7a0cd4be8886654a1e4718c5a7f70471e4e5b95310ebf0a4f2019db6b12d1",
+      "stats": {
+        "startTime": "2026-11-27T23:39:56.379Z",
+        "duration": 150071.031,
+        "expected": 52,
+        "skipped": 0,
+        "unexpected": 8,
+        "flaky": 0
+      },
+      "qualification": "Investigative only. The tee pipeline masked the failing exit status (52 passed, 8 failed); shell:bash corrected it in the next probe. Five failures were simplified-fixture focus restoration defects, corrected separately.",
+      "caseCount": 60,
+      "attemptCount": 60,
+      "nonPassingCases": [
+        {
+          "title": "showcase-observed / sequence 2",
+          "project": "",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/resize-reduction.spec.ts:45:9",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "actual-hooks / sequence 5",
+          "project": "",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/resize-reduction.spec.ts:45:9",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "dom-effects / sequence 6",
+          "project": "",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toBeFocused() failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/resize-reduction.spec.ts:45:9",
+                  "focusCountFailure": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "dom-effects / sequence 9",
+          "project": "",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toBeFocused() failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/resize-reduction.spec.ts:45:9",
+                  "focusCountFailure": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "actual-hooks / sequence 9",
+          "project": "",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toBeFocused() failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/resize-reduction.spec.ts:45:9",
+                  "focusCountFailure": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "dom-effects / sequence 10",
+          "project": "",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toBeFocused() failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/resize-reduction.spec.ts:45:9",
+                  "focusCountFailure": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "dom-effects / sequence 11",
+          "project": "",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toBeFocused() failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/resize-reduction.spec.ts:45:9",
+                  "focusCountFailure": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "showcase-observed / sequence 12",
+          "project": "",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/resize-reduction.spec.ts:45:9",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "run": 46084440939,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/46084440939",
+      "source": "02ea997a497c230ac966af4693cf920ea62737aa",
+      "artifactSha256": "b0bdd7691c91b765b29ce61481e9627d3c48ae4075caa51dd218be86f2ba548b",
+      "reportSha256": "4ebebd9654b46c5b8b6a00ac6ed481f4952776e1375754cb6883813fec035fbc",
+      "stats": {
+        "startTime": "2026-11-27T23:49:26.932Z",
+        "duration": 254444.74599999998,
+        "expected": 71,
+        "skipped": 0,
+        "unexpected": 9,
+        "flaky": 0
+      },
+      "qualification": "71 passed, 9 focus-count failures. Both DOM-only variants passed all 16 sequences; actual-hooks failed 6, showcase-observed failed 2, uninstrumented showcase-control failed 1. No historical More-retained/frame-stall assertion reproduced.",
+      "caseCount": 80,
+      "attemptCount": 80,
+      "nonPassingCases": [
+        {
+          "title": "showcase-observed / sequence 5",
+          "project": "",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/resize-reduction.spec.ts:48:9",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "actual-hooks / sequence 7",
+          "project": "",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/resize-reduction.spec.ts:48:9",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "showcase-control / sequence 8",
+          "project": "",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/resize-reduction.spec.ts:48:9",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "showcase-observed / sequence 9",
+          "project": "",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/resize-reduction.spec.ts:48:9",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "actual-hooks / sequence 12",
+          "project": "",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/resize-reduction.spec.ts:48:9",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "actual-hooks / sequence 13",
+          "project": "",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/resize-reduction.spec.ts:48:9",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "actual-hooks / sequence 14",
+          "project": "",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/resize-reduction.spec.ts:48:9",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "actual-hooks / sequence 15",
+          "project": "",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/resize-reduction.spec.ts:48:9",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "actual-hooks / sequence 16",
+          "project": "",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/resize-reduction.spec.ts:48:9",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "run": 46085057718,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/46085057718",
+      "source": "d674fea25dbc3510813bd0b7243251343be97247",
+      "artifactSha256": "4eddd60be639111bf1187d61b7e0a12098eec5c0000ac5897cd1494bb513f900",
+      "reportSha256": "debcdc0488ab368fe9cd4a5370de66714516b1846ce6bb1aa42883906adec3ef",
+      "stats": {
+        "startTime": "2026-11-27T23:56:19.336Z",
+        "duration": 31655.175,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 8,
+        "flaky": 0
+      },
+      "qualification": "Four 901px cases reach the intended final focus assertion and fail; four 1600px cases fail earlier because no second observer measurement is queued. The revised regression changes the bar width by one pixel to enqueue that measurement in both browsers.",
+      "caseCount": 8,
+      "attemptCount": 8,
+      "nonPassingCases": [
+        {
+          "title": "preserves the latest overflow request until its 901px menu commits",
+          "project": "desktop",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/header-layout.spec.ts:521:62",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "preserves the latest overflow request until its 1600px menu commits",
+          "project": "desktop",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(received).toEqual(expected) // deep equality",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/header-layout.spec.ts:517:152",
+                  "focusCountFailure": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "preserves the latest overflow request until its 901px menu commits",
+          "project": "desktop",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/header-layout.spec.ts:521:62",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "preserves the latest overflow request until its 1600px menu commits",
+          "project": "desktop",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(received).toEqual(expected) // deep equality",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/header-layout.spec.ts:517:152",
+                  "focusCountFailure": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "preserves the latest overflow request until its 901px menu commits",
+          "project": "desktop-safari",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/header-layout.spec.ts:521:62",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "preserves the latest overflow request until its 1600px menu commits",
+          "project": "desktop-safari",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(received).toEqual(expected) // deep equality",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/header-layout.spec.ts:517:152",
+                  "focusCountFailure": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "preserves the latest overflow request until its 901px menu commits",
+          "project": "desktop-safari",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/header-layout.spec.ts:521:62",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "preserves the latest overflow request until its 1600px menu commits",
+          "project": "desktop-safari",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(received).toEqual(expected) // deep equality",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/header-layout.spec.ts:517:152",
+                  "focusCountFailure": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "run": 46085478688,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/46085478688",
+      "source": "3a8902ebb9b0c5263efce669a4ccfd7cd145c927",
+      "artifactSha256": "ee19e35e72b78d2569b35632fb35390885f7a0757155be9000ae587fb7988c49",
+      "reportSha256": "39fda9557637b3c8f485502f713c9ee1380563d4a92ac84e223fbd36a20d7c62",
+      "stats": {
+        "startTime": "2026-11-28T00:01:46.549Z",
+        "duration": 36244.195,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 8,
+        "flaky": 0
+      },
+      "caseCount": 8,
+      "attemptCount": 8,
+      "nonPassingCases": [
+        {
+          "title": "preserves the latest overflow request until its 901px menu commits",
+          "project": "desktop",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/header-layout.spec.ts:524:62",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "preserves the latest overflow request until its 1600px menu commits",
+          "project": "desktop",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/header-layout.spec.ts:524:62",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "preserves the latest overflow request until its 901px menu commits",
+          "project": "desktop",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/header-layout.spec.ts:524:62",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "preserves the latest overflow request until its 1600px menu commits",
+          "project": "desktop",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/header-layout.spec.ts:524:62",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "preserves the latest overflow request until its 901px menu commits",
+          "project": "desktop-safari",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/header-layout.spec.ts:524:62",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "preserves the latest overflow request until its 1600px menu commits",
+          "project": "desktop-safari",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/header-layout.spec.ts:524:62",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "preserves the latest overflow request until its 901px menu commits",
+          "project": "desktop-safari",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/header-layout.spec.ts:524:62",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "preserves the latest overflow request until its 1600px menu commits",
+          "project": "desktop-safari",
+          "status": "unexpected",
+          "attempts": [
+            {
+              "status": "failed",
+              "retry": 0,
+              "errors": [
+                {
+                  "assertion": "Error: expect(locator).toHaveCount(expected) failed",
+                  "location": "at /home/runner/work/Zellij/Zellij/examples/showcase/e2e/header-layout.spec.ts:524:62",
+                  "focusCountFailure": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "run": 46085554070,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/46085554070",
+      "source": "f4f76409317a1bbad208747b5dc947d82e9fe29f",
+      "artifactSha256": "b39c8e486f72616595e1362207fd186ef7d27c601a08dcdcb8c80867aaba57b0",
+      "reportSha256": "6a1c7414048844c2e9519ebb27db97f9c8cdbe0d38aec0d909ff35c7aab2aeef",
+      "stats": {
+        "startTime": "2026-11-28T00:01:53.900Z",
+        "duration": 9269.969000000001,
+        "expected": 8,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "caseCount": 8,
+      "attemptCount": 8,
+      "nonPassingCases": []
+    }
+  ],
+  "retained": [
+    {
+      "file": "evidence/browser-overflow-focus-2026-11-27/showcase-observed-sequence-5-trace.zip",
+      "artifactMember": "reduction-results/cases/resize-reduction-showcase-observed-sequence-5/trace.zip",
+      "sha256": "ec990c4c64f82288534c55024879c473a3bb528a1064b40e39cd41172f0d6173",
+      "bytes": 448824
+    },
+    {
+      "file": "evidence/browser-overflow-focus-2026-11-27/showcase-observed-sequence-5-resize-state.json",
+      "artifactMember": "reduction-results/cases/resize-reduction-showcase-observed-sequence-5/resize-state.json",
+      "sha256": "89d049dc882c298f7ea25e25905944ef7c0d2b7f0a48f2e9c5d077d640b3e415",
+      "bytes": 52672
+    },
+    {
+      "file": "evidence/browser-overflow-focus-2026-11-27/showcase-control-sequence-8-trace.zip",
+      "artifactMember": "reduction-results/cases/resize-reduction-showcase-control-sequence-8/trace.zip",
+      "sha256": "fbced7893e9e9d3433e1fb9a8e5e7899735a4a2df03c541110c0860eb99b914f",
+      "bytes": 530064
+    },
+    {
+      "file": "evidence/browser-overflow-focus-2026-11-27/showcase-control-sequence-8-resize-state.json",
+      "artifactMember": "reduction-results/cases/resize-reduction-showcase-control-sequence-8/resize-state.json",
+      "sha256": "f23b9a44b35c2b5c6ad296af3deb0435a1978350d09b61ea4e15729587e512c2",
+      "bytes": 7085
+    }
+  ],
+  "fix": {
+    "commit": "f3ac599",
+    "sourceFile": "engine/packages/zellij/src/chrome/nav-bar-client.tsx",
+    "sourceSha256": "ca1d0a3e0ce33ba9b272e53fe0d90006db8cb08fa0c2ee614379a1b95370fc9f",
+    "qualificationSource": "f4f76409317a1bbad208747b5dc947d82e9fe29f",
+    "behavior": "A pending overflow focus request carries its intended visible count. An older effect leaves requests for a different count untouched until the corresponding menu commits. Newer focus and pointer cancellation remain intact."
+  },
+  "localVerification": {
+    "engineTests": 556,
+    "engineTestFiles": 50,
+    "engineTypes": "pass",
+    "focusedBrowserTestTypes": "pass"
+  },
+  "naturalFailureTimeline": {
+    "run": 46084440939,
+    "case": "showcase-observed / sequence 5",
+    "events": [
+      {
+        "at": 3926,
+        "kind": "window-resize",
+        "width": 901,
+        "height": 900,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 3926,
+        "kind": "frame-fired",
+        "handle": 20,
+        "scheduledAt": 3848,
+        "elapsed": 78,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 3927,
+        "kind": "frame-returned",
+        "handle": 20,
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 3927,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 3
+      },
+      {
+        "at": 3927,
+        "kind": "frame-cancelled",
+        "handle": 20
+      },
+      {
+        "at": 3927,
+        "kind": "frame-requested",
+        "handle": 21,
+        "callback": "j",
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "0",
+          "label": null
+        }
+      },
+      {
+        "at": 3927,
+        "kind": "observer-delivered",
+        "id": 2,
+        "count": 1
+      },
+      {
+        "at": 3930,
+        "kind": "nav-commit",
+        "items": [
+          "more"
+        ],
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 3932,
+        "kind": "frame-cancelled",
+        "handle": 19
+      },
+      {
+        "at": 3932,
+        "kind": "frame-requested",
+        "handle": 22,
+        "callback": "",
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 3967,
+        "kind": "focusin",
+        "target": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": null,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 3975,
+        "kind": "keydown",
+        "key": "ArrowDown"
+      },
+      {
+        "at": 3983,
+        "kind": "observer-created",
+        "id": 6
+      },
+      {
+        "at": 3983,
+        "kind": "observer-observe",
+        "id": 6,
+        "tag": "HEADER",
+        "class": "zellij-header zellij-header-sticky"
+      },
+      {
+        "at": 3984,
+        "kind": "focusout",
+        "target": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 3984,
+        "kind": "focusin",
+        "target": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 3985,
+        "kind": "nav-commit",
+        "items": [
+          "more"
+        ],
+        "active": {
+          "tag": "A",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 4017,
+        "kind": "keydown",
+        "key": "Escape"
+      },
+      {
+        "at": 4020,
+        "kind": "observer-disconnect",
+        "id": 6
+      },
+      {
+        "at": 4021,
+        "kind": "focusin",
+        "target": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        },
+        "related": null,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 4021,
+        "kind": "nav-commit",
+        "items": [
+          "more"
+        ],
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 4062,
+        "kind": "window-resize",
+        "width": 1600,
+        "height": 900,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 4063,
+        "kind": "frame-fired",
+        "handle": 21,
+        "scheduledAt": 3927,
+        "elapsed": 136,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 4063,
+        "kind": "frame-returned",
+        "handle": 21,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 4063,
+        "kind": "frame-fired",
+        "handle": 22,
+        "scheduledAt": 3932,
+        "elapsed": 131,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 4063,
+        "kind": "frame-returned",
+        "handle": 22,
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 4063,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 3
+      },
+      {
+        "at": 4063,
+        "kind": "frame-cancelled",
+        "handle": 21
+      },
+      {
+        "at": 4063,
+        "kind": "frame-requested",
+        "handle": 23,
+        "callback": "j",
+        "active": {
+          "tag": "BUTTON",
+          "id": "",
+          "connected": true,
+          "index": "more",
+          "label": null
+        }
+      },
+      {
+        "at": 4063,
+        "kind": "observer-delivered",
+        "id": 2,
+        "count": 1
+      },
+      {
+        "at": 4067,
+        "kind": "nav-commit",
+        "items": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 4070,
+        "kind": "frame-cancelled",
+        "handle": 22
+      },
+      {
+        "at": 4232,
+        "kind": "frame-fired",
+        "handle": 23,
+        "scheduledAt": 4063,
+        "elapsed": 169,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 4232,
+        "kind": "frame-returned",
+        "handle": 23,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 4232,
+        "kind": "observer-delivered",
+        "id": 1,
+        "count": 1
+      },
+      {
+        "at": 4232,
+        "kind": "frame-cancelled",
+        "handle": 23
+      },
+      {
+        "at": 4232,
+        "kind": "frame-requested",
+        "handle": 24,
+        "callback": "j",
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 4301,
+        "kind": "frame-fired",
+        "handle": 24,
+        "scheduledAt": 4232,
+        "elapsed": 69,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      },
+      {
+        "at": 4302,
+        "kind": "frame-returned",
+        "handle": 24,
+        "active": {
+          "tag": "BODY",
+          "id": "",
+          "connected": true,
+          "label": null
+        }
+      }
+    ],
+    "interpretation": "Measurement 21 runs, then the older focus callback 22, then the new menu commits. No replacement focus callback is scheduled; subsequent frames continue with body focused."
+  }
+}
