@@ -2,8 +2,9 @@
 
 Status: rc.25 is published and installed locally. All 55 release jobs pass on
 attempt 1. Independent public Mac verification and the downloaded-renderer
-focus regression pass. The owned Homebrew/Scoop recipes are published and all eight actual
-rc.24-to-rc.25 upgrades pass. The qualified guides await production publication.
+focus regression pass. The owned Homebrew/Scoop recipes are published and all
+eight actual rc.24-to-rc.25 upgrades pass. The revised guides are published and
+ten live Quickstart/CLI pages pass verification.
 
 ## Qualified source
 
@@ -77,8 +78,16 @@ The installation guide draft passes strict local validation and documentation
 workflow `46098484138`: 46 original plus 15 added routes, 282 original heading IDs,
 82 compatibility mappings and 29 byte-identical original images, with no captured
 browser errors. Its runtime inputs match the release tag. Final evidence-only
-edits do not change those validated site inputs. All channel upgrade verification is complete. Production publication is the
-remaining delivery step.
+edits do not change those validated site inputs. PR #272 merged as `665cc43`,
+tree-identical to final head `d0d1464`; its site inputs match qualified `244e4c5`.
+
+Production workflow `46103727723` passes both jobs and publishes that source at
+`zellij.shebka.net` on 28 November, 03:40:11 UTC. Its verified deployment receipt
+identifies `6b0a4d0e0d73024ae2b8c9c9`. Ten live Quickstart/CLI pages return HTTP 200,
+contain the expected candidate instructions and hydrate without captured browser
+errors. Both release pages link to the exact verified guide commit. A subsequent
+public inventory confirms all 58 assets in each repository remain unchanged;
+release tags and template identities are preserved.
 
 The historical WebKit rendering stall and documentation hydration timeout remain
 open. Deferred provider/catalog verification and retirement are separate; no old

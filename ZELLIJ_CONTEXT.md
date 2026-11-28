@@ -8,16 +8,19 @@ External test projects are not Zellij deliverables or product backlog.
 Last refreshed: **2026-11-27**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-27: rc.25 delivered; qualified guides ready to publish**
+**2026-11-27: rc.25 release and documentation delivery complete**
 
 PR #271 merged as `988e321`, tree-identical to qualified `eac6ca0`. All 37 source
 CI jobs, nine PDF jobs and 55 tagged release jobs pass on attempt 1. Both public
 repositories contain 58 matching assets. The public downloaded-renderer focus
 regression fails eight cases on rc.24 and passes all eight on rc.25, with no HTTP
 requests, page errors or retries. Independent Intel Mac acceptance passes against
-both repositories. The local CLI passes default-home cold/offline checks. Owned Homebrew/Scoop
-recipes are published and all eight actual rc.24-to-rc.25 upgrades pass. Draft
-guides pass preservation checks and await production publication. See the
+both repositories. The local CLI passes default-home cold/offline checks. Owned
+Homebrew/Scoop recipes are published and all eight actual rc.24-to-rc.25 upgrades
+pass. The guides merge as `665cc43` / PR #272. Production run `46103727723` passes
+both jobs; ten live Quickstart/CLI pages show rc.25, hydrate and report no captured
+browser errors. Release-note guide links are pinned to that documentation commit;
+a fresh inventory confirms all release assets remain unchanged. See the
 [release record](specs/zellij-rc25-release-2026-11-27.md). Template archive identities
 and PDF licensing are unchanged. The two historical browser timing findings
 remain open; live providers, external catalogs and retirement remain separate.

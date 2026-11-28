@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "version": "v0.2.0-rc.25",
-  "status": "released-installed-channels-verified-guides-qualified",
+  "status": "released-installed-channels-verified-guides-published",
   "source": {
     "pr": 271,
     "head": "eac6ca0f39b69dcb33fae16f30088191e470e03e",
@@ -502,6 +502,154 @@
       "compatibilityMappings": 82,
       "byteIdenticalImages": 29,
       "capturedBrowserErrors": 0
+    },
+    "finalHead": "d0d1464caac60706986319e421a7e526e44873d1",
+    "merge": "665cc43b70cf3b0c030b1be7fe4b267b0cfe1827",
+    "mergeTree": "fe806519a70868837be75b6e4c88cd95d5a4b72b",
+    "mergeMatchesFinalHead": true,
+    "finalSiteInputsMatchQualifiedHead": true,
+    "runtimeInputsMatchReleaseTag": true,
+    "productionRun": {
+      "id": 46103727723,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/46103727723",
+      "head": "665cc43b70cf3b0c030b1be7fe4b267b0cfe1827",
+      "attempt": 1,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 140851703533,
+          "name": "Validate and build documentation",
+          "conclusion": "success"
+        },
+        {
+          "id": 140852190982,
+          "name": "Publish production documentation",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "receiptArtifact": {
+      "id": 15246343035,
+      "sha256": "692db95827c9a8e553650c990c45bb6e093010b3bacea21286101e30cbf9ca6d"
+    },
+    "production": {
+      "source": "665cc43b70cf3b0c030b1be7fe4b267b0cfe1827",
+      "site_id": "91774174-d4c2-41b5-aa4b-ac61eeadbf51",
+      "domain": "zellij.shebka.net",
+      "deploy_id": "6b0a4d0e0d73024ae2b8c9c9",
+      "previous_deploy_id": "6b0a23794251163bbfef1332",
+      "preview": "https://6b0a4d0e0d73024ae2b8c9c9--zellij-docs.netlify.app",
+      "state": "verified",
+      "published_at": "2026-11-28T03:40:11.324Z"
+    },
+    "live": {
+      "verifiedAt": "2026-11-28T03:41:57.238Z",
+      "documentationCommit": "665cc43b70cf3b0c030b1be7fe4b267b0cfe1827",
+      "version": "v0.2.0-rc.25",
+      "routes": [
+        {
+          "route": "/guide/quickstart",
+          "status": 200,
+          "matched": [
+            "zel 0.2.0-rc.25",
+            "Hosted Next dev",
+            "zel bp"
+          ],
+          "hydrated": true
+        },
+        {
+          "route": "/guide/quickstart/books",
+          "status": 200,
+          "matched": [
+            "Use candidate rc.21 or later",
+            "zel pdf",
+            "site/_zellij/pdf/book.pdf"
+          ],
+          "hydrated": true
+        },
+        {
+          "route": "/guide/quickstart/website-templates",
+          "status": 200,
+          "matched": [
+            "Use candidate rc.24 or later",
+            "zel dev --open",
+            "zel dev --offline --open"
+          ],
+          "hydrated": true
+        },
+        {
+          "route": "/cli/shortcuts",
+          "status": 200,
+          "matched": [
+            "Common workflows in rc.21",
+            "zel lint",
+            "zel bp",
+            "zel bs",
+            "zel vw"
+          ],
+          "hydrated": true
+        },
+        {
+          "route": "/cli/books",
+          "status": 200,
+          "matched": [
+            "Cached PDF default (rc.21)",
+            "book-classic@0.3.0",
+            "book-technical@0.2.0"
+          ],
+          "hydrated": true
+        },
+        {
+          "route": "/cli/templates",
+          "status": 200,
+          "matched": [
+            "version 0.1.4",
+            "version 0.1.3",
+            "require CLI rc.24 or later"
+          ],
+          "hydrated": true
+        },
+        {
+          "route": "/cli/doctor",
+          "status": 200,
+          "matched": [
+            "Hosted Next dev",
+            "No with the default cached backend"
+          ],
+          "hydrated": true
+        },
+        {
+          "route": "/cli",
+          "status": 200,
+          "matched": [
+            "0.2.0-rc.25",
+            "Next development downloads a separate verified development package",
+            "Candidate rc.25 fixes focus loss during rapid desktop menu resizing."
+          ],
+          "hydrated": true
+        },
+        {
+          "route": "/cli/dev",
+          "status": 200,
+          "matched": [
+            "Cached development in rc.25",
+            "cache/development/",
+            "--dev-backend container"
+          ],
+          "hydrated": true
+        },
+        {
+          "route": "/cli/config",
+          "status": 200,
+          "matched": [
+            "Cached Next development",
+            "cache/development-sessions/"
+          ],
+          "hydrated": true
+        }
+      ],
+      "browserErrors": [],
+      "browser": "157.0.8103.39"
     }
   },
   "publicAssets": {
@@ -1658,5 +1806,11 @@
     "offlineValidation": true,
     "routes": 16,
     "logSha256": "e2a6a70b55828e302658b1d6adbea32e94ca648becaef9f5a17780b2e032c727"
+  },
+  "releaseNotes": {
+    "documentationCommit": "665cc43b70cf3b0c030b1be7fe4b267b0cfe1827",
+    "bothRepositoriesUpdated": true,
+    "assetsUnchangedAfterNotesUpdate": true,
+    "assetsRecheckedAt": "2026-11-28T03:43:18.342Z"
   }
 }

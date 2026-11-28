@@ -6,7 +6,9 @@ eight controlled offline focus cases that fail on rc.24; the historical frame
 stall and hydration timeout remain open. Both repositories contain 58 matching
 assets and independent public Mac checks pass. Owned channel recipes are published;
 all eight actual rc.24-to-rc.25 upgrades and local default-home cold/offline checks
-pass. The qualified guides await production publication. See
+pass. Guides from PR #272 (`665cc43`) are published by `46103727723`; ten live
+Quickstart/CLI pages verify the expected instructions and hydration without
+captured browser errors. See
 [the rc.25 release record](zellij-rc25-release-2026-11-27.md) for delivery status.
 The dated rc.24 checkpoints below remain their original verification evidence.
 
@@ -88,7 +90,7 @@ and [HTTP export](zellij-cached-http-export-2026-11-21.md) cache migrations now 
 | --- | --- | --- |
 | Documented CLI command families | Implemented; the [26 November source/help/test audit](zellij-cli-completion-audit-2026-11-26.md) reconciles handlers, options, aliases and verification. | Provider-specific live behavior and external runners require separate acceptance. The audit does not prove every option combination or zero bugs. |
 | Rich websites and development | File/HTTP static build, check, watch and view share the verified renderer cache. Static deployment builds and optional import validation reuse it. Rc.24 adds cached `zel dev`, reusing private Node and matching sources; cold/offline acceptance passes on six targets. These operations need no separately installed Docker, Node/npm or Python. | Custom Next apps, explicit image extraction and container image operations retain their documented prerequisites. Development has its own optional dependency download. PDF remains opt-in and uses the separate cached compiler by default. |
-| Documentation and publishing | Rc.25 installation guides retain the book/website-template Quickstarts and document the menu focus correction. The qualified guide build preserves 61 routes, 282 original heading IDs, 82 compatibility mappings and 29 original images. | Production publication is the final rc.25 delivery step. Keep prerequisites and version pins current. Historical browser timing findings remain unresolved. |
+| Documentation and publishing | Rc.25 installation guides retain the book/website-template Quickstarts and document the menu focus correction. The qualified guide build preserves 61 routes, 282 original heading IDs, 82 compatibility mappings and 29 original images. | Production run `46103727723` and ten live guide checks pass. Keep prerequisites and version pins current. Historical browser timing findings remain unresolved. |
 | Branding, menus and themes | Separate company/product branding, centered navigation, full-width desktop panels, mobile drilldown, responsive theme colors and the Kie theme are implemented. | Kie is an inspected design interpretation; blocked live reference access did not establish a 100% pixel-identical clone. |
 | Composer and templates | Responsive nested layouts, supported media/semantic/interactive nodes, bounded scroll effects, eight inline built-in section types, nine editable presets and nine website/book starters are implemented. | Five website starters ship new immutable versions in rc.24 with cached-development instructions; previous template archive bytes remain unchanged. The composer is bounded; arbitrary executable components, arbitrary section embedding and unrestricted animation timelines are not promised. |
 | Books and PDF | Shared publication model, technical/study editions, references, citations, glossary/index, print styling and supported Latin/Arabic print are implemented. Rc.20 adds a verified optional compiler under `ZELLIJ_HOME/cache/pdf`, reusing private Node. Public acceptance verifies complete matching sources and offline PDF/rich builds on six targets. | Rc.21 selects cached PDF by default, updates generated CI and publishes new book-template versions. Explicit container selection remains available. Arbitrary citation styles/BibTeX, unrestricted font inventories and broader format fidelity remain expansion requests. |
@@ -114,6 +116,11 @@ regression fails in all eight Chromium/WebKit cases before the correction and
 passes all eight afterward without retries. Local types and 556 engine tests
 pass. See the [27 November focus record](zellij-overflow-focus-commit-2026-11-27.md).
 This source correction needs packaging in a later candidate; rc.24 is unchanged.
+
+Delivery update, 27 November: this correction now ships in rc.25. The public
+downloaded-renderer regression passes all eight cases in Chromium/WebKit, and all
+55 release jobs pass. See the rc.25 record above; the historical timing findings
+remain separate.
 
 Two historical browser timing findings remain unexplained: WebKit navigation
 overflow after resize and a documentation hydration-readiness timeout.
