@@ -5,8 +5,27 @@ tests only. Keep third-party project identities, local case studies and delivery
 details out of tracked files, pull requests, release notes, logs and artifacts.
 External test projects are not Zellij deliverables or product backlog.
 
-Last refreshed: **2026-11-27**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-28**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
+
+**2026-11-28: restricted scheduling reproduces historical resize symptom**
+
+The [scheduling comparison](specs/zellij-browser-scheduling-2026-11-28.md)
+uses the unchanged rc.25 engine and pinned Linux browsers. Normal affinity
+passes 32 resize cases; restricting execution to one CPU produces three stale
+More-menu failures in 32 cases, and adding a CPU competitor produces three more.
+DOM/timer capture completes in 287–331 ms while five samples have no animation
+callback and one has only one. All six failure traces are retained with verified
+artifact hashes. All 36 documentation-preservation checks pass, including both
+restricted profiles; this does not resolve the hydration finding.
+A subsequent five-arm reduction passes all 160 cases, including its unchanged
+control, so it identifies no necessary Escape/CSS trigger. Both historical
+findings remain open. Investigation code stays on its separate branch; product
+behavior, ordinary CI policy, current rc.25 distributions and published guides
+are unchanged. Two native-capture follow-ups add nine failures, for 15 retained failures total.
+The corrected capture includes WPE rendering subprocesses and shows continuing
+CPU use during failures; it does not identify the expensive native work or prove
+a deadlock. Native thread profiling/page-process attribution is the next target.
 
 **2026-11-27: rc.25 release and documentation delivery complete**
 

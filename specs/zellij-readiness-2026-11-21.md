@@ -1,5 +1,16 @@
 # Zellij readiness — 21 November 2026
 
+Updated 28 November: the [CPU scheduling comparison](zellij-browser-scheduling-2026-11-28.md)
+reproduces six stale-menu resize failures on the current engine under restricted
+CPU affinity. DOM/timers remain responsive while frame samples are absent or
+sparse. The original artifacts are retained; no native root cause or product
+correction is established. All 36 hydration checks pass without reproducing that
+separate timeout. The later reduction also passes its unchanged control, so it
+cannot select a trigger. Two native-capture follow-ups add nine failures (15 retained in total), and the
+corrected renderer capture shows continuing native CPU use. Thread profiles and
+page/process attribution remain needed. Both historical findings remain open;
+rc.25 stays current.
+
 Updated 27 November: **v0.2.0-rc.25** is published. Source `988e321` passes all
 37 source CI, nine PDF and 55 release jobs. The downloaded renderer passes all
 eight controlled offline focus cases that fail on rc.24; the historical frame
